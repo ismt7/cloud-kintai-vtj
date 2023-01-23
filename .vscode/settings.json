@@ -10,15 +10,12 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "[python]": {},
-  "[javascript]": {},
   "diffEditor.wordWrap": "off",
-  "git.branchPrefix": "feature/",
   "workbench.startupEditor": "readme",
+  "git.branchPrefix": "feature/",
   "python.terminal.activateEnvironment": false,
   "eslint.format.enable": true,
-  "eslint.run": "onType",
   "eslint.workingDirectories": [
     "./src"
-  ],
+  ]
 }
