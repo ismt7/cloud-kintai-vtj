@@ -1,7 +1,7 @@
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Top from './Top';
-import Resist from './Resist';
+import Attendance from './Attendance';
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
 
         <Routes>
             <Route index element={<Top />} />
-            <Route path="/resist" element={<Resist />} />
+            <Route path="/attendance" element={<Attendance />} />
         </Routes>
 
         <footer>
