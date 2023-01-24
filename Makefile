@@ -1,3 +1,6 @@
+setup:
+	git config --local core.hooksPath .githooks
+
 install:
 	npm install
 
