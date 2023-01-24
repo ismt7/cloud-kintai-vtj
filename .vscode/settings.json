@@ -1,5 +1,5 @@
 {
-  "editor.tabSize": 4,
+  "editor.tabSize": 2,
   "editor.insertSpaces": true,
   "editor.formatOnSave": true,
   "editor.rulers": [
@@ -7,10 +7,15 @@
     100,
     120
   ],
-  "[python]": {},
-  "[javascript]": {},
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
   "diffEditor.wordWrap": "off",
-  "git.branchPrefix": "feature/",
   "workbench.startupEditor": "readme",
-  "python.terminal.activateEnvironment": false
+  "git.branchPrefix": "feature/",
+  "python.terminal.activateEnvironment": false,
+  "eslint.format.enable": true,
+  "eslint.workingDirectories": [
+    "./src"
+  ]
 }
