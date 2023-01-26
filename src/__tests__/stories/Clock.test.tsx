@@ -1,0 +1,11 @@
+import { render } from "@testing-library/react";
+import dayjs from "dayjs";
+import Clock from "../../stories/Clock";
+
+describe("Clock", () => {
+  test("Default", () => {
+    const now = dayjs().format("YYYY/MM/DD HH:mm:ss");
+    const { container } = render(<Clock />);
+    expect(container).toHaveTextContent(now);
+  });
+});
