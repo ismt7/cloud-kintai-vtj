@@ -56,15 +56,55 @@ ClockOut.args = {
 export const RestStart = Template.bind({});
 RestStart.storyName = "休憩開始";
 RestStart.args = {
+  variant: "text",
   color: "rest",
+  size: "large",
   label: "休憩開始",
 };
 
 export const RestEnd = Template.bind({});
 RestEnd.storyName = "休憩終了";
 RestEnd.args = {
+  variant: "text",
   color: "rest",
+  size: "large",
   label: "休憩終了",
+};
+
+export const GoDirectly = Template.bind({});
+GoDirectly.storyName = "直行";
+GoDirectly.args = {
+  variant: "text",
+  color: "clock_in",
+  size: "large",
+  label: "直行",
+};
+
+export const ReturnDirectly = Template.bind({});
+ReturnDirectly.storyName = "直帰";
+ReturnDirectly.args = {
+  variant: "text",
+  color: "clock_out",
+  size: "large",
+  label: "直帰",
+};
+
+export const Login = Template.bind({});
+Login.storyName = "ログイン";
+Login.args = {
+  color: "login",
+  variant: "outlined",
+  label: "ログイン",
+  width: "108px",
+  height: "42.5px",
+};
+
+export const Logout = Template.bind({});
+Logout.storyName = "ログアウト";
+Logout.args = {
+  color: "logout",
+  variant: "contained",
+  label: "ログアウト",
 };
 
 export const EditSmall = Template.bind({});
