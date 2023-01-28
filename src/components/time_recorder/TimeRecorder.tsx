@@ -3,8 +3,8 @@ import React from "react";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 
-import Button from "./Button";
-import Clock from "./Clock";
+import Button from "../button/Button";
+import Clock from "../clock/Clock";
 
 interface TimeRecorderProps {
   clockInOnClick: () => void;
