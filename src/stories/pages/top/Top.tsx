@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material";
 import React from "react";
-import Footer from "../components/footer/Footer";
-import Header from "./Header";
+import Footer from "../../../components/footer/Footer";
+import Header from "../../../components/header/Header";
 
 const Top: React.FC = () => (
   <Stack sx={{ height: "100vh" }}>
