@@ -3,6 +3,7 @@ import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogImage from "../../images/logo.png";
 import Button from "../button/Button";
+import Link from "../link/Link";
 
 const Header = () => (
   <header>
@@ -22,11 +23,19 @@ const Header = () => (
         />
       </Box>
       <Box sx={{ width: 1 }}>
-        <Stack direction="row" spacing={1}>
-          <Box>リンク</Box>
-          <Box>リンク</Box>
-          <Box>リンク</Box>
-          <Box>リンク</Box>
+        <Stack direction="row" spacing={0}>
+          <Box>
+            <Link label="勤怠打刻" />
+          </Box>
+          <Box>
+            <Link label="リンク" />
+          </Box>
+          <Box>
+            <Link label="リンク" />
+          </Box>
+          <Box>
+            <Link label="リンク" />
+          </Box>
         </Stack>
       </Box>
       <Box>
