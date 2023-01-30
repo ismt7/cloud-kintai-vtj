@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import Attendance from "./Attendance";
-import Top from "./Top";
+import Attendance from "../Attendance";
+import Top from "../Top";
 
 test("TOP画面への遷移", () => {
   const route = "/top";

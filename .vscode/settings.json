@@ -17,5 +17,9 @@
   "eslint.format.enable": true,
   "eslint.workingDirectories": [
     "./src"
+  ],
+  "git.autoStash": true,
+  "git.branchProtection": [
+    "main"
   ]
 }

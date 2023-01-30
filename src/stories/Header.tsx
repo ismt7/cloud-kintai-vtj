@@ -1,62 +1,72 @@
-import React from "react";
+import { Box, IconButton, Stack } from "@mui/material";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Button from "../components/button/Button";
+import LogImage from "../images/logo.png";
 
-import Button from "./Button";
-import "./header.css";
-
-type User = {
-  name: string;
-};
-
-interface HeaderProps {
-  user?: User;
-  onLogin: () => void;
-  onLogout: () => void;
-  onCreateAccount: () => void;
-}
-
-const Header = ({ user, onLogin, onLogout, onCreateAccount }: HeaderProps) => (
+const Header = () => (
   <header>
-    <div className="wrapper">
-      <div>
-        <svg
-          width="32"
-          height="32"
-          viewBox="0 0 32 32"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g fill="none" fillRule="evenodd">
-            <path
-              d="M10 0h12a10 10 0 0110 10v12a10 10 0 01-10 10H10A10 10 0 010 22V10A10 10 0 0110 0z"
-              fill="#FFF"
-            />
-            <path
-              d="M5.3 10.6l10.4 6v11.1l-10.4-6v-11zm11.4-6.2l9.7 5.5-9.7 5.6V4.4z"
-              fill="#555AB9"
-            />
-            <path
-              d="M27.2 10.6v11.2l-10.5 6V16.5l10.5-6zM15.7 4.4v11L6 10l9.7-5.5z"
-              fill="#91BAF8"
-            />
-          </g>
-        </svg>
-        <h1>Acme</h1>
-      </div>
-      <div>
-        {user ? (
-          <>
-            <span className="welcome">
-              Welcome, <b>{user.name}</b>!
-            </span>
-            <Button size="small" onClick={onLogout} label="Log out" />
-          </>
-        ) : (
-          <>
-            <Button size="small" onClick={onLogin} label="Log in" />
-            <Button size="small" onClick={onCreateAccount} label="Sign up" />
-          </>
-        )}
-      </div>
-    </div>
+    <Stack
+      direction="row"
+      alignItems="center"
+      bgcolor="#0FA85E"
+      color="white"
+      sx={{ p: 0.5 }}
+      spacing={2}
+    >
+      <Box sx={{ height: 1 }}>
+        <img
+          src={LogImage}
+          alt="クラウド勤怠のロゴ"
+          style={{ height: "40px" }}
+        />
+      </Box>
+      <Box sx={{ width: 1 }}>
+        <Stack direction="row" spacing={1}>
+          <Box>リンク</Box>
+          <Box>リンク</Box>
+          <Box>リンク</Box>
+          <Box>リンク</Box>
+        </Stack>
+      </Box>
+      <Box>
+        <Stack direction="row" spacing={1}>
+          {/* <Button
+            color="logout"
+            label="管理者ページ"
+            onClick={() => {}}
+            variant="contained"
+            height="40px"
+            width="108px"
+          /> */}
+          <Button
+            color="login"
+            label="ログイン"
+            onClick={() => {}}
+            variant="outlined"
+            height="40px"
+            width="108px"
+          />
+        </Stack>
+      </Box>
+      <Box>
+        <Stack direction="row">
+          <Box>
+            <IconButton aria-label="notification">
+              <NotificationsNoneIcon
+                style={{ color: "white" }}
+                fontSize="medium"
+              />
+            </IconButton>
+          </Box>
+          <Box>
+            <IconButton aria-label="account">
+              <AccountCircleIcon style={{ color: "white" }} />
+            </IconButton>
+          </Box>
+        </Stack>
+      </Box>
+    </Stack>
   </header>
 );
 
