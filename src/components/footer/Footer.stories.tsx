@@ -2,7 +2,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 import Footer from "./Footer";
 
 export default {
-  title: "Example/Footer",
+  title: "Component/Footer",
   component: Footer,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
