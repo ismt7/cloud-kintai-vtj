@@ -75,6 +75,7 @@
     ]
   },
   "devDependencies": {
+    "@storybook/mdx2-csf": "^0.0.3",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.2",
     "babel-plugin-named-exports-order": "^0.0.2",
