@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event";
 import { render, screen } from "@testing-library/react";
-import TimeRecorder from "../../stories/TimeRecorder";
+import TimeRecorder from "../../components/time_recorder/TimeRecorder";
 
 describe("TimeRecorder", () => {
   const clockInOnClickMock = jest.fn();

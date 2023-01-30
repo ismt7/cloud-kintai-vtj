@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import dayjs from "dayjs";
-import Clock from "../../stories/Clock";
+import Clock from "../../components/clock/Clock";
 
 describe("Clock", () => {
   test("Default", () => {
