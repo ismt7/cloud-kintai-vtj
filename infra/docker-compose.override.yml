@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  frontend:
+    build:
+      target: development
+    tty: true
+    stdin_open: true
+    environment:
+      NODE_ENV: development
+    ports:
+      - 3000:3000
+    volumes:
+        - ../:/app

@@ -5,10 +5,13 @@ install:
 	npm install
 
 start:
-	npm start
+	cd infra && docker compose -f docker-compose.yml up -d
 
 test:
 	npm test
 
 storybook:
 	npm run storybook
+
+dev-start:
+	cd infra && docker compose up -d
