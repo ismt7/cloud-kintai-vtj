@@ -4,7 +4,7 @@ import { expect } from "@storybook/jest";
 import TimeRecorder from "./TimeRecorder";
 
 export default {
-  title: "Example/TimeRecorder",
+  title: "Component/TimeRecorder",
   component: TimeRecorder,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {

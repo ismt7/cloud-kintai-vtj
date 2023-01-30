@@ -2,7 +2,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 import Clock from "./Clock";
 
 export default {
-  title: "Example/Clock",
+  title: "Component/Clock",
   component: Clock,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
