@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event";
 import { render, screen } from "@testing-library/react";
-import Button from "../../stories/Button";
+import Button from "../../components/button/Button";
 
 describe("Button", () => {
   test("onClick", () => {
