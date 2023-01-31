@@ -3,4 +3,10 @@
 echo "testing now..."
 echo "========================================"
 CI=true make test
+
+if [ $? -ne 0 ]; then
+  echo "Tests failed, aborting commit"
+  exit 1
+fi
+
 echo "========================================"
