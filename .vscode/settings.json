@@ -21,5 +21,8 @@
   "git.autoStash": true,
   "git.branchProtection": [
     "main"
+  ],
+  "cSpell.words": [
+    "reduxjs"
   ]
 }

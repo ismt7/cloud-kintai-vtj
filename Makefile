@@ -10,6 +10,9 @@ start:
 test:
 	npm test
 
+test-storybook:
+	npm run test-storybook
+
 storybook:
 	npm run storybook
 
