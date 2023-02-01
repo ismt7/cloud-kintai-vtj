@@ -5,47 +5,28 @@ import ClearIcon from "@mui/icons-material/Clear";
 
 import Button from "../button/Button";
 import Clock from "../clock/Clock";
+import { useAppDispatch, useAppSelector } from "../../lib/hooks";
+import {
+  clockIn,
+  clockOut,
+  endRest,
+  goDirect,
+  returnDirect,
+  selectTimeRecordStatus,
+  startRest,
+  TimeRecordStatus,
+} from "../../lib/timeRecordSlice";
 
-interface TimeRecorderProps {
-  clockInOnClick: () => void;
-  clockOutOnClick: () => void;
-  restStartOnClick: () => void;
-  restEndOnClick: () => void;
-  goDirectOnClick: () => void;
-  returnDirectOnClick: () => void;
-}
-
-const TimeRecorder = ({
-  clockInOnClick = () => {},
-  clockOutOnClick = () => {},
-  restStartOnClick = () => {},
-  restEndOnClick = () => {},
-  goDirectOnClick = () => {},
-  returnDirectOnClick = () => {},
-}: TimeRecorderProps) => {
-  const [status, setStatus] = React.useState("Before work");
-
-  const statusText = () => {
-    switch (status) {
-      case "Before work":
-        return "出勤前";
-      case "Working":
-        return "勤務中";
-      case "Resting":
-        return "休憩中";
-      case "Left work":
-        return "退勤済み";
-      default:
-        return "";
-    }
-  };
+const TimeRecorder = () => {
+  const dispatch = useAppDispatch();
+  const status = useAppSelector(selectTimeRecordStatus);
 
   return (
     <Box width="400px">
       <Stack spacing={3}>
         <Box>
           <Typography variant="h6" textAlign="center">
-            {statusText()}
+            {status.text}
           </Typography>
         </Box>
         <Box>
@@ -63,25 +44,29 @@ const TimeRecorder = ({
                 color="clock_in"
                 label="勤務開始"
                 onClick={() => {
-                  clockInOnClick();
-                  setStatus("Working");
+                  dispatch(clockIn());
                 }}
                 size="large"
-                variant={status === "Before work" ? "outlined" : "contained"}
-                disabled={status !== "Before work"}
+                variant={
+                  status.code === TimeRecordStatus.BEFORE_WORK
+                    ? "outlined"
+                    : "contained"
+                }
+                disabled={status.code !== TimeRecordStatus.BEFORE_WORK}
               />
             </Box>
             <Box>
               <Button
                 color="clock_out"
                 label="勤務終了"
-                onClick={() => {
-                  clockOutOnClick();
-                  setStatus("Left work");
-                }}
+                onClick={() => dispatch(clockOut())}
                 size="large"
-                variant={status === "Working" ? "outlined" : "contained"}
-                disabled={status !== "Working"}
+                variant={
+                  status.code === TimeRecordStatus.WORKING
+                    ? "outlined"
+                    : "contained"
+                }
+                disabled={status.code !== TimeRecordStatus.WORKING}
               />
             </Box>
           </Stack>
@@ -99,24 +84,26 @@ const TimeRecorder = ({
                   <Button
                     color="clock_in"
                     label="直行"
-                    onClick={() => {
-                      goDirectOnClick();
-                      setStatus("Working");
-                    }}
-                    variant={status === "Before work" ? "text" : "contained"}
-                    disabled={status !== "Before work"}
+                    onClick={() => dispatch(goDirect())}
+                    variant={
+                      status.code === TimeRecordStatus.BEFORE_WORK
+                        ? "text"
+                        : "contained"
+                    }
+                    disabled={status.code !== TimeRecordStatus.BEFORE_WORK}
                   />
                 </Box>
                 <Box>
                   <Button
                     color="clock_out"
                     label="直帰"
-                    onClick={() => {
-                      returnDirectOnClick();
-                      setStatus("Left work");
-                    }}
-                    variant={status === "Working" ? "text" : "contained"}
-                    disabled={status !== "Working"}
+                    onClick={() => dispatch(returnDirect())}
+                    variant={
+                      status.code === TimeRecordStatus.WORKING
+                        ? "text"
+                        : "contained"
+                    }
+                    disabled={status.code !== TimeRecordStatus.WORKING}
                   />
                 </Box>
               </Stack>
@@ -127,24 +114,26 @@ const TimeRecorder = ({
                   <Button
                     color="rest"
                     label="休憩開始"
-                    onClick={() => {
-                      restStartOnClick();
-                      setStatus("Resting");
-                    }}
-                    variant={status === "Working" ? "text" : "contained"}
-                    disabled={status !== "Working"}
+                    onClick={() => dispatch(startRest())}
+                    variant={
+                      status.code === TimeRecordStatus.WORKING
+                        ? "text"
+                        : "contained"
+                    }
+                    disabled={status.code !== TimeRecordStatus.WORKING}
                   />
                 </Box>
                 <Box>
                   <Button
                     color="rest"
                     label="休憩終了"
-                    onClick={() => {
-                      restEndOnClick();
-                      setStatus("Working");
-                    }}
-                    variant={status === "Resting" ? "text" : "contained"}
-                    disabled={status !== "Resting"}
+                    onClick={() => dispatch(endRest())}
+                    variant={
+                      status.code === TimeRecordStatus.RESTING
+                        ? "text"
+                        : "contained"
+                    }
+                    disabled={status.code !== TimeRecordStatus.RESTING}
                   />
                 </Box>
               </Stack>
