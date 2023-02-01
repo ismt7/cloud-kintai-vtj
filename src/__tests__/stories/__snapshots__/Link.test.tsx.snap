@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Link Snapshot 1`] = `
+exports[` 1`] = `
 <div>
   <a
     class="MuiTypography-root MuiTypography-button MuiLink-root MuiLink-underlineAlways css-1mg8iaz-MuiTypography-root-MuiLink-root"
