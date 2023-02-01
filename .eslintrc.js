@@ -32,5 +32,6 @@ module.exports = {
     "@typescript-eslint/quotes": ["error", "double"],
     "@typescript-eslint/comma-dangle": "off",
     "object-curly-newline": "off",
+    "no-param-reassign": ["error", { props: false }]
   },
 };
