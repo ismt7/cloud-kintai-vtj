@@ -2,10 +2,21 @@
 
 echo "testing now..."
 echo "========================================"
-CI=true make test
+(CI=true make test) &
+jest_test_pid=$!
 
+(CI=true make test-storybook) &
+storybook_test_pid=$!
+
+wait $jest_test_pid
 if [ $? -ne 0 ]; then
   echo "Tests failed, aborting commit"
+  exit 1
+fi
+
+wait $storybook_test_pid
+if [ $? -ne 0 ]; then
+  echo "Storybook tests failed, aborting commit"
   exit 1
 fi
 
