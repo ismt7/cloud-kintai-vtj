@@ -1,8 +1,7 @@
 import { Box, IconButton, Stack, TextField, Typography } from "@mui/material";
-import React from "react";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
-
+import { useEffect } from "react";
 import Button from "../button/Button";
 import Clock from "../clock/Clock";
 import { useAppDispatch, useAppSelector } from "../../lib/hooks";
@@ -10,16 +9,28 @@ import {
   clockIn,
   clockOut,
   endRest,
+  fetchRestTime,
+  fetchTimeRecord,
   goDirect,
   returnDirect,
-  selectTimeRecordStatus,
+  selectTimeRecord,
   startRest,
   TimeRecordStatus,
 } from "../../lib/timeRecordSlice";
+import { getWorkStatusCode, getWorkStatusText } from "./common";
 
 const TimeRecorder = () => {
   const dispatch = useAppDispatch();
-  const status = useAppSelector(selectTimeRecordStatus);
+  const { attendanceData, restData, status } = useAppSelector(selectTimeRecord);
+  // const { error } = useAppSelector((state) => state.timeRecordReducer);
+
+  useEffect(() => {
+    void dispatch(fetchTimeRecord());
+    void dispatch(fetchRestTime());
+  }, []);
+
+  status.code = getWorkStatusCode(attendanceData, restData);
+  status.text = getWorkStatusText(status.code);
 
   return (
     <Box width="400px">

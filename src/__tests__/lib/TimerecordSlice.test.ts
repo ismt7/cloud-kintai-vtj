@@ -5,22 +5,18 @@ import timeRecordReducer, {
 
 describe("TimeRecordSlice", () => {
   const initialState: TimeRecordState = {
-    workStart: null,
-    workEnd: null,
-    goDirect: false,
-    returnDirect: false,
+    attendanceData: undefined,
+    restData: undefined,
     status: TimeRecordStatus.BEFORE_WORK,
-    rests: [],
+    error: undefined,
   };
 
   test.concurrent("初期のステータス", () => {
     expect(timeRecordReducer(initialState, { type: "unknown" })).toEqual({
-      workStart: null,
-      workEnd: null,
-      goDirect: false,
-      returnDirect: false,
+      attendanceData: undefined,
+      restData: undefined,
       status: TimeRecordStatus.BEFORE_WORK,
-      rests: [],
+      error: undefined,
     });
   });
 
@@ -29,19 +25,21 @@ describe("TimeRecordSlice", () => {
       type: "timeRecord/clockIn",
       payload: undefined,
     });
-    expect(actual.workStart).not.toBeNull();
+    expect(actual.attendanceData?.start_time).not.toBeUndefined();
     expect(actual.status).toEqual(TimeRecordStatus.WORKING);
   });
 
   test.concurrent("勤務開始(二重打刻)", () => {
     const actual = timeRecordReducer(
       {
-        workStart: new Date(),
-        workEnd: null,
-        goDirect: false,
-        returnDirect: false,
+        attendanceData: {
+          start_time: new Date(),
+          end_time: undefined,
+          go_directly_flag: false,
+          return_directly_flag: false,
+        },
+        restData: undefined,
         status: TimeRecordStatus.BEFORE_WORK,
-        rests: [],
       },
       {
         type: "timeRecord/clockIn",
@@ -54,50 +52,56 @@ describe("TimeRecordSlice", () => {
   test.concurrent("勤務終了", () => {
     const actual = timeRecordReducer(
       {
-        workStart: new Date(),
-        workEnd: null,
-        goDirect: false,
-        returnDirect: false,
+        attendanceData: {
+          start_time: new Date(),
+          end_time: undefined,
+          go_directly_flag: false,
+          return_directly_flag: false,
+        },
+        restData: undefined,
         status: TimeRecordStatus.BEFORE_WORK,
-        rests: [],
       },
       {
         type: "timeRecord/clockOut",
         payload: undefined,
       }
     );
-    expect(actual.workEnd).not.toBeNull();
+    expect(actual.attendanceData?.end_time).not.toBeUndefined();
     expect(actual.status).toEqual(TimeRecordStatus.LEFT_WORK);
   });
 
   test.concurrent("勤務終了(出勤打刻なし)", () => {
     const actual = timeRecordReducer(
       {
-        workStart: null,
-        workEnd: null,
-        goDirect: false,
-        returnDirect: false,
+        attendanceData: {
+          start_time: undefined,
+          end_time: undefined,
+          go_directly_flag: false,
+          return_directly_flag: false,
+        },
+        restData: undefined,
         status: TimeRecordStatus.BEFORE_WORK,
-        rests: [],
       },
       {
         type: "timeRecord/clockOut",
         payload: undefined,
       }
     );
-    expect(actual.workEnd).toBeNull();
+    expect(actual.attendanceData?.end_time).toBeUndefined();
     expect(actual.status).toEqual(TimeRecordStatus.ERROR);
   });
 
   test.concurrent("勤務終了(二重打刻)", () => {
     const actual = timeRecordReducer(
       {
-        workStart: new Date(),
-        workEnd: new Date(),
-        goDirect: false,
-        returnDirect: false,
+        attendanceData: {
+          start_time: new Date(),
+          end_time: new Date(),
+          go_directly_flag: false,
+          return_directly_flag: false,
+        },
+        restData: undefined,
         status: TimeRecordStatus.BEFORE_WORK,
-        rests: [],
       },
       {
         type: "timeRecord/clockOut",
@@ -110,17 +114,17 @@ describe("TimeRecordSlice", () => {
   test.concurrent("勤務終了(休憩中打刻)", () => {
     const actual = timeRecordReducer(
       {
-        workStart: new Date(),
-        workEnd: null,
-        goDirect: false,
-        returnDirect: false,
+        attendanceData: {
+          start_time: new Date(),
+          end_time: undefined,
+          go_directly_flag: false,
+          return_directly_flag: false,
+        },
+        restData: {
+          start_time: new Date(),
+          end_time: undefined,
+        },
         status: TimeRecordStatus.BEFORE_WORK,
-        rests: [
-          {
-            start: new Date(),
-            end: null,
-          },
-        ],
       },
       {
         type: "timeRecord/clockOut",
@@ -133,32 +137,36 @@ describe("TimeRecordSlice", () => {
   test.concurrent("直行", () => {
     const actual = timeRecordReducer(
       {
-        workStart: null,
-        workEnd: null,
-        goDirect: false,
-        returnDirect: false,
+        attendanceData: {
+          start_time: undefined,
+          end_time: undefined,
+          go_directly_flag: false,
+          return_directly_flag: false,
+        },
+        restData: undefined,
         status: TimeRecordStatus.BEFORE_WORK,
-        rests: [],
       },
       {
         type: "timeRecord/goDirect",
         payload: undefined,
       }
     );
-    expect(actual.workStart).not.toBeNull();
-    expect(actual.goDirect).toBeTruthy();
+    expect(actual.attendanceData?.start_time).not.toBeUndefined();
+    expect(actual.attendanceData?.go_directly_flag).toBeTruthy();
     expect(actual.status).toEqual(TimeRecordStatus.WORKING);
   });
 
   test.concurrent("直行(出勤打刻済み)", () => {
     const actual = timeRecordReducer(
       {
-        workStart: new Date(),
-        workEnd: null,
-        goDirect: false,
-        returnDirect: false,
+        attendanceData: {
+          start_time: new Date(),
+          end_time: undefined,
+          go_directly_flag: false,
+          return_directly_flag: false,
+        },
+        restData: undefined,
         status: TimeRecordStatus.BEFORE_WORK,
-        rests: [],
       },
       {
         type: "timeRecord/goDirect",
@@ -171,32 +179,36 @@ describe("TimeRecordSlice", () => {
   test.concurrent("直帰(通常出勤)", () => {
     const actual = timeRecordReducer(
       {
-        workStart: new Date(),
-        workEnd: null,
-        goDirect: false,
-        returnDirect: false,
+        attendanceData: {
+          start_time: new Date(),
+          end_time: undefined,
+          go_directly_flag: false,
+          return_directly_flag: false,
+        },
+        restData: undefined,
         status: TimeRecordStatus.BEFORE_WORK,
-        rests: [],
       },
       {
         type: "timeRecord/returnDirect",
         payload: undefined,
       }
     );
-    expect(actual.workEnd).not.toBeNull();
-    expect(actual.returnDirect).toBeTruthy();
+    expect(actual.attendanceData?.end_time).not.toBeNull();
+    expect(actual.attendanceData?.return_directly_flag).toBeTruthy();
     expect(actual.status).toEqual(TimeRecordStatus.LEFT_WORK);
   });
 
   test.concurrent("直帰(出勤なし)", () => {
     const actual = timeRecordReducer(
       {
-        workStart: null,
-        workEnd: null,
-        goDirect: false,
-        returnDirect: false,
+        attendanceData: {
+          start_time: undefined,
+          end_time: undefined,
+          go_directly_flag: false,
+          return_directly_flag: false,
+        },
+        restData: undefined,
         status: TimeRecordStatus.BEFORE_WORK,
-        rests: [],
       },
       {
         type: "timeRecord/returnDirect",
@@ -209,12 +221,14 @@ describe("TimeRecordSlice", () => {
   test.concurrent("直帰(退勤済み)", () => {
     const actual = timeRecordReducer(
       {
-        workStart: new Date(),
-        workEnd: new Date(),
-        goDirect: false,
-        returnDirect: false,
+        attendanceData: {
+          start_time: new Date(),
+          end_time: new Date(),
+          go_directly_flag: false,
+          return_directly_flag: false,
+        },
+        restData: undefined,
         status: TimeRecordStatus.BEFORE_WORK,
-        rests: [],
       },
       {
         type: "timeRecord/returnDirect",
@@ -227,31 +241,35 @@ describe("TimeRecordSlice", () => {
   test.concurrent("休憩開始", () => {
     const actual = timeRecordReducer(
       {
-        workStart: new Date(),
-        workEnd: null,
-        goDirect: false,
-        returnDirect: false,
+        attendanceData: {
+          start_time: new Date(),
+          end_time: undefined,
+          go_directly_flag: false,
+          return_directly_flag: false,
+        },
+        restData: undefined,
         status: TimeRecordStatus.BEFORE_WORK,
-        rests: [],
       },
       {
         type: "timeRecord/startRest",
         payload: undefined,
       }
     );
-    expect(actual.rests[actual.rests.length - 1].start).not.toBeNull();
+    expect(actual.restData?.start_time).not.toBeNull();
     expect(actual.status).toEqual(TimeRecordStatus.RESTING);
   });
 
   test.concurrent("休憩開始(退勤済み)", () => {
     const actual = timeRecordReducer(
       {
-        workStart: new Date(),
-        workEnd: new Date(),
-        goDirect: false,
-        returnDirect: false,
+        attendanceData: {
+          start_time: new Date(),
+          end_time: new Date(),
+          go_directly_flag: false,
+          return_directly_flag: false,
+        },
+        restData: undefined,
         status: TimeRecordStatus.BEFORE_WORK,
-        rests: [],
       },
       {
         type: "timeRecord/startRest",
@@ -264,37 +282,39 @@ describe("TimeRecordSlice", () => {
   test.concurrent("休憩終了", () => {
     const actual = timeRecordReducer(
       {
-        workStart: new Date(),
-        workEnd: null,
-        goDirect: false,
-        returnDirect: false,
+        attendanceData: {
+          start_time: new Date(),
+          end_time: undefined,
+          go_directly_flag: false,
+          return_directly_flag: false,
+        },
+        restData: {
+          start_time: new Date(),
+          end_time: undefined,
+        },
         status: TimeRecordStatus.BEFORE_WORK,
-        rests: [
-          {
-            start: new Date(),
-            end: null,
-          },
-        ],
       },
       {
         type: "timeRecord/endRest",
         payload: undefined,
       }
     );
-    expect(actual.rests.length).toEqual(1);
-    expect(actual.rests[actual.rests.length - 1].end).not.toBeNull();
+    expect(actual.restData).not.toEqual(undefined);
+    expect(actual.restData?.end_time).not.toBeNull();
     expect(actual.status).toEqual(TimeRecordStatus.WORKING);
   });
 
   test.concurrent("休憩終了(休憩なし)", () => {
     const actual = timeRecordReducer(
       {
-        workStart: new Date(),
-        workEnd: null,
-        goDirect: false,
-        returnDirect: false,
+        attendanceData: {
+          start_time: new Date(),
+          end_time: undefined,
+          go_directly_flag: false,
+          return_directly_flag: false,
+        },
+        restData: undefined,
         status: TimeRecordStatus.BEFORE_WORK,
-        rests: [],
       },
       {
         type: "timeRecord/endRest",
@@ -307,17 +327,17 @@ describe("TimeRecordSlice", () => {
   test.concurrent("休憩終了(休憩なし/null)", () => {
     const actual = timeRecordReducer(
       {
-        workStart: new Date(),
-        workEnd: null,
-        goDirect: false,
-        returnDirect: false,
+        attendanceData: {
+          start_time: new Date(),
+          end_time: undefined,
+          go_directly_flag: false,
+          return_directly_flag: false,
+        },
+        restData: {
+          start_time: undefined,
+          end_time: undefined,
+        },
         status: TimeRecordStatus.BEFORE_WORK,
-        rests: [
-          {
-            start: null,
-            end: null,
-          },
-        ],
       },
       {
         type: "timeRecord/endRest",
