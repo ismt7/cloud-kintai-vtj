@@ -14,7 +14,7 @@ test-storybook:
 	npm run test-storybook
 
 storybook:
-	npm run storybook
+	ESLINT_NO_DEV_ERRORS=true npm run storybook
 
 dev-start:
 	cd infra && docker compose up -d

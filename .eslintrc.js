@@ -32,6 +32,12 @@ module.exports = {
     "@typescript-eslint/quotes": ["error", "double"],
     "@typescript-eslint/comma-dangle": "off",
     "object-curly-newline": "off",
-    "no-param-reassign": ["error", { props: false }]
+    "no-param-reassign": ["error", {
+      props: false
+    }],
+    "function-paren-newline": "off",
+    "implicit-arrow-linebreak": "off",
+    "no-void": "off",
+    "operator-linebreak": "off",
   },
 };
