@@ -18,3 +18,9 @@ storybook:
 
 dev-start:
 	cd infra && docker compose up -d
+
+openapi-codegen:
+	swagger-codegen generate \
+		-i http://localhost:8000/openapi.json \
+		-l typescript-fetch \
+		-o ./src/api
