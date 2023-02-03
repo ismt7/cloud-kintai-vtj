@@ -1,8 +1,15 @@
-import { createTheme, Link as MuiLink, ThemeProvider } from "@mui/material";
+import {
+  createTheme,
+  Link as MuiLink,
+  SxProps,
+  Theme,
+  ThemeProvider,
+} from "@mui/material";
 
 interface LinkProps {
   label?: string;
   href?: string;
+  sx?: SxProps<Theme> | undefined;
   onClick?: () => void;
 }
 
@@ -48,15 +55,10 @@ const Link = ({
   label = "link",
   href = "/",
   onClick = () => {},
-  ...props
+  sx = {},
 }: LinkProps) => (
   <ThemeProvider theme={theme}>
-    <MuiLink
-      href={href}
-      variant="button"
-      sx={{ p: 1, ...props }}
-      onClick={onClick}
-    >
+    <MuiLink href={href} variant="button" sx={sx} onClick={onClick}>
       {label}
     </MuiLink>
   </ThemeProvider>

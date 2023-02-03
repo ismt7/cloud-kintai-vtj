@@ -12,10 +12,34 @@ export default {
 } as ComponentMeta<typeof Header>;
 
 // const Template: ComponentStory<typeof Header> = (args) => <Header {...args} />;
-const Template: ComponentStory<typeof Header> = () => <Header />;
+const Template: ComponentStory<typeof Header> = (args) => <Header {...args} />;
+
+export const Default = Template.bind({});
+Default.storyName = "デフォルト";
+Default.args = {};
 
 export const LoggedIn = Template.bind({});
+LoggedIn.storyName = "ログイン";
 LoggedIn.args = {};
 
 export const LoggedOut = Template.bind({});
-LoggedOut.args = {};
+LoggedOut.storyName = "ログアウト";
+LoggedOut.args = {
+  user: {
+    lastName: "山田",
+    firstName: "太郎",
+    mailAddress: "yamada@example.com",
+    role: "user",
+  },
+};
+
+export const Admin = Template.bind({});
+Admin.storyName = "管理者";
+Admin.args = {
+  user: {
+    lastName: "田中",
+    firstName: "二郎",
+    mailAddress: "tanaka@example.com",
+    role: "admin",
+  },
+};
