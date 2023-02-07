@@ -2,6 +2,7 @@ import { Box, IconButton, Stack, TextField, Typography } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useEffect } from "react";
+import dayjs from "dayjs";
 import Button from "../button/Button";
 import Clock from "../clock/Clock";
 import { useAppDispatch, useAppSelector } from "../../lib/hooks";
@@ -9,24 +10,25 @@ import {
   clockIn,
   clockOut,
   endRest,
-  fetchRestTime,
-  fetchTimeRecord,
   goDirect,
   returnDirect,
   selectTimeRecord,
   startRest,
-  TimeRecordStatus,
 } from "../../lib/timeRecordSlice";
 import { getWorkStatusCode, getWorkStatusText } from "./common";
+import fetchAttendance from "../../lib/time_record/FetchAttendance";
+import fetchRest from "../../lib/time_record/FetchRest";
+import { TimeRecordStatus } from "../../lib/time_record/enum";
 
 const TimeRecorder = () => {
   const dispatch = useAppDispatch();
   const { attendanceData, restData, status } = useAppSelector(selectTimeRecord);
   // const { error } = useAppSelector((state) => state.timeRecordReducer);
+  const today = dayjs().format("YYYYMMDD");
 
   useEffect(() => {
-    void dispatch(fetchTimeRecord());
-    void dispatch(fetchRestTime());
+    void dispatch(fetchAttendance({ staffId: 999, workDate: Number(today) }));
+    void dispatch(fetchRest({ staffId: 999, workDate: Number(today) }));
   }, []);
 
   status.code = getWorkStatusCode(attendanceData, restData);

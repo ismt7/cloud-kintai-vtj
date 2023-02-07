@@ -1,7 +1,5 @@
-import timeRecordReducer, {
-  TimeRecordState,
-  TimeRecordStatus,
-} from "../../lib/timeRecordSlice";
+import timeRecordReducer, { TimeRecordState } from "../../lib/timeRecordSlice";
+import { TimeRecordStatus } from "../../lib/time_record/enum";
 
 describe("TimeRecordSlice", () => {
   const initialState: TimeRecordState = {

@@ -1,9 +1,8 @@
+import { Attendance, Rest } from "../../lib/timeRecordSlice";
 import {
-  Attendance,
-  Rest,
   TimeRecordStatus,
   TimeRecordStatusList,
-} from "../../lib/timeRecordSlice";
+} from "../../lib/time_record/enum";
 
 export function getWorkStatusCode(
   attendanceData: Attendance | undefined,
