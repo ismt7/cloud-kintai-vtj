@@ -1,15 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 // eslint-disable-next-line import/no-cycle
 import { RootState } from "./store";
-
-export enum TimeRecordStatus {
-  BEFORE_WORK = "BEFORE_WORK",
-  WORKING = "WORKING",
-  RESTING = "RESTING",
-  LEFT_WORK = "LEFT_WORK",
-  ERROR = "ERROR",
-  PROCESSING = "PROCESSING",
-}
+import { TimeRecordStatus, TimeRecordStatusList } from "./time_record/enum";
+import fetchRest from "./time_record/FetchRest";
+import fetchAttendance from "./time_record/FetchAttendance";
+import { AttendanceApi, Configuration } from "../api";
 
 export interface RestState {
   start?: Date;
@@ -43,46 +38,43 @@ export interface TimeRecordState {
 }
 
 const initialState: TimeRecordState = {
-  attendanceData: {},
-  restData: {},
+  attendanceData: undefined,
+  restData: undefined,
   status: TimeRecordStatus.BEFORE_WORK,
   error: undefined,
 };
 
-export const TimeRecordStatusList = {
-  BEFORE_WORK: "出勤前",
-  WORKING: "勤務中",
-  RESTING: "休憩中",
-  LEFT_WORK: "退勤済み",
-  ERROR: "エラー",
-  PROCESSING: "処理中",
-};
+export const registerClockIn = createAsyncThunk(
+  "timeRecord/registerClockIn",
+  async ({
+    staffId,
+    workDate,
+    start_time,
+    go_directly_flag,
+  }: {
+    staffId: number;
+    workDate: number;
+    start_time: string;
+    go_directly_flag: boolean;
+  }) => {
+    const conf = new Configuration({
+      basePath: process.env.BASE_PATH,
+    });
 
-export const fetchTimeRecord = createAsyncThunk(
-  "timeRecord/fetchTimeRecord",
-  async () => {
-    const response = await fetch(
-      "http://localhost:8000/attendances/999/20230101"
-    );
+    const attendanceApi = new AttendanceApi(conf);
+    const attendance = await attendanceApi
+      .registerClockInAttendancesStaffIdWorkDateClockInPost({
+        staffId,
+        workDate,
+        attendanceClockIn: {
+          startTime: start_time,
+          goDirectlyFlag: go_directly_flag,
+        },
+      })
+      .then((r) => r)
+      .catch(() => undefined);
 
-    if (response.status === 404) {
-      return undefined;
-    }
-
-    return response.json();
-  }
-);
-
-export const fetchRestTime = createAsyncThunk(
-  "timeRecord/fetchRestTime",
-  async () => {
-    const response = await fetch("http://localhost:8000/rests/999/20230101");
-
-    if (response.status === 404) {
-      return undefined;
-    }
-
-    return response.json();
+    return attendance;
   }
 );
 
@@ -198,8 +190,8 @@ const timeRecordSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchTimeRecord.pending, () => {})
-      .addCase(fetchTimeRecord.fulfilled, (state, action) => {
+      .addCase(fetchAttendance.pending, () => {})
+      .addCase(fetchAttendance.fulfilled, (state, action) => {
         if (action.payload === undefined) {
           state.attendanceData = undefined;
           return;
@@ -209,22 +201,22 @@ const timeRecordSlice = createSlice({
           JSON.stringify(action.payload)
         ) as Attendance;
       })
-      .addCase(fetchTimeRecord.rejected, (state) => {
+      .addCase(fetchAttendance.rejected, (state) => {
         state.attendanceData = undefined;
         state.status = TimeRecordStatus.ERROR;
         state.error = "エラーが発生しました";
-      })
+      });
 
-      .addCase(fetchRestTime.pending, () => {})
-      .addCase(fetchRestTime.fulfilled, (state, action) => {
+    builder
+      .addCase(fetchRest.pending, () => {})
+      .addCase(fetchRest.fulfilled, (state, action) => {
         if (action.payload === undefined) {
           state.restData = undefined;
           return;
         }
-
         state.restData = JSON.parse(JSON.stringify(action.payload)) as Rest;
       })
-      .addCase(fetchRestTime.rejected, (state) => {
+      .addCase(fetchRest.rejected, (state) => {
         state.restData = undefined;
         state.status = TimeRecordStatus.ERROR;
         state.error = "エラーが発生しました";

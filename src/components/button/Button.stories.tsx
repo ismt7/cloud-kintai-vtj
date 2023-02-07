@@ -3,32 +3,23 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import Button from "./Button";
 
-// More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: "Component/Button",
   component: Button,
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
-    // backgroundColor: { control: "color" },
+    backgroundColor: { control: "color" },
   },
 } as ComponentMeta<typeof Button>;
 
-// More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof Button> = (args) => <Button {...args} />;
 
 export const Save = Template.bind({});
 Save.storyName = "保存";
-Save.args = {
-  color: "primary",
-  label: "保存",
-};
+Save.args = { color: "primary", label: "保存" };
 
 export const Cancel = Template.bind({});
 Cancel.storyName = "キャンセル";
-Cancel.args = {
-  color: "cancel",
-  label: "キャンセル",
-};
+Cancel.args = { color: "cancel", label: "キャンセル" };
 
 export const Disabled = Template.bind({});
 Disabled.args = {
@@ -101,16 +92,8 @@ Login.args = {
 
 export const Logout = Template.bind({});
 Logout.storyName = "ログアウト";
-Logout.args = {
-  color: "logout",
-  variant: "contained",
-  label: "ログアウト",
-};
+Logout.args = { color: "logout", variant: "contained", label: "ログアウト" };
 
 export const EditSmall = Template.bind({});
 EditSmall.storyName = "編集(一覧用)";
-EditSmall.args = {
-  color: "primary",
-  size: "small",
-  label: "編集",
-};
+EditSmall.args = { color: "primary", size: "small", label: "編集" };

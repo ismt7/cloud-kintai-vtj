@@ -2,6 +2,14 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Preparation
+
+アプリケーション内で環境変数を使用しています。`.env`を作成し、以下の環境変数を設定してください。
+
+```bash
+BASE_PATH="http://localhost:8000"
+```
+
 ## Available Scripts
 
 In the project directory, you can run:

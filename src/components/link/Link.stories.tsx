@@ -5,7 +5,7 @@ export default {
   title: "Component/Link",
   component: Link,
   argTypes: {
-    // backgroundColor: { control: "color" },
+    backgroundColor: { control: "color" },
   },
 } as ComponentMeta<typeof Link>;
 

@@ -1,0 +1,398 @@
+import { Meta } from "@storybook/addon-docs";
+import Button from "@mui/material/Button";
+import { Typography } from "@mui/material";
+
+<Meta title="DesignSystem/Button" />
+
+<style>
+  {`
+    * {
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+
+    table, th, td {
+      border:1px solid #000;
+    }
+
+    table {
+      border-collapse:collapse;
+      table-layout: auto;
+      width: 100%;
+    }
+
+    th {
+      background-color:#eee;
+    }
+
+    td {
+      text-align: center;
+      padding: 8px;
+    }
+  `}
+</style>
+
+# Button
+
+Button に関するルールをまとめます。
+
+## 種類
+
+<table>
+  <thead>
+    <th></th>
+    <th>Contained</th>
+    <th>Outlined</th>
+    <th>Text</th>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Normal</th>
+      <td>
+        <Button variant="contained">
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button variant="outlined">
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button variant="text">
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+    </tr>
+    <tr>
+      <th>Disabled</th>
+      <td>
+        <Button variant="contained" disabled>
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button variant="outlined" disabled>
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button variant="text" disabled>
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## サイズ
+
+<table>
+  <thead>
+    <th></th>
+    <th>Small</th>
+    <th>Medium</th>
+    <th>Large</th>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Normal</th>
+      <td>
+        <Button variant="contained" size="small">
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button variant="contained">
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button variant="contained" size="large">
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## 角丸
+
+### 長方形
+
+丸みの強さを調整する場合は、ピクセル(px)を使用します。<br />
+半円に近い形にする場合は、ビューポート高さ(vh)を使用して`100vh`を指定してください。
+
+<table>
+  <thead>
+    <th></th>
+    <th>ピクセル(px)</th>
+    <th>パーセント(%)</th>
+    <th>ビューポート高さ(vh)</th>
+  </thead>
+  <tbody>
+    <tr>
+      <th>5</th>
+      <td>
+        <Button variant="contained" sx={{ width: 100, borderRadius: "5px" }}>
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button variant="contained" sx={{ width: 100, borderRadius: "5%" }}>
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button variant="contained" sx={{ width: 100, borderRadius: "5vh" }}>
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>
+        <Button variant="contained" sx={{ width: 100, borderRadius: "10px" }}>
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button variant="contained" sx={{ width: 100, borderRadius: "10%" }}>
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button variant="contained" sx={{ width: 100, borderRadius: "10vh" }}>
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>
+        <Button variant="contained" sx={{ width: 100, borderRadius: "20px" }}>
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button variant="contained" sx={{ width: 100, borderRadius: "20%" }}>
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button variant="contained" sx={{ width: 100, borderRadius: "20vh" }}>
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+    </tr>
+    <tr>
+      <th>100</th>
+      <td>
+        <Button variant="contained" sx={{ width: 100, borderRadius: "100px" }}>
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button variant="contained" sx={{ width: 100, borderRadius: "100%" }}>
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button variant="contained" sx={{ width: 100, borderRadius: "100vh" }}>
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+### 正方形
+
+丸みの強さを調整する場合は、ピクセル(px)を使用します。<br />
+完全な円に近い形にする場合は、ビューポート高さ(vh)を使用して`100vh`を指定してください。
+
+<table>
+  <thead>
+    <th></th>
+    <th>ピクセル(px)</th>
+    <th>パーセント(%)</th>
+    <th>ビューポート高さ(vh)</th>
+  </thead>
+  <tbody>
+    <tr>
+      <th>5</th>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, borderRadius: "5px" }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, borderRadius: "5%" }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, borderRadius: "5vh" }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, borderRadius: "10px" }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, borderRadius: "10%" }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, borderRadius: "10vh" }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, borderRadius: "20px" }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, borderRadius: "20%" }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, borderRadius: "20vh" }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+    </tr>
+    <tr>
+      <th>100</th>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, borderRadius: "100px" }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, borderRadius: "100%" }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, borderRadius: "100vh" }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## シャドー
+
+シャドーの強さを調整する場合は、`0`から`24`までの数値を使用します。<br />
+本サービスでは、`0`を使用してシャドーを無効化します。
+
+<table>
+  <thead>
+    <th>0</th>
+    <th>1</th>
+    <th>2</th>
+    <th>3</th>
+    <th>10</th>
+    <th>24</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, boxShadow: 0 }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, boxShadow: 1 }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, boxShadow: 2 }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, boxShadow: 3 }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, boxShadow: 10 }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+      <td>
+        <Button
+          variant="contained"
+          sx={{ width: 100, height: 100, boxShadow: 24 }}
+        >
+          <Typography variant="button">Button</Typography>
+        </Button>
+      </td>
+    </tr>
+  </tbody>
+</table>

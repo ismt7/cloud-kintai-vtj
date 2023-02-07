@@ -1,0 +1,101 @@
+import { Meta } from "@storybook/addon-docs";
+import { Typography } from "@mui/material";
+
+<Meta title="DesignSystem/Typography" />
+
+<style>
+  {`
+    * {
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+
+    table, th, td {
+      border:1px solid #000;
+    }
+
+    table {
+      border-collapse:collapse;
+      table-layout: auto;
+      width: 100%;
+    }
+
+    th {
+      background-color:#eee;
+    }
+  `}
+</style>
+
+# タイポグラフィ
+
+テキスト表示に関するルールをまとめます。
+
+## フォントファミリー
+
+可読性や視認性を高めるためにサンセリフ体とします。<br />
+書体（フォント）には、インターネット環境があれば、どなたでも無償で利用できる「オー プンソース書体」を選択。<br />
+また数あるオープンソース書体のなかから、環境によって表示できない文字をなくす挑戦から生まれた「Noto Sans」を採用しました。<br />
+Google Font で提供されているウェブフォント、Noto Sans Japanese を使用してください。
+
+サンプル：
+
+<div>
+  <Typography variant="body">0123456789abcdABCDあいうえおアイウエオ</Typography>
+  <Typography variant="body" sx={{ fontWeight: "bold" }}>
+    0123456789abcdABCDあいうえおアイウエオ
+  </Typography>
+</div>
+
+## フォントサイズ
+
+Material UI の Typography を使用します。
+
+<table>
+  <tr>
+    <th>h1</th>
+    <td>
+      <Typography variant="h1">テキストテキスト</Typography>
+    </td>
+  </tr>
+  <tr>
+    <th>h2</th>
+    <td>
+      <Typography variant="h2">テキストテキスト</Typography>
+    </td>
+  </tr>
+  <tr>
+    <th>h3</th>
+    <td>
+      <Typography variant="h3">テキストテキスト</Typography>
+    </td>
+  </tr>
+  <tr>
+    <th>h4</th>
+    <td>
+      <Typography variant="h4">テキストテキスト</Typography>
+    </td>
+  </tr>
+  <tr>
+    <th>h5</th>
+    <td>
+      <Typography variant="h5">テキストテキスト</Typography>
+    </td>
+  </tr>
+  <tr>
+    <th>h6</th>
+    <td>
+      <Typography variant="h6">テキストテキスト</Typography>
+    </td>
+  </tr>
+  <tr>
+    <th>button</th>
+    <td>
+      <Typography variant="button">テキストテキスト</Typography>
+    </td>
+  </tr>
+  <tr>
+    <th>body</th>
+    <td>
+      <Typography variant="body">テキストテキスト</Typography>
+    </td>
+  </tr>
+</table>

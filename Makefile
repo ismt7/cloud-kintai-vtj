@@ -20,7 +20,8 @@ dev-start:
 	cd infra && docker compose up -d
 
 openapi-codegen:
-	swagger-codegen generate \
-		-i http://localhost:8000/openapi.json \
-		-l typescript-fetch \
-		-o ./src/api
+	docker run --rm \
+		-v ${PWD}:/local openapitools/openapi-generator-cli generate \
+		-i http://host.docker.internal:8000/openapi.json \
+		-g typescript-fetch \
+		-o /local/src/api
