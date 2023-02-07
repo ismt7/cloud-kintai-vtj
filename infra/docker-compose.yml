@@ -1,12 +1,41 @@
-version: "3.9"
+version: '3.8'
 
 services:
   frontend:
     build:
       context: ../
       dockerfile: infra/Dockerfile
-      target: production
-    environment:
-      NODE_ENV: production
     ports:
-      - 8080:80
+      - "3000:3000"
+    volumes:
+      - ../:/app
+    healthcheck:
+      test: "curl -f http://localhost:3000 || exit 1"
+      interval: 5s
+      timeout: 30s
+      start_period: 20s
+
+  storybook:
+    build:
+      context: ../
+      dockerfile: infra/Dockerfile
+    environment:
+      - BASE_PATH="http://localhost:8000"
+    ports:
+      - "6006:6006"
+    volumes:
+      - ../:/app
+    command: [ "npm", "run", "storybook" ]
+    healthcheck:
+      test: "curl -f http://localhost:6006 || exit 1"
+      interval: 5s
+      timeout: 30s
+      start_period: 100s
+
+  test:
+    build:
+      context: ../
+      dockerfile: infra/Dockerfile
+    volumes:
+      - ../:/app
+    command: [ "npm", "test", "--ci",  ""]
