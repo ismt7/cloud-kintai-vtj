@@ -1,37 +1,50 @@
-FROM node:18.13.0 AS deps
+FROM node:18.13.0 as build
 
 WORKDIR /app
-COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
 
-RUN npm ci --only=production
+COPY package*.json ./
+
+RUN npm ci --production
 
 COPY . .
 
-# Development
-FROM node:18.13.0 AS development
+CMD ["npm", "run", "build"]
 
-ENV CI=true
-ENV PORT=3000
-ENV NODE_ENV=development
+# Development
+FROM node:18.13.0 as dev
+
+RUN apt-get update && apt-get install -y \
+  libnss3 \
+  libatk1.0-0 \
+  libatk-bridge2.0-0 \
+  libcups2 \
+  libatspi2.0 \
+  libxcomposite-dev \
+  libgbm-dev \
+  libxkbcommon-x11-0 \
+  libasound2 \
+  libxdamage1 \
+  libxrandr2 \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-COPY --from=deps /app .
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
 
 CMD ["npm", "start"]
 
 # Production
-FROM node:18.13.0 AS production
-
-ENV CI=true
-ENV NODE_ENV=production
+FROM node:18.13.0-alpine
 
 WORKDIR /app
 
+COPY --from=build /app/build /app
+
 RUN npm install -g serve
 
-COPY --from=deps /app .
-
-RUN npm run build
-
-CMD ["serve", "-s", "-l", "80", "build"]
+CMD ["serve", "-s", "."]
