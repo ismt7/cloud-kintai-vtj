@@ -8,6 +8,8 @@ services:
       target: dev
     ports:
       - "3000:3000"
+    volumes:
+      - ../:/app
     healthcheck:
       test: "curl -f http://localhost:3000 || exit 1"
       interval: 5s
@@ -20,6 +22,7 @@ services:
       dockerfile: infra/Dockerfile
       target: dev
     environment:
+      - ESLINT_NO_DEV_ERRORS=true
       - BASE_PATH="http://localhost:8000"
     ports:
       - "6006:6006"

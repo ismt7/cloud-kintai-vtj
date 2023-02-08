@@ -2,11 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Authenticator } from "@aws-amplify/ui-react";
 import reportWebVitals from "./reportWebVitals";
 import Layout from "./Layout";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Top from "./pages/Top";
+import RequireAuth from "./pages/RequireAuth";
 
 const router = createBrowserRouter([
   {
@@ -19,7 +21,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/register",
-        element: <Register />,
+        element: (
+          <RequireAuth>
+            <Register />
+          </RequireAuth>
+        ),
       },
       {
         path: "/login",
@@ -34,7 +40,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Authenticator.Provider>
+      <RouterProvider router={router} />
+    </Authenticator.Provider>
   </React.StrictMode>
 );
 
