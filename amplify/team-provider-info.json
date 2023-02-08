@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-garakufrontend-dev-112238-authRole",
+      "UnauthRoleArn": "arn:aws:iam::568103330008:role/amplify-garakufrontend-dev-112238-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::568103330008:role/amplify-garakufrontend-dev-112238-authRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-garakufrontend-dev-112238-deployment",
+      "UnauthRoleName": "amplify-garakufrontend-dev-112238-unauthRole",
+      "StackName": "amplify-garakufrontend-dev-112238",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:568103330008:stack/amplify-garakufrontend-dev-112238/760250d0-a757-11ed-863f-0ea235ae68b9",
+      "AmplifyAppId": "duzxrz1e858ga"
+    },
+    "categories": {
+      "auth": {
+        "garakufrontend5824eef0": {}
+      }
+    }
+  }
+}
