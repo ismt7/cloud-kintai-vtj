@@ -1,4 +1,5 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { MemoryRouter } from "react-router-dom";
 import Resist from "./Resist";
 
 export default {
@@ -8,6 +9,13 @@ export default {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
 } as ComponentMeta<typeof Resist>;
 
 const Template: ComponentStory<typeof Resist> = (args) => <Resist {...args} />;

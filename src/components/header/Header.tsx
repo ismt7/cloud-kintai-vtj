@@ -1,22 +1,19 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { Link as RouterLink } from "react-router-dom";
 import LogImage from "../../images/logo.png";
 import Button from "../button/Button";
 import Link from "../link/Link";
-
-interface User {
-  lastName: string;
-  firstName: string;
-  mailAddress: string;
-  role: "admin" | "user";
-}
+import { Staff } from "../../api";
 
 interface HeaderProps {
-  user?: User;
+  staff?: Staff;
+  signIn?: () => void;
+  signOut?: () => void;
 }
 
-const Header = ({ user }: HeaderProps) => (
+const Header = ({ staff, signIn, signOut }: HeaderProps) => (
   <header>
     <Stack
       direction="row"
@@ -33,17 +30,20 @@ const Header = ({ user }: HeaderProps) => (
           alignItems: "center",
         }}
       >
-        <img
-          src={LogImage}
-          alt="クラウド勤怠のロゴ"
-          style={{ height: "100%" }}
-        />
+        <RouterLink to="/">
+          <img
+            src={LogImage}
+            alt="クラウド勤怠のロゴ"
+            style={{ height: "100%" }}
+          />
+        </RouterLink>
       </Box>
       <Box sx={{ width: 1, height: 1 }}>
         <Stack direction="row" spacing={0} sx={{ width: "auto", height: 1 }}>
           <Box>
             <Link
               label="勤怠打刻"
+              href="/register"
               sx={{ display: "block", height: 1, lineHeight: "32px", px: 1 }}
             />
           </Box>
@@ -69,7 +69,7 @@ const Header = ({ user }: HeaderProps) => (
       </Box>
       <Box>
         <Stack direction="row" spacing={1}>
-          {user?.role === "admin" && (
+          {/* {user?.role === "admin" && (
             <Button
               color="login"
               label="管理ページ"
@@ -78,13 +78,13 @@ const Header = ({ user }: HeaderProps) => (
               height="100%"
               width="110px"
             />
-          )}
+          )} */}
 
-          {user ? (
+          {staff ? (
             <Button
               color="logout"
               label="ログアウト"
-              onClick={() => {}}
+              onClick={signOut}
               variant="contained"
               height="100%"
               width="110px"
@@ -93,7 +93,7 @@ const Header = ({ user }: HeaderProps) => (
             <Button
               color="login"
               label="ログイン"
-              onClick={() => {}}
+              onClick={signIn}
               variant="outlined"
               height="100%"
               width="110px"
@@ -101,10 +101,10 @@ const Header = ({ user }: HeaderProps) => (
           )}
         </Stack>
       </Box>
-      {user && (
+      {staff && (
         <Box sx={{ minWidth: "115px", textAlign: "center" }}>
           <Typography variant="body1">
-            {user.lastName} {user.firstName} さん
+            {staff.lastName} {staff.firstName} さん
           </Typography>
         </Box>
       )}
