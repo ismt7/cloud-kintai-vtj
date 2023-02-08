@@ -10,13 +10,17 @@ storybook_test_pid=$!
 
 wait $jest_test_pid
 if [ $? -ne 0 ]; then
-  echo "Tests failed, aborting commit"
+  echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+  echo "@ Tests failed, aborting commit"
+  echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
   exit 1
 fi
 
 wait $storybook_test_pid
 if [ $? -ne 0 ]; then
-  echo "Storybook tests failed, aborting commit"
+  echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+  echo "@ Storybook tests failed, aborting commit"
+  echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
   exit 1
 fi
 
