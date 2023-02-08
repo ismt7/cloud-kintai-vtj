@@ -1,5 +1,18 @@
 FROM node:18.13.0 as build
 
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm ci --production
+
+COPY . .
+
+CMD ["npm", "run", "build"]
+
+# Development
+FROM node:18.13.0 as dev
+
 RUN apt-get update && apt-get install -y \
   libnss3 \
   libatk1.0-0 \
@@ -24,3 +37,14 @@ RUN npm install
 COPY . .
 
 CMD ["npm", "start"]
+
+# Production
+FROM node:18.13.0-alpine
+
+WORKDIR /app
+
+COPY --from=build /app/build /app
+
+RUN npm install -g serve
+
+CMD ["serve", "-s", "."]
