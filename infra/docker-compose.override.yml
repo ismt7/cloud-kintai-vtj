@@ -6,6 +6,8 @@ services:
       context: ../
       dockerfile: infra/Dockerfile
       target: dev
+    environment:
+      - REACT_APP_BASE_PATH=http://localhost:8000
     ports:
       - "3000:3000"
     volumes:
@@ -23,7 +25,7 @@ services:
       target: dev
     environment:
       - ESLINT_NO_DEV_ERRORS=true
-      - BASE_PATH="http://localhost:8000"
+      - REACT_APP_BASE_PATH=http://localhost:8000
     ports:
       - "6006:6006"
     volumes:
@@ -41,7 +43,7 @@ services:
       dockerfile: infra/Dockerfile
       target: dev
     environment:
-      - BASE_PATH="http://localhost:8000"
+      - REACT_APP_BASE_PATH=http://localhost:8000
     volumes:
       - ../:/app
     command: [

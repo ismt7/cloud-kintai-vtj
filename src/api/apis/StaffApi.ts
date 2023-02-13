@@ -32,6 +32,10 @@ export interface CreateStaffStaffsPostRequest {
     staffCreate: StaffCreate;
 }
 
+export interface ReadStaffByMailStaffsEmailMailAddressGetRequest {
+    mailAddress: string;
+}
+
 export interface ReadStaffsStaffsStaffIdGetRequest {
     staffId: number;
 }
@@ -73,6 +77,38 @@ export class StaffApi extends runtime.BaseAPI {
      */
     async createStaffStaffsPost(requestParameters: CreateStaffStaffsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Staff> {
         const response = await this.createStaffStaffsPostRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 指定したメールアドレスのスタッフ情報を取得します。
+     * メールアドレスでスタッフ情報を取得
+     */
+    async readStaffByMailStaffsEmailMailAddressGetRaw(requestParameters: ReadStaffByMailStaffsEmailMailAddressGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Staff>> {
+        if (requestParameters.mailAddress === null || requestParameters.mailAddress === undefined) {
+            throw new runtime.RequiredError('mailAddress','Required parameter requestParameters.mailAddress was null or undefined when calling readStaffByMailStaffsEmailMailAddressGet.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/staffs/email/{mail_address}`.replace(`{${"mail_address"}}`, encodeURIComponent(String(requestParameters.mailAddress))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => StaffFromJSON(jsonValue));
+    }
+
+    /**
+     * 指定したメールアドレスのスタッフ情報を取得します。
+     * メールアドレスでスタッフ情報を取得
+     */
+    async readStaffByMailStaffsEmailMailAddressGet(requestParameters: ReadStaffByMailStaffsEmailMailAddressGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Staff> {
+        const response = await this.readStaffByMailStaffsEmailMailAddressGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

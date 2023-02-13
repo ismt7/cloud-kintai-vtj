@@ -7,6 +7,9 @@ install:
 start:
 	cd infra && docker compose up -d frontend
 
+stop:
+	cd infra && docker compose down
+
 test:
 	npm test
 

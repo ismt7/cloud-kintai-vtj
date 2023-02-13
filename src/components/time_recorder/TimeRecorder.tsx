@@ -1,45 +1,130 @@
 import { Box, IconButton, Stack, TextField, Typography } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import Button from "../button/Button";
 import Clock from "../clock/Clock";
 import { useAppDispatch, useAppSelector } from "../../lib/hooks";
+import registerClockIn from "../../lib/time_record/RegisterClockIn";
+import registerClockOut from "../../lib/time_record/RegisterClockOut";
+import registerRestStart from "../../lib/time_record/RegisterRestStart";
+import registerRestEnd from "../../lib/time_record/RegisterRestEnd";
+import updateRemarks from "../../lib/time_record/UpdateRemarks";
 import {
-  clockIn,
-  clockOut,
-  endRest,
-  goDirect,
-  returnDirect,
+  selectAttendance,
+  selectRest,
+  selectStaff,
   selectTimeRecord,
-  startRest,
-} from "../../lib/timeRecordSlice";
-import { getWorkStatusCode, getWorkStatusText } from "./common";
+} from "../../lib/store";
 import fetchAttendance from "../../lib/time_record/FetchAttendance";
+import { StaffStatus } from "../../lib/reducers/staffSlice";
 import fetchRest from "../../lib/time_record/FetchRest";
-import { TimeRecordStatus } from "../../lib/time_record/enum";
+import { TimeRecordStatus } from "../../lib/reducers/timeRecordSlice";
+import getTimeRecordStatus from "../../lib/time_record/getTimeRecordStatus";
 
 const TimeRecorder = () => {
   const dispatch = useAppDispatch();
-  const { attendanceData, restData, status } = useAppSelector(selectTimeRecord);
-  // const { error } = useAppSelector((state) => state.timeRecordReducer);
-  const today = dayjs().format("YYYYMMDD");
+  const staff = useAppSelector(selectStaff);
+  const attendance = useAppSelector(selectAttendance);
+  const rest = useAppSelector(selectRest);
+  const timeRecord = useAppSelector(selectTimeRecord);
+  const [remarksTextFieldDisabled, setRemarksTextFieldDisabled] =
+    useState<boolean>(false);
+  const [remarksSubmitButtonVisible, setRemarksSubmitButtonVisible] =
+    useState<boolean>(false);
+  const [remarksText, setRemarksText] = useState<string>(
+    attendance.data?.remarks || ""
+  );
+  const [remarksSubmitButtonDisabled, setRemarksSubmitButtonDisabled] =
+    useState<boolean>(false);
+  const [remarksClearButtonDisabled, setRemarksClearButtonDisabled] =
+    useState<boolean>(true);
 
   useEffect(() => {
-    void dispatch(fetchAttendance({ staffId: 999, workDate: Number(today) }));
-    void dispatch(fetchRest({ staffId: 999, workDate: Number(today) }));
+    if (staff.status === StaffStatus.ERROR || !staff.data) return;
+
+    const workDate = Number(dayjs().format("YYYYMMDD"));
+    void dispatch(fetchAttendance({ staffId: staff.data.staffId, workDate }));
+    void dispatch(fetchRest({ staffId: staff.data.staffId, workDate }));
   }, []);
 
-  status.code = getWorkStatusCode(attendanceData, restData);
-  status.text = getWorkStatusText(status.code);
+  useEffect(() => {
+    setRemarksText(attendance.data?.remarks || "");
+    setRemarksTextFieldDisabled(false);
+    setRemarksSubmitButtonDisabled(false);
+    setRemarksSubmitButtonVisible(false);
+    setRemarksClearButtonDisabled(false);
+  }, [attendance.data?.remarks]);
+
+  useEffect(() => {
+    void dispatch(
+      getTimeRecordStatus({
+        staff,
+        attendance,
+        rest,
+      })
+    );
+  }, [staff, attendance, rest]);
+
+  const clockInHandler = (isDirect: boolean) => {
+    void dispatch(
+      registerClockIn({
+        staffId: staff.data?.staffId,
+        workDate: Number(dayjs().format("YYYYMMDD")),
+        startTime: dayjs().format("HH:mm:ss"),
+        goDirectlyFlag: isDirect,
+      })
+    );
+  };
+
+  const clockOutHandler = (isDirect: boolean) => {
+    void dispatch(
+      registerClockOut({
+        staffId: staff.data?.staffId,
+        workDate: Number(dayjs().format("YYYYMMDD")),
+        endTime: dayjs().format("HH:mm:ss"),
+        returnDirectlyFlag: isDirect,
+      })
+    );
+  };
+
+  const restStartHandler = () => {
+    void dispatch(
+      registerRestStart({
+        staffId: staff.data?.staffId,
+        workDate: Number(dayjs().format("YYYYMMDD")),
+        startTime: dayjs().format("HH:mm:ss"),
+      })
+    );
+  };
+
+  const restEndHandler = () => {
+    void dispatch(
+      registerRestEnd({
+        staffId: staff.data?.staffId,
+        workDate: Number(dayjs().format("YYYYMMDD")),
+        endTime: dayjs().format("HH:mm:ss"),
+      })
+    );
+  };
+
+  const remarksChangeHandler = (text: string) => {
+    void dispatch(
+      updateRemarks({
+        staffId: staff.data?.staffId,
+        workDate: Number(dayjs().format("YYYYMMDD")),
+        remarks: text,
+      })
+    );
+  };
 
   return (
     <Box width="400px">
       <Stack spacing={3}>
         <Box>
           <Typography variant="h6" textAlign="center">
-            {status.text}
+            {timeRecord.statusText}
           </Typography>
         </Box>
         <Box>
@@ -56,30 +141,28 @@ const TimeRecorder = () => {
               <Button
                 color="clock_in"
                 label="勤務開始"
-                onClick={() => {
-                  dispatch(clockIn());
-                }}
+                onClick={() => clockInHandler(false)}
                 size="large"
                 variant={
-                  status.code === TimeRecordStatus.BEFORE_WORK
+                  timeRecord.status === TimeRecordStatus.BEFORE_WORK
                     ? "outlined"
                     : "contained"
                 }
-                disabled={status.code !== TimeRecordStatus.BEFORE_WORK}
+                disabled={timeRecord.status !== TimeRecordStatus.BEFORE_WORK}
               />
             </Box>
             <Box>
               <Button
                 color="clock_out"
                 label="勤務終了"
-                onClick={() => dispatch(clockOut())}
+                onClick={() => clockOutHandler(false)}
                 size="large"
                 variant={
-                  status.code === TimeRecordStatus.WORKING
+                  timeRecord.status === TimeRecordStatus.WORKING
                     ? "outlined"
                     : "contained"
                 }
-                disabled={status.code !== TimeRecordStatus.WORKING}
+                disabled={timeRecord.status !== TimeRecordStatus.WORKING}
               />
             </Box>
           </Stack>
@@ -97,26 +180,20 @@ const TimeRecorder = () => {
                   <Button
                     color="clock_in"
                     label="直行"
-                    onClick={() => dispatch(goDirect())}
-                    variant={
-                      status.code === TimeRecordStatus.BEFORE_WORK
-                        ? "text"
-                        : "contained"
+                    onClick={() => clockInHandler(true)}
+                    variant="text"
+                    disabled={
+                      timeRecord.status !== TimeRecordStatus.BEFORE_WORK
                     }
-                    disabled={status.code !== TimeRecordStatus.BEFORE_WORK}
                   />
                 </Box>
                 <Box>
                   <Button
                     color="clock_out"
                     label="直帰"
-                    onClick={() => dispatch(returnDirect())}
-                    variant={
-                      status.code === TimeRecordStatus.WORKING
-                        ? "text"
-                        : "contained"
-                    }
-                    disabled={status.code !== TimeRecordStatus.WORKING}
+                    onClick={() => clockOutHandler(true)}
+                    variant="text"
+                    disabled={timeRecord.status !== TimeRecordStatus.WORKING}
                   />
                 </Box>
               </Stack>
@@ -127,26 +204,18 @@ const TimeRecorder = () => {
                   <Button
                     color="rest"
                     label="休憩開始"
-                    onClick={() => dispatch(startRest())}
-                    variant={
-                      status.code === TimeRecordStatus.WORKING
-                        ? "text"
-                        : "contained"
-                    }
-                    disabled={status.code !== TimeRecordStatus.WORKING}
+                    onClick={() => restStartHandler()}
+                    variant="text"
+                    disabled={timeRecord.status !== TimeRecordStatus.WORKING}
                   />
                 </Box>
                 <Box>
                   <Button
                     color="rest"
                     label="休憩終了"
-                    onClick={() => dispatch(endRest())}
-                    variant={
-                      status.code === TimeRecordStatus.RESTING
-                        ? "text"
-                        : "contained"
-                    }
-                    disabled={status.code !== TimeRecordStatus.RESTING}
+                    onClick={() => restEndHandler()}
+                    variant="text"
+                    disabled={timeRecord.status !== TimeRecordStatus.RESTING}
                   />
                 </Box>
               </Stack>
@@ -157,31 +226,62 @@ const TimeRecorder = () => {
           <Stack>
             <Box>
               <TextField
+                data-testid="remarks-text"
                 multiline
                 minRows={2}
                 fullWidth
+                value={remarksText}
+                disabled={remarksTextFieldDisabled}
+                onChange={(event) => {
+                  const currentRemarks = attendance.data?.remarks || "";
+                  setRemarksSubmitButtonVisible(
+                    event.target.value !== currentRemarks
+                  );
+
+                  setRemarksText(event.target.value);
+                }}
                 placeholder="備考欄：客先名やイベント名などを記載"
               />
             </Box>
-            <Box>
-              <Stack
-                direction="row"
-                justifyContent="flex-end"
-                alignItems="center"
-                spacing={0}
-              >
-                <Box>
-                  <IconButton aria-label="remarks-done" onClick={() => {}}>
-                    <CheckIcon color="success" />
-                  </IconButton>
-                </Box>
-                <Box>
-                  <IconButton aria-label="remarks-clear" onClick={() => {}}>
-                    <ClearIcon color="error" />
-                  </IconButton>
-                </Box>
-              </Stack>
-            </Box>
+            {remarksSubmitButtonVisible && (
+              <Box>
+                <Stack
+                  direction="row"
+                  justifyContent="flex-end"
+                  alignItems="center"
+                  spacing={0}
+                >
+                  <Box>
+                    <IconButton
+                      data-testid="remarks-save"
+                      aria-label="remarks-done"
+                      disabled={remarksSubmitButtonDisabled}
+                      onClick={() => {
+                        setRemarksTextFieldDisabled(true);
+                        setRemarksClearButtonDisabled(true);
+                        setRemarksSubmitButtonDisabled(true);
+                        remarksChangeHandler(remarksText);
+                      }}
+                    >
+                      <CheckIcon color="success" />
+                    </IconButton>
+                  </Box>
+                  <Box>
+                    <IconButton
+                      data-testid="remarks-clear"
+                      aria-label="remarks-clear"
+                      disabled={remarksClearButtonDisabled}
+                      onClick={() => {
+                        setRemarksText(attendance.data?.remarks || "");
+                        setRemarksSubmitButtonVisible(false);
+                      }}
+                    >
+                      <ClearIcon color="error" />
+                    </IconButton>
+                  </Box>
+                </Stack>
+              </Box>
+            )}
           </Stack>
         </Box>
       </Stack>

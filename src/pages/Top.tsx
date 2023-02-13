@@ -3,7 +3,17 @@ import { Box, Typography } from "@mui/material";
 function Top() {
   return (
     <>
-      <Box sx={{ py: 10, px: 50 }}>
+      <Box
+        sx={{
+          py: 10,
+          px: {
+            xs: 5,
+            sm: 10,
+            md: 15,
+            lg: "20.75%",
+          },
+        }}
+      >
         <Typography variant="h2">ようこそ</Typography>
         <Typography variant="h2">新しい勤怠システムへ</Typography>
 
