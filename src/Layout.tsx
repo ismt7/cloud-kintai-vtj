@@ -17,7 +17,7 @@ function Layout() {
 
   const signInHandler = () => navigate("/login");
   const signOutHandler = () => {
-    dispatch(clearStaff);
+    dispatch(clearStaff());
     signOut();
   };
 
