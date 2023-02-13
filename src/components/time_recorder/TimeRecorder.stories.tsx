@@ -95,6 +95,8 @@ Default.play = async ({ canvasElement }) => {
 
   const canvas = within(canvasElement);
 
+  await wait(500);
+
   await waitFor(async () => {
     expect(canvas.getByText(/勤務開始/i)).toBeEnabled();
     expect(canvas.getByText(/休憩開始/i)).toBeDisabled();
@@ -147,6 +149,17 @@ Default.play = async ({ canvasElement }) => {
 
     const endButton = canvas.getByRole("button", { name: /勤務終了/i });
     userEvent.click(endButton);
+  });
+
+  await wait(500);
+
+  await waitFor(() => {
+    expect(canvas.getByText(/勤務開始/i)).toBeDisabled();
+    expect(canvas.getByText(/休憩開始/i)).toBeDisabled();
+    expect(canvas.getByText(/休憩終了/i)).toBeDisabled();
+    expect(canvas.getByText(/勤務終了/i)).toBeDisabled();
+    expect(canvas.getByText(/直行/i)).toBeDisabled();
+    expect(canvas.getByText(/直帰/i)).toBeDisabled();
   });
 
   await wait(500);

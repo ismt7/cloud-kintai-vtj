@@ -1,26 +1,66 @@
+import { configureStore } from "@reduxjs/toolkit";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
-import { StaffStatus } from "../../lib/reducers/staffSlice";
+import {
+  AttendanceStatus,
+  testAttendanceSlice,
+} from "../../lib/reducers/attendanceReducer";
+import { RestStatus, testRestSlice } from "../../lib/reducers/restReducer";
+import {
+  StaffStatus,
+  testStaffRecordSlice,
+} from "../../lib/reducers/staffSlice";
+import {
+  testTimeRecordSlice,
+  TimeRecordStatus,
+  TimeRecordStatusText,
+} from "../../lib/reducers/timeRecordSlice";
 
 import Header from "./Header";
+
+const mockStore = configureStore({
+  reducer: {
+    timeRecordReducer: testTimeRecordSlice({
+      status: TimeRecordStatus.PROCESSING,
+      statusText: TimeRecordStatusText.PROCESSING,
+    }),
+    staffReducer: testStaffRecordSlice({
+      status: StaffStatus.DONE,
+      data: {
+        staffId: 999,
+        lastName: "田中",
+        firstName: "太郎",
+        mailAddress: "tanaka@example.com",
+        iconPath: "",
+      },
+    }),
+    attendanceReducer: testAttendanceSlice({
+      status: AttendanceStatus.DONE,
+      data: null,
+    }),
+    restReducer: testRestSlice({
+      status: RestStatus.DONE,
+      data: null,
+    }),
+  },
+});
 
 export default {
   title: "Component/Header",
   component: Header,
   parameters: {
-    // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
   decorators: [
-    (Story) => (
-      <MemoryRouter>
-        <Story />
-      </MemoryRouter>
+    (story) => (
+      <Provider store={mockStore}>
+        <MemoryRouter>{story()}</MemoryRouter>
+      </Provider>
     ),
   ],
 } as ComponentMeta<typeof Header>;
 
-// const Template: ComponentStory<typeof Header> = (args) => <Header {...args} />;
 const Template: ComponentStory<typeof Header> = (args) => <Header {...args} />;
 
 export const Default = Template.bind({});
@@ -33,30 +73,8 @@ LoggedIn.args = {};
 
 export const LoggedOut = Template.bind({});
 LoggedOut.storyName = "ログアウト";
-LoggedOut.args = {
-  staff: {
-    status: StaffStatus.DONE,
-    data: {
-      lastName: "田中",
-      firstName: "二郎",
-      mailAddress: "tanaka@example.com",
-      staffId: 1,
-      // role: "staff",
-    },
-  },
-};
+LoggedOut.args = {};
 
 export const Admin = Template.bind({});
 Admin.storyName = "管理者";
-Admin.args = {
-  staff: {
-    status: StaffStatus.DONE,
-    data: {
-      lastName: "田中",
-      firstName: "二郎",
-      mailAddress: "tanaka@example.com",
-      staffId: 1,
-      // role: "admin",
-    },
-  },
-};
+Admin.args = {};
