@@ -203,7 +203,9 @@ const theme = createTheme({
               boxShadow: "none",
             },
             "&:disabled": {
-              border: "3px solid",
+              backgroundColor: "#E0E0E0",
+              border: "3px solid #E0E0E0",
+              boxShadow: "none",
             },
           },
         },
@@ -249,12 +251,6 @@ const theme = createTheme({
             },
           },
         },
-        useMuiButtonVariant(
-          palette.clock_out.main,
-          palette.clock_out.contrastText,
-          "contained",
-          "clock_out"
-        ),
         {
           props: { variant: "text", color: "clock_out" },
           style: {
@@ -269,10 +265,18 @@ const theme = createTheme({
               boxShadow: "none",
             },
             "&:disabled": {
-              border: "3px solid",
+              backgroundColor: "#E0E0E0",
+              border: "3px solid #E0E0E0",
+              boxShadow: "none",
             },
           },
         },
+        useMuiButtonVariant(
+          palette.clock_out.main,
+          palette.clock_out.contrastText,
+          "contained",
+          "clock_out"
+        ),
         {
           props: { variant: "text", color: "rest" },
           style: {
@@ -287,7 +291,9 @@ const theme = createTheme({
               boxShadow: "none",
             },
             "&:disabled": {
+              backgroundColor: "#E0E0E0",
               border: "3px solid #E0E0E0",
+              boxShadow: "none",
             },
           },
         },

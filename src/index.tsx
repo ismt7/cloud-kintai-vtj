@@ -3,12 +3,14 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Authenticator } from "@aws-amplify/ui-react";
+import { Provider } from "react-redux";
 import reportWebVitals from "./reportWebVitals";
 import Layout from "./Layout";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Top from "./pages/Top";
 import RequireAuth from "./pages/RequireAuth";
+import { store } from "./lib/store";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +33,10 @@ const router = createBrowserRouter([
         path: "/login",
         element: <Login />,
       },
+      {
+        path: "*",
+        element: <div>Not Found</div>,
+      },
     ],
   },
 ]);
@@ -40,9 +46,11 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <Authenticator.Provider>
-      <RouterProvider router={router} />
-    </Authenticator.Provider>
+    <Provider store={store}>
+      <Authenticator.Provider>
+        <RouterProvider router={router} />
+      </Authenticator.Provider>
+    </Provider>
   </React.StrictMode>
 );
 

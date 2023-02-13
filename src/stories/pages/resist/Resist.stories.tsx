@@ -1,12 +1,21 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { MemoryRouter } from "react-router-dom";
+import {
+  getAttendancesHandler200,
+  getRestHandler200,
+  getStaffHandler200,
+  patchAttendancesClockOutHandler200,
+  patchRemarksHandler200,
+  patchRestEndHandler200,
+  postAttendancesClockInHandler200,
+  postRestStartHandler200,
+} from "../../../components/time_recorder/mocks";
 import Resist from "./Resist";
 
 export default {
   title: "Page/Resist",
   component: Resist,
   parameters: {
-    // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
   decorators: [
@@ -23,3 +32,17 @@ const Template: ComponentStory<typeof Resist> = (args) => <Resist {...args} />;
 export const ResistPage = Template.bind({});
 ResistPage.storyName = "勤怠打刻ページ";
 ResistPage.args = {};
+ResistPage.parameters = {
+  msw: {
+    handlers: [
+      getAttendancesHandler200(),
+      getRestHandler200(),
+      postAttendancesClockInHandler200(),
+      patchAttendancesClockOutHandler200(),
+      getStaffHandler200(),
+      postRestStartHandler200(),
+      patchRestEndHandler200(),
+      patchRemarksHandler200(),
+    ],
+  },
+};

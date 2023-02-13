@@ -30,7 +30,7 @@ export interface Attendance {
      * @type {number}
      * @memberof Attendance
      */
-    parentAttendanceId?: number;
+    parentAttendanceId: number;
     /**
      * 
      * @type {number}
@@ -54,25 +54,25 @@ export interface Attendance {
      * @type {string}
      * @memberof Attendance
      */
-    endTime?: string;
+    endTime: string;
     /**
      * 
      * @type {boolean}
      * @memberof Attendance
      */
-    goDirectlyFlag?: boolean;
+    goDirectlyFlag: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof Attendance
      */
-    returnDirectlyFlag?: boolean;
+    returnDirectlyFlag: boolean;
     /**
      * 
      * @type {string}
      * @memberof Attendance
      */
-    remarks?: string;
+    remarks: string;
 }
 
 /**
@@ -81,9 +81,14 @@ export interface Attendance {
 export function instanceOfAttendance(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "attendanceId" in value;
+    isInstance = isInstance && "parentAttendanceId" in value;
     isInstance = isInstance && "staffId" in value;
     isInstance = isInstance && "workDate" in value;
     isInstance = isInstance && "startTime" in value;
+    isInstance = isInstance && "endTime" in value;
+    isInstance = isInstance && "goDirectlyFlag" in value;
+    isInstance = isInstance && "returnDirectlyFlag" in value;
+    isInstance = isInstance && "remarks" in value;
 
     return isInstance;
 }
@@ -99,14 +104,14 @@ export function AttendanceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     return {
         
         'attendanceId': json['attendance_id'],
-        'parentAttendanceId': !exists(json, 'parent_attendance_id') ? undefined : json['parent_attendance_id'],
+        'parentAttendanceId': json['parent_attendance_id'],
         'staffId': json['staff_id'],
         'workDate': (new Date(json['work_date'])),
         'startTime': json['start_time'],
-        'endTime': !exists(json, 'end_time') ? undefined : json['end_time'],
-        'goDirectlyFlag': !exists(json, 'go_directly_flag') ? undefined : json['go_directly_flag'],
-        'returnDirectlyFlag': !exists(json, 'return_directly_flag') ? undefined : json['return_directly_flag'],
-        'remarks': !exists(json, 'remarks') ? undefined : json['remarks'],
+        'endTime': json['end_time'],
+        'goDirectlyFlag': json['go_directly_flag'],
+        'returnDirectlyFlag': json['return_directly_flag'],
+        'remarks': json['remarks'],
     };
 }
 

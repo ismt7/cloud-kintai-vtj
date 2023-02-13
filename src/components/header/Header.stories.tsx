@@ -1,5 +1,6 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { MemoryRouter } from "react-router-dom";
+import { StaffStatus } from "../../lib/reducers/staffSlice";
 
 import Header from "./Header";
 
@@ -34,11 +35,14 @@ export const LoggedOut = Template.bind({});
 LoggedOut.storyName = "ログアウト";
 LoggedOut.args = {
   staff: {
-    lastName: "山田",
-    firstName: "太郎",
-    mailAddress: "yamada@example.com",
-    staffId: 1,
-    // role: "user",
+    status: StaffStatus.DONE,
+    data: {
+      lastName: "田中",
+      firstName: "二郎",
+      mailAddress: "tanaka@example.com",
+      staffId: 1,
+      // role: "staff",
+    },
   },
 };
 
@@ -46,10 +50,13 @@ export const Admin = Template.bind({});
 Admin.storyName = "管理者";
 Admin.args = {
   staff: {
-    lastName: "田中",
-    firstName: "二郎",
-    mailAddress: "tanaka@example.com",
-    staffId: 1,
-    // role: "admin",
+    status: StaffStatus.DONE,
+    data: {
+      lastName: "田中",
+      firstName: "二郎",
+      mailAddress: "tanaka@example.com",
+      staffId: 1,
+      // role: "admin",
+    },
   },
 };
