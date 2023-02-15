@@ -2,6 +2,18 @@
 
 echo "testing now..."
 echo "========================================"
+storybook_container_state=$(
+  cd infra/ && \
+  docker compose ps \
+    --format json | jq -r '.[] | select(.Name == "infra-storybook-1").State'
+)
+if [ "$storybook_container_state" != "running" ]; then
+  echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+  echo "@ Storybook container is not running, aborting commit"
+  echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+  exit 1
+fi
+
 (CI=true make test) &
 jest_test_pid=$!
 
