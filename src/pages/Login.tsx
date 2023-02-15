@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Authenticator, useAuthenticator, View } from "@aws-amplify/ui-react";
 import { Amplify } from "aws-amplify";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { useLocation, useNavigate } from "react-router";
 import awsConfig from "../aws-exports";
 import "@aws-amplify/ui-react/styles.css";

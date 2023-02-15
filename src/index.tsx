@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Top from "./pages/Top";
 import RequireAuth from "./pages/RequireAuth";
 import { store } from "./lib/store";
+import List from "./pages/List";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,14 @@ const router = createBrowserRouter([
         element: (
           <RequireAuth>
             <Register />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/list",
+        element: (
+          <RequireAuth>
+            <List />
           </RequireAuth>
         ),
       },

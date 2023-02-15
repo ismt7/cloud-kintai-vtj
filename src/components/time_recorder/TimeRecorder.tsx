@@ -72,7 +72,7 @@ const TimeRecorder = () => {
       registerClockIn({
         staffId: staff.data?.staffId,
         workDate: Number(dayjs().format("YYYYMMDD")),
-        startTime: dayjs().format("HH:mm:ss"),
+        startTime: dayjs().toISOString(),
         goDirectlyFlag: isDirect,
       })
     );
@@ -83,7 +83,7 @@ const TimeRecorder = () => {
       registerClockOut({
         staffId: staff.data?.staffId,
         workDate: Number(dayjs().format("YYYYMMDD")),
-        endTime: dayjs().format("HH:mm:ss"),
+        endTime: dayjs().toISOString(),
         returnDirectlyFlag: isDirect,
       })
     );
@@ -94,7 +94,7 @@ const TimeRecorder = () => {
       registerRestStart({
         staffId: staff.data?.staffId,
         workDate: Number(dayjs().format("YYYYMMDD")),
-        startTime: dayjs().format("HH:mm:ss"),
+        startTime: dayjs().toISOString(),
       })
     );
   };

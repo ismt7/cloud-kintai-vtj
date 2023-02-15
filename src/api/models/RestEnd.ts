@@ -21,10 +21,10 @@ import { exists, mapValues } from '../runtime';
 export interface RestEnd {
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof RestEnd
      */
-    endTime: string;
+    endTime: Date;
 }
 
 /**
@@ -47,7 +47,7 @@ export function RestEndFromJSONTyped(json: any, ignoreDiscriminator: boolean): R
     }
     return {
         
-        'endTime': json['end_time'],
+        'endTime': (new Date(json['end_time'])),
     };
 }
 
@@ -60,7 +60,7 @@ export function RestEndToJSON(value?: RestEnd | null): any {
     }
     return {
         
-        'end_time': value.endTime,
+        'end_time': (value.endTime.toISOString()),
     };
 }
 

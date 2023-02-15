@@ -9,7 +9,7 @@ const fetchStaff = createAsyncThunk(
     });
     const staffApi = new StaffApi(conf);
     const staff = await staffApi
-      .readStaffByMailStaffsEmailMailAddressGet({ mailAddress })
+      .getStaffByMailAddress({ mailAddress })
       .then((r) => r)
       .catch(() => undefined);
 

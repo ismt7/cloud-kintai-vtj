@@ -33,7 +33,7 @@ const isBeforeWork = (attendance: AttendanceState) => {
     return true;
   }
 
-  if (attendance.data?.startTime === "") {
+  if (!attendance.data?.startTime) {
     return true;
   }
 
@@ -69,28 +69,28 @@ const isWorking = (attendance: AttendanceState, rest: RestState) => {
   if (!attendance.data) return false;
 
   if (rest.data) {
-    if (rest.data.startTime !== "" && rest.data.endTime === "") {
+    if (rest.data.startTime && !rest.data.endTime) {
       return false;
     }
   }
 
-  if (attendance.data.startTime === "") {
+  if (!attendance.data.startTime) {
     return false;
   }
 
-  if (attendance.data.endTime !== "") return false;
+  if (attendance.data.endTime) return false;
 
   return true;
 };
 
 const isResting = (attendance: AttendanceState, rest: RestState) => {
   if (!attendance.data) return false;
-  if (attendance.data.startTime === "") return false;
-  if (attendance.data.endTime !== "") return false;
+  if (!attendance.data.startTime) return false;
+  if (attendance.data.endTime) return false;
 
   if (!rest.data) return false;
-  if (rest.data.startTime === "") return false;
-  if (rest.data.endTime !== "") return false;
+  if (!rest.data.startTime) return false;
+  if (rest.data.endTime) return false;
 
   return true;
 };

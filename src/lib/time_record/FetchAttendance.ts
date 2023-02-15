@@ -2,9 +2,19 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
 import { Attendance, AttendanceApi, Configuration } from "../../api";
 
-export interface OriginAttendance extends Omit<Attendance, "workDate"> {
-  workDate: string;
+export interface OriginAttendance
+  extends Omit<Attendance, "workDate" | "startTime" | "endTime"> {
+  workDate: string | undefined;
+  startTime: string | undefined;
+  endTime: string | undefined;
 }
+
+const isNullDate = (date: Date) => {
+  const nullDate = dayjs(0);
+  const targetDate = dayjs(date);
+
+  return nullDate.isSame(targetDate);
+};
 
 export const mappedOriginAttendance = (
   attendance: Attendance
@@ -12,9 +22,15 @@ export const mappedOriginAttendance = (
   attendanceId: attendance.attendanceId,
   parentAttendanceId: attendance.parentAttendanceId,
   staffId: attendance.staffId,
-  workDate: dayjs(attendance.workDate).format("YYYYMMDD"),
-  startTime: attendance.startTime || "",
-  endTime: attendance.endTime || "",
+  workDate: isNullDate(attendance.workDate)
+    ? undefined
+    : dayjs(attendance.workDate).toISOString(),
+  startTime: isNullDate(attendance.startTime)
+    ? undefined
+    : dayjs(attendance.startTime).toISOString(),
+  endTime: isNullDate(attendance.endTime)
+    ? undefined
+    : dayjs(attendance.endTime).toISOString(),
   goDirectlyFlag: attendance.goDirectlyFlag,
   returnDirectlyFlag: attendance.returnDirectlyFlag,
   remarks: attendance.remarks,
@@ -29,7 +45,7 @@ const fetchAttendance = createAsyncThunk(
 
     const api = new AttendanceApi(conf);
     const attendance = await api
-      .readAttendancesAttendancesStaffIdWorkDateGet({
+      .getAttendance({
         staffId,
         workDate,
       })

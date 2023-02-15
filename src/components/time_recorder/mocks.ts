@@ -27,8 +27,8 @@ export const postAttendancesClockInHandler200 = () =>
           attendance_id: 1,
           staff_id: MOCK_STAFF_ID,
           work_date: "2023-01-01",
-          start_time: "09:00:00",
-          end_time: "",
+          start_time: "2023-01-01T09:00:00",
+          end_time: null,
           go_directly_flag: false,
           return_directly_flag: false,
           remarks: "",
@@ -46,8 +46,8 @@ export const patchAttendancesClockOutHandler200 = () =>
           attendance_id: 1,
           staff_id: MOCK_STAFF_ID,
           work_date: "2023-01-01",
-          start_time: "09:00:00",
-          end_time: "18:00:00",
+          start_time: "2023-01-01T09:00:00",
+          end_time: "2023-01-01T18:00:00",
           go_directly_flag: false,
           return_directly_flag: false,
           remarks: "",
@@ -80,8 +80,8 @@ export const postRestStartHandler200 = () =>
         ctx.json({
           staff_id: MOCK_STAFF_ID,
           work_date: "2023-01-01",
-          start_time: "12:00:00",
-          end_time: "",
+          start_time: "2023-01-01T12:00:00",
+          end_time: null,
         })
       )
   );
@@ -96,8 +96,8 @@ export const patchRestEndHandler200 = () =>
           restTimeId: 1,
           staff_id: MOCK_STAFF_ID,
           work_date: "2023-01-01",
-          start_time: "12:00:00",
-          end_time: "13:00:00",
+          start_time: "2023-01-01T12:00:00",
+          end_time: "2023-01-01T13:00:00",
         })
       )
   );
@@ -112,8 +112,8 @@ export const patchRemarksHandler200 = () =>
           attendance_id: 1,
           staff_id: MOCK_STAFF_ID,
           work_date: "2023-01-01",
-          start_time: "09:00:00",
-          end_time: "",
+          start_time: "2023-01-01T09:00:00",
+          end_time: null,
           go_directly_flag: false,
           return_directly_flag: false,
           remarks: "これはモックAPIからレスポンスされたデータです。",

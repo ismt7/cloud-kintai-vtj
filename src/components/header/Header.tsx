@@ -63,7 +63,8 @@ const Header = ({ signIn, signOut }: HeaderProps) => {
             </Box>
             <Box>
               <Link
-                label="リンク"
+                label="勤怠一覧"
+                href="/list"
                 sx={{ display: "block", height: 1, lineHeight: "32px", px: 1 }}
               />
             </Box>

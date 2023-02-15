@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import dayjs from "dayjs";
 import { Configuration, RestApi } from "../../api";
 import { mappedOriginRest } from "./FetchRest";
 
@@ -20,11 +21,11 @@ const registerRestStart = createAsyncThunk(
     });
     const restApi = new RestApi(conf);
     const rest = await restApi
-      .registerStartRestRestsStaffIdWorkDateStartPost({
+      .registerStartRest({
         staffId,
         workDate,
         restStart: {
-          startTime,
+          startTime: dayjs(startTime).toDate(),
         },
       })
       .then((r) => r)

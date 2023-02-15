@@ -3,6 +3,7 @@ import timeRecordReducer from "./reducers/timeRecordSlice";
 import staffReducer from "./reducers/staffSlice";
 import attendanceReducer from "./reducers/attendanceReducer";
 import restReducer from "./reducers/restReducer";
+import timeRecordListReducer from "./reducers/timeRecordListReducer";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     staffReducer,
     attendanceReducer,
     restReducer,
+    timeRecordListReducer,
   },
 });
 
@@ -21,3 +23,5 @@ export const selectStaff = (state: RootState) => state.staffReducer;
 export const selectAttendance = (state: RootState) => state.attendanceReducer;
 export const selectRest = (state: RootState) => state.restReducer;
 export const selectTimeRecord = (state: RootState) => state.timeRecordReducer;
+export const selectTimeRecordList = (state: RootState) =>
+  state.timeRecordListReducer;
