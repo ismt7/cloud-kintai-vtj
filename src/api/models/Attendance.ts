@@ -45,16 +45,16 @@ export interface Attendance {
     workDate: Date;
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof Attendance
      */
-    startTime: string;
+    startTime: Date;
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof Attendance
      */
-    endTime: string;
+    endTime: Date;
     /**
      * 
      * @type {boolean}
@@ -107,8 +107,8 @@ export function AttendanceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'parentAttendanceId': json['parent_attendance_id'],
         'staffId': json['staff_id'],
         'workDate': (new Date(json['work_date'])),
-        'startTime': json['start_time'],
-        'endTime': json['end_time'],
+        'startTime': (new Date(json['start_time'])),
+        'endTime': (new Date(json['end_time'])),
         'goDirectlyFlag': json['go_directly_flag'],
         'returnDirectlyFlag': json['return_directly_flag'],
         'remarks': json['remarks'],
@@ -128,8 +128,8 @@ export function AttendanceToJSON(value?: Attendance | null): any {
         'parent_attendance_id': value.parentAttendanceId,
         'staff_id': value.staffId,
         'work_date': (value.workDate.toISOString().substr(0,10)),
-        'start_time': value.startTime,
-        'end_time': value.endTime,
+        'start_time': (value.startTime.toISOString()),
+        'end_time': (value.endTime.toISOString()),
         'go_directly_flag': value.goDirectlyFlag,
         'return_directly_flag': value.returnDirectlyFlag,
         'remarks': value.remarks,

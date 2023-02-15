@@ -24,7 +24,7 @@ export class DefaultApi extends runtime.BaseAPI {
      * ヘルスチェック用のエンドポイントです。
      * ヘルスチェック
      */
-    async rootGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async rootRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -43,8 +43,8 @@ export class DefaultApi extends runtime.BaseAPI {
      * ヘルスチェック用のエンドポイントです。
      * ヘルスチェック
      */
-    async rootGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
-        const response = await this.rootGetRaw(initOverrides);
+    async root(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.rootRaw(initOverrides);
         return await response.value();
     }
 

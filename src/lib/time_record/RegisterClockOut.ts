@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import dayjs from "dayjs";
 import { AttendanceApi, Configuration } from "../../api";
 import { mappedOriginAttendance } from "./FetchAttendance";
 
@@ -22,11 +23,11 @@ const registerClockOut = createAsyncThunk(
     });
     const attendanceApi = new AttendanceApi(conf);
     const attendance = await attendanceApi
-      .registerClockOutAttendancesStaffIdWorkDateClockOutPatch({
+      .registerClockOut({
         staffId,
         workDate,
         attendanceClockOut: {
-          endTime,
+          endTime: dayjs(endTime).toDate(),
           returnDirectlyFlag,
         },
       })

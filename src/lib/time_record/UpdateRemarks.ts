@@ -20,7 +20,7 @@ const updateRemarks = createAsyncThunk(
     });
     const attendanceApi = new AttendanceApi(conf);
     const attendance = await attendanceApi
-      .registerRemarksAttendancesStaffIdWorkDateRemarksPatch({
+      .updateRemarks({
         staffId,
         workDate,
         attendanceRemarks: {

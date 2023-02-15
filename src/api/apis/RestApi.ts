@@ -31,18 +31,24 @@ import {
     RestStartToJSON,
 } from '../models';
 
-export interface ReadRestRestsStaffIdWorkDateGetRequest {
+export interface GetRestRequest {
     staffId: number;
     workDate: number;
 }
 
-export interface RegisterEndRestRestsStaffIdWorkDateEndPatchRequest {
+export interface GetRestsRequest {
+    staffId: number;
+    fromWorkDate: number;
+    toWorkDate: number;
+}
+
+export interface RegisterEndRestRequest {
     staffId: number;
     workDate: number;
     restEnd: RestEnd;
 }
 
-export interface RegisterStartRestRestsStaffIdWorkDateStartPostRequest {
+export interface RegisterStartRestRequest {
     staffId: number;
     workDate: number;
     restStart: RestStart;
@@ -55,15 +61,15 @@ export class RestApi extends runtime.BaseAPI {
 
     /**
      * 指定したIDと勤務日の休憩情報を取得します。
-     * 休憩情報を取得
+     * スタッフIDで休憩情報を取得
      */
-    async readRestRestsStaffIdWorkDateGetRaw(requestParameters: ReadRestRestsStaffIdWorkDateGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Rest>> {
+    async getRestRaw(requestParameters: GetRestRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Rest>> {
         if (requestParameters.staffId === null || requestParameters.staffId === undefined) {
-            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling readRestRestsStaffIdWorkDateGet.');
+            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling getRest.');
         }
 
         if (requestParameters.workDate === null || requestParameters.workDate === undefined) {
-            throw new runtime.RequiredError('workDate','Required parameter requestParameters.workDate was null or undefined when calling readRestRestsStaffIdWorkDateGet.');
+            throw new runtime.RequiredError('workDate','Required parameter requestParameters.workDate was null or undefined when calling getRest.');
         }
 
         const queryParameters: any = {};
@@ -82,10 +88,50 @@ export class RestApi extends runtime.BaseAPI {
 
     /**
      * 指定したIDと勤務日の休憩情報を取得します。
-     * 休憩情報を取得
+     * スタッフIDで休憩情報を取得
      */
-    async readRestRestsStaffIdWorkDateGet(requestParameters: ReadRestRestsStaffIdWorkDateGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Rest> {
-        const response = await this.readRestRestsStaffIdWorkDateGetRaw(requestParameters, initOverrides);
+    async getRest(requestParameters: GetRestRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Rest> {
+        const response = await this.getRestRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 指定した期間とスタッフIDの休憩情報を取得します。
+     * 期間とスタッフIDで休憩情報を取得
+     */
+    async getRestsRaw(requestParameters: GetRestsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Rest>>> {
+        if (requestParameters.staffId === null || requestParameters.staffId === undefined) {
+            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling getRests.');
+        }
+
+        if (requestParameters.fromWorkDate === null || requestParameters.fromWorkDate === undefined) {
+            throw new runtime.RequiredError('fromWorkDate','Required parameter requestParameters.fromWorkDate was null or undefined when calling getRests.');
+        }
+
+        if (requestParameters.toWorkDate === null || requestParameters.toWorkDate === undefined) {
+            throw new runtime.RequiredError('toWorkDate','Required parameter requestParameters.toWorkDate was null or undefined when calling getRests.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/rests/{staff_id}/{from_work_date}/{to_work_date}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"from_work_date"}}`, encodeURIComponent(String(requestParameters.fromWorkDate))).replace(`{${"to_work_date"}}`, encodeURIComponent(String(requestParameters.toWorkDate))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(RestFromJSON));
+    }
+
+    /**
+     * 指定した期間とスタッフIDの休憩情報を取得します。
+     * 期間とスタッフIDで休憩情報を取得
+     */
+    async getRests(requestParameters: GetRestsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Rest>> {
+        const response = await this.getRestsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -93,17 +139,17 @@ export class RestApi extends runtime.BaseAPI {
      * 休憩を終了します。<br>
      * 休憩終了
      */
-    async registerEndRestRestsStaffIdWorkDateEndPatchRaw(requestParameters: RegisterEndRestRestsStaffIdWorkDateEndPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Rest>> {
+    async registerEndRestRaw(requestParameters: RegisterEndRestRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Rest>> {
         if (requestParameters.staffId === null || requestParameters.staffId === undefined) {
-            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling registerEndRestRestsStaffIdWorkDateEndPatch.');
+            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling registerEndRest.');
         }
 
         if (requestParameters.workDate === null || requestParameters.workDate === undefined) {
-            throw new runtime.RequiredError('workDate','Required parameter requestParameters.workDate was null or undefined when calling registerEndRestRestsStaffIdWorkDateEndPatch.');
+            throw new runtime.RequiredError('workDate','Required parameter requestParameters.workDate was null or undefined when calling registerEndRest.');
         }
 
         if (requestParameters.restEnd === null || requestParameters.restEnd === undefined) {
-            throw new runtime.RequiredError('restEnd','Required parameter requestParameters.restEnd was null or undefined when calling registerEndRestRestsStaffIdWorkDateEndPatch.');
+            throw new runtime.RequiredError('restEnd','Required parameter requestParameters.restEnd was null or undefined when calling registerEndRest.');
         }
 
         const queryParameters: any = {};
@@ -127,8 +173,8 @@ export class RestApi extends runtime.BaseAPI {
      * 休憩を終了します。<br>
      * 休憩終了
      */
-    async registerEndRestRestsStaffIdWorkDateEndPatch(requestParameters: RegisterEndRestRestsStaffIdWorkDateEndPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Rest> {
-        const response = await this.registerEndRestRestsStaffIdWorkDateEndPatchRaw(requestParameters, initOverrides);
+    async registerEndRest(requestParameters: RegisterEndRestRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Rest> {
+        const response = await this.registerEndRestRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -136,17 +182,17 @@ export class RestApi extends runtime.BaseAPI {
      * 休憩を開始します。<br>
      * 休憩開始
      */
-    async registerStartRestRestsStaffIdWorkDateStartPostRaw(requestParameters: RegisterStartRestRestsStaffIdWorkDateStartPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Rest>> {
+    async registerStartRestRaw(requestParameters: RegisterStartRestRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Rest>> {
         if (requestParameters.staffId === null || requestParameters.staffId === undefined) {
-            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling registerStartRestRestsStaffIdWorkDateStartPost.');
+            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling registerStartRest.');
         }
 
         if (requestParameters.workDate === null || requestParameters.workDate === undefined) {
-            throw new runtime.RequiredError('workDate','Required parameter requestParameters.workDate was null or undefined when calling registerStartRestRestsStaffIdWorkDateStartPost.');
+            throw new runtime.RequiredError('workDate','Required parameter requestParameters.workDate was null or undefined when calling registerStartRest.');
         }
 
         if (requestParameters.restStart === null || requestParameters.restStart === undefined) {
-            throw new runtime.RequiredError('restStart','Required parameter requestParameters.restStart was null or undefined when calling registerStartRestRestsStaffIdWorkDateStartPost.');
+            throw new runtime.RequiredError('restStart','Required parameter requestParameters.restStart was null or undefined when calling registerStartRest.');
         }
 
         const queryParameters: any = {};
@@ -170,8 +216,8 @@ export class RestApi extends runtime.BaseAPI {
      * 休憩を開始します。<br>
      * 休憩開始
      */
-    async registerStartRestRestsStaffIdWorkDateStartPost(requestParameters: RegisterStartRestRestsStaffIdWorkDateStartPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Rest> {
-        const response = await this.registerStartRestRestsStaffIdWorkDateStartPostRaw(requestParameters, initOverrides);
+    async registerStartRest(requestParameters: RegisterStartRestRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Rest> {
+        const response = await this.registerStartRestRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

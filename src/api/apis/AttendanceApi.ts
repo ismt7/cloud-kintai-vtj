@@ -34,24 +34,30 @@ import {
     HTTPValidationErrorToJSON,
 } from '../models';
 
-export interface ReadAttendancesAttendancesStaffIdWorkDateGetRequest {
+export interface GetAttendanceRequest {
     staffId: number;
     workDate: number;
 }
 
-export interface RegisterClockInAttendancesStaffIdWorkDateClockInPostRequest {
+export interface GetAttendancesRequest {
+    staffId: number;
+    fromWorkDate: number;
+    toWorkDate: number;
+}
+
+export interface RegisterClockInRequest {
     staffId: number;
     workDate: number;
     attendanceClockIn: AttendanceClockIn;
 }
 
-export interface RegisterClockOutAttendancesStaffIdWorkDateClockOutPatchRequest {
+export interface RegisterClockOutRequest {
     staffId: number;
     workDate: number;
     attendanceClockOut: AttendanceClockOut;
 }
 
-export interface RegisterRemarksAttendancesStaffIdWorkDateRemarksPatchRequest {
+export interface UpdateRemarksRequest {
     staffId: number;
     workDate: number;
     attendanceRemarks: AttendanceRemarks;
@@ -66,13 +72,13 @@ export class AttendanceApi extends runtime.BaseAPI {
      * 指定したIDの勤怠情報を取得します。
      * スタッフIDで勤怠情報を取得
      */
-    async readAttendancesAttendancesStaffIdWorkDateGetRaw(requestParameters: ReadAttendancesAttendancesStaffIdWorkDateGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Attendance>> {
+    async getAttendanceRaw(requestParameters: GetAttendanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Attendance>> {
         if (requestParameters.staffId === null || requestParameters.staffId === undefined) {
-            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling readAttendancesAttendancesStaffIdWorkDateGet.');
+            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling getAttendance.');
         }
 
         if (requestParameters.workDate === null || requestParameters.workDate === undefined) {
-            throw new runtime.RequiredError('workDate','Required parameter requestParameters.workDate was null or undefined when calling readAttendancesAttendancesStaffIdWorkDateGet.');
+            throw new runtime.RequiredError('workDate','Required parameter requestParameters.workDate was null or undefined when calling getAttendance.');
         }
 
         const queryParameters: any = {};
@@ -93,8 +99,48 @@ export class AttendanceApi extends runtime.BaseAPI {
      * 指定したIDの勤怠情報を取得します。
      * スタッフIDで勤怠情報を取得
      */
-    async readAttendancesAttendancesStaffIdWorkDateGet(requestParameters: ReadAttendancesAttendancesStaffIdWorkDateGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Attendance> {
-        const response = await this.readAttendancesAttendancesStaffIdWorkDateGetRaw(requestParameters, initOverrides);
+    async getAttendance(requestParameters: GetAttendanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Attendance> {
+        const response = await this.getAttendanceRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 指定した期間とスタッフIDで勤怠情報を取得します。
+     * 期間とスタッフIDで勤怠情報を取得
+     */
+    async getAttendancesRaw(requestParameters: GetAttendancesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Attendance>>> {
+        if (requestParameters.staffId === null || requestParameters.staffId === undefined) {
+            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling getAttendances.');
+        }
+
+        if (requestParameters.fromWorkDate === null || requestParameters.fromWorkDate === undefined) {
+            throw new runtime.RequiredError('fromWorkDate','Required parameter requestParameters.fromWorkDate was null or undefined when calling getAttendances.');
+        }
+
+        if (requestParameters.toWorkDate === null || requestParameters.toWorkDate === undefined) {
+            throw new runtime.RequiredError('toWorkDate','Required parameter requestParameters.toWorkDate was null or undefined when calling getAttendances.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/attendances/{staff_id}/{from_work_date}/{to_work_date}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"from_work_date"}}`, encodeURIComponent(String(requestParameters.fromWorkDate))).replace(`{${"to_work_date"}}`, encodeURIComponent(String(requestParameters.toWorkDate))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(AttendanceFromJSON));
+    }
+
+    /**
+     * 指定した期間とスタッフIDで勤怠情報を取得します。
+     * 期間とスタッフIDで勤怠情報を取得
+     */
+    async getAttendances(requestParameters: GetAttendancesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Attendance>> {
+        const response = await this.getAttendancesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -102,17 +148,17 @@ export class AttendanceApi extends runtime.BaseAPI {
      * 出勤方法は、`通常`と`直行`の2つ方法で登録することができます。<br>         <br>         **通常**<br>         通常でリクエストする場合は、`start_time`を指定してください。<br>         `go_directly_flag`は自動で`false`として処理されます。<br>         <br>         **直行**<br>         直行でリクエストする場合は、`go_directly_flag`を`true`にしてください。<br>         `start_time`は自動で`09:00:00`として処理されます。<br>
      * 出勤
      */
-    async registerClockInAttendancesStaffIdWorkDateClockInPostRaw(requestParameters: RegisterClockInAttendancesStaffIdWorkDateClockInPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Attendance>> {
+    async registerClockInRaw(requestParameters: RegisterClockInRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Attendance>> {
         if (requestParameters.staffId === null || requestParameters.staffId === undefined) {
-            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling registerClockInAttendancesStaffIdWorkDateClockInPost.');
+            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling registerClockIn.');
         }
 
         if (requestParameters.workDate === null || requestParameters.workDate === undefined) {
-            throw new runtime.RequiredError('workDate','Required parameter requestParameters.workDate was null or undefined when calling registerClockInAttendancesStaffIdWorkDateClockInPost.');
+            throw new runtime.RequiredError('workDate','Required parameter requestParameters.workDate was null or undefined when calling registerClockIn.');
         }
 
         if (requestParameters.attendanceClockIn === null || requestParameters.attendanceClockIn === undefined) {
-            throw new runtime.RequiredError('attendanceClockIn','Required parameter requestParameters.attendanceClockIn was null or undefined when calling registerClockInAttendancesStaffIdWorkDateClockInPost.');
+            throw new runtime.RequiredError('attendanceClockIn','Required parameter requestParameters.attendanceClockIn was null or undefined when calling registerClockIn.');
         }
 
         const queryParameters: any = {};
@@ -136,8 +182,8 @@ export class AttendanceApi extends runtime.BaseAPI {
      * 出勤方法は、`通常`と`直行`の2つ方法で登録することができます。<br>         <br>         **通常**<br>         通常でリクエストする場合は、`start_time`を指定してください。<br>         `go_directly_flag`は自動で`false`として処理されます。<br>         <br>         **直行**<br>         直行でリクエストする場合は、`go_directly_flag`を`true`にしてください。<br>         `start_time`は自動で`09:00:00`として処理されます。<br>
      * 出勤
      */
-    async registerClockInAttendancesStaffIdWorkDateClockInPost(requestParameters: RegisterClockInAttendancesStaffIdWorkDateClockInPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Attendance> {
-        const response = await this.registerClockInAttendancesStaffIdWorkDateClockInPostRaw(requestParameters, initOverrides);
+    async registerClockIn(requestParameters: RegisterClockInRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Attendance> {
+        const response = await this.registerClockInRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -145,17 +191,17 @@ export class AttendanceApi extends runtime.BaseAPI {
      * 退勤方法は、`通常`と`直帰`の2つの方法で登録することができます。<br>         <br>         **通常**<br>         通常でリクエストする場合は、`end_time`を指定してください。<br>         `return_directly_flag`は自動で`false`として処理されます。<br>         <br>         **直帰**<br>         直帰でリクエストする場合は、`return_direct_flag`を`true`にしてください。<br>         `start_time`は自動で`09:00:00`として処理されます。<br>
      * 退勤時刻を登録
      */
-    async registerClockOutAttendancesStaffIdWorkDateClockOutPatchRaw(requestParameters: RegisterClockOutAttendancesStaffIdWorkDateClockOutPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Attendance>> {
+    async registerClockOutRaw(requestParameters: RegisterClockOutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Attendance>> {
         if (requestParameters.staffId === null || requestParameters.staffId === undefined) {
-            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling registerClockOutAttendancesStaffIdWorkDateClockOutPatch.');
+            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling registerClockOut.');
         }
 
         if (requestParameters.workDate === null || requestParameters.workDate === undefined) {
-            throw new runtime.RequiredError('workDate','Required parameter requestParameters.workDate was null or undefined when calling registerClockOutAttendancesStaffIdWorkDateClockOutPatch.');
+            throw new runtime.RequiredError('workDate','Required parameter requestParameters.workDate was null or undefined when calling registerClockOut.');
         }
 
         if (requestParameters.attendanceClockOut === null || requestParameters.attendanceClockOut === undefined) {
-            throw new runtime.RequiredError('attendanceClockOut','Required parameter requestParameters.attendanceClockOut was null or undefined when calling registerClockOutAttendancesStaffIdWorkDateClockOutPatch.');
+            throw new runtime.RequiredError('attendanceClockOut','Required parameter requestParameters.attendanceClockOut was null or undefined when calling registerClockOut.');
         }
 
         const queryParameters: any = {};
@@ -179,8 +225,8 @@ export class AttendanceApi extends runtime.BaseAPI {
      * 退勤方法は、`通常`と`直帰`の2つの方法で登録することができます。<br>         <br>         **通常**<br>         通常でリクエストする場合は、`end_time`を指定してください。<br>         `return_directly_flag`は自動で`false`として処理されます。<br>         <br>         **直帰**<br>         直帰でリクエストする場合は、`return_direct_flag`を`true`にしてください。<br>         `start_time`は自動で`09:00:00`として処理されます。<br>
      * 退勤時刻を登録
      */
-    async registerClockOutAttendancesStaffIdWorkDateClockOutPatch(requestParameters: RegisterClockOutAttendancesStaffIdWorkDateClockOutPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Attendance> {
-        const response = await this.registerClockOutAttendancesStaffIdWorkDateClockOutPatchRaw(requestParameters, initOverrides);
+    async registerClockOut(requestParameters: RegisterClockOutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Attendance> {
+        const response = await this.registerClockOutRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -188,17 +234,17 @@ export class AttendanceApi extends runtime.BaseAPI {
      * 備考を登録します。<br>
      * 備考を登録
      */
-    async registerRemarksAttendancesStaffIdWorkDateRemarksPatchRaw(requestParameters: RegisterRemarksAttendancesStaffIdWorkDateRemarksPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Attendance>> {
+    async updateRemarksRaw(requestParameters: UpdateRemarksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Attendance>> {
         if (requestParameters.staffId === null || requestParameters.staffId === undefined) {
-            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling registerRemarksAttendancesStaffIdWorkDateRemarksPatch.');
+            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling updateRemarks.');
         }
 
         if (requestParameters.workDate === null || requestParameters.workDate === undefined) {
-            throw new runtime.RequiredError('workDate','Required parameter requestParameters.workDate was null or undefined when calling registerRemarksAttendancesStaffIdWorkDateRemarksPatch.');
+            throw new runtime.RequiredError('workDate','Required parameter requestParameters.workDate was null or undefined when calling updateRemarks.');
         }
 
         if (requestParameters.attendanceRemarks === null || requestParameters.attendanceRemarks === undefined) {
-            throw new runtime.RequiredError('attendanceRemarks','Required parameter requestParameters.attendanceRemarks was null or undefined when calling registerRemarksAttendancesStaffIdWorkDateRemarksPatch.');
+            throw new runtime.RequiredError('attendanceRemarks','Required parameter requestParameters.attendanceRemarks was null or undefined when calling updateRemarks.');
         }
 
         const queryParameters: any = {};
@@ -222,8 +268,8 @@ export class AttendanceApi extends runtime.BaseAPI {
      * 備考を登録します。<br>
      * 備考を登録
      */
-    async registerRemarksAttendancesStaffIdWorkDateRemarksPatch(requestParameters: RegisterRemarksAttendancesStaffIdWorkDateRemarksPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Attendance> {
-        const response = await this.registerRemarksAttendancesStaffIdWorkDateRemarksPatchRaw(requestParameters, initOverrides);
+    async updateRemarks(requestParameters: UpdateRemarksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Attendance> {
+        const response = await this.updateRemarksRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

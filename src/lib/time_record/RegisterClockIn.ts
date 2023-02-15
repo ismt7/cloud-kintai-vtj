@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import dayjs from "dayjs";
 import { AttendanceApi, Configuration } from "../../api";
 import { mappedOriginAttendance } from "./FetchAttendance";
 
@@ -22,11 +23,11 @@ const registerClockIn = createAsyncThunk(
     });
     const attendanceApi = new AttendanceApi(conf);
     const attendance = await attendanceApi
-      .registerClockInAttendancesStaffIdWorkDateClockInPost({
+      .registerClockIn({
         staffId,
         workDate,
         attendanceClockIn: {
-          startTime,
+          startTime: dayjs(startTime).toDate(),
           goDirectlyFlag,
         },
       })

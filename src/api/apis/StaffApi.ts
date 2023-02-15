@@ -28,16 +28,16 @@ import {
     StaffCreateToJSON,
 } from '../models';
 
-export interface CreateStaffStaffsPostRequest {
+export interface CreateStaffRequest {
     staffCreate: StaffCreate;
 }
 
-export interface ReadStaffByMailStaffsEmailMailAddressGetRequest {
-    mailAddress: string;
+export interface GetStaffByIdRequest {
+    staffId: number;
 }
 
-export interface ReadStaffsStaffsStaffIdGetRequest {
-    staffId: number;
+export interface GetStaffByMailAddressRequest {
+    mailAddress: string;
 }
 
 /**
@@ -49,9 +49,9 @@ export class StaffApi extends runtime.BaseAPI {
      * スタッフ情報を登録します。
      * スタッフ情報を登録
      */
-    async createStaffStaffsPostRaw(requestParameters: CreateStaffStaffsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Staff>> {
+    async createStaffRaw(requestParameters: CreateStaffRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Staff>> {
         if (requestParameters.staffCreate === null || requestParameters.staffCreate === undefined) {
-            throw new runtime.RequiredError('staffCreate','Required parameter requestParameters.staffCreate was null or undefined when calling createStaffStaffsPost.');
+            throw new runtime.RequiredError('staffCreate','Required parameter requestParameters.staffCreate was null or undefined when calling createStaff.');
         }
 
         const queryParameters: any = {};
@@ -75,40 +75,8 @@ export class StaffApi extends runtime.BaseAPI {
      * スタッフ情報を登録します。
      * スタッフ情報を登録
      */
-    async createStaffStaffsPost(requestParameters: CreateStaffStaffsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Staff> {
-        const response = await this.createStaffStaffsPostRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * 指定したメールアドレスのスタッフ情報を取得します。
-     * メールアドレスでスタッフ情報を取得
-     */
-    async readStaffByMailStaffsEmailMailAddressGetRaw(requestParameters: ReadStaffByMailStaffsEmailMailAddressGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Staff>> {
-        if (requestParameters.mailAddress === null || requestParameters.mailAddress === undefined) {
-            throw new runtime.RequiredError('mailAddress','Required parameter requestParameters.mailAddress was null or undefined when calling readStaffByMailStaffsEmailMailAddressGet.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/staffs/email/{mail_address}`.replace(`{${"mail_address"}}`, encodeURIComponent(String(requestParameters.mailAddress))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => StaffFromJSON(jsonValue));
-    }
-
-    /**
-     * 指定したメールアドレスのスタッフ情報を取得します。
-     * メールアドレスでスタッフ情報を取得
-     */
-    async readStaffByMailStaffsEmailMailAddressGet(requestParameters: ReadStaffByMailStaffsEmailMailAddressGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Staff> {
-        const response = await this.readStaffByMailStaffsEmailMailAddressGetRaw(requestParameters, initOverrides);
+    async createStaff(requestParameters: CreateStaffRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Staff> {
+        const response = await this.createStaffRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -116,9 +84,9 @@ export class StaffApi extends runtime.BaseAPI {
      * 指定したIDのスタッフ情報を取得します。
      * スタッフIDでスタッフ情報を取得
      */
-    async readStaffsStaffsStaffIdGetRaw(requestParameters: ReadStaffsStaffsStaffIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Staff>> {
+    async getStaffByIdRaw(requestParameters: GetStaffByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Staff>> {
         if (requestParameters.staffId === null || requestParameters.staffId === undefined) {
-            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling readStaffsStaffsStaffIdGet.');
+            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling getStaffById.');
         }
 
         const queryParameters: any = {};
@@ -139,8 +107,40 @@ export class StaffApi extends runtime.BaseAPI {
      * 指定したIDのスタッフ情報を取得します。
      * スタッフIDでスタッフ情報を取得
      */
-    async readStaffsStaffsStaffIdGet(requestParameters: ReadStaffsStaffsStaffIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Staff> {
-        const response = await this.readStaffsStaffsStaffIdGetRaw(requestParameters, initOverrides);
+    async getStaffById(requestParameters: GetStaffByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Staff> {
+        const response = await this.getStaffByIdRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 指定したメールアドレスのスタッフ情報を取得します。
+     * メールアドレスでスタッフ情報を取得
+     */
+    async getStaffByMailAddressRaw(requestParameters: GetStaffByMailAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Staff>> {
+        if (requestParameters.mailAddress === null || requestParameters.mailAddress === undefined) {
+            throw new runtime.RequiredError('mailAddress','Required parameter requestParameters.mailAddress was null or undefined when calling getStaffByMailAddress.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/staffs/email/{mail_address}`.replace(`{${"mail_address"}}`, encodeURIComponent(String(requestParameters.mailAddress))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => StaffFromJSON(jsonValue));
+    }
+
+    /**
+     * 指定したメールアドレスのスタッフ情報を取得します。
+     * メールアドレスでスタッフ情報を取得
+     */
+    async getStaffByMailAddress(requestParameters: GetStaffByMailAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Staff> {
+        const response = await this.getStaffByMailAddressRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

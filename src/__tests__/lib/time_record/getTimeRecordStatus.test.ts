@@ -97,15 +97,17 @@ describe("勤務中", () => {
     rest: OriginRest | null;
   }
 
+  const now = dayjs();
+
   const table: TableProp[] = [
     // 通常
     {
       attendance: {
-        attendanceId: 0,
+        attendanceId: 1,
         parentAttendanceId: 0,
         staffId: 1,
-        workDate: dayjs().format("YYYYMMDD"),
-        startTime: "09:00:00",
+        workDate: now.format("YYYYMMDD"),
+        startTime: `${now.format("YYYY-MM-DD")}T09:00:00`,
         endTime: "",
         goDirectlyFlag: false,
         returnDirectlyFlag: false,
@@ -115,11 +117,11 @@ describe("勤務中", () => {
     },
     {
       attendance: {
-        attendanceId: 0,
+        attendanceId: 1,
         parentAttendanceId: 0,
         staffId: 1,
-        workDate: dayjs().format("YYYYMMDD"),
-        startTime: "09:00:00",
+        workDate: now.format("YYYYMMDD"),
+        startTime: `${now.format("YYYY-MM-DD")}T09:00:00`,
         endTime: "",
         goDirectlyFlag: false,
         returnDirectlyFlag: false,
@@ -128,20 +130,20 @@ describe("勤務中", () => {
       rest: {
         restTimeId: 1,
         staffId: 1,
-        workDate: dayjs().format("YYYYMMDD"),
-        startTime: "12:00:00",
-        endTime: "13:00:00",
+        workDate: now.format("YYYYMMDD"),
+        startTime: `${now.format("YYYY-MM-DD")}T12:00:00`,
+        endTime: `${now.format("YYYY-MM-DD")}T13:00:00`,
       },
     },
 
     // 直行
     {
       attendance: {
-        attendanceId: 0,
+        attendanceId: 1,
         parentAttendanceId: 0,
         staffId: 1,
         workDate: dayjs().format("YYYYMMDD"),
-        startTime: "09:00:00",
+        startTime: `${now.format("YYYY-MM-DD")}T09:00:00`,
         endTime: "",
         goDirectlyFlag: true,
         returnDirectlyFlag: false,

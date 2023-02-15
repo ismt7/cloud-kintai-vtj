@@ -39,5 +39,6 @@ module.exports = {
     "implicit-arrow-linebreak": "off",
     "no-void": "off",
     "operator-linebreak": "off",
+    "@typescript-eslint/indent": "off",
   },
 };

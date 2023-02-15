@@ -21,10 +21,10 @@ import { exists, mapValues } from '../runtime';
 export interface AttendanceClockIn {
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof AttendanceClockIn
      */
-    startTime: string;
+    startTime: Date;
     /**
      * 
      * @type {boolean}
@@ -54,7 +54,7 @@ export function AttendanceClockInFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'startTime': json['start_time'],
+        'startTime': (new Date(json['start_time'])),
         'goDirectlyFlag': json['go_directly_flag'],
     };
 }
@@ -68,7 +68,7 @@ export function AttendanceClockInToJSON(value?: AttendanceClockIn | null): any {
     }
     return {
         
-        'start_time': value.startTime,
+        'start_time': (value.startTime.toISOString()),
         'go_directly_flag': value.goDirectlyFlag,
     };
 }

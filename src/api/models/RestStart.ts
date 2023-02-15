@@ -21,10 +21,10 @@ import { exists, mapValues } from '../runtime';
 export interface RestStart {
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof RestStart
      */
-    startTime: string;
+    startTime: Date;
 }
 
 /**
@@ -47,7 +47,7 @@ export function RestStartFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     }
     return {
         
-        'startTime': json['start_time'],
+        'startTime': (new Date(json['start_time'])),
     };
 }
 
@@ -60,7 +60,7 @@ export function RestStartToJSON(value?: RestStart | null): any {
     }
     return {
         
-        'start_time': value.startTime,
+        'start_time': (value.startTime.toISOString()),
     };
 }
 

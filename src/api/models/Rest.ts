@@ -45,16 +45,16 @@ export interface Rest {
     workDate: Date;
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof Rest
      */
-    startTime: string;
+    startTime: Date;
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof Rest
      */
-    endTime?: string;
+    endTime?: Date;
 }
 
 /**
@@ -84,8 +84,8 @@ export function RestFromJSONTyped(json: any, ignoreDiscriminator: boolean): Rest
         'parentRestTimeId': !exists(json, 'parent_rest_time_id') ? undefined : json['parent_rest_time_id'],
         'staffId': json['staff_id'],
         'workDate': (new Date(json['work_date'])),
-        'startTime': json['start_time'],
-        'endTime': !exists(json, 'end_time') ? undefined : json['end_time'],
+        'startTime': (new Date(json['start_time'])),
+        'endTime': !exists(json, 'end_time') ? undefined : (new Date(json['end_time'])),
     };
 }
 
@@ -102,8 +102,8 @@ export function RestToJSON(value?: Rest | null): any {
         'parent_rest_time_id': value.parentRestTimeId,
         'staff_id': value.staffId,
         'work_date': (value.workDate.toISOString().substr(0,10)),
-        'start_time': value.startTime,
-        'end_time': value.endTime,
+        'start_time': (value.startTime.toISOString()),
+        'end_time': value.endTime === undefined ? undefined : (value.endTime.toISOString()),
     };
 }
 

@@ -21,10 +21,10 @@ import { exists, mapValues } from '../runtime';
 export interface AttendanceClockOut {
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof AttendanceClockOut
      */
-    endTime: string;
+    endTime: Date;
     /**
      * 
      * @type {boolean}
@@ -54,7 +54,7 @@ export function AttendanceClockOutFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'endTime': json['end_time'],
+        'endTime': (new Date(json['end_time'])),
         'returnDirectlyFlag': json['return_directly_flag'],
     };
 }
@@ -68,7 +68,7 @@ export function AttendanceClockOutToJSON(value?: AttendanceClockOut | null): any
     }
     return {
         
-        'end_time': value.endTime,
+        'end_time': (value.endTime.toISOString()),
         'return_directly_flag': value.returnDirectlyFlag,
     };
 }
