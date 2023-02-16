@@ -9,12 +9,14 @@ import {
 interface LinkProps {
   label?: string;
   href?: string;
+  color?: "primary" | "secondary";
   sx?: SxProps<Theme> | undefined;
   onClick?: () => void;
 }
 
 const palette = {
   primary: { main: "#0FA85E", contrastText: "#fff" },
+  secondary: { main: "#fff", contrastText: "#0FA85E" },
 };
 
 const theme = createTheme({
@@ -46,6 +48,21 @@ const theme = createTheme({
             },
           },
         },
+        {
+          props: { variant: "button", color: "secondary" },
+          style: {
+            backgroundColor: palette.secondary.main,
+            color: palette.secondary.contrastText,
+            textDecoration: "none",
+            borderRadius: "5px",
+            "&:hover": {
+              backgroundColor: palette.secondary.contrastText,
+              color: palette.secondary.main,
+              textDecoration: "none",
+              borderRadius: "5px",
+            },
+          },
+        },
       ],
     },
   },
@@ -54,11 +71,18 @@ const theme = createTheme({
 const Link = ({
   label = "link",
   href = "/",
+  color = "primary",
   onClick = () => {},
   sx = {},
 }: LinkProps) => (
   <ThemeProvider theme={theme}>
-    <MuiLink href={href} variant="button" sx={sx} onClick={onClick}>
+    <MuiLink
+      href={href}
+      variant="button"
+      color={color}
+      sx={sx}
+      onClick={onClick}
+    >
       {label}
     </MuiLink>
   </ThemeProvider>

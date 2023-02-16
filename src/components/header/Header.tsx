@@ -1,7 +1,7 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import LogImage from "../../images/logo.png";
 import Button from "../button/Button";
@@ -18,6 +18,7 @@ interface HeaderProps {
 const Header = ({ signIn, signOut }: HeaderProps) => {
   const staff = useAppSelector(selectStaff);
   const [isSignIn, setIsSignIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (staff?.status === StaffStatus.DONE && staff?.data?.mailAddress) {
@@ -84,36 +85,40 @@ const Header = ({ signIn, signOut }: HeaderProps) => {
         </Box>
         <Box>
           <Stack direction="row" spacing={1}>
-            {/* {user?.role === "admin" && (
-            <Button
-              color="login"
-              label="管理ページ"
-              onClick={() => {}}
-              variant="outlined"
-              height="100%"
-              width="110px"
-            />
-          )} */}
-
-            {isSignIn ? (
-              <Button
-                color="logout"
-                label="ログアウト"
-                onClick={signOut}
-                variant="contained"
-                height="100%"
-                width="110px"
-              />
-            ) : (
+            <Box>
               <Button
                 color="login"
-                label="ログイン"
-                onClick={signIn}
+                label="管理ページ"
+                onClick={() => {
+                  navigate("/admin/", { replace: true });
+                }}
                 variant="outlined"
                 height="100%"
                 width="110px"
               />
-            )}
+            </Box>
+
+            <Box>
+              {isSignIn ? (
+                <Button
+                  color="logout"
+                  label="ログアウト"
+                  onClick={signOut}
+                  variant="contained"
+                  height="100%"
+                  width="110px"
+                />
+              ) : (
+                <Button
+                  color="login"
+                  label="ログイン"
+                  onClick={signIn}
+                  variant="outlined"
+                  height="100%"
+                  width="110px"
+                />
+              )}
+            </Box>
           </Stack>
         </Box>
         {staff && (
