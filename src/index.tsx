@@ -12,6 +12,7 @@ import Top from "./pages/Top";
 import RequireAuth from "./pages/RequireAuth";
 import { store } from "./lib/store";
 import List from "./pages/List";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,16 @@ const router = createBrowserRouter([
       {
         path: "*",
         element: <div>Not Found</div>,
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    element: <Layout />,
+    children: [
+      {
+        path: "/admin/",
+        element: <AdminDashboard />,
       },
     ],
   },
