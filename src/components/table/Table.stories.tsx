@@ -39,6 +39,13 @@ const mockStore = configureStore({
         firstName: "太郎",
         mailAddress: "tanaka@example.com",
         iconPath: "",
+        staffRoles: {
+          roleId: 2,
+          staffId: 999,
+          role: {
+            roleName: "スタッフ",
+          },
+        },
       },
     }),
     attendanceReducer: testAttendanceSlice({

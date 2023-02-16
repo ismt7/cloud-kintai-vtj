@@ -85,18 +85,20 @@ const Header = ({ signIn, signOut }: HeaderProps) => {
         </Box>
         <Box>
           <Stack direction="row" spacing={1}>
-            <Box>
-              <Button
-                color="login"
-                label="管理ページ"
-                onClick={() => {
-                  navigate("/admin/", { replace: true });
-                }}
-                variant="outlined"
-                height="100%"
-                width="110px"
-              />
-            </Box>
+            {[1, 3].indexOf(staff.data?.staffRoles.roleId || 0) !== -1 && (
+              <Box>
+                <Button
+                  color="login"
+                  label="管理ページ"
+                  onClick={() => {
+                    navigate("/admin/", { replace: true });
+                  }}
+                  variant="outlined"
+                  height="100%"
+                  width="110px"
+                />
+              </Box>
+            )}
 
             <Box>
               {isSignIn ? (

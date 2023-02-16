@@ -4,3 +4,4 @@ export * from './AttendanceApi';
 export * from './DefaultApi';
 export * from './RestApi';
 export * from './StaffApi';
+export * from './StaffRoleApi';
