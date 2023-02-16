@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { StaffRole } from './StaffRole';
+import {
+    StaffRoleFromJSON,
+    StaffRoleFromJSONTyped,
+    StaffRoleToJSON,
+} from './StaffRole';
+
 /**
  * 
  * @export
@@ -49,6 +56,12 @@ export interface Staff {
      * @memberof Staff
      */
     staffId: number;
+    /**
+     * 
+     * @type {StaffRole}
+     * @memberof Staff
+     */
+    staffRoles: StaffRole;
 }
 
 /**
@@ -60,6 +73,7 @@ export function instanceOfStaff(value: object): boolean {
     isInstance = isInstance && "firstName" in value;
     isInstance = isInstance && "mailAddress" in value;
     isInstance = isInstance && "staffId" in value;
+    isInstance = isInstance && "staffRoles" in value;
 
     return isInstance;
 }
@@ -79,6 +93,7 @@ export function StaffFromJSONTyped(json: any, ignoreDiscriminator: boolean): Sta
         'mailAddress': json['mail_address'],
         'iconPath': !exists(json, 'icon_path') ? undefined : json['icon_path'],
         'staffId': json['staff_id'],
+        'staffRoles': StaffRoleFromJSON(json['staff_roles']),
     };
 }
 
@@ -96,6 +111,7 @@ export function StaffToJSON(value?: Staff | null): any {
         'mail_address': value.mailAddress,
         'icon_path': value.iconPath,
         'staff_id': value.staffId,
+        'staff_roles': StaffRoleToJSON(value.staffRoles),
     };
 }
 

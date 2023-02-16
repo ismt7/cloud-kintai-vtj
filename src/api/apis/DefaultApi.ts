@@ -21,6 +21,34 @@ import * as runtime from '../runtime';
 export class DefaultApi extends runtime.BaseAPI {
 
     /**
+     * 初期化用のエンドポイントです。
+     * 初期化
+     */
+    async initRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/init`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * 初期化用のエンドポイントです。
+     * 初期化
+     */
+    async init(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.initRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
      * ヘルスチェック用のエンドポイントです。
      * ヘルスチェック
      */
