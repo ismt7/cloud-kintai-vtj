@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { ThemeProvider } from "@mui/material";
 import TimeRecorder from "./TimeRecorder";
 import {
   getAttendancesHandler200,
@@ -29,6 +30,7 @@ import {
   testAttendanceSlice,
 } from "../../lib/reducers/attendanceReducer";
 import { RestStatus, testRestSlice } from "../../lib/reducers/restReducer";
+import { theme } from "../../lib/theme";
 
 const mockStore = configureStore({
   reducer: {
@@ -67,7 +69,13 @@ const mockStore = configureStore({
 export default {
   title: "Component/TimeRecorder",
   component: TimeRecorder,
-  decorators: [(story) => <Provider store={mockStore}>{story()}</Provider>],
+  decorators: [
+    (story) => (
+      <Provider store={mockStore}>
+        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+      </Provider>
+    ),
+  ],
   argTypes: {
     backgroundColor: { control: "color" },
   },

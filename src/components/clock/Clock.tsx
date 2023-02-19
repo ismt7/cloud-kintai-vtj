@@ -1,19 +1,6 @@
-import { Box, createTheme, ThemeProvider, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import React from "react";
-
-const theme = createTheme({
-  components: {
-    MuiCssBaseline: {
-      styleOverrides: `
-        @font-face {
-          font-family: 'Noto Sans JP';
-          font-style: bold;
-          font-weight: 700;
-        }`,
-    },
-  },
-});
 
 const Clock = () => {
   const [time, setTime] = React.useState(dayjs().format("YYYY/MM/DD HH:mm:ss"));
@@ -26,13 +13,11 @@ const Clock = () => {
   }, []);
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box bgcolor="black" textAlign="center" sx={{ p: 3 }} borderRadius="5px">
-        <Typography variant="h4" color="white">
-          {time}
-        </Typography>
-      </Box>
-    </ThemeProvider>
+    <Box bgcolor="black" textAlign="center" sx={{ p: 3 }} borderRadius="5px">
+      <Typography variant="h4" color="white">
+        {time}
+      </Typography>
+    </Box>
   );
 };
 

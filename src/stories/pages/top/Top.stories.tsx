@@ -1,5 +1,7 @@
+import { ThemeProvider } from "@mui/material";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { MemoryRouter } from "react-router-dom";
+import { theme } from "../../../lib/theme";
 // import { within, userEvent } from "@storybook/testing-library";
 import Top from "./Top";
 
@@ -11,9 +13,9 @@ export default {
     layout: "fullscreen",
   },
   decorators: [
-    (Story) => (
+    (story) => (
       <MemoryRouter>
-        <Story />
+        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
       </MemoryRouter>
     ),
   ],

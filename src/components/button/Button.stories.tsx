@@ -1,7 +1,9 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
+import { ThemeProvider } from "@mui/material";
 import Button from "./Button";
+import { theme } from "../../lib/theme";
 
 export default {
   title: "Component/Button",
@@ -9,6 +11,9 @@ export default {
   argTypes: {
     backgroundColor: { control: "color" },
   },
+  decorators: [
+    (story) => <ThemeProvider theme={theme}>{story()}</ThemeProvider>,
+  ],
 } as ComponentMeta<typeof Button>;
 
 const Template: ComponentStory<typeof Button> = (args) => <Button {...args} />;

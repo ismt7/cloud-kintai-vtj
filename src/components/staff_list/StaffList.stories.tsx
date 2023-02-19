@@ -1,8 +1,7 @@
 import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { Provider } from "react-redux";
-import { MemoryRouter } from "react-router-dom";
 import {
   AttendanceStatus,
   testAttendanceSlice,
@@ -13,13 +12,16 @@ import {
   testStaffRecordSlice,
 } from "../../lib/reducers/staffSlice";
 import {
+  testTimeRecordListSlice,
+  TimeRecordListStatus,
+} from "../../lib/reducers/timeRecordListReducer";
+import {
   testTimeRecordSlice,
   TimeRecordStatus,
   TimeRecordStatusText,
 } from "../../lib/reducers/timeRecordSlice";
 import { theme } from "../../lib/theme";
-
-import Header from "./Header";
+import StaffList from "./StaffList";
 
 const mockStore = configureStore({
   reducer: {
@@ -36,10 +38,10 @@ const mockStore = configureStore({
         mailAddress: "tanaka@example.com",
         iconPath: "",
         staffRoles: {
-          roleId: 3,
+          roleId: 2,
           staffId: 999,
           role: {
-            roleName: "スタッフ管理者",
+            roleName: "スタッフ",
           },
         },
       },
@@ -52,40 +54,30 @@ const mockStore = configureStore({
       status: RestStatus.DONE,
       data: null,
     }),
+    timeRecordListReducer: testTimeRecordListSlice({
+      status: TimeRecordListStatus.PROCESSING,
+      data: [],
+    }),
   },
 });
 
 export default {
-  title: "Component/Header",
-  component: Header,
+  title: "Component/StaffList",
+  component: StaffList,
   parameters: {
     layout: "fullscreen",
   },
   decorators: [
     (story) => (
       <Provider store={mockStore}>
-        <MemoryRouter>
-          <ThemeProvider theme={theme}>{story()}</ThemeProvider>
-        </MemoryRouter>
+        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
       </Provider>
     ),
   ],
-} as ComponentMeta<typeof Header>;
+} as ComponentMeta<typeof StaffList>;
 
-const Template: ComponentStory<typeof Header> = (args) => <Header {...args} />;
+const Template: ComponentStory<typeof StaffList> = () => <StaffList />;
 
 export const Default = Template.bind({});
 Default.storyName = "デフォルト";
 Default.args = {};
-
-export const LoggedIn = Template.bind({});
-LoggedIn.storyName = "ログイン";
-LoggedIn.args = {};
-
-export const LoggedOut = Template.bind({});
-LoggedOut.storyName = "ログアウト";
-LoggedOut.args = {};
-
-export const Admin = Template.bind({});
-Admin.storyName = "管理者";
-Admin.args = {};
