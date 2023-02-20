@@ -4,6 +4,7 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Authenticator } from "@aws-amplify/ui-react";
 import { Provider } from "react-redux";
+import { ThemeProvider } from "@mui/material";
 import reportWebVitals from "./reportWebVitals";
 import Layout from "./Layout";
 import Register from "./pages/Register";
@@ -13,6 +14,7 @@ import RequireAuth from "./pages/RequireAuth";
 import { store } from "./lib/store";
 import List from "./pages/List";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import { theme } from "./lib/theme";
 
 const router = createBrowserRouter([
   {
@@ -68,7 +70,9 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <Authenticator.Provider>
-        <RouterProvider router={router} />
+        <ThemeProvider theme={theme}>
+          <RouterProvider router={router} />
+        </ThemeProvider>
       </Authenticator.Provider>
     </Provider>
   </React.StrictMode>

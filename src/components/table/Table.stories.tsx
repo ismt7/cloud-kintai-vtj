@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import dayjs from "dayjs";
@@ -21,6 +22,7 @@ import {
   TimeRecordStatus,
   TimeRecordStatusText,
 } from "../../lib/reducers/timeRecordSlice";
+import { theme } from "../../lib/theme";
 import Table from "./Table";
 
 const REACT_APP_BASE_PATH = process.env.REACT_APP_BASE_PATH || "";
@@ -66,7 +68,13 @@ const mockStore = configureStore({
 export default {
   title: "Component/Table",
   component: Table,
-  decorators: [(story) => <Provider store={mockStore}>{story()}</Provider>],
+  decorators: [
+    (story) => (
+      <Provider store={mockStore}>
+        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+      </Provider>
+    ),
+  ],
   argTypes: {
     backgroundColor: { control: "color" },
   },
