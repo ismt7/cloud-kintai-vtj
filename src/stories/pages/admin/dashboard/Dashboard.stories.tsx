@@ -5,7 +5,7 @@ import { theme } from "../../../../lib/theme";
 import Dashboard from "./Dashboard";
 
 export default {
-  title: "Page/Dashboard",
+  title: "Page/Admin/Dashboard",
   component: Dashboard,
   argTypes: {
     backgroundColor: { control: "color" },
