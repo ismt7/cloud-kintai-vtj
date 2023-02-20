@@ -17,16 +17,24 @@ import * as runtime from '../runtime';
 import type {
   HTTPValidationError,
   StaffRole,
+  StaffRoleUpdate,
 } from '../models';
 import {
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     StaffRoleFromJSON,
     StaffRoleToJSON,
+    StaffRoleUpdateFromJSON,
+    StaffRoleUpdateToJSON,
 } from '../models';
 
 export interface GetStaffRoleByIdRequest {
     staffId: number;
+}
+
+export interface UpdateStaffRoleByIdRequest {
+    staffId: number;
+    staffRoleUpdate: StaffRoleUpdate;
 }
 
 /**
@@ -63,6 +71,45 @@ export class StaffRoleApi extends runtime.BaseAPI {
      */
     async getStaffRoleById(requestParameters: GetStaffRoleByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<StaffRole> {
         const response = await this.getStaffRoleByIdRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 指定したIDのスタッフロール情報を更新します。
+     * スタッフIDでスタッフロール情報を更新
+     */
+    async updateStaffRoleByIdRaw(requestParameters: UpdateStaffRoleByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<StaffRole>> {
+        if (requestParameters.staffId === null || requestParameters.staffId === undefined) {
+            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling updateStaffRoleById.');
+        }
+
+        if (requestParameters.staffRoleUpdate === null || requestParameters.staffRoleUpdate === undefined) {
+            throw new runtime.RequiredError('staffRoleUpdate','Required parameter requestParameters.staffRoleUpdate was null or undefined when calling updateStaffRoleById.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/staff_roles/{staff_id}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))),
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: StaffRoleUpdateToJSON(requestParameters.staffRoleUpdate),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => StaffRoleFromJSON(jsonValue));
+    }
+
+    /**
+     * 指定したIDのスタッフロール情報を更新します。
+     * スタッフIDでスタッフロール情報を更新
+     */
+    async updateStaffRoleById(requestParameters: UpdateStaffRoleByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<StaffRole> {
+        const response = await this.updateStaffRoleByIdRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

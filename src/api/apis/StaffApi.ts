@@ -40,6 +40,11 @@ export interface GetStaffByMailAddressRequest {
     mailAddress: string;
 }
 
+export interface GetStaffsRequest {
+    skip?: number;
+    limit?: number;
+}
+
 /**
  * 
  */
@@ -141,6 +146,42 @@ export class StaffApi extends runtime.BaseAPI {
      */
     async getStaffByMailAddress(requestParameters: GetStaffByMailAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Staff> {
         const response = await this.getStaffByMailAddressRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * スタッフ一覧を取得します。
+     * スタッフ一覧を取得
+     */
+    async getStaffsRaw(requestParameters: GetStaffsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Staff>>> {
+        const queryParameters: any = {};
+
+        if (requestParameters.skip !== undefined) {
+            queryParameters['skip'] = requestParameters.skip;
+        }
+
+        if (requestParameters.limit !== undefined) {
+            queryParameters['limit'] = requestParameters.limit;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/staffs/`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(StaffFromJSON));
+    }
+
+    /**
+     * スタッフ一覧を取得します。
+     * スタッフ一覧を取得
+     */
+    async getStaffs(requestParameters: GetStaffsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Staff>> {
+        const response = await this.getStaffsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
