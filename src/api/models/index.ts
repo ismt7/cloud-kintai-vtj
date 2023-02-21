@@ -14,4 +14,5 @@ export * from './Staff';
 export * from './StaffCreate';
 export * from './StaffRole';
 export * from './StaffRoleUpdate';
+export * from './StaffUpdate';
 export * from './ValidationError';

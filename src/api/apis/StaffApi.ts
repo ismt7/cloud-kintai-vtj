@@ -18,6 +18,7 @@ import type {
   HTTPValidationError,
   Staff,
   StaffCreate,
+  StaffUpdate,
 } from '../models';
 import {
     HTTPValidationErrorFromJSON,
@@ -26,6 +27,8 @@ import {
     StaffToJSON,
     StaffCreateFromJSON,
     StaffCreateToJSON,
+    StaffUpdateFromJSON,
+    StaffUpdateToJSON,
 } from '../models';
 
 export interface CreateStaffRequest {
@@ -43,6 +46,11 @@ export interface GetStaffByMailAddressRequest {
 export interface GetStaffsRequest {
     skip?: number;
     limit?: number;
+}
+
+export interface UpdateStaffRequest {
+    staffId: number;
+    staffUpdate: StaffUpdate;
 }
 
 /**
@@ -182,6 +190,45 @@ export class StaffApi extends runtime.BaseAPI {
      */
     async getStaffs(requestParameters: GetStaffsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Staff>> {
         const response = await this.getStaffsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * スタッフ情報を更新します。
+     * スタッフ情報を更新
+     */
+    async updateStaffRaw(requestParameters: UpdateStaffRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Staff>> {
+        if (requestParameters.staffId === null || requestParameters.staffId === undefined) {
+            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling updateStaff.');
+        }
+
+        if (requestParameters.staffUpdate === null || requestParameters.staffUpdate === undefined) {
+            throw new runtime.RequiredError('staffUpdate','Required parameter requestParameters.staffUpdate was null or undefined when calling updateStaff.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/staffs/{staff_id}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: StaffUpdateToJSON(requestParameters.staffUpdate),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => StaffFromJSON(jsonValue));
+    }
+
+    /**
+     * スタッフ情報を更新します。
+     * スタッフ情報を更新
+     */
+    async updateStaff(requestParameters: UpdateStaffRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Staff> {
+        const response = await this.updateStaffRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
