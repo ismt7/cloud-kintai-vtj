@@ -93,6 +93,7 @@ const Table = () => {
         checkboxSelection
         components={{
           NoRowsOverlay: () => <div>データがありません</div>,
+          Footer: () => null,
         }}
         sx={{
           "& .super-app-theme--saturday": {

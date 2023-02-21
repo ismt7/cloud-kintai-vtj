@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { rest } from "msw";
+import MockStaffList from "../staff_list/data/StaffList";
 
 const MOCK_STAFF_ID = 999;
 const REACT_APP_BASE_PATH = process.env.REACT_APP_BASE_PATH || "";
@@ -69,6 +70,11 @@ export const getStaffHandler200 = () =>
           staff_id: MOCK_STAFF_ID,
         })
       )
+  );
+
+export const getStaffList200 = () =>
+  rest.get(`${REACT_APP_BASE_PATH}/staffs`, (req, res, ctx) =>
+    res(ctx.status(200), ctx.json(MockStaffList))
   );
 
 export const postRestStartHandler200 = () =>

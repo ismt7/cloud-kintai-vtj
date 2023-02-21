@@ -18,6 +18,7 @@ models/Role.ts
 models/Staff.ts
 models/StaffCreate.ts
 models/StaffRole.ts
+models/StaffRoleUpdate.ts
 models/ValidationError.ts
 models/index.ts
 runtime.ts

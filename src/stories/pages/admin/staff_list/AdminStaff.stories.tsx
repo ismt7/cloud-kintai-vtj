@@ -2,31 +2,35 @@ import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { Provider } from "react-redux";
+import { MemoryRouter } from "react-router-dom";
+import { getStaffList200 } from "../../../../components/time_recorder/mocks";
 import {
   AttendanceStatus,
   testAttendanceSlice,
-} from "../../lib/reducers/attendanceReducer";
-import { RestStatus, testRestSlice } from "../../lib/reducers/restReducer";
+} from "../../../../lib/reducers/attendanceReducer";
+import {
+  RestStatus,
+  testRestSlice,
+} from "../../../../lib/reducers/restReducer";
 import {
   StaffListStatus,
   testStaffListReducer,
-} from "../../lib/reducers/staffListReducer";
+} from "../../../../lib/reducers/staffListReducer";
 import {
   StaffStatus,
   testStaffRecordSlice,
-} from "../../lib/reducers/staffSlice";
+} from "../../../../lib/reducers/staffSlice";
 import {
   testTimeRecordListSlice,
   TimeRecordListStatus,
-} from "../../lib/reducers/timeRecordListReducer";
+} from "../../../../lib/reducers/timeRecordListReducer";
 import {
   testTimeRecordSlice,
   TimeRecordStatus,
   TimeRecordStatusText,
-} from "../../lib/reducers/timeRecordSlice";
-import { theme } from "../../lib/theme";
-import { getStaffList200 } from "../time_recorder/mocks";
-import StaffList from "./StaffList";
+} from "../../../../lib/reducers/timeRecordSlice";
+import { theme } from "../../../../lib/theme";
+import AdminStaff from "./AdminStaff";
 
 const mockStore = configureStore({
   reducer: {
@@ -71,24 +75,24 @@ const mockStore = configureStore({
 });
 
 export default {
-  title: "Component/StaffList",
-  component: StaffList,
-  parameters: {
-    layout: "fullscreen",
+  title: "Page/Admin/StaffList",
+  argTypes: {
+    backgroundColor: { control: "color" },
   },
   decorators: [
     (story) => (
       <Provider store={mockStore}>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+        <MemoryRouter>
+          <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+        </MemoryRouter>
       </Provider>
     ),
   ],
-} as ComponentMeta<typeof StaffList>;
+} as ComponentMeta<typeof AdminStaff>;
 
-const Template: ComponentStory<typeof StaffList> = () => <StaffList />;
+const Template: ComponentStory<typeof AdminStaff> = () => <AdminStaff />;
 
 export const Default = Template.bind({});
-Default.storyName = "デフォルト";
 Default.args = {};
 Default.parameters = {
   msw: {

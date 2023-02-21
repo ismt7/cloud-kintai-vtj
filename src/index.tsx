@@ -15,6 +15,7 @@ import { store } from "./lib/store";
 import List from "./pages/List";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import { theme } from "./lib/theme";
+import AdminStaff from "./pages/admin/AdminStaff";
 
 const router = createBrowserRouter([
   {
@@ -57,7 +58,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/admin/",
-        element: <AdminDashboard />,
+        element: (
+          <RequireAuth>
+            <AdminDashboard />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/admin/staff",
+        element: (
+          <RequireAuth>
+            <AdminStaff />
+          </RequireAuth>
+        ),
       },
     ],
   },

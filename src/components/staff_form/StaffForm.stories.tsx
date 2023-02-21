@@ -25,8 +25,7 @@ import {
   TimeRecordStatusText,
 } from "../../lib/reducers/timeRecordSlice";
 import { theme } from "../../lib/theme";
-import { getStaffList200 } from "../time_recorder/mocks";
-import StaffList from "./StaffList";
+import StaffForm from "./StaffForm";
 
 const mockStore = configureStore({
   reducer: {
@@ -52,7 +51,7 @@ const mockStore = configureStore({
       },
     }),
     staffListReducer: testStaffListReducer({
-      status: StaffListStatus.PROCESSING,
+      status: StaffListStatus.DONE,
       data: [],
     }),
     attendanceReducer: testAttendanceSlice({
@@ -64,17 +63,17 @@ const mockStore = configureStore({
       data: null,
     }),
     timeRecordListReducer: testTimeRecordListSlice({
-      status: TimeRecordListStatus.DONE,
+      status: TimeRecordListStatus.PROCESSING,
       data: [],
     }),
   },
 });
 
 export default {
-  title: "Component/StaffList",
-  component: StaffList,
-  parameters: {
-    layout: "fullscreen",
+  title: "Component/StaffForm",
+  component: StaffForm,
+  argTypes: {
+    backgroundColor: { control: "color" },
   },
   decorators: [
     (story) => (
@@ -83,15 +82,10 @@ export default {
       </Provider>
     ),
   ],
-} as ComponentMeta<typeof StaffList>;
+} as ComponentMeta<typeof StaffForm>;
 
-const Template: ComponentStory<typeof StaffList> = () => <StaffList />;
+const Template: ComponentStory<typeof StaffForm> = () => <StaffForm />;
 
 export const Default = Template.bind({});
 Default.storyName = "デフォルト";
 Default.args = {};
-Default.parameters = {
-  msw: {
-    handlers: [getStaffList200()],
-  },
-};

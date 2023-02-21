@@ -1,6 +1,50 @@
 // cspell:words Noto
 import { createTheme } from "@mui/material";
 
+declare module "@mui/material/styles" {
+  interface Palette {
+    cancel: Palette["error"];
+    rest: Palette["primary"];
+    clock_in: Palette["primary"];
+    clock_out: Palette["error"];
+    login: Palette["primary"];
+    logout: Palette["error"];
+    delete: Palette["error"];
+  }
+
+  interface PaletteOptions {
+    cancel?: PaletteOptions["error"];
+    rest?: PaletteOptions["primary"];
+    clock_in?: PaletteOptions["primary"];
+    clock_out?: PaletteOptions["error"];
+    login?: PaletteOptions["primary"];
+    logout?: PaletteOptions["error"];
+    delete?: PaletteOptions["error"];
+  }
+}
+
+declare module "@mui/material/Button" {
+  interface ButtonPropsColorOverrides {
+    cancel: true;
+    rest: true;
+    clock_in: true;
+    clock_out: true;
+    login: true;
+    logout: true;
+    delete: true;
+  }
+
+  interface ButtonPropsVariantOverrides {
+    cancel: true;
+    rest: true;
+    clock_in: true;
+    clock_out: true;
+    login: true;
+    logout: true;
+    delete: true;
+  }
+}
+
 export type Color =
   | "inherit"
   | "primary"
@@ -14,7 +58,8 @@ export type Color =
   | "clock_in"
   | "clock_out"
   | "login"
-  | "logout";
+  | "logout"
+  | "delete";
 export type Variant = "text" | "outlined" | "contained";
 
 const palette = {
@@ -29,6 +74,7 @@ const palette = {
   clock_out: { main: "#B33D47", contrastText: "#fff" },
   login: { main: "#0FA85E", contrastText: "#fff" },
   logout: { main: "#B33D47", contrastText: "#fff" },
+  delete: { main: "#B33D47", contrastText: "#fff" },
 };
 
 const useMuiButtonVariant = (
@@ -274,6 +320,12 @@ export const theme = createTheme({
           palette.logout.contrastText,
           "outlined",
           "logout"
+        ),
+        useMuiButtonVariant(
+          palette.delete.main,
+          palette.delete.contrastText,
+          "contained",
+          "delete"
         ),
       ],
     },
