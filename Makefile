@@ -4,8 +4,11 @@ setup:
 install:
 	npm install
 
+build:
+	cd infra && docker compose build
+
 start:
-	cd infra && docker compose up -d frontend --build
+	cd infra && docker compose up -d frontend
 
 # ci-start:
 # 	cd infra && docker compose up -d frontend
@@ -20,7 +23,7 @@ test-storybook:
 	npm run test-storybook
 
 storybook:
-	cd infra && docker compose up -d storybook --build
+	cd infra && docker compose up -d storybook
 
 openapi-codegen:
 	docker run --rm \

@@ -41,7 +41,7 @@ const staffListReducer = createSlice({
   name: "staffList",
   initialState,
   reducers: {
-    selectStaff: (state, action) => {
+    selectedStaff: (state, action) => {
       state.selectedData = action.payload as Staff;
     },
   },
@@ -50,7 +50,7 @@ const staffListReducer = createSlice({
 
 export default staffListReducer.reducer;
 
-export const { selectStaff } = staffListReducer.actions;
+export const { selectedStaff } = staffListReducer.actions;
 
 export const testStaffListReducer = (customInitialState: StaffListState) =>
   createSlice({

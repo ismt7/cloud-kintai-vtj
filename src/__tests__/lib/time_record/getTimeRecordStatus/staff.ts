@@ -10,8 +10,8 @@ import {
 } from "../../../../lib/reducers/restReducer";
 import {
   StaffStatus,
-  testStaffRecordSlice,
-} from "../../../../lib/reducers/staffSlice";
+  testLoginStaffReducer,
+} from "../../../../lib/reducers/loginStaffReducer";
 import {
   testTimeRecordSlice,
   TimeRecordStatus,
@@ -31,9 +31,9 @@ describe("Staff", () => {
           status: TimeRecordStatus.PROCESSING,
           statusText: TimeRecordStatusText.PROCESSING,
         }),
-        staffReducer: testStaffRecordSlice({
+        loginStaffReducer: testLoginStaffReducer({
           status: StaffStatus.NOT_PROCESSING,
-          data: null,
+          data: undefined,
         }),
         attendanceReducer: testAttendanceSlice({
           status: AttendanceStatus.DONE,
@@ -49,7 +49,7 @@ describe("Staff", () => {
     const beforeState = store.getState();
     void (await store.dispatch(
       getTimeRecordStatus({
-        staff: beforeState.staffReducer,
+        staff: beforeState.loginStaffReducer,
         attendance: beforeState.attendanceReducer,
         rest: beforeState.restReducer,
       })
@@ -71,9 +71,9 @@ describe("Staff", () => {
           status: TimeRecordStatus.PROCESSING,
           statusText: TimeRecordStatusText.PROCESSING,
         }),
-        staffReducer: testStaffRecordSlice({
+        loginStaffReducer: testLoginStaffReducer({
           status: StaffStatus.PROCESSING,
-          data: null,
+          data: undefined,
         }),
         attendanceReducer: testAttendanceSlice({
           status: AttendanceStatus.DONE,
@@ -89,7 +89,7 @@ describe("Staff", () => {
     const beforeState = store.getState();
     void (await store.dispatch(
       getTimeRecordStatus({
-        staff: beforeState.staffReducer,
+        staff: beforeState.loginStaffReducer,
         attendance: beforeState.attendanceReducer,
         rest: beforeState.restReducer,
       })
@@ -111,9 +111,9 @@ describe("Staff", () => {
           status: TimeRecordStatus.PROCESSING,
           statusText: TimeRecordStatusText.PROCESSING,
         }),
-        staffReducer: testStaffRecordSlice({
+        loginStaffReducer: testLoginStaffReducer({
           status: StaffStatus.ERROR,
-          data: null,
+          data: undefined,
         }),
         attendanceReducer: testAttendanceSlice({
           status: AttendanceStatus.DONE,
@@ -129,7 +129,7 @@ describe("Staff", () => {
     const beforeState = store.getState();
     void (await store.dispatch(
       getTimeRecordStatus({
-        staff: beforeState.staffReducer,
+        staff: beforeState.loginStaffReducer,
         attendance: beforeState.attendanceReducer,
         rest: beforeState.restReducer,
       })

@@ -6,9 +6,9 @@ import { useEffect, useState } from "react";
 import LogImage from "../../images/logo.png";
 import Button from "../button/Button";
 import Link from "../link/Link";
-import { StaffStatus } from "../../lib/reducers/staffSlice";
+import { StaffStatus } from "../../lib/reducers/loginStaffReducer";
 import { useAppSelector } from "../../lib/hooks";
-import { selectStaff } from "../../lib/store";
+import { selectLoginStaff } from "../../lib/store";
 
 interface HeaderProps {
   signIn?: () => void;
@@ -16,7 +16,7 @@ interface HeaderProps {
 }
 
 const Header = ({ signIn, signOut }: HeaderProps) => {
-  const staff = useAppSelector(selectStaff);
+  const staff = useAppSelector(selectLoginStaff);
   const [isSignIn, setIsSignIn] = useState(false);
   const navigate = useNavigate();
 

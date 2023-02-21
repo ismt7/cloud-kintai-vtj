@@ -1,3 +1,4 @@
+// cspell:words testid
 import { Button as MuiButton } from "@mui/material";
 import { Color, Variant } from "../../lib/theme";
 
@@ -21,7 +22,6 @@ const Button = ({
   disabled = false,
   size = "medium",
   label = "Button",
-
   onClick = () => {},
   ...props
 }: ButtonProps) => (
