@@ -10,9 +10,8 @@ jobs:
       - checkout
       - run: npm install
       - run: make ci-test
-      - store_artifacts:
-          path: coverage/lcov-report
-          destination: coverage_report
+      - store_test_results:
+          path: coverage/
 
 workflows:
   app-workflow:
