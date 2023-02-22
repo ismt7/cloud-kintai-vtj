@@ -2,12 +2,12 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../lib/hooks";
-import { selectStaff, selectTimeRecordList } from "../../lib/store";
+import { selectLoginStaff, selectTimeRecordList } from "../../lib/store";
 import fetchTimeRecordList from "../../lib/time_record_list/FetchTimeRecordList";
 import Button from "../button/Button";
 
 const Table = () => {
-  const staff = useAppSelector(selectStaff);
+  const staff = useAppSelector(selectLoginStaff);
   const timeRecordList = useAppSelector(selectTimeRecordList);
   const dispatch = useAppDispatch();
   const now = dayjs();

@@ -4,7 +4,7 @@ import {
   AttendanceStatus,
 } from "../reducers/attendanceReducer";
 import { RestState, RestStatus } from "../reducers/restReducer";
-import { StaffState, StaffStatus } from "../reducers/staffSlice";
+import { StaffState, StaffStatus } from "../reducers/loginStaffReducer";
 // eslint-disable-next-line import/no-cycle
 import { TimeRecordStatus } from "../reducers/timeRecordSlice";
 

@@ -11,8 +11,8 @@ import {
 import { RestStatus, testRestSlice } from "../../lib/reducers/restReducer";
 import {
   StaffStatus,
-  testStaffRecordSlice,
-} from "../../lib/reducers/staffSlice";
+  testLoginStaffReducer,
+} from "../../lib/reducers/loginStaffReducer";
 import {
   testTimeRecordListSlice,
   TimeRecordListStatus,
@@ -33,7 +33,7 @@ const mockStore = configureStore({
       status: TimeRecordStatus.PROCESSING,
       statusText: TimeRecordStatusText.PROCESSING,
     }),
-    staffReducer: testStaffRecordSlice({
+    loginStaffReducer: testLoginStaffReducer({
       status: StaffStatus.DONE,
       data: {
         staffId: 999,

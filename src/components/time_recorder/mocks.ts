@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { rest } from "msw";
+import { StaffCreate } from "../../api";
 import MockStaffList from "../staff_list/data/StaffList";
 
 const MOCK_STAFF_ID = 999;
@@ -66,11 +67,62 @@ export const getStaffHandler200 = () =>
           last_name: "田中",
           first_name: "太郎",
           mail_address: "ishimoto@virtulatech.jp",
-          icon_path: "",
+          icon_path: undefined,
           staff_id: MOCK_STAFF_ID,
+          staff_roles: {
+            role_id: 2,
+            staff_id: MOCK_STAFF_ID,
+            role: {
+              role_name: "スタッフ",
+            },
+          },
         })
       )
   );
+
+export const putStaffHandler200 = () =>
+  rest.put(`${REACT_APP_BASE_PATH}/staffs/${MOCK_STAFF_ID}`, (req, res, ctx) =>
+    res(
+      ctx.status(200),
+      ctx.json({
+        staff_id: MOCK_STAFF_ID,
+        last_name: "田中",
+        first_name: "太郎",
+        mail_address: "tanaka2@example.com",
+        icon_path: undefined,
+        staff_roles: {
+          role_id: 2,
+          staff_id: MOCK_STAFF_ID,
+          role: {
+            role_name: "スタッフ",
+          },
+        },
+      })
+    )
+  );
+
+export const postStaffHandler200 = () =>
+  rest.post(`${REACT_APP_BASE_PATH}/staffs`, async (req, res, ctx) => {
+    const request = await req.json<StaffCreate>();
+
+    return res(
+      ctx.status(200),
+      ctx.json({
+        staff_id: MOCK_STAFF_ID,
+        last_name: request.lastName,
+        first_name: request.firstName,
+        mail_address: request.mailAddress,
+        icon_path: undefined,
+        staff_roles: {
+          role_id: 2,
+          staff_id: MOCK_STAFF_ID,
+          role: {
+            role_name: "スタッフ",
+          },
+        },
+      })
+    );
+  });
 
 export const getStaffList200 = () =>
   rest.get(`${REACT_APP_BASE_PATH}/staffs`, (req, res, ctx) =>
@@ -88,6 +140,22 @@ export const postRestStartHandler200 = () =>
           work_date: "2023-01-01",
           start_time: "2023-01-01T12:00:00",
           end_time: null,
+        })
+      )
+  );
+
+export const patchStaffRoleHandler200 = () =>
+  rest.patch(
+    `${REACT_APP_BASE_PATH}/staffs/${MOCK_STAFF_ID}/role`,
+    (req, res, ctx) =>
+      res(
+        ctx.status(200),
+        ctx.json({
+          role_id: 3,
+          staff_id: 2,
+          role: {
+            role_name: "スタッフ管理者",
+          },
         })
       )
   );

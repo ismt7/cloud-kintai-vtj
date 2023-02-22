@@ -1,7 +1,10 @@
 import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { waitFor, within, screen, fireEvent } from "@testing-library/react";
 import { Provider } from "react-redux";
+import { expect } from "@storybook/jest";
+import userEvent from "@testing-library/user-event";
 import {
   AttendanceStatus,
   testAttendanceSlice,
@@ -13,8 +16,8 @@ import {
 } from "../../lib/reducers/staffListReducer";
 import {
   StaffStatus,
-  testStaffRecordSlice,
-} from "../../lib/reducers/staffSlice";
+  testLoginStaffReducer,
+} from "../../lib/reducers/loginStaffReducer";
 import {
   testTimeRecordListSlice,
   TimeRecordListStatus,
@@ -25,15 +28,30 @@ import {
   TimeRecordStatusText,
 } from "../../lib/reducers/timeRecordSlice";
 import { theme } from "../../lib/theme";
+import {
+  patchStaffRoleHandler200,
+  postStaffHandler200,
+  putStaffHandler200,
+} from "../time_recorder/mocks";
 import StaffForm from "./StaffForm";
 
-const mockStore = configureStore({
+export default {
+  title: "Component/StaffForm",
+  component: StaffForm,
+  argTypes: {
+    backgroundColor: { control: "color" },
+  },
+} as ComponentMeta<typeof StaffForm>;
+
+const Template: ComponentStory<typeof StaffForm> = () => <StaffForm />;
+
+const mockStoreForSystemAdmin = configureStore({
   reducer: {
     timeRecordReducer: testTimeRecordSlice({
       status: TimeRecordStatus.PROCESSING,
       statusText: TimeRecordStatusText.PROCESSING,
     }),
-    staffReducer: testStaffRecordSlice({
+    loginStaffReducer: testLoginStaffReducer({
       status: StaffStatus.DONE,
       data: {
         staffId: 999,
@@ -42,10 +60,171 @@ const mockStore = configureStore({
         mailAddress: "tanaka@example.com",
         iconPath: "",
         staffRoles: {
-          roleId: 2,
+          roleId: 1,
           staffId: 999,
           role: {
-            roleName: "スタッフ",
+            roleName: "システム管理者",
+          },
+        },
+      },
+    }),
+    staffListReducer: testStaffListReducer({
+      status: StaffListStatus.DONE,
+      data: [],
+    }),
+    attendanceReducer: testAttendanceSlice({
+      status: AttendanceStatus.DONE,
+      data: null,
+    }),
+    restReducer: testRestSlice({
+      status: RestStatus.DONE,
+      data: null,
+    }),
+    timeRecordListReducer: testTimeRecordListSlice({
+      status: TimeRecordListStatus.DONE,
+      data: [],
+    }),
+  },
+});
+
+export const SystemAdmin = Template.bind({});
+SystemAdmin.storyName = "システム管理者";
+SystemAdmin.args = {};
+SystemAdmin.decorators = [
+  (story) => (
+    <Provider store={mockStoreForSystemAdmin}>
+      <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+    </Provider>
+  ),
+];
+SystemAdmin.parameters = {
+  msw: {
+    handlers: [
+      putStaffHandler200(),
+      patchStaffRoleHandler200(),
+      postStaffHandler200(),
+    ],
+  },
+};
+SystemAdmin.play = async ({ canvasElement }) => {
+  const wait = async (ms: number | undefined) =>
+    new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, ms);
+    });
+
+  const canvas = within(canvasElement);
+
+  await wait(500);
+
+  await waitFor(async () => {
+    const button = canvas.getByRole("button", { name: "作成" });
+    expect(button).toBeDisabled();
+  });
+
+  // 名前(姓)
+  await waitFor(async () => {
+    const lastName = canvas.queryByTestId("last-name");
+    expect(lastName).toBeEnabled();
+    if (lastName) {
+      void userEvent.type(lastName, "田中");
+      expect(lastName).toHaveValue("田中");
+    }
+  });
+
+  await waitFor(async () => {
+    const button = canvas.getByRole("button", { name: "作成" });
+    expect(button).toBeDisabled();
+  });
+
+  // 名前(名)
+  await waitFor(async () => {
+    const firstName = canvas.queryByTestId("first-name");
+    expect(firstName).toBeEnabled();
+    if (firstName) {
+      void userEvent.type(firstName, "太郎");
+      expect(firstName).toHaveValue("太郎");
+    }
+  });
+
+  await waitFor(async () => {
+    const button = canvas.getByRole("button", { name: "作成" });
+    expect(button).toBeDisabled();
+  });
+
+  // メールアドレス(エラー)
+  await waitFor(async () => {
+    const mailAddress = canvas.queryByTestId("mail-address");
+    expect(mailAddress).toBeEnabled();
+    if (mailAddress) {
+      void userEvent.type(mailAddress, "aaaa");
+      expect(canvas.getByText(/入力内容に誤りがあります/i)).toBeEnabled();
+    }
+  });
+
+  await waitFor(async () => {
+    const button = canvas.getByRole("button", { name: "作成" });
+    expect(button).toBeDisabled();
+  });
+
+  // メールアドレス(正常)
+  await waitFor(async () => {
+    const mailAddress = canvas.queryByTestId("mail-address");
+    expect(mailAddress).toBeEnabled();
+    if (mailAddress) {
+      void userEvent.clear(mailAddress);
+      void userEvent.type(mailAddress, "tanaka@example.com");
+      expect(mailAddress).toHaveValue("tanaka@example.com");
+    }
+  });
+
+  await waitFor(async () => {
+    const button = canvas.getByRole("button", { name: "作成" });
+    expect(button).toBeEnabled();
+  });
+
+  // 役割
+  await waitFor(async () => {
+    const staffRole = canvas.queryByTestId("staff-role");
+    if (staffRole) {
+      const button = within(staffRole).getByRole("button");
+      void userEvent.click(button);
+
+      const listbox = within(screen.getByRole("presentation")).getByRole(
+        "listbox"
+      );
+      const options = within(listbox).getAllByRole("option");
+
+      expect(options[0]).toHaveTextContent("システム管理者");
+      expect(options[1]).toHaveTextContent("スタッフ");
+      expect(options[2]).toHaveTextContent("スタッフ管理者");
+
+      fireEvent.click(options[0]);
+      expect(button).toHaveTextContent("システム管理者");
+    }
+  });
+};
+
+const mockStoreForStaffAdmin = configureStore({
+  reducer: {
+    timeRecordReducer: testTimeRecordSlice({
+      status: TimeRecordStatus.PROCESSING,
+      statusText: TimeRecordStatusText.PROCESSING,
+    }),
+    loginStaffReducer: testLoginStaffReducer({
+      status: StaffStatus.DONE,
+      data: {
+        staffId: 999,
+        lastName: "田中",
+        firstName: "太郎",
+        mailAddress: "tanaka@example.com",
+        iconPath: "",
+        staffRoles: {
+          roleId: 3,
+          staffId: 999,
+          role: {
+            roleName: "スタッフ管理者",
           },
         },
       },
@@ -69,23 +248,239 @@ const mockStore = configureStore({
   },
 });
 
-export default {
-  title: "Component/StaffForm",
-  component: StaffForm,
-  argTypes: {
-    backgroundColor: { control: "color" },
+export const StaffAdmin = Template.bind({});
+StaffAdmin.storyName = "スタッフ管理者";
+StaffAdmin.args = {};
+StaffAdmin.decorators = [
+  (story) => (
+    <Provider store={mockStoreForStaffAdmin}>
+      <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+    </Provider>
+  ),
+];
+StaffAdmin.parameters = {
+  msw: {
+    handlers: [
+      putStaffHandler200(),
+      patchStaffRoleHandler200(),
+      postStaffHandler200(),
+    ],
   },
-  decorators: [
-    (story) => (
-      <Provider store={mockStore}>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
-      </Provider>
-    ),
-  ],
-} as ComponentMeta<typeof StaffForm>;
+};
+StaffAdmin.play = async ({ canvasElement }) => {
+  const wait = async (ms: number | undefined) =>
+    new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, ms);
+    });
 
-const Template: ComponentStory<typeof StaffForm> = () => <StaffForm />;
+  const canvas = within(canvasElement);
 
-export const Default = Template.bind({});
-Default.storyName = "デフォルト";
-Default.args = {};
+  await wait(500);
+
+  // 役割
+  await waitFor(async () => {
+    const staffRole = canvas.queryByTestId("staff-role");
+    if (staffRole) {
+      const button = within(staffRole).getByRole("button");
+      void userEvent.click(button);
+
+      const listbox = within(screen.getByRole("presentation")).getByRole(
+        "listbox"
+      );
+      const options = within(listbox).getAllByRole("option");
+
+      expect(options[0]).toHaveTextContent("スタッフ");
+      expect(options[1]).toHaveTextContent("スタッフ管理者");
+
+      fireEvent.click(options[1]);
+      expect(button).toHaveTextContent("スタッフ管理者");
+    }
+  });
+};
+
+const mockStoreUpdateStaff = configureStore({
+  reducer: {
+    timeRecordReducer: testTimeRecordSlice({
+      status: TimeRecordStatus.PROCESSING,
+      statusText: TimeRecordStatusText.PROCESSING,
+    }),
+    loginStaffReducer: testLoginStaffReducer({
+      status: StaffStatus.DONE,
+      data: {
+        staffId: 999,
+        lastName: "田中",
+        firstName: "太郎",
+        mailAddress: "tanaka@example.com",
+        iconPath: "",
+        staffRoles: {
+          roleId: 3,
+          staffId: 999,
+          role: {
+            roleName: "スタッフ管理者",
+          },
+        },
+      },
+    }),
+    staffListReducer: testStaffListReducer({
+      status: StaffListStatus.DONE,
+      data: [],
+      selectedData: {
+        staffId: 999,
+        lastName: "田中",
+        firstName: "太郎",
+        mailAddress: "tanaka@example.com",
+        iconPath: "",
+        staffRoles: {
+          roleId: 2,
+          staffId: 999,
+          role: {
+            roleName: "スタッフ",
+          },
+        },
+      },
+    }),
+    attendanceReducer: testAttendanceSlice({
+      status: AttendanceStatus.DONE,
+      data: null,
+    }),
+    restReducer: testRestSlice({
+      status: RestStatus.DONE,
+      data: null,
+    }),
+    timeRecordListReducer: testTimeRecordListSlice({
+      status: TimeRecordListStatus.PROCESSING,
+      data: [],
+    }),
+  },
+});
+
+export const UpdateStaff = Template.bind({});
+UpdateStaff.storyName = "スタッフ更新";
+UpdateStaff.args = {};
+UpdateStaff.decorators = [
+  (story) => (
+    <Provider store={mockStoreUpdateStaff}>
+      <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+    </Provider>
+  ),
+];
+UpdateStaff.play = async ({ canvasElement }) => {
+  const wait = async (ms: number | undefined) =>
+    new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, ms);
+    });
+
+  const canvas = within(canvasElement);
+
+  await wait(500);
+
+  await waitFor(async () => {
+    const button = canvas.getByRole("button", { name: "保存" });
+    expect(button).toBeDisabled();
+  });
+
+  // 名前(姓)
+  await waitFor(async () => {
+    const lastName = canvas.queryByTestId("last-name");
+    expect(lastName).toBeEnabled();
+    if (lastName) {
+      void userEvent.clear(lastName);
+      void userEvent.type(lastName, "鈴木");
+      expect(lastName).toHaveValue("鈴木");
+    }
+  });
+
+  await waitFor(async () => {
+    const button = canvas.getByRole("button", { name: "保存" });
+    expect(button).toBeEnabled();
+  });
+
+  // 名前(名)
+  await waitFor(async () => {
+    const firstName = canvas.queryByTestId("first-name");
+    expect(firstName).toBeEnabled();
+    if (firstName) {
+      void userEvent.clear(firstName);
+      void userEvent.type(firstName, "二郎");
+      expect(firstName).toHaveValue("二郎");
+    }
+  });
+
+  await waitFor(async () => {
+    const button = canvas.getByRole("button", { name: "保存" });
+    expect(button).toBeEnabled();
+  });
+
+  // メールアドレス(エラー)
+  await waitFor(async () => {
+    const mailAddress = canvas.queryByTestId("mail-address");
+    expect(mailAddress).toBeEnabled();
+    if (mailAddress) {
+      void userEvent.clear(mailAddress);
+      void userEvent.type(mailAddress, "aaaa");
+      expect(canvas.getByText(/入力内容に誤りがあります/i)).toBeEnabled();
+    }
+  });
+
+  await waitFor(async () => {
+    const button = canvas.getByRole("button", { name: "保存" });
+    expect(button).toBeDisabled();
+  });
+
+  // メールアドレス(正常)
+  await waitFor(async () => {
+    const mailAddress = canvas.queryByTestId("mail-address");
+    expect(mailAddress).toBeEnabled();
+    if (mailAddress) {
+      void userEvent.clear(mailAddress);
+      void userEvent.type(mailAddress, "suzuki@example.com");
+      expect(mailAddress).toHaveValue("suzuki@example.com");
+    }
+  });
+
+  await waitFor(async () => {
+    const button = canvas.getByRole("button", { name: "保存" });
+    expect(button).toBeEnabled();
+  });
+
+  // 役割
+  await waitFor(async () => {
+    const staffRole = canvas.queryByTestId("staff-role");
+    if (staffRole) {
+      const button = within(staffRole).getByRole("button");
+      void userEvent.click(button);
+
+      const listbox = within(screen.getByRole("presentation")).getByRole(
+        "listbox"
+      );
+      const options = within(listbox).getAllByRole("option");
+
+      expect(options[0]).toHaveTextContent("スタッフ");
+      expect(options[1]).toHaveTextContent("スタッフ管理者");
+
+      fireEvent.click(options[1]);
+      expect(button).toHaveTextContent("スタッフ管理者");
+    }
+  });
+
+  await waitFor(async () => {
+    const lastName = canvas.queryByTestId("last-name");
+    const firstName = canvas.queryByTestId("first-name");
+    const mailAddress = canvas.queryByTestId("mail-address");
+
+    if (lastName && firstName && mailAddress) {
+      userEvent.clear(lastName);
+      userEvent.clear(firstName);
+      userEvent.clear(mailAddress);
+    }
+  });
+
+  await waitFor(async () => {
+    const button = canvas.getByRole("button", { name: "保存" });
+    expect(button).toBeDisabled();
+  });
+};

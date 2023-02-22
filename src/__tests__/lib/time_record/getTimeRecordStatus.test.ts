@@ -8,8 +8,8 @@ import {
 import { RestStatus, testRestSlice } from "../../../lib/reducers/restReducer";
 import {
   StaffStatus,
-  testStaffRecordSlice,
-} from "../../../lib/reducers/staffSlice";
+  testLoginStaffReducer,
+} from "../../../lib/reducers/loginStaffReducer";
 import {
   testTimeRecordSlice,
   TimeRecordStatus,
@@ -51,7 +51,7 @@ describe("勤務前(成功)", () => {
           status: TimeRecordStatus.PROCESSING,
           statusText: TimeRecordStatusText.PROCESSING,
         }),
-        staffReducer: testStaffRecordSlice({
+        loginStaffReducer: testLoginStaffReducer({
           status: StaffStatus.DONE,
           data: {
             staffId: 1,
@@ -59,6 +59,13 @@ describe("勤務前(成功)", () => {
             firstName: "太郎",
             mailAddress: "tanaka@example.com",
             iconPath: "",
+            staffRoles: {
+              roleId: 2,
+              staffId: 2,
+              role: {
+                roleName: "スタッフ",
+              },
+            },
           },
         }),
         attendanceReducer: testAttendanceSlice({
@@ -75,7 +82,7 @@ describe("勤務前(成功)", () => {
     const beforeState = store.getState();
     void (await store.dispatch(
       getTimeRecordStatus({
-        staff: beforeState.staffReducer,
+        staff: beforeState.loginStaffReducer,
         attendance: beforeState.attendanceReducer,
         rest: beforeState.restReducer,
       })
@@ -161,7 +168,7 @@ describe("勤務中", () => {
             status: TimeRecordStatus.PROCESSING,
             statusText: TimeRecordStatusText.PROCESSING,
           }),
-          staffReducer: testStaffRecordSlice({
+          loginStaffReducer: testLoginStaffReducer({
             status: StaffStatus.DONE,
             data: {
               staffId: 1,
@@ -169,6 +176,13 @@ describe("勤務中", () => {
               firstName: "太郎",
               mailAddress: "tanaka@example.com",
               iconPath: "",
+              staffRoles: {
+                roleId: 2,
+                staffId: 2,
+                role: {
+                  roleName: "スタッフ",
+                },
+              },
             },
           }),
           attendanceReducer: testAttendanceSlice({
@@ -185,7 +199,7 @@ describe("勤務中", () => {
       const beforeState = store.getState();
       void (await store.dispatch(
         getTimeRecordStatus({
-          staff: beforeState.staffReducer,
+          staff: beforeState.loginStaffReducer,
           attendance: beforeState.attendanceReducer,
           rest: beforeState.restReducer,
         })
@@ -245,7 +259,7 @@ describe("勤務終了", () => {
           status: TimeRecordStatus.PROCESSING,
           statusText: TimeRecordStatusText.PROCESSING,
         }),
-        staffReducer: testStaffRecordSlice({
+        loginStaffReducer: testLoginStaffReducer({
           status: StaffStatus.DONE,
           data: {
             staffId: 1,
@@ -253,6 +267,13 @@ describe("勤務終了", () => {
             firstName: "太郎",
             mailAddress: "tanaka@example.com",
             iconPath: "",
+            staffRoles: {
+              roleId: 2,
+              staffId: 2,
+              role: {
+                roleName: "スタッフ",
+              },
+            },
           },
         }),
         attendanceReducer: testAttendanceSlice({
@@ -269,7 +290,7 @@ describe("勤務終了", () => {
     const beforeState = store.getState();
     void (await store.dispatch(
       getTimeRecordStatus({
-        staff: beforeState.staffReducer,
+        staff: beforeState.loginStaffReducer,
         attendance: beforeState.attendanceReducer,
         rest: beforeState.restReducer,
       })
@@ -322,7 +343,7 @@ describe("休憩開始", () => {
             status: TimeRecordStatus.PROCESSING,
             statusText: TimeRecordStatusText.PROCESSING,
           }),
-          staffReducer: testStaffRecordSlice({
+          loginStaffReducer: testLoginStaffReducer({
             status: StaffStatus.DONE,
             data: {
               staffId: 1,
@@ -330,6 +351,13 @@ describe("休憩開始", () => {
               firstName: "太郎",
               mailAddress: "tanaka@example.com",
               iconPath: "",
+              staffRoles: {
+                roleId: 2,
+                staffId: 2,
+                role: {
+                  roleName: "スタッフ",
+                },
+              },
             },
           }),
           attendanceReducer: testAttendanceSlice({
@@ -346,7 +374,7 @@ describe("休憩開始", () => {
       const beforeState = store.getState();
       void (await store.dispatch(
         getTimeRecordStatus({
-          staff: beforeState.staffReducer,
+          staff: beforeState.loginStaffReducer,
           attendance: beforeState.attendanceReducer,
           rest: beforeState.restReducer,
         })
@@ -400,7 +428,7 @@ describe("休憩終了", () => {
             status: TimeRecordStatus.PROCESSING,
             statusText: TimeRecordStatusText.PROCESSING,
           }),
-          staffReducer: testStaffRecordSlice({
+          loginStaffReducer: testLoginStaffReducer({
             status: StaffStatus.DONE,
             data: {
               staffId: 1,
@@ -408,6 +436,13 @@ describe("休憩終了", () => {
               firstName: "太郎",
               mailAddress: "tanaka@example.com",
               iconPath: "",
+              staffRoles: {
+                roleId: 2,
+                staffId: 2,
+                role: {
+                  roleName: "スタッフ",
+                },
+              },
             },
           }),
           attendanceReducer: testAttendanceSlice({
@@ -424,7 +459,7 @@ describe("休憩終了", () => {
       const beforeState = store.getState();
       void (await store.dispatch(
         getTimeRecordStatus({
-          staff: beforeState.staffReducer,
+          staff: beforeState.loginStaffReducer,
           attendance: beforeState.attendanceReducer,
           rest: beforeState.restReducer,
         })

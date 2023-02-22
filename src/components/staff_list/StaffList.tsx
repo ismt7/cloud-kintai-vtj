@@ -11,13 +11,14 @@ import {
 import { useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import { selectStaffList } from "../../lib/store";
+import { selectStaff, selectStaffList } from "../../lib/store";
 import { useAppDispatch, useAppSelector } from "../../lib/hooks";
 import { Staff } from "../../api";
 import fetchStaffList from "../../lib/staff/FetchStaffList";
-import { selectStaff } from "../../lib/reducers/staffListReducer";
+import { selectedStaff } from "../../lib/reducers/staffListReducer";
 
 const StaffList = () => {
+  const createStaff = useAppSelector(selectStaff);
   const staffs = useAppSelector(selectStaffList);
   const [staffName, setStaffName] = useState<string>("");
   const [filteredStaffs, setFilteredStaffs] = useState<Staff[]>(staffs.data);
@@ -30,20 +31,20 @@ const StaffList = () => {
     }
 
     const filtered = staffs.data.filter(
-      (staff) =>
-        staff.lastName.includes(staffName) ||
-        staff.firstName.includes(staffName)
+      (staffData) =>
+        staffData.lastName.includes(staffName) ||
+        staffData.firstName.includes(staffName)
     );
     setFilteredStaffs(filtered);
   };
 
   const handleAddStaff = () => {
-    dispatch(selectStaff(undefined));
+    dispatch(selectedStaff(undefined));
   };
 
   useEffect(() => {
     void dispatch(fetchStaffList());
-  }, []);
+  }, [createStaff]);
 
   useEffect(() => {
     handleSearchStaff();
@@ -98,19 +99,19 @@ const StaffList = () => {
           <Box sx={{ textAlign: "center" }}>スタッフが見つかりません</Box>
         ) : (
           <List>
-            {filteredStaffs.map((staff) => (
-              <Box key={staff.staffId}>
+            {filteredStaffs.map((staffData) => (
+              <Box key={staffData.staffId}>
                 <ListItemButton
-                  selected={staff.staffId === staffs.selectedData?.staffId}
+                  selected={staffData.staffId === staffs.selectedData?.staffId}
                   sx={{ p: 1 }}
                   onClick={() => {
-                    dispatch(selectStaff(staff));
+                    dispatch(selectedStaff(staffData));
                   }}
                 >
                   <Stack>
-                    <Box>ID: {staff.staffId}</Box>
+                    <Box>ID: {staffData.staffId}</Box>
                     <Box>
-                      {staff.lastName} {staff.firstName}
+                      {staffData.lastName} {staffData.firstName}
                     </Box>
                   </Stack>
                   <Divider />

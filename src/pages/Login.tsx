@@ -7,8 +7,8 @@ import awsConfig from "../aws-exports";
 import "@aws-amplify/ui-react/styles.css";
 import { useAppDispatch, useAppSelector } from "../lib/hooks";
 import fetchStaff from "../lib/staff/FetchStaff";
-import { selectStaff } from "../lib/store";
-import { StaffStatus } from "../lib/reducers/staffSlice";
+import { selectLoginStaff } from "../lib/store";
+import { StaffStatus } from "../lib/reducers/loginStaffReducer";
 
 Amplify.configure(awsConfig);
 
@@ -20,7 +20,7 @@ function Login() {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const staff = useAppSelector(selectStaff);
+  const staff = useAppSelector(selectLoginStaff);
   // eslint-disable-next-line max-len
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   const from = (location.state?.from as string) || "/";

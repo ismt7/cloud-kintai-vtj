@@ -11,12 +11,12 @@ export enum StaffStatus {
 
 export interface StaffState {
   status: StaffStatus;
-  data: Staff | null;
+  data?: Staff;
 }
 
 const initialState: StaffState = {
   status: StaffStatus.NOT_PROCESSING,
-  data: null,
+  data: undefined,
 };
 
 export const getStaffExtraReducers = (
@@ -35,30 +35,30 @@ export const getStaffExtraReducers = (
     });
 };
 
-const staffRecordSlice = createSlice({
-  name: "staff",
+const loginStaffReducer = createSlice({
+  name: "loginStaff",
   initialState,
   reducers: {
     clearStaff(state) {
       state.status = StaffStatus.NOT_PROCESSING;
-      state.data = null;
+      state.data = undefined;
     },
   },
   extraReducers: (builder) => getStaffExtraReducers(builder),
 });
 
-export default staffRecordSlice.reducer;
+export default loginStaffReducer.reducer;
 
-export const { clearStaff } = staffRecordSlice.actions;
+export const { clearStaff } = loginStaffReducer.actions;
 
-export const testStaffRecordSlice = (customInitialState: StaffState) =>
+export const testLoginStaffReducer = (customInitialState: StaffState) =>
   createSlice({
-    name: "staff",
+    name: "loginStaff",
     initialState: customInitialState,
     reducers: {
       clearStaff(state) {
         state.status = StaffStatus.NOT_PROCESSING;
-        state.data = null;
+        state.data = undefined;
       },
     },
     extraReducers: (builder) => getStaffExtraReducers(builder),

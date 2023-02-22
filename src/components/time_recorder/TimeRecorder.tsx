@@ -14,18 +14,18 @@ import updateRemarks from "../../lib/time_record/UpdateRemarks";
 import {
   selectAttendance,
   selectRest,
-  selectStaff,
+  selectLoginStaff,
   selectTimeRecord,
 } from "../../lib/store";
 import fetchAttendance from "../../lib/time_record/FetchAttendance";
-import { StaffStatus } from "../../lib/reducers/staffSlice";
+import { StaffStatus } from "../../lib/reducers/loginStaffReducer";
 import fetchRest from "../../lib/time_record/FetchRest";
 import { TimeRecordStatus } from "../../lib/reducers/timeRecordSlice";
 import getTimeRecordStatus from "../../lib/time_record/getTimeRecordStatus";
 
 const TimeRecorder = () => {
   const dispatch = useAppDispatch();
-  const staff = useAppSelector(selectStaff);
+  const staff = useAppSelector(selectLoginStaff);
   const attendance = useAppSelector(selectAttendance);
   const rest = useAppSelector(selectRest);
   const timeRecord = useAppSelector(selectTimeRecord);

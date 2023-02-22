@@ -7,7 +7,7 @@ afterEach(() => {
 });
 
 describe("mappedOriginAttendance", () => {
-  test("正常", () => {
+  test.concurrent("正常", () => {
     const now = dayjs();
     const res = mappedOriginAttendance({
       attendanceId: 1,
@@ -34,7 +34,7 @@ describe("mappedOriginAttendance", () => {
     });
   });
 
-  test("異常(Date Null)", () => {
+  test.concurrent("異常(Date Null)", () => {
     const date = dayjs(0);
     const res = mappedOriginAttendance({
       attendanceId: 1,
