@@ -7,22 +7,22 @@
     100,
     120
   ],
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
-  "diffEditor.wordWrap": "off",
-  "workbench.startupEditor": "readme",
-  "git.branchPrefix": "feature/",
-  "python.terminal.activateEnvironment": false,
   "eslint.format.enable": true,
   "eslint.workingDirectories": [
     "./src"
   ],
+  "diffEditor.wordWrap": "off",
+  "workbench.startupEditor": "readme",
+  "git.branchPrefix": "feature/",
   "git.autoStash": true,
   "git.branchProtection": [
     "main"
   ],
-  "cSpell.words": [
-    "reduxjs"
-  ]
+  "[javascript]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+  },
 }
