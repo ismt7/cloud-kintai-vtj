@@ -5,13 +5,11 @@ install:
 	npm install
 
 build:
-	cd infra && docker compose build
+	npm isntall
+	npm run build
 
 start:
 	cd infra && docker compose up -d frontend
-
-# ci-start:
-# 	cd infra && docker compose up -d frontend
 
 stop:
 	cd infra && docker compose down
