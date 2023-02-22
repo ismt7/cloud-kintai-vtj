@@ -4,7 +4,7 @@ setup:
 install:
 	npm install
 
-build:
+app-build:
 	npm isntall
 	npm run build
 

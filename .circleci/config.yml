@@ -7,7 +7,7 @@ jobs:
       - image: cimg/node:18.13.0
     steps:
       - checkout
-      - run: make build
+      - run: make app-build
 
 workflows:
   app-workflow:
