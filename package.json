@@ -107,6 +107,14 @@
   "jest": {
     "testMatch": [
       "**/__tests__/**/*.[jt]s?(x)"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/**/*.stories.tsx",
+      "!src/stories/**",
+      "!src/api/**",
+      "!src/react-app-env.d.ts",
+      "!src/reportWebVitals.ts"
     ]
   }
 }
