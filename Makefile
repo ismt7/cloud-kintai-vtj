@@ -17,6 +17,9 @@ stop:
 test:
 	npm test
 
+ci-test:
+	npm test -- --coverage
+
 test-storybook:
 	npm run test-storybook
 
