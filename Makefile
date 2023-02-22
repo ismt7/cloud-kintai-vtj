@@ -18,7 +18,7 @@ test:
 	npm test
 
 ci-test:
-	npm test -- --coverage
+	npm test -- --coverage --reporters=jest-junit
 
 test-storybook:
 	npm run test-storybook
