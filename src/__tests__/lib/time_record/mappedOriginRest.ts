@@ -7,7 +7,7 @@ afterEach(() => {
 });
 
 describe("mappedOriginRest", () => {
-  test("正常", () => {
+  test.concurrent("正常", () => {
     const now = dayjs();
     const res = mappedOriginRest({
       restTimeId: 1,
@@ -26,7 +26,7 @@ describe("mappedOriginRest", () => {
     });
   });
 
-  test("異常(Date Null)", () => {
+  test.concurrent("異常(Date Null)", () => {
     const date = dayjs(0);
     const res = mappedOriginRest({
       restTimeId: 1,
