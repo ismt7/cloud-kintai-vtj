@@ -2,14 +2,16 @@
 version: 2.1
 
 jobs:
-  app-build:
+  app-test:
     docker:
       - image: cimg/node:18.13.0
+
     steps:
       - checkout
-      - run: make app-build
+      - run: npm install
+      - run: make test
 
 workflows:
   app-workflow:
     jobs:
-      - app-build
+      - app-test
