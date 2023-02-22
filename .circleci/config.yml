@@ -1,4 +1,4 @@
-# cspell:words cimg
+# cspell:words cimg lcov
 version: 2.1
 
 jobs:
@@ -10,6 +10,9 @@ jobs:
       - checkout
       - run: npm install
       - run: make ci-test
+      - store_artifacts:
+          path: coverage/lcov-report
+          destination: coverage_report
 
 workflows:
   app-workflow:
