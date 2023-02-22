@@ -119,6 +119,6 @@
     ]
   },
   "jest-junit": {
-    "outputDirectory": "junit_reports"
+    "outputDirectory": "reports/jest"
   }
 }

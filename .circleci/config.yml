@@ -10,8 +10,11 @@ jobs:
       - checkout
       - run: npm install
       - run: make ci-test
+      - run: |
+          mkdir -p ./reports/eslint/
+          make ci-eslint
       - store_test_results:
-          path: ./junit_reports/
+          path: ./reports/
 
 workflows:
   app-workflow:

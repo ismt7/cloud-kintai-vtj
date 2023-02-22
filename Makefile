@@ -20,6 +20,9 @@ test:
 ci-test:
 	npm test -- --coverage --reporters=jest-junit
 
+ci-eslint:
+	npm run eslint -- --format junit --output-file ./reports/eslint/eslint.xml
+
 test-storybook:
 	npm run test-storybook
 
