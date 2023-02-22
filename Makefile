@@ -4,20 +4,24 @@ setup:
 install:
 	npm install
 
-build:
-	cd infra && docker compose build
+app-build:
+	npm isntall
+	npm run build
 
 start:
 	cd infra && docker compose up -d frontend
-
-# ci-start:
-# 	cd infra && docker compose up -d frontend
 
 stop:
 	cd infra && docker compose down
 
 test:
 	npm test
+
+ci-test:
+	npm test -- --coverage --reporters=jest-junit
+
+ci-eslint:
+	npm run eslint -- --format junit --output-file ./reports/eslint/eslint.xml
 
 test-storybook:
 	npm run test-storybook
