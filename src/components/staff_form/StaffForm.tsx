@@ -10,8 +10,11 @@ import {
   TextField,
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
+import { Staff } from "../../api";
 import { useAppDispatch, useAppSelector } from "../../lib/hooks";
+import { clearSelectedStaff } from "../../lib/reducers/staffListReducer";
 import createStaff from "../../lib/staff/CreateStaff";
+import deleteStaff from "../../lib/staff/DeleteStaff";
 import updateStaff from "../../lib/staff/UpdateStaff";
 import updateStaffRole from "../../lib/staff_role/updateStaffRole";
 import { selectLoginStaff, selectStaffList } from "../../lib/store";
@@ -22,8 +25,10 @@ const StaffForm = () => {
   const staffs = useAppSelector(selectStaffList);
 
   const dispatch = useAppDispatch();
-  const selectedStaff = staffs.selectedData;
 
+  const [selectedStaff, setSelectedStaff] = useState<Staff | undefined>(
+    staffs.selectedData
+  );
   const [lastName, setLastName] = useState(selectedStaff?.lastName || "");
   const [firstName, setFirstName] = useState(selectedStaff?.firstName || "");
   const [mailAddress, setMailAddress] = useState(
@@ -91,14 +96,27 @@ const StaffForm = () => {
     );
 
     setCreateButtonDisabled(true);
+    setSelectedStaff(undefined);
+    setLastName("");
+    setFirstName("");
+    setMailAddress("");
+    setSelectedRole(2);
+  };
+
+  const handleDelete = () => {
+    if (selectedStaff) {
+      void dispatch(deleteStaff({ staffId: selectedStaff.staffId }));
+      dispatch(clearSelectedStaff());
+    }
   };
 
   useEffect(() => {
+    setSelectedStaff(staffs.selectedData);
     setLastName(selectedStaff?.lastName || "");
     setFirstName(selectedStaff?.firstName || "");
     setMailAddress(selectedStaff?.mailAddress || "");
     setSelectedRole(selectedStaff?.staffRoles.roleId || 2);
-  }, [selectedStaff]);
+  }, [selectedStaff, staffs.selectedData]);
 
   useEffect(() => {
     if (selectedStaff) {
@@ -134,7 +152,11 @@ const StaffForm = () => {
             justifyContent: "flex-end",
           }}
         >
-          <Button color="delete" label="スタッフを削除" />
+          <Button
+            color="delete"
+            label="スタッフを削除"
+            onClick={handleDelete}
+          />
         </Box>
       )}
       <Box>

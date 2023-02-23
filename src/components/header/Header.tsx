@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import LogImage from "../../images/logo.png";
 import Button from "../button/Button";
 import Link from "../link/Link";
-import { StaffStatus } from "../../lib/reducers/loginStaffReducer";
+import { LoginStaffStatus } from "../../lib/reducers/loginStaffReducer";
 import { useAppSelector } from "../../lib/hooks";
 import { selectLoginStaff } from "../../lib/store";
 
@@ -21,7 +21,7 @@ const Header = ({ signIn, signOut }: HeaderProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (staff?.status === StaffStatus.DONE && staff?.data?.mailAddress) {
+    if (staff?.status === LoginStaffStatus.DONE && staff?.data?.mailAddress) {
       setIsSignIn(true);
     } else {
       setIsSignIn(false);

@@ -44,7 +44,7 @@ const StaffList = () => {
 
   useEffect(() => {
     void dispatch(fetchStaffList());
-  }, [createStaff]);
+  }, [createStaff, staffs.selectedData]);
 
   useEffect(() => {
     handleSearchStaff();

@@ -15,7 +15,7 @@ import {
   testStaffListReducer,
 } from "../../lib/reducers/staffListReducer";
 import {
-  StaffStatus,
+  LoginStaffStatus,
   testLoginStaffReducer,
 } from "../../lib/reducers/loginStaffReducer";
 import {
@@ -29,6 +29,7 @@ import {
 } from "../../lib/reducers/timeRecordSlice";
 import { theme } from "../../lib/theme";
 import {
+  deleteStaffHandler200,
   patchStaffRoleHandler200,
   postStaffHandler200,
   putStaffHandler200,
@@ -41,6 +42,16 @@ export default {
   argTypes: {
     backgroundColor: { control: "color" },
   },
+  parameters: {
+    msw: {
+      handlers: [
+        putStaffHandler200(),
+        patchStaffRoleHandler200(),
+        postStaffHandler200(),
+        deleteStaffHandler200(),
+      ],
+    },
+  },
 } as ComponentMeta<typeof StaffForm>;
 
 const Template: ComponentStory<typeof StaffForm> = () => <StaffForm />;
@@ -52,7 +63,7 @@ const mockStoreForSystemAdmin = configureStore({
       statusText: TimeRecordStatusText.PROCESSING,
     }),
     loginStaffReducer: testLoginStaffReducer({
-      status: StaffStatus.DONE,
+      status: LoginStaffStatus.DONE,
       data: {
         staffId: 999,
         lastName: "田中",
@@ -97,15 +108,6 @@ SystemAdmin.decorators = [
     </Provider>
   ),
 ];
-SystemAdmin.parameters = {
-  msw: {
-    handlers: [
-      putStaffHandler200(),
-      patchStaffRoleHandler200(),
-      postStaffHandler200(),
-    ],
-  },
-};
 SystemAdmin.play = async ({ canvasElement }) => {
   const wait = async (ms: number | undefined) =>
     new Promise<void>((resolve) => {
@@ -213,7 +215,7 @@ const mockStoreForStaffAdmin = configureStore({
       statusText: TimeRecordStatusText.PROCESSING,
     }),
     loginStaffReducer: testLoginStaffReducer({
-      status: StaffStatus.DONE,
+      status: LoginStaffStatus.DONE,
       data: {
         staffId: 999,
         lastName: "田中",
@@ -258,15 +260,6 @@ StaffAdmin.decorators = [
     </Provider>
   ),
 ];
-StaffAdmin.parameters = {
-  msw: {
-    handlers: [
-      putStaffHandler200(),
-      patchStaffRoleHandler200(),
-      postStaffHandler200(),
-    ],
-  },
-};
 StaffAdmin.play = async ({ canvasElement }) => {
   const wait = async (ms: number | undefined) =>
     new Promise<void>((resolve) => {
@@ -307,7 +300,7 @@ const mockStoreUpdateStaff = configureStore({
       statusText: TimeRecordStatusText.PROCESSING,
     }),
     loginStaffReducer: testLoginStaffReducer({
-      status: StaffStatus.DONE,
+      status: LoginStaffStatus.DONE,
       data: {
         staffId: 999,
         lastName: "田中",

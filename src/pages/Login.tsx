@@ -8,7 +8,7 @@ import "@aws-amplify/ui-react/styles.css";
 import { useAppDispatch, useAppSelector } from "../lib/hooks";
 import fetchStaff from "../lib/staff/FetchStaff";
 import { selectLoginStaff } from "../lib/store";
-import { StaffStatus } from "../lib/reducers/loginStaffReducer";
+import { LoginStaffStatus } from "../lib/reducers/loginStaffReducer";
 
 Amplify.configure(awsConfig);
 
@@ -29,7 +29,7 @@ function Login() {
     if (route === "authenticated") {
       if (
         user?.attributes?.email &&
-        staff.status === StaffStatus.NOT_PROCESSING
+        staff.status === LoginStaffStatus.NOT_PROCESSING
       ) {
         void dispatch(
           fetchStaff({
@@ -38,13 +38,13 @@ function Login() {
         );
       }
 
-      if (staff.status === StaffStatus.DONE && staff.data?.mailAddress) {
+      if (staff.status === LoginStaffStatus.DONE && staff.data?.mailAddress) {
         navigate(from, { replace: true });
       }
 
       if (
-        staff.status === StaffStatus.ERROR ||
-        (staff.status === StaffStatus.DONE && !staff.data?.mailAddress)
+        staff.status === LoginStaffStatus.ERROR ||
+        (staff.status === LoginStaffStatus.DONE && !staff.data?.mailAddress)
       ) {
         navigate("/", { replace: true });
       }

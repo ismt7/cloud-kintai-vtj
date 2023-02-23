@@ -1,3 +1,4 @@
+// cspell:words reduxjs
 import { configureStore } from "@reduxjs/toolkit";
 import timeRecordReducer from "./reducers/timeRecordSlice";
 import loginStaffReducer from "./reducers/loginStaffReducer";

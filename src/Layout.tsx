@@ -5,7 +5,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
 import { useAppDispatch } from "./lib/hooks";
-import { clearStaff } from "./lib/reducers/loginStaffReducer";
+import { clearLoginStaff } from "./lib/reducers/loginStaffReducer";
 import fetchStaff from "./lib/staff/FetchStaff";
 
 function Layout() {
@@ -15,7 +15,7 @@ function Layout() {
 
   const signInHandler = () => navigate("/login");
   const signOutHandler = () => {
-    dispatch(clearStaff());
+    dispatch(clearLoginStaff());
     signOut();
   };
 

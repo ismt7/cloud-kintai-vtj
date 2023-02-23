@@ -35,6 +35,10 @@ export interface CreateStaffRequest {
     staffCreate: StaffCreate;
 }
 
+export interface DeleteStaffRequest {
+    staffId: number;
+}
+
 export interface GetStaffByIdRequest {
     staffId: number;
 }
@@ -90,6 +94,38 @@ export class StaffApi extends runtime.BaseAPI {
      */
     async createStaff(requestParameters: CreateStaffRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Staff> {
         const response = await this.createStaffRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * スタッフ情報を削除します。
+     * スタッフ情報を削除
+     */
+    async deleteStaffRaw(requestParameters: DeleteStaffRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+        if (requestParameters.staffId === null || requestParameters.staffId === undefined) {
+            throw new runtime.RequiredError('staffId','Required parameter requestParameters.staffId was null or undefined when calling deleteStaff.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/staffs/{staff_id}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * スタッフ情報を削除します。
+     * スタッフ情報を削除
+     */
+    async deleteStaff(requestParameters: DeleteStaffRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.deleteStaffRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
