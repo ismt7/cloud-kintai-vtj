@@ -31,9 +31,7 @@ function Layout() {
           <Header signIn={signInHandler} signOut={signOutHandler} />
         </Box>
         <Box sx={{ height: 1 }}>
-          <main>
-            <Outlet />
-          </main>
+          <Outlet />
         </Box>
         <Box>
           <Footer />
