@@ -18,7 +18,7 @@ import {
   selectTimeRecord,
 } from "../../lib/store";
 import fetchAttendance from "../../lib/time_record/FetchAttendance";
-import { StaffStatus } from "../../lib/reducers/loginStaffReducer";
+import { LoginStaffStatus } from "../../lib/reducers/loginStaffReducer";
 import fetchRest from "../../lib/time_record/FetchRest";
 import { TimeRecordStatus } from "../../lib/reducers/timeRecordSlice";
 import getTimeRecordStatus from "../../lib/time_record/getTimeRecordStatus";
@@ -42,7 +42,7 @@ const TimeRecorder = () => {
     useState<boolean>(true);
 
   useEffect(() => {
-    if (staff.status === StaffStatus.ERROR || !staff.data) return;
+    if (staff.status === LoginStaffStatus.ERROR || !staff.data) return;
 
     const workDate = Number(dayjs().format("YYYYMMDD"));
     void dispatch(fetchAttendance({ staffId: staff.data.staffId, workDate }));

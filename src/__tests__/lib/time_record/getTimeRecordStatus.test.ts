@@ -7,7 +7,7 @@ import {
 } from "../../../lib/reducers/attendanceReducer";
 import { RestStatus, testRestSlice } from "../../../lib/reducers/restReducer";
 import {
-  StaffStatus,
+  LoginStaffStatus,
   testLoginStaffReducer,
 } from "../../../lib/reducers/loginStaffReducer";
 import {
@@ -52,7 +52,7 @@ describe("勤務前(成功)", () => {
           statusText: TimeRecordStatusText.PROCESSING,
         }),
         loginStaffReducer: testLoginStaffReducer({
-          status: StaffStatus.DONE,
+          status: LoginStaffStatus.DONE,
           data: {
             staffId: 1,
             lastName: "田中",
@@ -169,7 +169,7 @@ describe("勤務中", () => {
             statusText: TimeRecordStatusText.PROCESSING,
           }),
           loginStaffReducer: testLoginStaffReducer({
-            status: StaffStatus.DONE,
+            status: LoginStaffStatus.DONE,
             data: {
               staffId: 1,
               lastName: "田中",
@@ -260,7 +260,7 @@ describe("勤務終了", () => {
           statusText: TimeRecordStatusText.PROCESSING,
         }),
         loginStaffReducer: testLoginStaffReducer({
-          status: StaffStatus.DONE,
+          status: LoginStaffStatus.DONE,
           data: {
             staffId: 1,
             lastName: "田中",
@@ -344,7 +344,7 @@ describe("休憩開始", () => {
             statusText: TimeRecordStatusText.PROCESSING,
           }),
           loginStaffReducer: testLoginStaffReducer({
-            status: StaffStatus.DONE,
+            status: LoginStaffStatus.DONE,
             data: {
               staffId: 1,
               lastName: "田中",
@@ -429,7 +429,7 @@ describe("休憩終了", () => {
             statusText: TimeRecordStatusText.PROCESSING,
           }),
           loginStaffReducer: testLoginStaffReducer({
-            status: StaffStatus.DONE,
+            status: LoginStaffStatus.DONE,
             data: {
               staffId: 1,
               lastName: "田中",

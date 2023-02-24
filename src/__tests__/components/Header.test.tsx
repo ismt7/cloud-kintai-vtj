@@ -9,7 +9,7 @@ import {
   testAttendanceSlice,
 } from "../../lib/reducers/attendanceReducer";
 import {
-  StaffStatus,
+  LoginStaffStatus,
   testLoginStaffReducer,
 } from "../../lib/reducers/loginStaffReducer";
 import { RestStatus, testRestSlice } from "../../lib/reducers/restReducer";
@@ -27,7 +27,7 @@ const mockStore = configureStore({
       statusText: TimeRecordStatusText.PROCESSING,
     }),
     loginStaffReducer: testLoginStaffReducer({
-      status: StaffStatus.DONE,
+      status: LoginStaffStatus.DONE,
       data: {
         staffId: 999,
         lastName: "田中",

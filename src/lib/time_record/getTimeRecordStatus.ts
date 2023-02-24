@@ -4,16 +4,19 @@ import {
   AttendanceStatus,
 } from "../reducers/attendanceReducer";
 import { RestState, RestStatus } from "../reducers/restReducer";
-import { StaffState, StaffStatus } from "../reducers/loginStaffReducer";
+import {
+  LoginStaffState,
+  LoginStaffStatus,
+} from "../reducers/loginStaffReducer";
 // eslint-disable-next-line import/no-cycle
 import { TimeRecordStatus } from "../reducers/timeRecordSlice";
 
 const isError = (
-  staff: StaffState,
+  staff: LoginStaffState,
   attendance: AttendanceState,
   rest: RestState
 ) => {
-  if (staff.status === StaffStatus.ERROR) {
+  if (staff.status === LoginStaffStatus.ERROR) {
     return true;
   }
 
@@ -41,12 +44,12 @@ const isBeforeWork = (attendance: AttendanceState) => {
 };
 
 const isProcessing = (
-  staff: StaffState,
+  staff: LoginStaffState,
   attendance: AttendanceState,
   rest: RestState
 ) => {
   const staffStatus =
-    [StaffStatus.NOT_PROCESSING, StaffStatus.PROCESSING].indexOf(
+    [LoginStaffStatus.NOT_PROCESSING, LoginStaffStatus.PROCESSING].indexOf(
       staff.status
     ) !== -1;
   if (staffStatus) return true;
@@ -102,7 +105,7 @@ const getTimeRecordStatus = createAsyncThunk(
     attendance,
     rest,
   }: {
-    staff: StaffState;
+    staff: LoginStaffState;
     attendance: AttendanceState;
     rest: RestState;
   }) => {

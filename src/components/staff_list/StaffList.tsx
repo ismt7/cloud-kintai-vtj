@@ -44,7 +44,7 @@ const StaffList = () => {
 
   useEffect(() => {
     void dispatch(fetchStaffList());
-  }, [createStaff]);
+  }, [createStaff, staffs.selectedData]);
 
   useEffect(() => {
     handleSearchStaff();
@@ -94,7 +94,7 @@ const StaffList = () => {
           </Box>
         </Stack>
       </Box>
-      <Box sx={{ overflow: "scroll" }}>
+      <Box sx={{ height: 1, overflow: "scroll" }}>
         {filteredStaffs.length === 0 ? (
           <Box sx={{ textAlign: "center" }}>スタッフが見つかりません</Box>
         ) : (

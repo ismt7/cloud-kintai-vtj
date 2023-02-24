@@ -9,7 +9,7 @@ import {
   testRestSlice,
 } from "../../../../lib/reducers/restReducer";
 import {
-  StaffStatus,
+  LoginStaffStatus,
   testLoginStaffReducer,
 } from "../../../../lib/reducers/loginStaffReducer";
 import {
@@ -32,7 +32,7 @@ describe("Staff", () => {
           statusText: TimeRecordStatusText.PROCESSING,
         }),
         loginStaffReducer: testLoginStaffReducer({
-          status: StaffStatus.NOT_PROCESSING,
+          status: LoginStaffStatus.NOT_PROCESSING,
           data: undefined,
         }),
         attendanceReducer: testAttendanceSlice({
@@ -72,7 +72,7 @@ describe("Staff", () => {
           statusText: TimeRecordStatusText.PROCESSING,
         }),
         loginStaffReducer: testLoginStaffReducer({
-          status: StaffStatus.PROCESSING,
+          status: LoginStaffStatus.PROCESSING,
           data: undefined,
         }),
         attendanceReducer: testAttendanceSlice({
@@ -112,7 +112,7 @@ describe("Staff", () => {
           statusText: TimeRecordStatusText.PROCESSING,
         }),
         loginStaffReducer: testLoginStaffReducer({
-          status: StaffStatus.ERROR,
+          status: LoginStaffStatus.ERROR,
           data: undefined,
         }),
         attendanceReducer: testAttendanceSlice({

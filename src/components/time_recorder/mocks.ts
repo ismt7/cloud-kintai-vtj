@@ -124,6 +124,12 @@ export const postStaffHandler200 = () =>
     );
   });
 
+export const deleteStaffHandler200 = () =>
+  rest.delete(
+    `${REACT_APP_BASE_PATH}/staffs/${MOCK_STAFF_ID}`,
+    (req, res, ctx) => res(ctx.status(200), ctx.json(null))
+  );
+
 export const getStaffList200 = () =>
   rest.get(`${REACT_APP_BASE_PATH}/staffs`, (req, res, ctx) =>
     res(ctx.status(200), ctx.json(MockStaffList))

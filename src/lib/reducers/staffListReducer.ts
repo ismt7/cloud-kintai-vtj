@@ -44,18 +44,28 @@ const staffListReducer = createSlice({
     selectedStaff: (state, action) => {
       state.selectedData = action.payload as Staff;
     },
+    clearSelectedStaff: (state) => {
+      state.selectedData = undefined;
+    },
   },
   extraReducers: (builder) => getStaffListExtraReducers(builder),
 });
 
 export default staffListReducer.reducer;
 
-export const { selectedStaff } = staffListReducer.actions;
+export const { selectedStaff, clearSelectedStaff } = staffListReducer.actions;
 
 export const testStaffListReducer = (customInitialState: StaffListState) =>
   createSlice({
     name: "staffList",
     initialState: customInitialState,
-    reducers: {},
+    reducers: {
+      selectedStaff: (state, action) => {
+        state.selectedData = action.payload as Staff;
+      },
+      clearSelectedStaff: (state) => {
+        state.selectedData = undefined;
+      },
+    },
     extraReducers: (builder) => getStaffListExtraReducers(builder),
   }).reducer;

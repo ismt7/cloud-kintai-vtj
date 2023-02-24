@@ -1,6 +1,7 @@
 import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
 import { Staff } from "../../api";
 import createStaff from "../staff/CreateStaff";
+import deleteStaff from "../staff/DeleteStaff";
 import updateStaff from "../staff/UpdateStaff";
 
 export enum CreateStaffStatus {
@@ -44,6 +45,20 @@ export const getCreateStaffExtraReducers = (
       state.data = action.payload as Staff;
     })
     .addCase(updateStaff.rejected, (state) => {
+      state.status = CreateStaffStatus.ERROR;
+    });
+
+  builder
+    .addCase(deleteStaff.pending, (state) => {
+      state.status = CreateStaffStatus.PROCESSING;
+    })
+    .addCase(deleteStaff.fulfilled, (state, action) => {
+      state.status = action.payload
+        ? CreateStaffStatus.DONE
+        : CreateStaffStatus.ERROR;
+      state.data = null;
+    })
+    .addCase(deleteStaff.rejected, (state) => {
       state.status = CreateStaffStatus.ERROR;
     });
 };
