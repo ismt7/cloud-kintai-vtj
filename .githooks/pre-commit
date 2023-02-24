@@ -9,6 +9,12 @@ then
     exit 0
 fi
 
+# 自動生成されたAPIクライアントのファイルのみの変更の場合は、対処外にする
+if echo "$FILES" | grep -v "^src/api/"
+then
+    exit 0
+fi
+
 echo "testing and Static code analysis now..."
 echo "========================================"
 storybook_container_state=$(
