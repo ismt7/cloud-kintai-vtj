@@ -77,7 +77,7 @@ export class RestApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/rests/{staff_id}/{work_date}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"work_date"}}`, encodeURIComponent(String(requestParameters.workDate))),
+            path: `/v1/rests/{staff_id}/{work_date}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"work_date"}}`, encodeURIComponent(String(requestParameters.workDate))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -117,7 +117,7 @@ export class RestApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/rests/{staff_id}/{from_work_date}/{to_work_date}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"from_work_date"}}`, encodeURIComponent(String(requestParameters.fromWorkDate))).replace(`{${"to_work_date"}}`, encodeURIComponent(String(requestParameters.toWorkDate))),
+            path: `/v1/rests/{staff_id}/{from_work_date}/{to_work_date}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"from_work_date"}}`, encodeURIComponent(String(requestParameters.fromWorkDate))).replace(`{${"to_work_date"}}`, encodeURIComponent(String(requestParameters.toWorkDate))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -159,7 +159,7 @@ export class RestApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/rests/{staff_id}/{work_date}/end`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"work_date"}}`, encodeURIComponent(String(requestParameters.workDate))),
+            path: `/v1/rests/{staff_id}/{work_date}/end`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"work_date"}}`, encodeURIComponent(String(requestParameters.workDate))),
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
@@ -202,7 +202,7 @@ export class RestApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/rests/{staff_id}/{work_date}/start`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"work_date"}}`, encodeURIComponent(String(requestParameters.workDate))),
+            path: `/v1/rests/{staff_id}/{work_date}/start`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"work_date"}}`, encodeURIComponent(String(requestParameters.workDate))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,

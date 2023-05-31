@@ -56,7 +56,7 @@ export class StaffRoleApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/staff_roles/{staff_id}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))),
+            path: `/v1/staff_roles/{staff_id}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -94,7 +94,7 @@ export class StaffRoleApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/staff_roles/{staff_id}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))),
+            path: `/v1/staff_roles/{staff_id}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))),
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,

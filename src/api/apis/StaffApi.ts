@@ -78,7 +78,7 @@ export class StaffApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/staffs/`,
+            path: `/v1/staffs/`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -111,13 +111,17 @@ export class StaffApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/staffs/{staff_id}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))),
+            path: `/v1/staffs/{staff_id}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.TextApiResponse(response) as any;
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<any>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
     }
 
     /**
@@ -143,7 +147,7 @@ export class StaffApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/staffs/{staff_id}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))),
+            path: `/v1/staffs/{staff_id}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -175,7 +179,7 @@ export class StaffApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/staffs/email/{mail_address}`.replace(`{${"mail_address"}}`, encodeURIComponent(String(requestParameters.mailAddress))),
+            path: `/v1/staffs/email/{mail_address}`.replace(`{${"mail_address"}}`, encodeURIComponent(String(requestParameters.mailAddress))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -211,7 +215,7 @@ export class StaffApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/staffs/`,
+            path: `/v1/staffs/`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -249,7 +253,7 @@ export class StaffApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/staffs/{staff_id}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))),
+            path: `/v1/staffs/{staff_id}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,

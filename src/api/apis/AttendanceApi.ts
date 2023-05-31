@@ -20,6 +20,7 @@ import type {
   AttendanceClockOut,
   AttendanceRemarks,
   HTTPValidationError,
+  MonthlyAttendance,
 } from '../models';
 import {
     AttendanceFromJSON,
@@ -32,6 +33,8 @@ import {
     AttendanceRemarksToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+    MonthlyAttendanceFromJSON,
+    MonthlyAttendanceToJSON,
 } from '../models';
 
 export interface GetAttendanceRequest {
@@ -43,6 +46,12 @@ export interface GetAttendancesRequest {
     staffId: number;
     fromWorkDate: number;
     toWorkDate: number;
+}
+
+export interface GetMonthlyAttendancesRequest {
+    staffIds?: string;
+    targetDateStart?: number;
+    targetDateEnd?: number;
 }
 
 export interface RegisterClockInRequest {
@@ -86,7 +95,7 @@ export class AttendanceApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/attendances/{staff_id}/{work_date}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"work_date"}}`, encodeURIComponent(String(requestParameters.workDate))),
+            path: `/v1/attendances/{staff_id}/{work_date}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"work_date"}}`, encodeURIComponent(String(requestParameters.workDate))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -126,7 +135,7 @@ export class AttendanceApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/attendances/{staff_id}/{from_work_date}/{to_work_date}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"from_work_date"}}`, encodeURIComponent(String(requestParameters.fromWorkDate))).replace(`{${"to_work_date"}}`, encodeURIComponent(String(requestParameters.toWorkDate))),
+            path: `/v1/attendances/{staff_id}/{from_work_date}/{to_work_date}`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"from_work_date"}}`, encodeURIComponent(String(requestParameters.fromWorkDate))).replace(`{${"to_work_date"}}`, encodeURIComponent(String(requestParameters.toWorkDate))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -141,6 +150,46 @@ export class AttendanceApi extends runtime.BaseAPI {
      */
     async getAttendances(requestParameters: GetAttendancesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Attendance>> {
         const response = await this.getAttendancesRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 指定した期間とスタッフIDで月別勤怠情報を取得します。
+     * 月別勤怠情報を取得
+     */
+    async getMonthlyAttendancesRaw(requestParameters: GetMonthlyAttendancesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<MonthlyAttendance>>> {
+        const queryParameters: any = {};
+
+        if (requestParameters.staffIds !== undefined) {
+            queryParameters['staff_ids'] = requestParameters.staffIds;
+        }
+
+        if (requestParameters.targetDateStart !== undefined) {
+            queryParameters['target_date_start'] = requestParameters.targetDateStart;
+        }
+
+        if (requestParameters.targetDateEnd !== undefined) {
+            queryParameters['target_date_end'] = requestParameters.targetDateEnd;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/v1/attendances/monthly`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(MonthlyAttendanceFromJSON));
+    }
+
+    /**
+     * 指定した期間とスタッフIDで月別勤怠情報を取得します。
+     * 月別勤怠情報を取得
+     */
+    async getMonthlyAttendances(requestParameters: GetMonthlyAttendancesRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<MonthlyAttendance>> {
+        const response = await this.getMonthlyAttendancesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -168,7 +217,7 @@ export class AttendanceApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/attendances/{staff_id}/{work_date}/clock_in`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"work_date"}}`, encodeURIComponent(String(requestParameters.workDate))),
+            path: `/v1/attendances/{staff_id}/{work_date}/clock_in`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"work_date"}}`, encodeURIComponent(String(requestParameters.workDate))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -211,7 +260,7 @@ export class AttendanceApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/attendances/{staff_id}/{work_date}/clock_out`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"work_date"}}`, encodeURIComponent(String(requestParameters.workDate))),
+            path: `/v1/attendances/{staff_id}/{work_date}/clock_out`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"work_date"}}`, encodeURIComponent(String(requestParameters.workDate))),
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
@@ -254,7 +303,7 @@ export class AttendanceApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/attendances/{staff_id}/{work_date}/remarks`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"work_date"}}`, encodeURIComponent(String(requestParameters.workDate))),
+            path: `/v1/attendances/{staff_id}/{work_date}/remarks`.replace(`{${"staff_id"}}`, encodeURIComponent(String(requestParameters.staffId))).replace(`{${"work_date"}}`, encodeURIComponent(String(requestParameters.workDate))),
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
