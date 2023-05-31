@@ -46,7 +46,8 @@
         "GitHub.vscode-pull-request-github",
         "GitHub.vscode-github-actions",
         "circleci.circleci",
-        "mhutchie.git-graph"
+        "mhutchie.git-graph",
+        "Postman.postman-for-vscode"
       ]
     }
   }
