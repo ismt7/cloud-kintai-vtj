@@ -1,5 +1,6 @@
 apis/AttendanceApi.ts
 apis/DefaultApi.ts
+apis/MasterApi.ts
 apis/RestApi.ts
 apis/StaffApi.ts
 apis/StaffRoleApi.ts
@@ -11,6 +12,7 @@ models/AttendanceClockOut.ts
 models/AttendanceRemarks.ts
 models/HTTPValidationError.ts
 models/LocationInner.ts
+models/MonthlyAttendance.ts
 models/Rest.ts
 models/RestEnd.ts
 models/RestStart.ts
@@ -21,5 +23,7 @@ models/StaffRole.ts
 models/StaffRoleUpdate.ts
 models/StaffUpdate.ts
 models/ValidationError.ts
+models/WorkPeriodPerMonth.ts
+models/WorkPeriodPerMonthCreate.ts
 models/index.ts
 runtime.ts
