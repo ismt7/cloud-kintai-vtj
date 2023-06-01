@@ -29,11 +29,9 @@ jobs:
     docker:
       - image: cimg/node:18.13.0
 
-    executor: aws-cli/default
-
     steps:
       - checkout
-      - aws-cli/setup
+      - aws-cli/install
       - run:
           name: connect
           command: |
