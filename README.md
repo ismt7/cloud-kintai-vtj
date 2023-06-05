@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# クラウド勤怠
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+勤怠を管理するためのシステムです。
 
 ## Preparation
 
@@ -12,7 +12,16 @@ REACT_APP_BASE_PATH="http://localhost:8000"
 
 ## Available Scripts
 
-In the project directory, you can run:
+プロジェクト内で次のコマンドを実行することができます。
+
+### `make storybook`
+
+Storybookを起動します。
+
+### `make openapi-codegen`
+
+APIクライアントを自動生成する。<br>
+実行時には、バックグラウンドのAPIサーバーが起動されている必要があります。
 
 ### `npm start`
 
