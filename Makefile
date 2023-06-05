@@ -1,15 +1,14 @@
 setup:
-	git config --local core.hooksPath .githooks
-
-install:
-	npm install
+	./scripts/setup.sh
 
 app-build:
 	npm isntall
 	npm run build
 
 start:
-	cd infra && docker compose up -d frontend
+	cd infra && \
+	docker compose up -d frontend; \
+	docker compose logs -f frontend
 
 stop:
 	cd infra && docker compose down
