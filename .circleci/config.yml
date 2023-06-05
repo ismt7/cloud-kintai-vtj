@@ -8,7 +8,7 @@ workflows:
   app-workflow:
     jobs:
       - app-test
-      - aws-test
+      - aws-test:
           context:
             - aws
 
