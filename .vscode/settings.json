@@ -25,4 +25,7 @@
       "source.fixAll.eslint": true
     },
   },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
 }
