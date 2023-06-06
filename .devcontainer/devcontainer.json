@@ -47,7 +47,8 @@
         "GitHub.vscode-github-actions",
         "circleci.circleci",
         "mhutchie.git-graph",
-        "Postman.postman-for-vscode"
+        "Postman.postman-for-vscode",
+        "Gruntfuggly.todo-tree"
       ]
     }
   }
