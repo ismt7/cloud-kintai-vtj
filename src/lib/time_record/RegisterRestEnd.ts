@@ -1,7 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
+
 import { Configuration, RestApi } from "../../api";
-import { mappedOriginRest } from "./FetchRest";
+import { mappedOriginRest } from "../../components/time_recorder/TimeRecorderAPI";
 
 const registerRestEnd = createAsyncThunk(
   "timeRecord/registerRestEnd",

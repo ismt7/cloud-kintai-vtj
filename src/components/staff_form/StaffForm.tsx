@@ -1,4 +1,6 @@
 // cspell:words testid
+import { useEffect, useRef, useState } from "react";
+
 import {
   Box,
   FormControl,
@@ -9,7 +11,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+
 import { Staff } from "../../api";
 import { useAppDispatch, useAppSelector } from "../../lib/hooks";
 import { clearSelectedStaff } from "../../lib/reducers/staffListReducer";

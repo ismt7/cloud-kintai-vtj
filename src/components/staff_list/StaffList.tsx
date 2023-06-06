@@ -1,3 +1,7 @@
+import { useEffect, useState } from "react";
+
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
   Divider,
@@ -8,25 +12,25 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import SearchIcon from "@mui/icons-material/Search";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import { selectStaff, selectStaffList } from "../../lib/store";
-import { useAppDispatch, useAppSelector } from "../../lib/hooks";
+
 import { Staff } from "../../api";
-import fetchStaffList from "../../lib/staff/FetchStaffList";
+import { useAppDispatch, useAppSelector } from "../../lib/hooks";
 import { selectedStaff } from "../../lib/reducers/staffListReducer";
+import fetchStaffList from "../../lib/staff/FetchStaffList";
+import { selectStaff, selectStaffList } from "../../lib/store";
 
 const StaffList = () => {
   const createStaff = useAppSelector(selectStaff);
   const staffs = useAppSelector(selectStaffList);
   const [staffName, setStaffName] = useState<string>("");
-  const [filteredStaffs, setFilteredStaffs] = useState<Staff[]>(staffs.data);
+  const [filteredStaffs, setFilteredStaffs] = useState<Staff[]>(
+    staffs.data || []
+  );
   const dispatch = useAppDispatch();
 
   const handleSearchStaff = () => {
     if (staffName === "") {
-      setFilteredStaffs(staffs.data);
+      setFilteredStaffs(staffs.data || []);
       return;
     }
 
@@ -51,7 +55,7 @@ const StaffList = () => {
   }, [staffName]);
 
   useEffect(() => {
-    setFilteredStaffs(staffs.data);
+    setFilteredStaffs(staffs.data || []);
   }, [staffs]);
 
   return (

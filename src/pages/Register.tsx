@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+
 import TimeRecorder from "../components/time_recorder/TimeRecorder";
 
 function Register() {

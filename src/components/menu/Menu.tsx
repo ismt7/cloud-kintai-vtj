@@ -1,4 +1,5 @@
 import { Box, Stack } from "@mui/material";
+
 import Link from "../link/Link";
 
 const Menu = () => (
@@ -12,6 +13,14 @@ const Menu = () => (
       <Link
         label="スタッフ管理"
         href="/admin/staff"
+        color="secondary"
+        sx={{ display: "block", height: 1, lineHeight: "32px", px: 1 }}
+      />
+    </Box>
+    <Box>
+      <Link
+        label="勤怠管理"
+        href="/admin/attendance"
         color="secondary"
         sx={{ display: "block", height: 1, lineHeight: "32px", px: 1 }}
       />

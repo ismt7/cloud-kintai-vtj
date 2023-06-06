@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+
 import Table from "../components/table/Table";
 
 function List() {

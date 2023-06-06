@@ -1,6 +1,8 @@
 import { ThemeProvider } from "@mui/material";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
+
 import { theme } from "../../lib/theme";
+
 import Menu from "./Menu";
 
 export default {

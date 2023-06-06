@@ -4,15 +4,16 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 import dayjs from "dayjs";
 import { rest } from "msw";
 import { Provider } from "react-redux";
+
 import {
   AttendanceStatus,
   testAttendanceSlice,
 } from "../../lib/reducers/attendanceReducer";
-import { RestStatus, testRestSlice } from "../../lib/reducers/restReducer";
 import {
   LoginStaffStatus,
   testLoginStaffReducer,
 } from "../../lib/reducers/loginStaffReducer";
+import { RestStatus, testRestSlice } from "../../lib/reducers/restReducer";
 import {
   testTimeRecordListSlice,
   TimeRecordListStatus,
@@ -23,6 +24,7 @@ import {
   TimeRecordStatusText,
 } from "../../lib/reducers/timeRecordSlice";
 import { theme } from "../../lib/theme";
+
 import Table from "./Table";
 
 const REACT_APP_BASE_PATH = process.env.REACT_APP_BASE_PATH || "";

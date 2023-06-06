@@ -1,6 +1,7 @@
 import { cleanup } from "@testing-library/react";
 import dayjs from "dayjs";
-import { mappedOriginAttendance } from "../../../lib/time_record/FetchAttendance";
+
+import { mappedOriginAttendance } from "../../../components/time_recorder/TimeRecorderAPI";
 
 afterEach(() => {
   cleanup();

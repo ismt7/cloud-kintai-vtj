@@ -1,130 +1,48 @@
-import { Box, IconButton, Stack, TextField, Typography } from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
-import ClearIcon from "@mui/icons-material/Clear";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+
+import { Box, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
+
+import { useAppDispatchV2, useAppSelectorV2 } from "../../app/hooks";
+import { useAppSelector } from "../../lib/hooks";
+import { LoginStaffStatus } from "../../lib/reducers/loginStaffReducer";
+import { selectLoginStaff } from "../../lib/store";
 import Button from "../button/Button";
 import Clock from "../clock/Clock";
-import { useAppDispatch, useAppSelector } from "../../lib/hooks";
-import registerClockIn from "../../lib/time_record/RegisterClockIn";
-import registerClockOut from "../../lib/time_record/RegisterClockOut";
-import registerRestStart from "../../lib/time_record/RegisterRestStart";
-import registerRestEnd from "../../lib/time_record/RegisterRestEnd";
-import updateRemarks from "../../lib/time_record/UpdateRemarks";
+
+import TimeRecorderRemarks from "./TimeRecorderRemarks";
 import {
-  selectAttendance,
-  selectRest,
-  selectLoginStaff,
-  selectTimeRecord,
-} from "../../lib/store";
-import fetchAttendance from "../../lib/time_record/FetchAttendance";
-import { LoginStaffStatus } from "../../lib/reducers/loginStaffReducer";
-import fetchRest from "../../lib/time_record/FetchRest";
-import { TimeRecordStatus } from "../../lib/reducers/timeRecordSlice";
-import getTimeRecordStatus from "../../lib/time_record/getTimeRecordStatus";
+  fetchCurrentData,
+  handleClickClockInButton,
+  handleClickClockOutButton,
+  handleClickRestEndButton,
+  handleClickRestStartButton,
+  selectTimeRecorder,
+} from "./TimeRecorderSlice";
+import { WorkStatusCodes } from "./WorkStatusCodes";
 
 const TimeRecorder = () => {
-  const dispatch = useAppDispatch();
+  const timeRecorderData = useAppSelectorV2(selectTimeRecorder);
+  const dispatch = useAppDispatchV2();
   const staff = useAppSelector(selectLoginStaff);
-  const attendance = useAppSelector(selectAttendance);
-  const rest = useAppSelector(selectRest);
-  const timeRecord = useAppSelector(selectTimeRecord);
-  const [remarksTextFieldDisabled, setRemarksTextFieldDisabled] =
-    useState<boolean>(false);
-  const [remarksSubmitButtonVisible, setRemarksSubmitButtonVisible] =
-    useState<boolean>(false);
-  const [remarksText, setRemarksText] = useState<string>(
-    attendance.data?.remarks || ""
-  );
-  const [remarksSubmitButtonDisabled, setRemarksSubmitButtonDisabled] =
-    useState<boolean>(false);
-  const [remarksClearButtonDisabled, setRemarksClearButtonDisabled] =
-    useState<boolean>(true);
 
   useEffect(() => {
     if (staff.status === LoginStaffStatus.ERROR || !staff.data) return;
 
-    const workDate = Number(dayjs().format("YYYYMMDD"));
-    void dispatch(fetchAttendance({ staffId: staff.data.staffId, workDate }));
-    void dispatch(fetchRest({ staffId: staff.data.staffId, workDate }));
+    void dispatch(
+      fetchCurrentData({
+        staffId: staff.data?.staffId,
+        workDate: Number(dayjs().format("YYYYMMDD")),
+      })
+    );
   }, []);
-
-  useEffect(() => {
-    setRemarksText(attendance.data?.remarks || "");
-    setRemarksTextFieldDisabled(false);
-    setRemarksSubmitButtonDisabled(false);
-    setRemarksSubmitButtonVisible(false);
-    setRemarksClearButtonDisabled(false);
-  }, [attendance.data?.remarks]);
-
-  useEffect(() => {
-    void dispatch(
-      getTimeRecordStatus({
-        staff,
-        attendance,
-        rest,
-      })
-    );
-  }, [staff, attendance, rest]);
-
-  const clockInHandler = (isDirect: boolean) => {
-    void dispatch(
-      registerClockIn({
-        staffId: staff.data?.staffId,
-        workDate: Number(dayjs().format("YYYYMMDD")),
-        startTime: dayjs().toISOString(),
-        goDirectlyFlag: isDirect,
-      })
-    );
-  };
-
-  const clockOutHandler = (isDirect: boolean) => {
-    void dispatch(
-      registerClockOut({
-        staffId: staff.data?.staffId,
-        workDate: Number(dayjs().format("YYYYMMDD")),
-        endTime: dayjs().toISOString(),
-        returnDirectlyFlag: isDirect,
-      })
-    );
-  };
-
-  const restStartHandler = () => {
-    void dispatch(
-      registerRestStart({
-        staffId: staff.data?.staffId,
-        workDate: Number(dayjs().format("YYYYMMDD")),
-        startTime: dayjs().toISOString(),
-      })
-    );
-  };
-
-  const restEndHandler = () => {
-    void dispatch(
-      registerRestEnd({
-        staffId: staff.data?.staffId,
-        workDate: Number(dayjs().format("YYYYMMDD")),
-        endTime: dayjs().format("HH:mm:ss"),
-      })
-    );
-  };
-
-  const remarksChangeHandler = (text: string) => {
-    void dispatch(
-      updateRemarks({
-        staffId: staff.data?.staffId,
-        workDate: Number(dayjs().format("YYYYMMDD")),
-        remarks: text,
-      })
-    );
-  };
 
   return (
     <Box width="400px">
       <Stack spacing={3}>
         <Box>
           <Typography variant="h6" textAlign="center">
-            {timeRecord.statusText}
+            {timeRecorderData.workStatus.text}
           </Typography>
         </Box>
         <Box>
@@ -141,28 +59,48 @@ const TimeRecorder = () => {
               <Button
                 color="clock_in"
                 label="勤務開始"
-                onClick={() => clockInHandler(false)}
+                onClick={() => {
+                  void dispatch(
+                    handleClickClockInButton({
+                      staffId: staff.data?.staffId,
+                      goDirectlyFlag: false,
+                    })
+                  );
+                }}
                 size="large"
                 variant={
-                  timeRecord.status === TimeRecordStatus.BEFORE_WORK
+                  timeRecorderData.workStatus.code ===
+                  WorkStatusCodes.BEFORE_WORK
                     ? "outlined"
                     : "contained"
                 }
-                disabled={timeRecord.status !== TimeRecordStatus.BEFORE_WORK}
+                disabled={
+                  timeRecorderData.workStatus.code !==
+                  WorkStatusCodes.BEFORE_WORK
+                }
               />
             </Box>
             <Box>
               <Button
                 color="clock_out"
                 label="勤務終了"
-                onClick={() => clockOutHandler(false)}
+                onClick={() => {
+                  void dispatch(
+                    handleClickClockOutButton({
+                      staffId: staff.data?.staffId,
+                      returnDirectlyFlag: false,
+                    })
+                  );
+                }}
                 size="large"
                 variant={
-                  timeRecord.status === TimeRecordStatus.WORKING
+                  timeRecorderData.workStatus.code === WorkStatusCodes.WORKING
                     ? "outlined"
                     : "contained"
                 }
-                disabled={timeRecord.status !== TimeRecordStatus.WORKING}
+                disabled={
+                  timeRecorderData.workStatus.code !== WorkStatusCodes.WORKING
+                }
               />
             </Box>
           </Stack>
@@ -180,10 +118,18 @@ const TimeRecorder = () => {
                   <Button
                     color="clock_in"
                     label="直行"
-                    onClick={() => clockInHandler(true)}
+                    onClick={() => {
+                      void dispatch(
+                        handleClickClockInButton({
+                          staffId: staff.data?.staffId,
+                          goDirectlyFlag: true,
+                        })
+                      );
+                    }}
                     variant="text"
                     disabled={
-                      timeRecord.status !== TimeRecordStatus.BEFORE_WORK
+                      timeRecorderData.workStatus.code !==
+                      WorkStatusCodes.BEFORE_WORK
                     }
                   />
                 </Box>
@@ -191,9 +137,19 @@ const TimeRecorder = () => {
                   <Button
                     color="clock_out"
                     label="直帰"
-                    onClick={() => clockOutHandler(true)}
+                    onClick={() => {
+                      void dispatch(
+                        handleClickClockOutButton({
+                          staffId: staff.data?.staffId,
+                          returnDirectlyFlag: true,
+                        })
+                      );
+                    }}
                     variant="text"
-                    disabled={timeRecord.status !== TimeRecordStatus.WORKING}
+                    disabled={
+                      timeRecorderData.workStatus.code !==
+                      WorkStatusCodes.WORKING
+                    }
                   />
                 </Box>
               </Stack>
@@ -204,18 +160,36 @@ const TimeRecorder = () => {
                   <Button
                     color="rest"
                     label="休憩開始"
-                    onClick={() => restStartHandler()}
+                    onClick={() => {
+                      void dispatch(
+                        handleClickRestStartButton({
+                          staffId: staff.data?.staffId,
+                        })
+                      );
+                    }}
                     variant="text"
-                    disabled={timeRecord.status !== TimeRecordStatus.WORKING}
+                    disabled={
+                      timeRecorderData.workStatus.code !==
+                      WorkStatusCodes.WORKING
+                    }
                   />
                 </Box>
                 <Box>
                   <Button
                     color="rest"
                     label="休憩終了"
-                    onClick={() => restEndHandler()}
+                    onClick={() => {
+                      void dispatch(
+                        handleClickRestEndButton({
+                          staffId: staff.data?.staffId,
+                        })
+                      );
+                    }}
                     variant="text"
-                    disabled={timeRecord.status !== TimeRecordStatus.RESTING}
+                    disabled={
+                      timeRecorderData.workStatus.code !==
+                      WorkStatusCodes.RESTING
+                    }
                   />
                 </Box>
               </Stack>
@@ -223,66 +197,7 @@ const TimeRecorder = () => {
           </Stack>
         </Box>
         <Box>
-          <Stack>
-            <Box>
-              <TextField
-                data-testid="remarks-text"
-                multiline
-                minRows={2}
-                fullWidth
-                value={remarksText}
-                disabled={remarksTextFieldDisabled}
-                onChange={(event) => {
-                  const currentRemarks = attendance.data?.remarks || "";
-                  setRemarksSubmitButtonVisible(
-                    event.target.value !== currentRemarks
-                  );
-
-                  setRemarksText(event.target.value);
-                }}
-                placeholder="備考欄：客先名やイベント名などを記載"
-              />
-            </Box>
-            {remarksSubmitButtonVisible && (
-              <Box>
-                <Stack
-                  direction="row"
-                  justifyContent="flex-end"
-                  alignItems="center"
-                  spacing={0}
-                >
-                  <Box>
-                    <IconButton
-                      data-testid="remarks-save"
-                      aria-label="remarks-done"
-                      disabled={remarksSubmitButtonDisabled}
-                      onClick={() => {
-                        setRemarksTextFieldDisabled(true);
-                        setRemarksClearButtonDisabled(true);
-                        setRemarksSubmitButtonDisabled(true);
-                        remarksChangeHandler(remarksText);
-                      }}
-                    >
-                      <CheckIcon color="success" />
-                    </IconButton>
-                  </Box>
-                  <Box>
-                    <IconButton
-                      data-testid="remarks-clear"
-                      aria-label="remarks-clear"
-                      disabled={remarksClearButtonDisabled}
-                      onClick={() => {
-                        setRemarksText(attendance.data?.remarks || "");
-                        setRemarksSubmitButtonVisible(false);
-                      }}
-                    >
-                      <ClearIcon color="error" />
-                    </IconButton>
-                  </Box>
-                </Stack>
-              </Box>
-            )}
-          </Stack>
+          <TimeRecorderRemarks staffId={staff.data?.staffId} />
         </Box>
       </Stack>
     </Box>

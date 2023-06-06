@@ -1,5 +1,8 @@
 import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
+
 import { Staff } from "../../api";
+// eslint-disable-next-line import/no-cycle
+import { RootState } from "../../app/store";
 import createStaff from "../staff/CreateStaff";
 import deleteStaff from "../staff/DeleteStaff";
 import updateStaff from "../staff/UpdateStaff";
@@ -79,3 +82,5 @@ export const testStaffReducer = (customInitialState: CreateStaffState) =>
     reducers: {},
     extraReducers: (builder) => getCreateStaffExtraReducers(builder),
   }).reducer;
+
+export const selectStaff = (state: RootState) => state.staffReducer;

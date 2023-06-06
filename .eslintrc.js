@@ -12,8 +12,7 @@ module.exports = {
     "airbnb-base",
     "airbnb-typescript",
   ],
-  overrides: [
-  ],
+  overrides: [],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: "latest",
@@ -21,27 +20,55 @@ module.exports = {
     project: "./tsconfig.eslint.json",
     tsconfigRootDir: __dirname,
   },
-  ignorePatterns: [
-    "dist",
-    "src/api"
-  ],
-  plugins: [
-    "react",
-    "@typescript-eslint",
-  ],
+  ignorePatterns: ["dist", "src/api"],
+  plugins: ["react", "@typescript-eslint", "unused-imports", "import"],
   rules: {
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "@typescript-eslint/quotes": ["error", "double"],
     "@typescript-eslint/comma-dangle": "off",
     "object-curly-newline": "off",
-    "no-param-reassign": ["error", {
-      props: false
-    }],
+    "no-param-reassign": [
+      "error",
+      {
+        props: false,
+      },
+    ],
     "function-paren-newline": "off",
     "implicit-arrow-linebreak": "off",
     "no-void": "off",
     "operator-linebreak": "off",
     "@typescript-eslint/indent": "off",
+    "import/order": [
+      "error",
+      {
+        groups: [
+          "builtin",
+          "external",
+          "parent",
+          "sibling",
+          "index",
+          "object",
+          "type",
+        ],
+        pathGroups: [
+          {
+            pattern: "{react,react-dom/**,react-router-dom}",
+            group: "builtin",
+            position: "before",
+          },
+          {
+            pattern: "@src/**",
+            group: "parent",
+            position: "before",
+          },
+        ],
+        pathGroupsExcludedImportTypes: ["builtin"],
+        alphabetize: {
+          order: "asc",
+        },
+        "newlines-between": "always",
+      },
+    ],
   },
 };

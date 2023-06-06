@@ -65,6 +65,26 @@ exports[` 1`] = `
               リンク
             </a>
           </div>
+          <div
+            class="MuiBox-root css-0"
+          >
+            <a
+              class="MuiTypography-root MuiTypography-button MuiLink-root MuiLink-underlineAlways css-ynz886-MuiTypography-root-MuiLink-root"
+              href="/admin/staff"
+            >
+              スタッフ管理
+            </a>
+          </div>
+          <div
+            class="MuiBox-root css-0"
+          >
+            <a
+              class="MuiTypography-root MuiTypography-button MuiLink-root MuiLink-underlineAlways css-ynz886-MuiTypography-root-MuiLink-root"
+              href="/admin/attendance"
+            >
+              勤怠管理
+            </a>
+          </div>
         </div>
       </div>
       <div
@@ -73,21 +93,6 @@ exports[` 1`] = `
         <div
           class="css-w4z10b-MuiStack-root"
         >
-          <div
-            class="MuiBox-root css-0"
-          >
-            <button
-              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedLogin MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-root MuiButton-outlined MuiButton-outlinedLogin MuiButton-sizeMedium MuiButton-outlinedSizeMedium css-1brts1-MuiButtonBase-root-MuiButton-root"
-              style="height: 100%; width: 110px;"
-              tabindex="0"
-              type="button"
-            >
-              管理ページ
-              <span
-                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-              />
-            </button>
-          </div>
           <div
             class="MuiBox-root css-0"
           >

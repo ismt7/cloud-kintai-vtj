@@ -1,6 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import dayjs from "dayjs";
+
 import { Configuration, Rest, RestApi } from "../../api";
+// eslint-disable-next-line import/no-cycle
+import { mappedOriginRest } from "../../components/time_recorder/TimeRecorderAPI";
 
 export interface OriginRest
   extends Omit<Rest, "workDate" | "startTime" | "endTime"> {
@@ -8,28 +10,6 @@ export interface OriginRest
   startTime: string | undefined;
   endTime: string | undefined;
 }
-
-const isNullDate = (date?: Date) => {
-  const nullDate = dayjs(0);
-  const targetDate = dayjs(date || 0);
-
-  return nullDate.isSame(targetDate);
-};
-
-export const mappedOriginRest = (rest: Rest): OriginRest => ({
-  restTimeId: rest.restTimeId,
-  parentRestTimeId: rest.parentRestTimeId,
-  staffId: rest.staffId,
-  workDate: isNullDate(rest.workDate)
-    ? undefined
-    : dayjs(rest.workDate).toISOString(),
-  startTime: isNullDate(rest.startTime)
-    ? undefined
-    : dayjs(rest.startTime).toISOString(),
-  endTime: isNullDate(rest.endTime)
-    ? undefined
-    : dayjs(rest.endTime).toISOString(),
-});
 
 const fetchRest = createAsyncThunk(
   "timeRecord/fetchRest",

@@ -1,6 +1,8 @@
+import { MemoryRouter } from "react-router-dom";
+
 import { ThemeProvider } from "@mui/material";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import { MemoryRouter } from "react-router-dom";
+
 import {
   getAttendancesHandler200,
   getRestHandler200,
@@ -12,6 +14,7 @@ import {
   postRestStartHandler200,
 } from "../../../components/time_recorder/mocks";
 import { theme } from "../../../lib/theme";
+
 import Resist from "./Resist";
 
 export default {
@@ -23,7 +26,7 @@ export default {
   decorators: [
     (story) => (
       <MemoryRouter>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+          <ThemeProvider theme={theme}>{story()}</ThemeProvider>
       </MemoryRouter>
     ),
   ],

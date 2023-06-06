@@ -1,4 +1,5 @@
 import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
+
 // eslint-disable-next-line import/no-cycle
 import getTimeRecordStatus from "../time_record/getTimeRecordStatus";
 
