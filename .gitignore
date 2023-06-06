@@ -25,6 +25,12 @@ yarn-debug.log*
 yarn-error.log*
 .dccache
 
+
+.devcontainer/devcontainer.env
+
+.devcontainer/.ssh/*
+!.devcontainer/.ssh/id_github.example
+
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*

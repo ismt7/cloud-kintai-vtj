@@ -1,5 +1,5 @@
 setup:
-	./scripts/setup.sh
+	npm install
 
 app-build:
 	npm isntall

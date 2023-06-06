@@ -11,18 +11,6 @@
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers-contrib/features/amplify-cli:2": {}
   },
-  "mounts": [
-    {
-      "source": "${localEnv:HOME}/.aws/config",
-      "target": "/home/node/.aws/config",
-      "type": "bind"
-    },
-    {
-      "source": "${localEnv:HOME}/.aws/credentials",
-      "target": "/home/node/.aws/credentials",
-      "type": "bind"
-    }
-  ],
   "hostRequirements": {
     "cpus": 2,
     "memory": "4gb",
@@ -48,10 +36,12 @@
         "circleci.circleci",
         "mhutchie.git-graph",
         "Postman.postman-for-vscode",
-        "Gruntfuggly.todo-tree"
+        "Gruntfuggly.todo-tree",
+        "codezombiech.gitignore"
       ]
     }
-  }
+  },
+  "runArgs": ["--env-file", ".devcontainer/devcontainer.env"]
   // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
   // "remoteUser": "root"
 }

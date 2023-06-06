@@ -1,19 +1,19 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-garakufrontend-dev-170816-authRole",
-      "UnauthRoleArn": "arn:aws:iam::952389366704:role/amplify-garakufrontend-dev-170816-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::952389366704:role/amplify-garakufrontend-dev-170816-authRole",
+      "AuthRoleName": "amplify-garakufrontend-dev-85507-authRole",
+      "UnauthRoleArn": "arn:aws:iam::952389366704:role/amplify-garakufrontend-dev-85507-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::952389366704:role/amplify-garakufrontend-dev-85507-authRole",
       "Region": "ap-northeast-1",
-      "DeploymentBucketName": "amplify-garakufrontend-dev-170816-deployment",
-      "UnauthRoleName": "amplify-garakufrontend-dev-170816-unauthRole",
-      "StackName": "amplify-garakufrontend-dev-170816",
-      "StackId": "arn:aws:cloudformation:ap-northeast-1:952389366704:stack/amplify-garakufrontend-dev-170816/215aed30-0378-11ee-8465-0ea8f0d96321",
-      "AmplifyAppId": "d1dxr5be6njjt"
+      "DeploymentBucketName": "amplify-garakufrontend-dev-85507-deployment",
+      "UnauthRoleName": "amplify-garakufrontend-dev-85507-unauthRole",
+      "StackName": "amplify-garakufrontend-dev-85507",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:952389366704:stack/amplify-garakufrontend-dev-85507/d708eea0-0447-11ee-8f17-0e1e9e8b4e7f",
+      "AmplifyAppId": "d9rnf7q7x9f9e"
     },
     "categories": {
       "auth": {
-        "garakufrontend7c775fb0": {}
+        "garakufrontend9edb8cc5": {}
       }
     }
   }
