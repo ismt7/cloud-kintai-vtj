@@ -1,17 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { cleanup } from "@testing-library/react";
+
 import {
   AttendanceStatus,
   testAttendanceSlice,
 } from "../../../../lib/reducers/attendanceReducer";
 import {
-  RestStatus,
-  testRestSlice,
-} from "../../../../lib/reducers/restReducer";
-import {
   LoginStaffStatus,
   testLoginStaffReducer,
 } from "../../../../lib/reducers/loginStaffReducer";
+import {
+  RestStatus,
+  testRestSlice,
+} from "../../../../lib/reducers/restReducer";
 import {
   testTimeRecordSlice,
   TimeRecordStatus,

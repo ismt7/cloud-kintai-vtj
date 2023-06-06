@@ -2,19 +2,20 @@ import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { Provider } from "react-redux";
+
 import {
   AttendanceStatus,
   testAttendanceSlice,
 } from "../../lib/reducers/attendanceReducer";
+import {
+  LoginStaffStatus,
+  testLoginStaffReducer,
+} from "../../lib/reducers/loginStaffReducer";
 import { RestStatus, testRestSlice } from "../../lib/reducers/restReducer";
 import {
   StaffListStatus,
   testStaffListReducer,
 } from "../../lib/reducers/staffListReducer";
-import {
-  LoginStaffStatus,
-  testLoginStaffReducer,
-} from "../../lib/reducers/loginStaffReducer";
 import {
   testTimeRecordListSlice,
   TimeRecordListStatus,
@@ -26,6 +27,7 @@ import {
 } from "../../lib/reducers/timeRecordSlice";
 import { theme } from "../../lib/theme";
 import { getStaffList200 } from "../time_recorder/mocks";
+
 import StaffList from "./StaffList";
 
 const mockStore = configureStore({

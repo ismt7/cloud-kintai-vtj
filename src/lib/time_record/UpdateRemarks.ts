@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+
 import { AttendanceApi, Configuration } from "../../api";
-import { mappedOriginAttendance } from "./FetchAttendance";
+import { mappedOriginAttendance } from "../../components/time_recorder/TimeRecorderAPI";
 
 const updateRemarks = createAsyncThunk(
   "timeRecord/updateRemarks",

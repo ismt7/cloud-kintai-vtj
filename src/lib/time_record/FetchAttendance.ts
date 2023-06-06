@@ -1,6 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import dayjs from "dayjs";
+
 import { Attendance, AttendanceApi, Configuration } from "../../api";
+// eslint-disable-next-line import/no-cycle
+import { mappedOriginAttendance } from "../../components/time_recorder/TimeRecorderAPI";
 
 export interface OriginAttendance
   extends Omit<Attendance, "workDate" | "startTime" | "endTime"> {
@@ -8,33 +10,6 @@ export interface OriginAttendance
   startTime: string | undefined;
   endTime: string | undefined;
 }
-
-const isNullDate = (date: Date) => {
-  const nullDate = dayjs(0);
-  const targetDate = dayjs(date);
-
-  return nullDate.isSame(targetDate);
-};
-
-export const mappedOriginAttendance = (
-  attendance: Attendance
-): OriginAttendance => ({
-  attendanceId: attendance.attendanceId,
-  parentAttendanceId: attendance.parentAttendanceId,
-  staffId: attendance.staffId,
-  workDate: isNullDate(attendance.workDate)
-    ? undefined
-    : dayjs(attendance.workDate).toISOString(),
-  startTime: isNullDate(attendance.startTime)
-    ? undefined
-    : dayjs(attendance.startTime).toISOString(),
-  endTime: isNullDate(attendance.endTime)
-    ? undefined
-    : dayjs(attendance.endTime).toISOString(),
-  goDirectlyFlag: attendance.goDirectlyFlag,
-  returnDirectlyFlag: attendance.returnDirectlyFlag,
-  remarks: attendance.remarks,
-});
 
 const fetchAttendance = createAsyncThunk(
   "timeRecord/fetchAttendance",

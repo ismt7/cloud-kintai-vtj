@@ -1,9 +1,11 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import { ThemeProvider } from "@mui/material";
-import Button from "./Button";
+import { ComponentStory, ComponentMeta } from "@storybook/react";
+
 import { theme } from "../../lib/theme";
+
+import Button from "./Button";
 
 export default {
   title: "Component/Button",

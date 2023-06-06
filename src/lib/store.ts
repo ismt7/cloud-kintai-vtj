@@ -1,13 +1,15 @@
 // cspell:words reduxjs
 import { configureStore } from "@reduxjs/toolkit";
-import timeRecordReducer from "./reducers/timeRecordSlice";
-import loginStaffReducer from "./reducers/loginStaffReducer";
+
 import attendanceReducer from "./reducers/attendanceReducer";
+import jobTermReducer from "./reducers/jobTermReducer";
+import loginStaffReducer from "./reducers/loginStaffReducer";
 import restReducer from "./reducers/restReducer";
-import timeRecordListReducer from "./reducers/timeRecordListReducer";
 import staffListReducer from "./reducers/staffListReducer";
-import staffRoleReducer from "./reducers/staffRoleReducer";
 import staffReducer from "./reducers/staffReducer";
+import staffRoleReducer from "./reducers/staffRoleReducer";
+import timeRecordListReducer from "./reducers/timeRecordListReducer";
+import timeRecordReducer from "./reducers/timeRecordSlice";
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +21,7 @@ export const store = configureStore({
     attendanceReducer,
     restReducer,
     timeRecordListReducer,
+    jobTermReducer,
   },
 });
 
@@ -35,3 +38,4 @@ export const selectRest = (state: RootState) => state.restReducer;
 export const selectTimeRecord = (state: RootState) => state.timeRecordReducer;
 export const selectTimeRecordList = (state: RootState) =>
   state.timeRecordListReducer;
+export const selectJobTermList = (state: RootState) => state.jobTermReducer;

@@ -1,5 +1,6 @@
 // cspell:words testid
 import { Button as MuiButton } from "@mui/material";
+
 import { Color, Variant } from "../../lib/theme";
 
 type Size = "small" | "medium" | "large";

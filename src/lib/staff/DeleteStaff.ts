@@ -1,5 +1,6 @@
 // cspell: words reduxjs
 import { createAsyncThunk } from "@reduxjs/toolkit";
+
 import { Configuration, StaffApi } from "../../api";
 
 const deleteStaff = createAsyncThunk(

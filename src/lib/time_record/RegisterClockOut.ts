@@ -1,7 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
+
 import { AttendanceApi, Configuration } from "../../api";
-import { mappedOriginAttendance } from "./FetchAttendance";
+import { mappedOriginAttendance } from "../../components/time_recorder/TimeRecorderAPI";
 
 const registerClockOut = createAsyncThunk(
   "timeRecord/registerClockOut",

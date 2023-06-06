@@ -1,9 +1,10 @@
 import { Box, Stack } from "@mui/material";
 import { Provider } from "react-redux";
+
+import { store } from "../../../app/store";
 import Footer from "../../../components/footer/Footer";
 import Header from "../../../components/header/Header";
 import TimeRecorder from "../../../components/time_recorder/TimeRecorder";
-import { store } from "../../../lib/store";
 
 const Resist: React.FC = () => (
   <Provider store={store}>

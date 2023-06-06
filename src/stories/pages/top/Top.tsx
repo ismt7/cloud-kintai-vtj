@@ -1,6 +1,8 @@
-import { Box, Stack, Typography } from "@mui/material";
 import React from "react";
+
+import { Box, Stack, Typography } from "@mui/material";
 import { Provider } from "react-redux";
+
 import Footer from "../../../components/footer/Footer";
 import Header from "../../../components/header/Header";
 import { store } from "../../../lib/store";

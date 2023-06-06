@@ -1,11 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
+
 import { AttendanceApi, Configuration, RestApi } from "../../api";
 import {
   mappedOriginAttendance,
-  OriginAttendance,
-} from "../time_record/FetchAttendance";
-import { mappedOriginRest, OriginRest } from "../time_record/FetchRest";
+  mappedOriginRest,
+} from "../../components/time_recorder/TimeRecorderAPI";
+import { OriginAttendance } from "../time_record/FetchAttendance";
+import { OriginRest } from "../time_record/FetchRest";
 
 export interface TimeRecordList {
   id: number;
@@ -40,11 +42,7 @@ async function fetchAttendances(
   if (!attendances) return null;
 
   try {
-    const convertedAttendances = attendances.map((attendance) =>
-      mappedOriginAttendance(attendance)
-    );
-
-    return convertedAttendances;
+    return attendances.map((attendance) => mappedOriginAttendance(attendance));
   } catch (error) {
     return null;
   }
@@ -69,9 +67,7 @@ async function fetchRests(
   if (!rests) return null;
 
   try {
-    const convertedRests = rests.map((rest) => mappedOriginRest(rest));
-
-    return convertedRests;
+    return rests.map((rest) => mappedOriginRest(rest));
   } catch (error) {
     return null;
   }

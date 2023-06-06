@@ -1,6 +1,7 @@
 import { cleanup } from "@testing-library/react";
 import dayjs from "dayjs";
-import { mappedOriginRest } from "../../../lib/time_record/FetchRest";
+
+import { mappedOriginRest } from "../../../components/time_recorder/TimeRecorderAPI";
 
 afterEach(() => {
   cleanup();

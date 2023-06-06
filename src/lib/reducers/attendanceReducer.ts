@@ -1,7 +1,8 @@
 import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
-import fetchAttendance, {
-  OriginAttendance,
-} from "../time_record/FetchAttendance";
+
+// eslint-disable-next-line import/no-cycle
+import { RootState } from "../../app/store";
+import fetchAttendance, { OriginAttendance } from "../time_record/FetchAttendance";
 import registerClockIn from "../time_record/RegisterClockIn";
 import registerClockOut from "../time_record/RegisterClockOut";
 import updateRemarks from "../time_record/UpdateRemarks";
@@ -87,3 +88,5 @@ export const testAttendanceSlice = (customInitialState: AttendanceState) =>
     reducers: {},
     extraReducers: (builder) => getAttendanceExtraReducers(builder),
   }).reducer;
+
+export const selectAttendance = (state: RootState) => state.attendanceReducer;

@@ -1,14 +1,16 @@
 import { useEffect } from "react";
+
 import { Authenticator, useAuthenticator, View } from "@aws-amplify/ui-react";
 import { Amplify } from "aws-amplify";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useLocation, useNavigate } from "react-router";
+
 import awsConfig from "../aws-exports";
 import "@aws-amplify/ui-react/styles.css";
 import { useAppDispatch, useAppSelector } from "../lib/hooks";
+import { LoginStaffStatus } from "../lib/reducers/loginStaffReducer";
 import fetchStaff from "../lib/staff/FetchStaff";
 import { selectLoginStaff } from "../lib/store";
-import { LoginStaffStatus } from "../lib/reducers/loginStaffReducer";
 
 Amplify.configure(awsConfig);
 

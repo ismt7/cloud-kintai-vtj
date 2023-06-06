@@ -1,23 +1,24 @@
 import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
+import { expect } from "@storybook/jest";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { waitFor, within, screen, fireEvent } from "@testing-library/react";
-import { Provider } from "react-redux";
-import { expect } from "@storybook/jest";
 import userEvent from "@testing-library/user-event";
+import { Provider } from "react-redux";
+
 import {
   AttendanceStatus,
   testAttendanceSlice,
 } from "../../lib/reducers/attendanceReducer";
+import {
+  LoginStaffStatus,
+  testLoginStaffReducer,
+} from "../../lib/reducers/loginStaffReducer";
 import { RestStatus, testRestSlice } from "../../lib/reducers/restReducer";
 import {
   StaffListStatus,
   testStaffListReducer,
 } from "../../lib/reducers/staffListReducer";
-import {
-  LoginStaffStatus,
-  testLoginStaffReducer,
-} from "../../lib/reducers/loginStaffReducer";
 import {
   testTimeRecordListSlice,
   TimeRecordListStatus,
@@ -34,6 +35,7 @@ import {
   postStaffHandler200,
   putStaffHandler200,
 } from "../time_recorder/mocks";
+
 import StaffForm from "./StaffForm";
 
 export default {

@@ -1,4 +1,5 @@
 import { Box, Stack } from "@mui/material";
+
 import Menu from "../../components/menu/Menu";
 
 function AdminDashboard() {

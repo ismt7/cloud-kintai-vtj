@@ -1,4 +1,7 @@
 import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
+
+// eslint-disable-next-line import/no-cycle
+import { RootState } from "../../app/store";
 import fetchTimeRecordList, {
   TimeRecordList,
 } from "../time_record_list/FetchTimeRecordList";
@@ -55,3 +58,5 @@ export const testTimeRecordListSlice = (
     reducers: {},
     extraReducers: (builder) => getTimeRecordListExtraReducers(builder),
   }).reducer;
+
+export const selectTimeRecordList = (state: RootState) => state.timeRecordListReducer;

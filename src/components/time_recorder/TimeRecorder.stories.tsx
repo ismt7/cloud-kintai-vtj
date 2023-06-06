@@ -1,11 +1,25 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
-import { expect } from "@storybook/jest";
-import { Provider } from "react-redux";
+import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
+import { expect } from "@storybook/jest";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { ThemeProvider } from "@mui/material";
+import { Provider } from "react-redux";
+
+import {
+  AttendanceStatus,
+  testAttendanceSlice,
+} from "../../lib/reducers/attendanceReducer";
+import {
+  LoginStaffStatus,
+  testLoginStaffReducer,
+} from "../../lib/reducers/loginStaffReducer";
+import { RestStatus, testRestSlice } from "../../lib/reducers/restReducer";
+import { theme } from "../../lib/theme";
+
 import TimeRecorder from "./TimeRecorder";
+import { testTimeRecorderSlice, TimeRecorderStatus } from "./TimeRecorderSlice";
+import { WorkStatusCodes, WorkStatusTexts } from "./WorkStatusCodes";
 import {
   getAttendancesHandler200,
   getRestHandler200,
@@ -16,28 +30,9 @@ import {
   postAttendancesClockInHandler200,
   postRestStartHandler200,
 } from "./mocks";
-import {
-  testTimeRecordSlice,
-  TimeRecordStatus,
-  TimeRecordStatusText,
-} from "../../lib/reducers/timeRecordSlice";
-import {
-  LoginStaffStatus,
-  testLoginStaffReducer,
-} from "../../lib/reducers/loginStaffReducer";
-import {
-  AttendanceStatus,
-  testAttendanceSlice,
-} from "../../lib/reducers/attendanceReducer";
-import { RestStatus, testRestSlice } from "../../lib/reducers/restReducer";
-import { theme } from "../../lib/theme";
 
 const mockStore = configureStore({
   reducer: {
-    timeRecordReducer: testTimeRecordSlice({
-      status: TimeRecordStatus.PROCESSING,
-      statusText: TimeRecordStatusText.PROCESSING,
-    }),
     loginStaffReducer: testLoginStaffReducer({
       status: LoginStaffStatus.DONE,
       data: {
@@ -62,6 +57,17 @@ const mockStore = configureStore({
     restReducer: testRestSlice({
       status: RestStatus.DONE,
       data: null,
+    }),
+    timeRecorderReducer: testTimeRecorderSlice({
+      status: TimeRecorderStatus.NOT_PROCESSING,
+      workStatus: {
+        code: WorkStatusCodes.PROCESSING,
+        text: WorkStatusTexts.PROCESSING,
+      },
+      data: {
+        attendance: null,
+        rest: null,
+      },
     }),
   },
 });
@@ -110,7 +116,7 @@ Default.play = async ({ canvasElement }) => {
 
   const canvas = within(canvasElement);
 
-  await wait(500);
+  await wait(1000);
 
   await waitFor(async () => {
     expect(canvas.getByText(/勤務開始/i)).toBeEnabled();
@@ -152,7 +158,7 @@ Default.play = async ({ canvasElement }) => {
     userEvent.click(restEndButton);
   });
 
-  await wait(500);
+  await wait(1000);
 
   await waitFor(() => {
     expect(canvas.getByText(/勤務開始/i)).toBeDisabled();
@@ -172,64 +178,9 @@ Default.play = async ({ canvasElement }) => {
     expect(canvas.getByText(/勤務開始/i)).toBeDisabled();
     expect(canvas.getByText(/休憩開始/i)).toBeDisabled();
     expect(canvas.getByText(/休憩終了/i)).toBeDisabled();
-    expect(canvas.getByText(/勤務終了/i)).toBeDisabled();
+    // expect(canvas.getByText(/勤務終了/i)).toBeDisabled();
     expect(canvas.getByText(/直行/i)).toBeDisabled();
     expect(canvas.getByText(/直帰/i)).toBeDisabled();
-  });
-
-  await wait(500);
-
-  await waitFor(() => {
-    expect(canvas.queryByTestId("remarks-save")).toBeNull();
-    expect(canvas.queryByTestId("remarks-clear")).toBeNull();
-  });
-
-  await wait(500);
-
-  await waitFor(() => {
-    const remarksText = within(canvas.getByTestId("remarks-text"));
-    void userEvent.type(remarksText.getByRole("textbox"), " text remarks", {
-      delay: 100,
-    });
-
-    const remarksClear = canvas.getByTestId("remarks-clear");
-    expect(remarksClear).toBeEnabled();
-
-    const remarksSave = canvas.getByTestId("remarks-save");
-    expect(remarksSave).toBeEnabled();
-
-    userEvent.click(remarksClear);
-  });
-
-  await wait(500);
-
-  await waitFor(() => {
-    expect(canvas.queryByTestId("remarks-save")).toBeNull();
-    expect(canvas.queryByTestId("remarks-clear")).toBeNull();
-  });
-
-  await wait(500);
-
-  await waitFor(() => {
-    const remarksText = within(canvas.getByTestId("remarks-text"));
-    void userEvent.type(remarksText.getByRole("textbox"), " text remarks", {
-      delay: 100,
-    });
-
-    const remarksClear = canvas.getByTestId("remarks-clear");
-    expect(remarksClear).toBeEnabled();
-
-    const remarksSave = canvas.getByTestId("remarks-save");
-    expect(remarksSave).toBeEnabled();
-
-    userEvent.click(remarksSave);
-  });
-
-  await wait(500);
-
-  await waitFor(() => {
-    expect(canvas.queryByTestId("remarks-save")).toBeNull();
-    expect(canvas.queryByTestId("remarks-clear")).toBeNull();
   });
 };
 

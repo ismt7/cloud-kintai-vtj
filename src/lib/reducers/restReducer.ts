@@ -1,4 +1,7 @@
 import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
+
+// eslint-disable-next-line import/no-cycle
+import { RootState } from "../../app/store";
 import fetchRest, { OriginRest } from "../time_record/FetchRest";
 import registerRestEnd from "../time_record/RegisterRestEnd";
 import registerRestStart from "../time_record/RegisterRestStart";
@@ -82,3 +85,5 @@ export const testRestSlice = (customInitialState: RestState) =>
     reducers: {},
     extraReducers: (builder) => getRestExtraReducers(builder),
   }).reducer;
+
+export const selectRest = (state: RootState) => state.restReducer;

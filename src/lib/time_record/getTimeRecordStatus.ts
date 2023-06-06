@@ -1,13 +1,14 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+
 import {
   AttendanceState,
   AttendanceStatus,
 } from "../reducers/attendanceReducer";
-import { RestState, RestStatus } from "../reducers/restReducer";
 import {
   LoginStaffState,
   LoginStaffStatus,
 } from "../reducers/loginStaffReducer";
+import { RestState, RestStatus } from "../reducers/restReducer";
 // eslint-disable-next-line import/no-cycle
 import { TimeRecordStatus } from "../reducers/timeRecordSlice";
 

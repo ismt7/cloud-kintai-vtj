@@ -1,7 +1,9 @@
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import { Box, Stack } from "@mui/material";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+
+import { useAuthenticator } from "@aws-amplify/ui-react";
+import { Box, Stack } from "@mui/material";
+
 import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
 import { useAppDispatch } from "./lib/hooks";

@@ -1,5 +1,6 @@
 import { Box, Stack } from "@mui/material";
 import { Provider } from "react-redux";
+
 import Footer from "../../../../components/footer/Footer";
 import Header from "../../../../components/header/Header";
 import Menu from "../../../../components/menu/Menu";

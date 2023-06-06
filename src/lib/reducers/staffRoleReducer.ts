@@ -1,5 +1,8 @@
 import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
+
 import { StaffRole } from "../../api";
+// eslint-disable-next-line import/no-cycle
+import { RootState } from "../../app/store";
 import updateStaffRole from "../staff_role/updateStaffRole";
 
 export enum StaffRoleStatus {
@@ -51,3 +54,5 @@ export const testStaffRoleReducer = (customInitialState: StaffRoleState) =>
     reducers: {},
     extraReducers: (builder) => getStaffRoleExtraReducers(builder),
   });
+
+export const selectStaffRole = (state: RootState) => state.staffRoleReducer;

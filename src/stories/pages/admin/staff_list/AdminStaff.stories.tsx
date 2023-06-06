@@ -1,13 +1,19 @@
+import { MemoryRouter } from "react-router-dom";
+
 import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { Provider } from "react-redux";
-import { MemoryRouter } from "react-router-dom";
+
 import { getStaffList200 } from "../../../../components/time_recorder/mocks";
 import {
   AttendanceStatus,
   testAttendanceSlice,
 } from "../../../../lib/reducers/attendanceReducer";
+import {
+  LoginStaffStatus,
+  testLoginStaffReducer,
+} from "../../../../lib/reducers/loginStaffReducer";
 import {
   RestStatus,
   testRestSlice,
@@ -16,10 +22,6 @@ import {
   StaffListStatus,
   testStaffListReducer,
 } from "../../../../lib/reducers/staffListReducer";
-import {
-  LoginStaffStatus,
-  testLoginStaffReducer,
-} from "../../../../lib/reducers/loginStaffReducer";
 import {
   testTimeRecordListSlice,
   TimeRecordListStatus,
@@ -30,6 +32,7 @@ import {
   TimeRecordStatusText,
 } from "../../../../lib/reducers/timeRecordSlice";
 import { theme } from "../../../../lib/theme";
+
 import AdminStaff from "./AdminStaff";
 
 const mockStore = configureStore({
@@ -76,6 +79,7 @@ const mockStore = configureStore({
 
 export default {
   title: "Page/Admin/StaffList",
+  component: AdminStaff,
   argTypes: {
     backgroundColor: { control: "color" },
   },

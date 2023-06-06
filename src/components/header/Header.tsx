@@ -1,14 +1,15 @@
-import { Box, IconButton, Stack, Typography } from "@mui/material";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
+
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
+
+import { useAppSelectorV2 } from "../../app/hooks";
 import LogImage from "../../images/logo.png";
+import { LoginStaffStatus, selectLoginStaff } from "../../lib/reducers/loginStaffReducer";
 import Button from "../button/Button";
 import Link from "../link/Link";
-import { LoginStaffStatus } from "../../lib/reducers/loginStaffReducer";
-import { useAppSelector } from "../../lib/hooks";
-import { selectLoginStaff } from "../../lib/store";
 
 interface HeaderProps {
   signIn?: () => void;
@@ -16,9 +17,8 @@ interface HeaderProps {
 }
 
 const Header = ({ signIn, signOut }: HeaderProps) => {
-  const staff = useAppSelector(selectLoginStaff);
+  const staff = useAppSelectorV2(selectLoginStaff);
   const [isSignIn, setIsSignIn] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (staff?.status === LoginStaffStatus.DONE && staff?.data?.mailAddress) {
@@ -81,25 +81,38 @@ const Header = ({ signIn, signOut }: HeaderProps) => {
                 sx={{ display: "block", height: 1, lineHeight: "32px", px: 1 }}
               />
             </Box>
+            {[1, 3].indexOf(staff.data?.staffRoles.roleId || 0) !== -1 && (
+              <>
+                <Box>
+                  <Link
+                    label="スタッフ管理"
+                    href="/admin/staff"
+                    sx={{
+                      display: "block",
+                      height: 1,
+                      lineHeight: "32px",
+                      px: 1,
+                    }}
+                  />
+                </Box>
+                <Box>
+                  <Link
+                    label="勤怠管理"
+                    href="/admin/attendance"
+                    sx={{
+                      display: "block",
+                      height: 1,
+                      lineHeight: "32px",
+                      px: 1,
+                    }}
+                  />
+                </Box>
+              </>
+            )}
           </Stack>
         </Box>
         <Box>
           <Stack direction="row" spacing={1}>
-            {[1, 3].indexOf(staff.data?.staffRoles.roleId || 0) !== -1 && (
-              <Box>
-                <Button
-                  color="login"
-                  label="管理ページ"
-                  onClick={() => {
-                    navigate("/admin/", { replace: true });
-                  }}
-                  variant="outlined"
-                  height="100%"
-                  width="110px"
-                />
-              </Box>
-            )}
-
             <Box>
               {isSignIn ? (
                 <Button
