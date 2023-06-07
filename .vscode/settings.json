@@ -37,5 +37,6 @@
   },
   "git.autofetch": true,
   "window.zoomLevel": 1,
-  "git.confirmSync": false
+  "git.confirmSync": false,
+  "circleci.ssh.privateKey.github": "/workspaces/garaku-frontend/.devcontainer/.ssh/id_github"
 }
