@@ -8,7 +8,7 @@ import { ThemeProvider } from "@mui/material";
 import { Provider } from "react-redux";
 
 import Layout from "./Layout";
-import { store } from "./lib/store";
+import { store } from "./app/store";
 import { theme } from "./lib/theme";
 import List from "./pages/List";
 import Login from "./pages/Login";

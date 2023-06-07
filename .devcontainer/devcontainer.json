@@ -12,8 +12,8 @@
     "ghcr.io/devcontainers-contrib/features/amplify-cli:2": {}
   },
   "hostRequirements": {
-    "cpus": 2,
-    "memory": "4gb",
+    "cpus": 4,
+    "memory": "8gb",
     "storage": "32gb"
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
