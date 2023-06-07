@@ -34,6 +34,7 @@ jobs:
 
     steps:
       - checkout
+      - aws-cli/install
       - aws-cli/assume_role_with_web_identity:
           role_arn: ${AWS_ROLE_ARN}
           # role_session_name: "CircleCI-${CIRCLE_WORKFLOW_ID}-${CIRCLE_JOB}"
