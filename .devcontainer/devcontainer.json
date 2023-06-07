@@ -38,7 +38,8 @@
         "Postman.postman-for-vscode",
         "Gruntfuggly.todo-tree",
         "codezombiech.gitignore",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "yzhang.markdown-all-in-one"
       ]
     }
   },
