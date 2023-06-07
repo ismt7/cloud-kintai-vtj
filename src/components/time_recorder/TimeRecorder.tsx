@@ -4,9 +4,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 
 import { useAppDispatchV2, useAppSelectorV2 } from "../../app/hooks";
-import { useAppSelector } from "../../lib/hooks";
-import { LoginStaffStatus } from "../../lib/reducers/loginStaffReducer";
-import { selectLoginStaff } from "../../lib/store";
+import { LoginStaffStatus, selectLoginStaff } from "../../lib/reducers/loginStaffReducer";
 import Button from "../button/Button";
 import Clock from "../clock/Clock";
 
@@ -24,7 +22,7 @@ import { WorkStatusCodes } from "./WorkStatusCodes";
 const TimeRecorder = () => {
   const timeRecorderData = useAppSelectorV2(selectTimeRecorder);
   const dispatch = useAppDispatchV2();
-  const staff = useAppSelector(selectLoginStaff);
+  const staff = useAppSelectorV2(selectLoginStaff);
 
   useEffect(() => {
     if (staff.status === LoginStaffStatus.ERROR || !staff.data) return;
