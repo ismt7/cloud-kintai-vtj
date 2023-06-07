@@ -54,4 +54,7 @@ jobs:
             echo 'export AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"' >> "$BASH_ENV"
             echo 'export AWS_SESSION_TOKEN="${AWS_SESSION_TOKEN}"' >> "$BASH_ENV"
 
-      - run: aws s3 ls
+      - run: |
+          env
+
+          aws s3 ls
