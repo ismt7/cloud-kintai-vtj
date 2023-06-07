@@ -37,7 +37,8 @@
         "mhutchie.git-graph",
         "Postman.postman-for-vscode",
         "Gruntfuggly.todo-tree",
-        "codezombiech.gitignore"
+        "codezombiech.gitignore",
+        "eamodio.gitlens"
       ]
     }
   },
