@@ -44,7 +44,7 @@ jobs:
             output = json
             EOL
       - run: npm install
-      - run: amplify pull
+      - run: amplify pull -y
       - run: make ci-test
       - run: |
           mkdir -p ./reports/eslint/
