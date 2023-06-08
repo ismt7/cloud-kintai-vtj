@@ -22,15 +22,15 @@ jobs:
       - aws-cli/assume_role_with_web_identity:
           role_arn: ${AWS_ROLE_ARN}
       - run:
-        name: Create credentials file
-        command: |
-          mkdir -p ~/.aws
-          cat <<EOL > ~/.aws/credentials
-          [default]
-          aws_access_key_id = ${AWS_ACCESS_KEY_ID}
-          aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}
-          aws_session_token = ${AWS_SESSION_TOKEN}
-          EOL
+          name: Create credentials file
+          command: |
+            mkdir -p ~/.aws
+            cat <<EOL > ~/.aws/credentials
+            [default]
+            aws_access_key_id = ${AWS_ACCESS_KEY_ID}
+            aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}
+            aws_session_token = ${AWS_SESSION_TOKEN}
+            EOL
       - run:
           name: Create config
           command: |
