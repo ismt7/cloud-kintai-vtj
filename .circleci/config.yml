@@ -25,7 +25,7 @@ jobs:
           name: Create credentials file
           command: |
             mkdir -p ~/.aws
-            cat <<EOL > ~/.aws/credentials
+            cat \<<EOL > ~/.aws/credentials
             [default]
             aws_access_key_id = ${AWS_ACCESS_KEY_ID}
             aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}
@@ -35,7 +35,7 @@ jobs:
           name: Create config
           command: |
             mkdir -p ~/.aws
-            cat <<EOL > ~/.aws/config
+            cat \<<EOL > ~/.aws/config
             [profile default]
             region = ${AWS_REGION}
             output = json
