@@ -43,7 +43,7 @@ jobs:
             output=json
             EOL
       - run: npm install
-      - run: amplify pull -y
+      - run: amplify pull --appId d9rnf7q7x9f9e --envName dev --restore -y
       - run: make ci-test
       - run: |
           mkdir -p ./reports/eslint/
