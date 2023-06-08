@@ -7,10 +7,9 @@ orbs:
 workflows:
   app-workflow:
     jobs:
-      - app-test
+      - app-test:
           context:
             - aws
-            - test
 
 jobs:
   app-test:
