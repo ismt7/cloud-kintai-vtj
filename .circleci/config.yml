@@ -3,7 +3,6 @@ version: 2.1
 
 orbs:
   aws-cli: circleci/aws-cli@4.0.0
-  codecov: codecov/codecov@3.2.5
 
 workflows:
   app-workflow:
@@ -57,5 +56,9 @@ jobs:
           make ci-eslint
       - store_test_results:
           path: ./reports/
-      - codecov/upload
-      
+      - run:
+          name: Codecov
+          command: |
+            curl -Os https://uploader.codecov.io/latest/linux/codecov
+            chmod +x codecov
+            ./codecov -t ${CODECOV_TOKEN}
