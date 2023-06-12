@@ -56,17 +56,19 @@ const mockStore = configureStore({
   },
 });
 
-test.concurrent("ヘッダー", () => {
-  const mockSignIn = jest.fn();
-  const mockSignOut = jest.fn();
-  const { asFragment } = render(
-    <Provider store={mockStore}>
-      <MemoryRouter>
-        <ThemeProvider theme={theme}>
-          <Header signIn={mockSignIn} signOut={mockSignOut} />
-        </ThemeProvider>
-      </MemoryRouter>
-    </Provider>
-  );
-  expect(asFragment()).toMatchSnapshot();
+describe("Header Component(", () => {
+  test.concurrent("ヘッダー", () => {
+    const mockSignIn = jest.fn();
+    const mockSignOut = jest.fn();
+    const { asFragment } = render(
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <ThemeProvider theme={theme}>
+            <Header signIn={mockSignIn} signOut={mockSignOut} />
+          </ThemeProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(asFragment()).toMatchSnapshot();
+  });
 });

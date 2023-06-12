@@ -10,8 +10,8 @@ afterAll(() => {
   jest.useRealTimers();
 });
 
-describe("Clock(", () => {
-  test("現在時刻が正しく表示されるか", () => {
+describe("Clock Component(", () => {
+  test("現在時刻が正しいフォーマットで表示されるか", () => {
     jest.setSystemTime(new Date(2023, 0, 1, 9, 0, 0));
 
     const { getByText } = render(<Clock />);

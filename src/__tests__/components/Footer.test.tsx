@@ -2,7 +2,9 @@ import { render } from "@testing-library/react";
 
 import Footer from "../../components/footer/Footer";
 
-test.concurrent("フッター", () => {
-  const { asFragment } = render(<Footer />);
-  expect(asFragment()).toMatchSnapshot();
+describe("Footer Component(", () => {
+  test.concurrent("フッターにレイアウト崩れが発生していないか(ビジュアルリグレッション)", () => {
+    const { asFragment } = render(<Footer />);
+    expect(asFragment()).toMatchSnapshot();
+  });
 });
