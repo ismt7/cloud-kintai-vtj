@@ -6,8 +6,8 @@ services:
       context: ../
       dockerfile: infra/Dockerfile
       target: dev
-    environment:
-      - REACT_APP_BASE_PATH=http://localhost:8000
+    env_file:
+      - ../.env
     ports:
       - "3000:3000"
     volumes:
@@ -23,9 +23,10 @@ services:
       context: ../
       dockerfile: infra/Dockerfile
       target: dev
+    env_file:
+      - ../.env
     environment:
       - ESLINT_NO_DEV_ERRORS=true
-      - REACT_APP_BASE_PATH=http://localhost:8000
     ports:
       - "6006:6006"
     volumes:
@@ -46,15 +47,20 @@ services:
       context: ../
       dockerfile: infra/Dockerfile
       target: dev
-    environment:
-      - REACT_APP_BASE_PATH=http://localhost:8000
+    env_file:
+      - ../.env
     volumes:
       - ../src:/app/src:delegated
-    command: [
-      "npm", "run", "test-storybook", "--",
-      "--url", "http://storybook:6006",
-      "--no-stories-json"
-    ]
+    command:
+      [
+        "npm",
+        "run",
+        "test-storybook",
+        "--",
+        "--url",
+        "http://storybook:6006",
+        "--no-stories-json"
+      ]
     depends_on:
       storybook:
         condition: service_healthy
@@ -66,4 +72,4 @@ services:
       target: dev
     volumes:
       - ../:/app:delegated
-    command: [ "npm", "test", "--ci",  ""]
+    command: [ "npm", "test", "--ci", "" ]
