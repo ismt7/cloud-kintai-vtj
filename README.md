@@ -2,16 +2,11 @@
 
 勤怠を管理するためのシステムです。
 
-## 目次(Index)
+## 準備チェックリスト
 
-- [目次(Index)](#目次index)
-- [準備(Preparation)](#準備preparation)
-- [Available Scripts](#available-scripts)
-
-## 準備(Preparation)
-
-- [Dev container向けのSSHキーを作成](https://github.com/vtj-devops/garaku-frontend/wiki/SSH%E3%82%AD%E3%83%BC%E3%82%92%E4%BD%9C%E6%88%90)
-- [Dev containerの環境変数を作成](https://github.com/vtj-devops/garaku-frontend/wiki/%E7%92%B0%E5%A2%83%E5%A4%89%E6%95%B0%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E4%BD%9C%E6%88%90)
+- [ ] `.devcontainer/devcontainer.env`ファイルに必要なキー情報を記載しているか？
+  - [AWS CLIの初期設定](https://github.com/vtj-devops/garaku-general/wiki/AWS-CLI%E3%81%AE%E5%88%9D%E6%9C%9F%E8%A8%AD%E5%AE%9A)
+  - [OpeAIの初期設定](https://github.com/vtj-devops/garaku-general/wiki/OpenAI%E3%81%AE%E5%88%9D%E6%9C%9F%E8%A8%AD%E5%AE%9A)
 
 ## Available Scripts
 
