@@ -38,7 +38,9 @@ EOL
 # ========================================
 npm install -g aicommits
 
-aicommits config set OPENAI_KEY=${AICOMMITS_OPENAI_KEY}
+if [ -n "${AICOMMITS_OPENAI_KEY}" ]; then
+  aicommits config set OPENAI_KEY=${AICOMMITS_OPENAI_KEY}
+fi
 
 # ========================================
 #  Application Package install
