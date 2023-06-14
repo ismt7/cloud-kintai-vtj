@@ -30,6 +30,7 @@ export const getStaffListExtraReducers = (
   builder
     .addCase(fetchStaffList.pending, (state) => {
       state.status = StaffListStatus.PROCESSING;
+      state.data = [];
     })
     .addCase(fetchStaffList.fulfilled, (state, action) => {
       state.status = StaffListStatus.DONE;
@@ -37,6 +38,7 @@ export const getStaffListExtraReducers = (
     })
     .addCase(fetchStaffList.rejected, (state) => {
       state.status = StaffListStatus.ERROR;
+      state.data = [];
     });
 };
 

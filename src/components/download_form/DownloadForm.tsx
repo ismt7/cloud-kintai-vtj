@@ -17,18 +17,19 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs, { Dayjs } from "dayjs";
 
 import { Staff } from "../../api";
-import { useAppDispatch, useAppSelector } from "../../lib/hooks";
+import { useAppDispatchV2, useAppSelectorV2 } from "../../app/hooks";
+import { selectStaffList } from "../../lib/reducers/staffListReducer";
 import fetchStaffList from "../../lib/staff/FetchStaffList";
-import { selectStaffList } from "../../lib/store";
 import Button from "../button/Button";
 
 const DownloadForm = () => {
-  const staffs = useAppSelector(selectStaffList);
+  const staffs = useAppSelectorV2(selectStaffList);
+  const dispatch = useAppDispatchV2();
+
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs("2023-01-01"));
   const [endDate, setEndDate] = useState<Dayjs | null>(dayjs("2023-01-31"));
   const [aggregateMonth, setAggregateMonth] = useState(202301);
-  const [targetStaffs, setTargetStaffs] = useState<Staff[]>([]);
-  const dispatch = useAppDispatch();
+  const [targetStaffs, setTargetStaffs] = useState<Staff[]>(staffs.data);
 
   const handleStartDateChange = (newValue: Dayjs | null) => {
     setStartDate(newValue);
@@ -136,6 +137,7 @@ const DownloadForm = () => {
             </Box>
             <Box>
               <Autocomplete
+                data-testid="autocomplete"
                 multiple
                 limitTags={2}
                 id="multiple-limit-tags"

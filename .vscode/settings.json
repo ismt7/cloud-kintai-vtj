@@ -37,5 +37,11 @@
   },
   "git.autofetch": true,
   "window.zoomLevel": 1,
-  "git.confirmSync": false
+  "git.confirmSync": false,
+  "circleci.ssh.privateKey.github": "/workspaces/garaku-frontend/.devcontainer/.ssh/id_github",
+  "markdown.extension.toc.levels": "2..6",
+  "editor.inlineSuggest.enabled": true,
+  "files.readonlyInclude": {
+    "node_modules/**/*": true
+  }
 }

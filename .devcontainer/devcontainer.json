@@ -18,6 +18,8 @@
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
+  // Use 'initializeCommand' to run commands when the container is first created.
+  "initializeCommand": ".devcontainer/initialize.sh",
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": ".devcontainer/setup.sh",
   // Configure tool-specific properties.
@@ -37,7 +39,9 @@
         "mhutchie.git-graph",
         "Postman.postman-for-vscode",
         "Gruntfuggly.todo-tree",
-        "codezombiech.gitignore"
+        "codezombiech.gitignore",
+        "eamodio.gitlens",
+        "yzhang.markdown-all-in-one"
       ]
     }
   },

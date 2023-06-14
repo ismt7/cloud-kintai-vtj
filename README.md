@@ -2,62 +2,25 @@
 
 勤怠を管理するためのシステムです。
 
-## Preparation
+## 目次(Index)
 
-アプリケーション内で環境変数を使用しています。`.env`を作成し、以下の環境変数を設定してください。
+- [目次(Index)](#目次index)
+- [準備(Preparation)](#準備preparation)
+- [Available Scripts](#available-scripts)
 
-```bash
-REACT_APP_BASE_PATH="http://localhost:8000"
-```
+## 準備(Preparation)
+
+- [Dev container向けのSSHキーを作成](https://github.com/vtj-devops/garaku-frontend/wiki/SSH%E3%82%AD%E3%83%BC%E3%82%92%E4%BD%9C%E6%88%90)
+- [Dev containerの環境変数を作成](https://github.com/vtj-devops/garaku-frontend/wiki/%E7%92%B0%E5%A2%83%E5%A4%89%E6%95%B0%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E4%BD%9C%E6%88%90)
 
 ## Available Scripts
 
 プロジェクト内で次のコマンドを実行することができます。
 
-### `make storybook`
-
-Storybookを起動します。
-
-### `make openapi-codegen`
-
-APIクライアントを自動生成する。<br>
-実行時には、バックグラウンドのAPIサーバーが起動されている必要があります。
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+| Script | Description |
+| --- | --- |
+| `make storybook` | Storybookを起動します。 |
+| `make openapi-codegen` | APIクライアントを自動生成する。<br>実行時には、バックグラウンドのAPIサーバーが起動されている必要があります。 |
+| `npm start` | 開発モードでアプリケーションを起動します。<br>Open [http://localhost:3000](http://localhost:3000) to view it in the browser.<br>The page will reload if you make edits.<br>You will also see any lint errors in the console. |
+| `npm test` | テストランナーをインタラクティブウォッチモードで起動します。<br>詳細は[running tests](https://facebook.github.io/create-react-app/docs/running-tests)を参照してください。 |
+| `npm run build` | プロダクションモードでアプリケーションをビルドします。<br>ビルドされたアプリケーションは`build`フォルダに保存されます。<br>詳細は[deployment](https://facebook.github.io/create-react-app/docs/deployment)を参照してください。 |
