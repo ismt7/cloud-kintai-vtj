@@ -37,7 +37,7 @@ const mockStore = configureStore({
       },
     }),
     staffListReducer: testStaffListReducer({
-      status: StaffListStatus.PROCESSING,
+      status: StaffListStatus.DONE,
       data: [],
     }),
   },
@@ -56,14 +56,14 @@ export default {
       </Provider>
     ),
   ],
-  parameters: {
-    msw: {
-      handlers: [getStaffList200()],
-    },
-  },
 } as ComponentMeta<typeof DownloadForm>;
 
 const Template: ComponentStory<typeof DownloadForm> = () => <DownloadForm />;
 
 export const Default = Template.bind({});
 Default.args = {};
+Default.parameters = {
+  msw: {
+    handlers: [getStaffList200()],
+  },
+};
