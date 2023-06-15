@@ -5,22 +5,22 @@ import { configureStore } from "@reduxjs/toolkit";
 import { render } from "@testing-library/react";
 import { Provider } from "react-redux";
 
-import Header from "../../components/header/Header";
+import Header from "../../../components/header/Header";
 import {
   AttendanceStatus,
   testAttendanceSlice,
-} from "../../lib/reducers/attendanceReducer";
+} from "../../../lib/reducers/attendanceReducer";
 import {
   LoginStaffStatus,
   testLoginStaffReducer,
-} from "../../lib/reducers/loginStaffReducer";
-import { RestStatus, testRestSlice } from "../../lib/reducers/restReducer";
+} from "../../../lib/reducers/loginStaffReducer";
+import { RestStatus, testRestSlice } from "../../../lib/reducers/restReducer";
 import {
   testTimeRecordSlice,
   TimeRecordStatus,
   TimeRecordStatusText,
-} from "../../lib/reducers/timeRecordSlice";
-import { theme } from "../../lib/theme";
+} from "../../../lib/reducers/timeRecordSlice";
+import { theme } from "../../../lib/theme";
 
 const mockStore = configureStore({
   reducer: {
