@@ -3,7 +3,7 @@
 exports[`DownloadForm Component( ダウンロードフォームにレイアウト崩れがないか(ビジュアルリグレッション) 1`] = `
 <DocumentFragment>
   <div
-    class="css-n2r28k-MuiStack-root"
+    class="MuiStack-root css-n2r28k-MuiStack-root"
   >
     <div
       class="MuiBox-root css-1doaxl"
@@ -14,13 +14,13 @@ exports[`DownloadForm Component( ダウンロードフォームにレイアウ�
       class="MuiBox-root css-0"
     >
       <div
-        class="css-j64l5d-MuiStack-root"
+        class="MuiStack-root css-j64l5d-MuiStack-root"
       >
         <div
           class="MuiBox-root css-0"
         >
           <div
-            class="css-1q36rmd-MuiStack-root"
+            class="MuiStack-root css-1q36rmd-MuiStack-root"
           >
             <div
               class="MuiBox-root css-0"
@@ -29,7 +29,7 @@ exports[`DownloadForm Component( ダウンロードフォームにレイアウ�
                 class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
               >
                 <label
-                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined css-1jy569b-MuiFormLabel-root-MuiInputLabel-root"
                   data-shrink="true"
                   for=":r0:"
                   id=":r0:-label"
@@ -41,10 +41,12 @@ exports[`DownloadForm Component( ダウンロードフォームにレイアウ�
                 >
                   <input
                     aria-invalid="false"
+                    autocomplete="off"
                     class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd css-nxo287-MuiInputBase-input-MuiOutlinedInput-input"
                     id=":r0:"
-                    placeholder="yyyy/mm/dd"
-                    type="tel"
+                    inputmode="text"
+                    placeholder="YYYY/MM/DD"
+                    type="text"
                     value="2023/01/01"
                   />
                   <div
@@ -99,10 +101,10 @@ exports[`DownloadForm Component( ダウンロードフォームにレイアウ�
                 class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
               >
                 <label
-                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined css-1jy569b-MuiFormLabel-root-MuiInputLabel-root"
                   data-shrink="true"
-                  for=":r1:"
-                  id=":r1:-label"
+                  for=":r2:"
+                  id=":r2:-label"
                 >
                   終了日
                 </label>
@@ -111,10 +113,12 @@ exports[`DownloadForm Component( ダウンロードフォームにレイアウ�
                 >
                   <input
                     aria-invalid="false"
+                    autocomplete="off"
                     class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd css-nxo287-MuiInputBase-input-MuiOutlinedInput-input"
-                    id=":r1:"
-                    placeholder="yyyy/mm/dd"
-                    type="tel"
+                    id=":r2:"
+                    inputmode="text"
+                    placeholder="YYYY/MM/DD"
+                    type="text"
                     value="2023/01/31"
                   />
                   <div
@@ -166,7 +170,7 @@ exports[`DownloadForm Component( ダウンロードフォームにレイアウ�
             class="MuiFormControl-root MuiFormControl-fullWidth css-q8hpuo-MuiFormControl-root"
           >
             <label
-              class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+              class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined css-1jy569b-MuiFormLabel-root-MuiInputLabel-root"
               data-shrink="true"
               id="demo-simple-select-label"
             >
@@ -188,6 +192,7 @@ exports[`DownloadForm Component( ダウンロードフォームにレイアウ�
               </div>
               <input
                 aria-hidden="true"
+                aria-invalid="false"
                 class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
                 tabindex="-1"
                 value="202301"
@@ -222,7 +227,7 @@ exports[`DownloadForm Component( ダウンロードフォームにレイアウ�
           class="MuiBox-root css-0"
         >
           <div
-            class="MuiAutocomplete-root MuiAutocomplete-hasPopupIcon css-5c4t7z-MuiAutocomplete-root"
+            class="MuiAutocomplete-root MuiAutocomplete-hasPopupIcon css-1i9x9p3-MuiAutocomplete-root"
             data-testid="autocomplete"
           >
             <div

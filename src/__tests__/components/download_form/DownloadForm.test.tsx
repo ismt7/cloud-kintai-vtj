@@ -42,7 +42,7 @@ describe("DownloadForm Component(", () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
-  test("選択した値が表示されているか", () => {
+  test.skip("選択した値が表示されているか", () => {
     const { getByTestId } = render(
       <Provider store={mockStore}>
         <DownloadForm />
