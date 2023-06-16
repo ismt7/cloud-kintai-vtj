@@ -2,8 +2,7 @@ import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
 import { expect } from "@storybook/jest";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import { waitFor, within, screen, fireEvent } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { waitFor, within, screen, fireEvent, userEvent } from "@storybook/testing-library";
 import { Provider } from "react-redux";
 
 import {
@@ -468,9 +467,9 @@ UpdateStaff.play = async ({ canvasElement }) => {
     const mailAddress = canvas.queryByTestId("mail-address");
 
     if (lastName && firstName && mailAddress) {
-      userEvent.clear(lastName);
-      userEvent.clear(firstName);
-      userEvent.clear(mailAddress);
+      void userEvent.clear(lastName);
+      void userEvent.clear(firstName);
+      void userEvent.clear(mailAddress);
     }
   });
 

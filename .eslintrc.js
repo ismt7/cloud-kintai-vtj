@@ -2,23 +2,16 @@ module.exports = {
   root: true,
   env: {
     browser: true,
-    es2021: true,
+    es2021: true
   },
-  extends: [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
-    "airbnb-base",
-    "airbnb-typescript",
-  ],
+  extends: ["eslint:recommended", "plugin:react/recommended", "plugin:@typescript-eslint/recommended", "plugin:@typescript-eslint/recommended-requiring-type-checking", "airbnb-base", "airbnb-typescript", "plugin:storybook/recommended"],
   overrides: [],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
     project: "./tsconfig.eslint.json",
-    tsconfigRootDir: __dirname,
+    tsconfigRootDir: __dirname
   },
   ignorePatterns: ["dist", "src/api"],
   plugins: ["react", "@typescript-eslint", "unused-imports", "import"],
@@ -28,47 +21,30 @@ module.exports = {
     "@typescript-eslint/quotes": ["error", "double"],
     "@typescript-eslint/comma-dangle": "off",
     "object-curly-newline": "off",
-    "no-param-reassign": [
-      "error",
-      {
-        props: false,
-      },
-    ],
+    "no-param-reassign": ["error", {
+      props: false
+    }],
     "function-paren-newline": "off",
     "implicit-arrow-linebreak": "off",
     "no-void": "off",
     "operator-linebreak": "off",
     "@typescript-eslint/indent": "off",
-    "import/order": [
-      "error",
-      {
-        groups: [
-          "builtin",
-          "external",
-          "parent",
-          "sibling",
-          "index",
-          "object",
-          "type",
-        ],
-        pathGroups: [
-          {
-            pattern: "{react,react-dom/**,react-router-dom}",
-            group: "builtin",
-            position: "before",
-          },
-          {
-            pattern: "@src/**",
-            group: "parent",
-            position: "before",
-          },
-        ],
-        pathGroupsExcludedImportTypes: ["builtin"],
-        alphabetize: {
-          order: "asc",
-        },
-        "newlines-between": "always",
+    "import/order": ["error", {
+      groups: ["builtin", "external", "parent", "sibling", "index", "object", "type"],
+      pathGroups: [{
+        pattern: "{react,react-dom/**,react-router-dom}",
+        group: "builtin",
+        position: "before"
+      }, {
+        pattern: "@src/**",
+        group: "parent",
+        position: "before"
+      }],
+      pathGroupsExcludedImportTypes: ["builtin"],
+      alphabetize: {
+        order: "asc"
       },
-    ],
-  },
+      "newlines-between": "always"
+    }]
+  }
 };

@@ -7,7 +7,6 @@ import {
   List,
   ListItemButton,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -146,28 +145,24 @@ const JobTerm = () => {
                             <Box>
                               <DesktopDatePicker
                                 label="集計開始日"
-                                inputFormat="YYYY/MM/DD"
+                                format="YYYY/MM/DD"
                                 value={dayjs(item.jobStartDate)}
                                 onChange={(event) => {
                                   startDatePickerHandler(event, item);
                                 }}
-                                renderInput={(params) => (
-                                  <TextField {...params} />
-                                )}
+                                slotProps={{ textField: { variant: "outlined" } }}
                               />
                             </Box>
                             <Box>〜</Box>
                             <Box>
                               <DesktopDatePicker
                                 label="集計終了日"
-                                inputFormat="YYYY/MM/DD"
+                                format="YYYY/MM/DD"
                                 value={dayjs(item.jobEndDate)}
                                 onChange={(event) => {
                                   endDatePickerHandler(event, item);
                                 }}
-                                renderInput={(params) => (
-                                  <TextField {...params} />
-                                )}
+                                slotProps={{ textField: { variant: "outlined" } }}
                               />
                             </Box>
                             <Box>

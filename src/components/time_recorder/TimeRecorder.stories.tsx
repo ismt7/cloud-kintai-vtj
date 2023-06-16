@@ -2,8 +2,7 @@ import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
 import { expect } from "@storybook/jest";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import { waitFor, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { waitFor, within, userEvent } from "@storybook/testing-library";
 import { Provider } from "react-redux";
 
 import {
@@ -127,7 +126,7 @@ Default.play = async ({ canvasElement }) => {
     expect(canvas.getByText(/直帰/i)).toBeDisabled();
 
     const startButton = canvas.getByRole("button", { name: /勤務開始/i });
-    userEvent.click(startButton);
+    void userEvent.click(startButton);
   });
 
   await wait(500);
@@ -141,7 +140,7 @@ Default.play = async ({ canvasElement }) => {
     expect(canvas.getByText(/直帰/i)).toBeEnabled();
 
     const restStartButton = canvas.getByRole("button", { name: /休憩開始/i });
-    userEvent.click(restStartButton);
+    void userEvent.click(restStartButton);
   });
 
   await wait(500);
@@ -155,7 +154,7 @@ Default.play = async ({ canvasElement }) => {
     expect(canvas.getByText(/直帰/i)).toBeDisabled();
 
     const restEndButton = canvas.getByRole("button", { name: /休憩終了/i });
-    userEvent.click(restEndButton);
+    void userEvent.click(restEndButton);
   });
 
   await wait(1000);
@@ -169,7 +168,7 @@ Default.play = async ({ canvasElement }) => {
     expect(canvas.getByText(/直帰/i)).toBeEnabled();
 
     const endButton = canvas.getByRole("button", { name: /勤務終了/i });
-    userEvent.click(endButton);
+    void userEvent.click(endButton);
   });
 
   await wait(500);
