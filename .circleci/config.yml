@@ -71,7 +71,6 @@ jobs:
     steps:
       - checkout
       - run: npm install
-      - run: make ci
       - snyk/install
       - run:
           name: Which version of snyk is installed
