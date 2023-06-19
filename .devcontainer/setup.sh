@@ -55,3 +55,17 @@ make setup
 if [ ! -e "src/aws-exports.js" ]; then
   amplify pull --appId d9rnf7q7x9f9e --envName dev --restore -y
 fi
+
+# ========================================
+#  Git config
+# ========================================
+
+# User name
+if [ -n "${GIT_USER_NAME}" ]; then
+  git config --local user.name "${GIT_USER_NAME}"
+fi
+
+# User email
+if [ -n "${GIT_USER_EMAIL}" ]; then
+  git config --local user.email "${GIT_USER_EMAIL}"
+fi
