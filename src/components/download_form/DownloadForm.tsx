@@ -90,20 +90,20 @@ const DownloadForm = () => {
                 <Box>
                   <DesktopDatePicker
                     label="開始日"
-                    inputFormat="YYYY/MM/DD"
+                    format="YYYY/MM/DD"
                     value={startDate}
                     onChange={handleStartDateChange}
-                    renderInput={(params) => <TextField {...params} />}
+                    slotProps={{ textField: { variant: "outlined" } }}
                   />
                 </Box>
                 <Box>〜</Box>
                 <Box>
                   <DesktopDatePicker
                     label="終了日"
-                    inputFormat="YYYY/MM/DD"
+                    format="YYYY/MM/DD"
                     value={endDate}
                     onChange={handleEndDateChange}
-                    renderInput={(params) => <TextField {...params} />}
+                    slotProps={{ textField: { variant: "outlined" } }}
                   />
                 </Box>
               </Stack>

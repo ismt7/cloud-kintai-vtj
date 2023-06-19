@@ -43,5 +43,5 @@
   "editor.inlineSuggest.enabled": true,
   "files.readonlyInclude": {
     "node_modules/**/*": true
-  }
+  },
 }

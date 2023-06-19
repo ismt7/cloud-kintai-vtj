@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 
-import Button from "../../components/button/Button";
+import Button from "../../../components/button/Button";
 
 describe("Button Component(", () => {
   test.concurrent("ボタンのラベルが正しく表示されるか", () => {
