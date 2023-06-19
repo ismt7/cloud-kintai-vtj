@@ -9,24 +9,14 @@ exports[` 1`] = `
       aria-colcount="9"
       aria-multiselectable="false"
       aria-rowcount="1"
-      class="MuiDataGrid-root MuiDataGrid-root--densityStandard css-1e2bxag-MuiDataGrid-root"
+      class="MuiDataGrid-root MuiDataGrid-root--densityStandard MuiDataGrid-withBorderColor css-1lymaxv-MuiDataGrid-root"
       role="grid"
     >
-      <div>
-        <div />
-      </div>
       <div
         class="MuiDataGrid-main css-204u17-MuiDataGrid-main"
       >
         <div
-          style="height: -56px; width: 0px; position: absolute; top: 56px;"
-        >
-          <div>
-            データがありません
-          </div>
-        </div>
-        <div
-          class="MuiDataGrid-columnHeaders css-z8fhq1-MuiDataGrid-columnHeaders"
+          class="MuiDataGrid-columnHeaders MuiDataGrid-withBorderColor css-1iyq7zh-MuiDataGrid-columnHeaders"
           style="min-height: 56px; max-height: 56px; line-height: 56px;"
         >
           <div
@@ -42,7 +32,7 @@ exports[` 1`] = `
               <div
                 aria-colindex="1"
                 aria-sort="none"
-                class="MuiDataGrid-columnHeader MuiDataGrid-columnHeader--alignCenter MuiDataGrid-columnHeaderCheckbox"
+                class="MuiDataGrid-columnHeader MuiDataGrid-columnHeader--alignCenter MuiDataGrid-withBorderColor MuiDataGrid-columnHeaderCheckbox"
                 data-field="__check__"
                 role="columnheader"
                 style="height: 56px; width: 50px; min-width: 50px; max-width: 50px;"
@@ -107,7 +97,7 @@ exports[` 1`] = `
                 aria-colindex="2"
                 aria-label="名前"
                 aria-sort="none"
-                class="MuiDataGrid-columnHeader MuiDataGrid-columnHeader--alignCenter"
+                class="MuiDataGrid-columnHeader MuiDataGrid-columnHeader--alignCenter MuiDataGrid-withBorderColor"
                 data-field="staffName"
                 role="columnheader"
                 style="height: 56px; width: 100px; min-width: 100px; max-width: 100px;"
@@ -125,7 +115,7 @@ exports[` 1`] = `
                     >
                       <div
                         aria-label=""
-                        class="MuiDataGrid-columnHeaderTitle css-1jbbcbn-MuiDataGrid-columnHeaderTitle"
+                        class="MuiDataGrid-columnHeaderTitle css-t89xny-MuiDataGrid-columnHeaderTitle"
                         data-mui-internal-clone-element="true"
                       >
                         名前
@@ -136,13 +126,13 @@ exports[` 1`] = `
                     class="MuiDataGrid-menuIcon"
                   >
                     <button
-                      aria-controls=":r2:"
-                      aria-haspopup="true"
+                      aria-expanded="false"
+                      aria-haspopup="menu"
                       aria-label="Menu"
                       class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall MuiDataGrid-menuIconButton css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
-                      id=":r3:"
+                      data-mui-internal-clone-element="true"
+                      id=":r5:"
                       tabindex="-1"
-                      title="Menu"
                       type="button"
                     >
                       <svg
@@ -183,7 +173,7 @@ exports[` 1`] = `
                 aria-colindex="3"
                 aria-label="ステータス"
                 aria-sort="none"
-                class="MuiDataGrid-columnHeader MuiDataGrid-columnHeader--alignCenter"
+                class="MuiDataGrid-columnHeader MuiDataGrid-columnHeader--alignCenter MuiDataGrid-withBorderColor"
                 data-field="status"
                 role="columnheader"
                 style="height: 56px; width: 100px; min-width: 100px; max-width: 100px;"
@@ -201,7 +191,7 @@ exports[` 1`] = `
                     >
                       <div
                         aria-label=""
-                        class="MuiDataGrid-columnHeaderTitle css-1jbbcbn-MuiDataGrid-columnHeaderTitle"
+                        class="MuiDataGrid-columnHeaderTitle css-t89xny-MuiDataGrid-columnHeaderTitle"
                         data-mui-internal-clone-element="true"
                       >
                         ステータス
@@ -212,13 +202,13 @@ exports[` 1`] = `
                     class="MuiDataGrid-menuIcon"
                   >
                     <button
-                      aria-controls=":r5:"
-                      aria-haspopup="true"
+                      aria-expanded="false"
+                      aria-haspopup="menu"
                       aria-label="Menu"
                       class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall MuiDataGrid-menuIconButton css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
-                      id=":r6:"
+                      data-mui-internal-clone-element="true"
+                      id=":rb:"
                       tabindex="-1"
-                      title="Menu"
                       type="button"
                     >
                       <svg
@@ -259,39 +249,32 @@ exports[` 1`] = `
           </div>
         </div>
         <div
-          style="overflow: visible; height: 0px; width: 0px;"
+          class="MuiDataGrid-virtualScroller css-axafay-MuiDataGrid-virtualScroller"
+          style="overflow-x: hidden;"
         >
           <div
-            class="MuiDataGrid-virtualScroller css-1w5m2wr-MuiDataGrid-virtualScroller"
-            style="width: 0px; height: auto; margin-top: 56px; overflow-x: hidden;"
+            class="MuiDataGrid-overlayWrapper css-ql19fo-MuiDataGrid-overlayWrapper"
           >
             <div
-              class="MuiDataGrid-virtualScrollerContent MuiDataGrid-virtualScrollerContent--overflowed css-1kwdphh-MuiDataGrid-virtualScrollerContent"
-              style="width: auto; height: 1px; min-height: auto;"
+              class="MuiDataGrid-overlayWrapperInner css-1akuw9y-MuiDataGrid-overlayWrapperInner"
+              style="height: -56px; width: 0px;"
             >
-              <div
-                class="MuiDataGrid-virtualScrollerRenderZone css-s1v7zr-MuiDataGrid-virtualScrollerRenderZone"
-                style="transform: translate3d(0px, undefinedpx, 0px);"
-              />
+              <div>
+                データがありません
+              </div>
             </div>
           </div>
-        </div>
-        <div
-          class="Mui-resizeTriggers"
-        >
           <div
-            class="expand-trigger"
+            class="MuiDataGrid-virtualScrollerContent MuiDataGrid-virtualScrollerContent--overflowed css-1kwdphh-MuiDataGrid-virtualScrollerContent"
+            style="width: auto; height: 1px; min-height: auto;"
           >
             <div
-              style="width: 1px; height: 1px;"
+              class="MuiDataGrid-virtualScrollerRenderZone css-s1v7zr-MuiDataGrid-virtualScrollerRenderZone"
+              style="transform: translate3d(0px, undefinedpx, 0px);"
             />
           </div>
-          <div
-            class="contract-trigger"
-          />
         </div>
       </div>
-      <div />
     </div>
   </div>
 </DocumentFragment>
