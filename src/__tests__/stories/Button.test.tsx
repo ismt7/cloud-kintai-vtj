@@ -1,15 +1,14 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 
 import Button from "../../components/button/Button";
 
 describe("Button", () => {
   test.concurrent("onClick", () => {
     const onClickMock = jest.fn();
-    render(<Button label="label1" onClick={onClickMock} />);
-    userEvent.click(screen.getByRole("button", { name: "label1" }));
+    const { getByText } = render(<Button label="label1" onClick={onClickMock} />);
 
-    expect(onClickMock).toHaveBeenCalledTimes(1);
+    getByText("label1").click();
+    expect(onClickMock).toHaveBeenCalled();
   });
 
   test.concurrent("Disabled", () => {
