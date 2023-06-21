@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { rest } from "msw";
 
-import { StaffCreate } from "../../api";
+import { AttendanceClockIn, RestStart, StaffCreate } from "../../api";
 import MockStaffList from "../staff_list/data/StaffList";
 
 const MOCK_STAFF_ID = 999;
@@ -20,23 +20,30 @@ export const getRestHandler200 = () =>
     (req, res, ctx) => res(ctx.status(200), ctx.json({}))
   );
 
+// ============================================================
+//  出勤
+// ============================================================
 export const postAttendancesClockInHandler200 = () =>
   rest.post(
     `${REACT_APP_BASE_PATH}/v1/attendances/${MOCK_STAFF_ID}/${today}/clock_in`,
-    (req, res, ctx) =>
-      res(
+    async (req, res, ctx) => {
+      const requestData: AttendanceClockIn = await req.json();
+
+      return res(
         ctx.status(200),
         ctx.json({
           attendance_id: 1,
           staff_id: MOCK_STAFF_ID,
-          work_date: dayjs().format("YYYY-MM-DD"),
-          start_time: dayjs().toISOString(),
+          work_date: dayjs(requestData.startTime).format("YYYY-MM-DD"),
+          start_time: requestData.startTime,
           end_time: null,
-          go_directly_flag: false,
+          go_directly_flag: requestData.goDirectlyFlag,
           return_directly_flag: false,
           remarks: "",
         })
-      )
+      );
+    }
+
   );
 
 export const patchAttendancesClockOutHandler200 = () =>
@@ -141,16 +148,20 @@ export const getStaffList200 = () =>
 export const postRestStartHandler200 = () =>
   rest.post(
     `${REACT_APP_BASE_PATH}/v1/rests/${MOCK_STAFF_ID}/${today}/start`,
-    (req, res, ctx) =>
-      res(
+    async (req, res, ctx) => {
+      const requestData: RestStart = await req.json();
+
+      return res(
         ctx.status(200),
         ctx.json({
           staff_id: MOCK_STAFF_ID,
-          work_date: dayjs().format("YYYY-MM-DD"),
-          start_time: dayjs().toISOString(),
+          rest_time_id: 1,
+          work_date: dayjs(requestData.startTime).format("YYYY-MM-DD"),
+          start_time: dayjs(requestData.startTime).toISOString(),
           end_time: null,
         })
-      )
+      );
+    }
   );
 
 export const patchStaffRoleHandler200 = () =>

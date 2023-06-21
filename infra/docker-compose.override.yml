@@ -8,6 +8,8 @@ services:
       target: dev
     env_file:
       - ../.env
+    environment:
+      - TZ=Asia/Tokyo
     ports:
       - "3000:3000"
     volumes:
@@ -27,6 +29,7 @@ services:
       - ../.env
     environment:
       - ESLINT_NO_DEV_ERRORS=true
+      - TZ=Asia/Tokyo
     ports:
       - "6006:6006"
     volumes:
@@ -49,6 +52,8 @@ services:
       target: dev
     env_file:
       - ../.env
+    environment:
+      - TZ=Asia/Tokyo
     volumes:
       - ../src:/app/src:delegated
     command:
