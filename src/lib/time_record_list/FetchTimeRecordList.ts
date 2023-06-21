@@ -116,7 +116,7 @@ function getRestElapsedTime(matchedRests: OriginRest[] | undefined) {
 function getWorkTimeTotal(attendanceTime: number, restTime: number) {
   const elapsedTime = attendanceTime - restTime;
 
-  return `${elapsedTime / 60}:${`0${elapsedTime % 60}`.slice(-2)}`;
+  return `${Math.trunc(elapsedTime / 60)}:${`${elapsedTime % 60}`.slice(-2)}`;
 }
 
 function getWorkElapsedTime(matchedAttendance: OriginAttendance) {
@@ -127,7 +127,7 @@ function getWorkElapsedTime(matchedAttendance: OriginAttendance) {
 }
 
 function getRestTimeTotal(restTime: number) {
-  return `${restTime / 60}:${`0${restTime % 60}`.slice(-2)}`;
+  return `${Math.trunc(restTime / 60)}:${`${restTime % 60}`.slice(-2)}`;
 }
 
 const fetchTimeRecordList = createAsyncThunk(
