@@ -133,12 +133,11 @@ export const registerRestStart = createAsyncThunk(
     staffId: number;
     workDate: number;
     startTime: dayjs.Dayjs;
-  }) =>
-    restRegisterStart({
-      staffId,
-      workDate,
-      startTime: startTime.toISOString(),
-    })
+  }) => restRegisterStart({
+    staffId,
+    workDate,
+    startTime: startTime.toISOString(),
+  })
 );
 
 export const registerRestEnd = createAsyncThunk(
@@ -246,6 +245,13 @@ const getExtraReducers = (
     });
 
   builder
+    .addCase(registerRestStart.pending, (state) => {
+      state.status = TimeRecorderStatus.PROCESSING;
+      state.workStatus = {
+        code: WorkStatusCodes.PROCESSING,
+        text: WorkStatusTexts.PROCESSING,
+      };
+    })
     .addCase(registerRestStart.fulfilled, (state, action) => {
       state.status = TimeRecorderStatus.DONE;
       state.workStatus = {
@@ -362,9 +368,7 @@ export const handleClickClockOutButton =
 export const handleClickRestStartButton =
   ({ staffId }: { staffId: number | undefined }): AppThunk =>
   (dispatch) => {
-    if (staffId === undefined) {
-      return;
-    }
+    if (!staffId) return;
 
     const now = dayjs();
     const workDate = Number(now.format("YYYYMMDD"));
