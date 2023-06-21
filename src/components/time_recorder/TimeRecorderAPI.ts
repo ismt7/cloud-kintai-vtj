@@ -52,7 +52,7 @@ export const mappedOriginRest = (rest: Rest): OriginRest => ({
     : dayjs(rest.endTime).toISOString(),
 });
 
-function getConfigration() {
+function getConfiguration() {
   return new Configuration({
     basePath: process.env.REACT_APP_BASE_PATH,
   });
@@ -65,7 +65,7 @@ export async function fetchAttendance({
   staffId: number;
   workDate: number;
 }): Promise<OriginAttendance | null> {
-  const api = new AttendanceApi(getConfigration());
+  const api = new AttendanceApi(getConfiguration());
   const attendance = await api
     .getAttendance({
       staffId,
@@ -85,7 +85,7 @@ export async function fetchRest({
   staffId: number;
   workDate: number;
 }): Promise<OriginRest | null> {
-  const restApi = new RestApi(getConfigration());
+  const restApi = new RestApi(getConfiguration());
   return restApi
     .getRest({
       staffId,
@@ -109,7 +109,7 @@ export async function attendanceRegisterClockIn({
 }): Promise<OriginAttendance | null> {
   if (!staffId) return null;
 
-  const attendanceApi = new AttendanceApi(getConfigration());
+  const attendanceApi = new AttendanceApi(getConfiguration());
   const attendance = await attendanceApi
     .registerClockIn({
       staffId,
@@ -139,7 +139,7 @@ export async function attendanceRegisterClockOut({
 }): Promise<OriginAttendance | null> {
   if (!staffId) return null;
 
-  const attendanceApi = new AttendanceApi(getConfigration());
+  const attendanceApi = new AttendanceApi(getConfiguration());
   const attendance = await attendanceApi
     .registerClockOut({
       staffId,
@@ -166,7 +166,7 @@ export async function restRegisterStart({
   workDate: number;
   startTime: string;
 }) {
-  const restApi = new RestApi(getConfigration());
+  const restApi = new RestApi(getConfiguration());
   const rest = await restApi
     .registerStartRest({
       staffId,
@@ -194,7 +194,7 @@ export async function restRegisterEnd({
 }) {
   if (!staffId) return null;
 
-  const restApi = new RestApi(getConfigration());
+  const restApi = new RestApi(getConfiguration());
   const rest = await restApi
     .registerEndRest({
       staffId,
@@ -222,7 +222,7 @@ export async function attendanceRegisterRemarks({
 }) {
   if (!staffId) return null;
 
-  const attendanceApi = new AttendanceApi(getConfigration());
+  const attendanceApi = new AttendanceApi(getConfiguration());
   const attendance = await attendanceApi
     .updateRemarks({
       staffId,
