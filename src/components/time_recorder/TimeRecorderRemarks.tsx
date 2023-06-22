@@ -66,8 +66,6 @@ const TimeRecorderRemarks = ({ staffId }: { staffId: number | undefined }) => {
           >
             <Box>
               <IconButton
-                data-testid="remarks-save"
-                aria-label="remarks-done"
                 disabled={remarksSubmitButtonDisabled}
                 onClick={() => {
                   setRemarksTextFieldDisabled(true);
@@ -77,23 +75,20 @@ const TimeRecorderRemarks = ({ staffId }: { staffId: number | undefined }) => {
                     staffId,
                     remarks: remarksText,
                   });
-                  // remarksChangeHandler(remarksText);
                 }}
               >
-                <CheckIcon color="success" />
+                <CheckIcon color="success" data-testid="remarksSave" />
               </IconButton>
             </Box>
             <Box>
               <IconButton
-                data-testid="remarks-clear"
-                aria-label="remarks-clear"
                 disabled={remarksClearButtonDisabled}
                 onClick={() => {
                   setRemarksText(currentRemarksText || "");
                   setRemarksSubmitButtonVisible(false);
                 }}
               >
-                <ClearIcon color="error" />
+                <ClearIcon color="error" data-testid="remarksClear" />
               </IconButton>
             </Box>
           </Stack>
