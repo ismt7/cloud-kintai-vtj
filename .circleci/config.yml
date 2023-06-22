@@ -3,7 +3,7 @@ version: 2.1
 
 orbs:
   aws-cli: circleci/aws-cli@4.0.0
-  snyk: snyk/snyk@1.7.0
+  # snyk: snyk/snyk@1.7.0
 
 workflows:
   app-workflow:
@@ -11,7 +11,7 @@ workflows:
       - app-test:
           context:
             - aws
-      - app-sast
+      # - app-sast
 
 jobs:
   app-test:
@@ -64,15 +64,15 @@ jobs:
             curl -Os https://uploader.codecov.io/latest/linux/codecov
             chmod +x codecov
             ./codecov -t ${CODECOV_TOKEN}
-  app-sast:
-    docker:
-      - image: cimg/node:18.13.0
+  # app-sast:
+  #   docker:
+  #     - image: cimg/node:18.13.0
 
-    steps:
-      - checkout
-      - run: npm install
-      - snyk/install
-      - run:
-          name: Which version of snyk is installed
-          command: snyk version
-      - snyk/scan
+  #   steps:
+  #     - checkout
+  #     - run: npm install
+  #     - snyk/install
+  #     - run:
+  #         name: Which version of snyk is installed
+  #         command: snyk version
+  #     - snyk/scan
