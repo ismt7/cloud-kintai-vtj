@@ -41,7 +41,8 @@
         "Gruntfuggly.todo-tree",
         "codezombiech.gitignore",
         "eamodio.gitlens",
-        "yzhang.markdown-all-in-one"
+        "yzhang.markdown-all-in-one",
+        "PKief.material-icon-theme"
       ]
     }
   },
