@@ -1,12 +1,20 @@
 import dayjs from "dayjs";
 import { rest } from "msw";
 
-import { AttendanceClockIn, RestStart, StaffCreate } from "../../api";
+import { AttendanceClockIn, AttendanceClockOut, RestEnd, RestStart, StaffCreate, UpdateRemarksRequest } from "../../api";
 import MockStaffList from "../staff_list/data/StaffList";
 
 const MOCK_STAFF_ID = 999;
 const REACT_APP_BASE_PATH = process.env.REACT_APP_BASE_PATH || "";
 const today = dayjs().format("YYYYMMDD");
+
+type MemoryStorage = {
+  attendance_start_time?: Date;
+  attendance_end_time?: Date;
+  rest_start_time?: Date;
+};
+
+const memoryStorage: MemoryStorage = {};
 
 export const getAttendancesHandler200 = () =>
   rest.get(
@@ -29,13 +37,15 @@ export const postAttendancesClockInHandler200 = () =>
     async (req, res, ctx) => {
       const requestData: AttendanceClockIn = await req.json();
 
+      memoryStorage.attendance_start_time = requestData.startTime;
+
       return res(
         ctx.status(200),
         ctx.json({
           attendance_id: 1,
           staff_id: MOCK_STAFF_ID,
           work_date: dayjs(requestData.startTime).format("YYYY-MM-DD"),
-          start_time: requestData.startTime,
+          start_time: dayjs(requestData.startTime).toISOString(),
           end_time: null,
           go_directly_flag: requestData.goDirectlyFlag,
           return_directly_flag: false,
@@ -46,23 +56,100 @@ export const postAttendancesClockInHandler200 = () =>
 
   );
 
+// ============================================================
+//  退勤
+// ============================================================
 export const patchAttendancesClockOutHandler200 = () =>
   rest.patch(
     `${REACT_APP_BASE_PATH}/v1/attendances/${MOCK_STAFF_ID}/${today}/clock_out`,
-    (req, res, ctx) =>
-      res(
+    async (req, res, ctx) => {
+        const requestData: AttendanceClockOut = await req.json();
+
+        memoryStorage.attendance_end_time = requestData.endTime;
+
+        return res(
+          ctx.status(200),
+          ctx.json({
+            attendance_id: 1,
+            staff_id: MOCK_STAFF_ID,
+            work_date: dayjs(requestData.endTime).format("YYYY-MM-DD"),
+            start_time: dayjs(memoryStorage.attendance_start_time).toISOString(),
+            end_time: dayjs(requestData.endTime).toISOString(),
+            go_directly_flag: false,
+            return_directly_flag: false,
+            remarks: "",
+          })
+        );
+      }
+  );
+
+// ============================================================
+//  休憩開始
+// ============================================================
+export const postRestStartHandler200 = () =>
+  rest.post(
+    `${REACT_APP_BASE_PATH}/v1/rests/${MOCK_STAFF_ID}/${today}/start`,
+    async (req, res, ctx) => {
+      const requestData: RestStart = await req.json();
+
+      return res(
         ctx.status(200),
         ctx.json({
-          attendance_id: 1,
           staff_id: MOCK_STAFF_ID,
-          work_date: "2023-01-01",
-          start_time: "2023-01-01T09:00:00",
-          end_time: "2023-01-01T18:00:00",
-          go_directly_flag: false,
-          return_directly_flag: false,
-          remarks: "",
+          rest_time_id: 1,
+          work_date: dayjs(requestData.startTime).format("YYYY-MM-DD"),
+          start_time: dayjs(requestData.startTime).toISOString(),
+          end_time: null,
         })
-      )
+      );
+    }
+  );
+
+// ============================================================
+//  休憩終了
+// ============================================================
+export const patchRestEndHandler200 = () =>
+rest.patch(
+  `${REACT_APP_BASE_PATH}/v1/rests/${MOCK_STAFF_ID}/${today}/end`,
+  async (req, res, ctx) => {
+      const requestData: RestEnd = await req.json();
+
+      return res(
+        ctx.status(200),
+        ctx.json({
+          restTimeId: 1,
+          staff_id: MOCK_STAFF_ID,
+          work_date: dayjs(requestData.endTime).format("YYYY-MM-DD"),
+          start_time: dayjs(memoryStorage.rest_start_time).toISOString(),
+          end_time: dayjs(requestData.endTime).toISOString(),
+        })
+      );
+    }
+);
+
+// ============================================================
+//  備考更新
+// ============================================================
+export const patchRemarksHandler200 = () =>
+  rest.patch(
+    `${REACT_APP_BASE_PATH}/v1/attendances/${MOCK_STAFF_ID}/${today}/remarks`,
+    async (req, res, ctx) => {
+        const requestData: UpdateRemarksRequest = await req.json();
+
+        return res(
+          ctx.status(200),
+          ctx.json({
+            attendance_id: 1,
+            staff_id: MOCK_STAFF_ID,
+            work_date: dayjs(today).format("YYYY-MM-DD"),
+            start_time: dayjs(memoryStorage.attendance_start_time).toISOString(),
+            end_time: dayjs(memoryStorage.attendance_end_time).toISOString(),
+            go_directly_flag: false,
+            return_directly_flag: false,
+            remarks: requestData.attendanceRemarks,
+          })
+        );
+      }
   );
 
 export const getStaffHandler200 = () =>
@@ -145,25 +232,6 @@ export const getStaffList200 = () =>
     res(ctx.status(200), ctx.json(MockStaffList))
   );
 
-export const postRestStartHandler200 = () =>
-  rest.post(
-    `${REACT_APP_BASE_PATH}/v1/rests/${MOCK_STAFF_ID}/${today}/start`,
-    async (req, res, ctx) => {
-      const requestData: RestStart = await req.json();
-
-      return res(
-        ctx.status(200),
-        ctx.json({
-          staff_id: MOCK_STAFF_ID,
-          rest_time_id: 1,
-          work_date: dayjs(requestData.startTime).format("YYYY-MM-DD"),
-          start_time: dayjs(requestData.startTime).toISOString(),
-          end_time: null,
-        })
-      );
-    }
-  );
-
 export const patchStaffRoleHandler200 = () =>
   rest.patch(
     `${REACT_APP_BASE_PATH}/v1/staffs/${MOCK_STAFF_ID}/role`,
@@ -176,41 +244,6 @@ export const patchStaffRoleHandler200 = () =>
           role: {
             role_name: "スタッフ管理者",
           },
-        })
-      )
-  );
-
-export const patchRestEndHandler200 = () =>
-  rest.patch(
-    `${REACT_APP_BASE_PATH}/v1/rests/${MOCK_STAFF_ID}/${today}/end`,
-    (req, res, ctx) =>
-      res(
-        ctx.status(200),
-        ctx.json({
-          restTimeId: 1,
-          staff_id: MOCK_STAFF_ID,
-          work_date: "2023-01-01",
-          start_time: "2023-01-01T12:00:00",
-          end_time: "2023-01-01T13:00:00",
-        })
-      )
-  );
-
-export const patchRemarksHandler200 = () =>
-  rest.patch(
-    `${REACT_APP_BASE_PATH}/v1/attendances/${MOCK_STAFF_ID}/${today}/remarks`,
-    (req, res, ctx) =>
-      res(
-        ctx.status(200),
-        ctx.json({
-          attendance_id: 1,
-          staff_id: MOCK_STAFF_ID,
-          work_date: "2023-01-01",
-          start_time: "2023-01-01T09:00:00",
-          end_time: null,
-          go_directly_flag: false,
-          return_directly_flag: false,
-          remarks: "これはモックAPIからレスポンスされたデータです。",
         })
       )
   );
