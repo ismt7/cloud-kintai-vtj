@@ -24,18 +24,15 @@ export const mappedOriginAttendance = (attendance: Attendance): OriginAttendance
     parentAttendanceId: attendance.parentAttendanceId,
     staffId: attendance.staffId,
     workDate: isNullDate(attendance.workDate)
-      ? undefined
-      : dayjs(attendance.workDate).toISOString(),
+      ? undefined : attendance.workDate.toISOString(),
     startTime: isNullDate(attendance.startTime)
-      ? undefined
-      : dayjs(attendance.startTime).toISOString(),
+      ? undefined : attendance.startTime.toISOString(),
     endTime: isNullDate(attendance.endTime)
-      ? undefined
-      : dayjs(attendance.endTime).toISOString(),
+      ? undefined : attendance.endTime.toISOString(),
     goDirectlyFlag: attendance.goDirectlyFlag,
     returnDirectlyFlag: attendance.returnDirectlyFlag,
     remarks: attendance.remarks,
-});
+  });
 
 export const mappedOriginRest = (rest: Rest): OriginRest => ({
   restTimeId: rest.restTimeId,
