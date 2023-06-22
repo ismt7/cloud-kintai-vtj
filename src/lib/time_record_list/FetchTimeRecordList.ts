@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 
 import { AttendanceApi, Configuration, RestApi } from "../../api";
 import {
@@ -20,6 +21,8 @@ export interface TimeRecordList {
   restTimeTotal: string;
   summary: string;
 }
+
+dayjs.extend(utc);
 
 const dayOfWeeks = ["日", "月", "火", "水", "木", "金", "土"];
 
@@ -116,18 +119,18 @@ function getRestElapsedTime(matchedRests: OriginRest[] | undefined) {
 function getWorkTimeTotal(attendanceTime: number, restTime: number) {
   const elapsedTime = attendanceTime - restTime;
 
-  return `${Math.trunc(elapsedTime / 60)}:${`${elapsedTime % 60}`.slice(-2)}`;
+  return `${Math.trunc(elapsedTime / 60)}:${`0${elapsedTime % 60}`.slice(-2)}`;
 }
 
 function getWorkElapsedTime(matchedAttendance: OriginAttendance) {
-  return dayjs(matchedAttendance.endTime).diff(
-    dayjs(matchedAttendance.startTime),
+  return dayjs.utc(matchedAttendance.endTime).diff(
+    dayjs.utc(matchedAttendance.startTime),
     "minute"
   );
 }
 
 function getRestTimeTotal(restTime: number) {
-  return `${Math.trunc(restTime / 60)}:${`${restTime % 60}`.slice(-2)}`;
+  return `${Math.trunc(restTime / 60)}:${`0${restTime % 60}`.slice(-2)}`;
 }
 
 const fetchTimeRecordList = createAsyncThunk(
@@ -182,25 +185,20 @@ const fetchTimeRecordList = createAsyncThunk(
         restElapsedTime
       );
 
+      const startTime = matchedAttendance.startTime
+        ? dayjs.utc(matchedAttendance.startTime).local() : undefined;
+      const endTime = matchedAttendance.endTime
+        ? dayjs.utc(matchedAttendance.endTime).local() : undefined;
+
       timeRecordList.push({
         id: i,
         staffId: matchedAttendance.staffId,
-        workDate: dayjs(matchedAttendance.workDate).format("M/D"),
-        clockInTime: matchedAttendance.startTime
-          ? dayjs(matchedAttendance.startTime).format("HH:mm")
-          : undefined,
-        clockOutTime: matchedAttendance.endTime
-          ? dayjs(matchedAttendance.endTime).format("HH:mm")
-          : "",
-        dayOfWeek: dayOfWeeks[dayjs(matchedAttendance.workDate).day()],
-        workTimeTotal:
-          matchedAttendance.startTime && matchedAttendance.endTime
-            ? workTimeTotal
-            : "",
-        restTimeTotal:
-          matchedAttendance.startTime && matchedAttendance.endTime
-            ? restTimeTotal
-            : "",
+        workDate: dayjs.utc(matchedAttendance.workDate).format("M/D"),
+        clockInTime: startTime?.format("HH:mm"),
+        clockOutTime: endTime?.format("HH:mm"),
+        dayOfWeek: dayOfWeeks[dayjs.utc(matchedAttendance.workDate).day()],
+        workTimeTotal: startTime && endTime ? workTimeTotal : "0:00",
+        restTimeTotal: startTime && endTime ? restTimeTotal : "0:00",
         summary: matchedAttendance.remarks,
       } as TimeRecordList);
     }
