@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { expect } from "@storybook/jest";
+import { userEvent, waitFor, screen } from "@storybook/testing-library";
 import { Provider } from "react-redux";
 
 import {
@@ -73,27 +74,49 @@ const mockStore = configureStore({
 });
 
 export default {
-  title: "Component/StaffList",
   component: StaffList,
   parameters: {
     layout: "fullscreen",
   },
-  decorators: [
-    (story) => (
-      <Provider store={mockStore}>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
-      </Provider>
-    ),
-  ],
-} as ComponentMeta<typeof StaffList>;
+};
 
-const Template: ComponentStory<typeof StaffList> = () => <StaffList />;
-
-export const Default = Template.bind({});
-Default.storyName = "デフォルト";
-Default.args = {};
-Default.parameters = {
-  msw: {
-    handlers: [getStaffList200()],
+export const Default = {
+  render: () => (
+    <Provider store={mockStore}>
+      <ThemeProvider theme={theme}>
+        <StaffList />
+      </ThemeProvider>
+    </Provider>
+  ),
+  storyName: "デフォルト",
+  args: {},
+  parameters: {
+    msw: {
+      handlers: [getStaffList200()],
+    },
   },
+  play: async () => {
+    const sleep = async (ms: number | undefined) => new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, ms);
+    });
+
+    const searchInput = screen.getByRole("textbox");
+    void userEvent.type(searchInput, "田中");
+
+    await sleep(1000);
+
+    await waitFor(() => {
+      const searchButton = screen.getByTestId("SearchIcon");
+      void userEvent.click(searchButton);
+    });
+
+    await waitFor(() => {
+      const list = screen.getByRole("list");
+      expect(list).toBeInTheDocument();
+      expect(list).toHaveTextContent("田中 太郎");
+      expect(list).not.toHaveTextContent("山田 花子");
+    });
+  }
 };
