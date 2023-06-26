@@ -46,5 +46,10 @@ module.exports = {
       },
       "newlines-between": "always"
     }]
+  },
+  settings: {
+    react: {
+      version: "detect"
+    }
   }
 };
