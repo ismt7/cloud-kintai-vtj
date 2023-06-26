@@ -1,8 +1,7 @@
 import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
 import { expect } from "@storybook/jest";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
-import { waitFor, within, userEvent } from "@storybook/testing-library";
+import { waitFor, userEvent, screen } from "@storybook/testing-library";
 import { Provider } from "react-redux";
 
 import {
@@ -72,104 +71,99 @@ const mockStore = configureStore({
 });
 
 export default {
-  title: "Component/TimeRecorder",
   component: TimeRecorder,
-  decorators: [
-    (story) => (
-      <Provider store={mockStore}>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
-      </Provider>
-    ),
-  ],
   argTypes: {
     backgroundColor: { control: "color" },
   },
-} as ComponentMeta<typeof TimeRecorder>;
-
-const Template: ComponentStory<typeof TimeRecorder> = () => <TimeRecorder />;
-
-export const Default = Template.bind({});
-Default.args = {};
-Default.parameters = {
-  msw: {
-    handlers: [
-      getAttendancesHandler200(),
-      getRestHandler200(),
-      postAttendancesClockInHandler200(),
-      patchAttendancesClockOutHandler200(),
-      getStaffHandler200(),
-      postRestStartHandler200(),
-      patchRestEndHandler200(),
-      patchRemarksHandler200(),
-    ],
-  },
 };
 
-Default.play = async ({ canvasElement }) => {
-  const canvas = within(canvasElement);
+export const Default = {
+  args: {},
+  parameters: {
+    msw: {
+      handlers: [
+        getAttendancesHandler200(),
+        getRestHandler200(),
+        postAttendancesClockInHandler200(),
+        patchAttendancesClockOutHandler200(),
+        getStaffHandler200(),
+        postRestStartHandler200(),
+        patchRestEndHandler200(),
+        patchRemarksHandler200(),
+      ],
+    },
+  },
+  render: () => (
+    <Provider store={mockStore}>
+      <ThemeProvider theme={theme}>
+        <TimeRecorder />
+      </ThemeProvider>
+    </Provider>
+  ),
+  play: async () => {
+    // 出勤前状態で「勤務開始」ボタンのみが有効化されていることを確認
+    await waitFor(async () => {
+      expect(screen.getByText(/勤務開始/i)).toBeEnabled();
+      expect(screen.getByText(/休憩開始/i)).toBeDisabled();
+      expect(screen.getByText(/休憩終了/i)).toBeDisabled();
+      expect(screen.getByText(/勤務終了/i)).toBeDisabled();
+      expect(screen.getByText(/直行/i)).toBeEnabled();
+      expect(screen.getByText(/直帰/i)).toBeDisabled();
 
-  // 出勤前状態で「勤務開始」ボタンのみが有効化されていることを確認
-  await waitFor(async () => {
-    expect(canvas.getByText(/勤務開始/i)).toBeEnabled();
-    expect(canvas.getByText(/休憩開始/i)).toBeDisabled();
-    expect(canvas.getByText(/休憩終了/i)).toBeDisabled();
-    expect(canvas.getByText(/勤務終了/i)).toBeDisabled();
-    expect(canvas.getByText(/直行/i)).toBeEnabled();
-    expect(canvas.getByText(/直帰/i)).toBeDisabled();
+      const startButton = screen.getByRole("button", { name: /勤務開始/i });
+      void userEvent.click(startButton);
+    });
 
-    const startButton = canvas.getByRole("button", { name: /勤務開始/i });
-    void userEvent.click(startButton);
-  });
+    // 出勤後状態で「休憩開始」「勤務終了」「直帰」ボタンのみが有効化されていることを確認
+    await waitFor(() => {
+      expect(screen.getByText(/勤務開始/i)).toBeDisabled();
+      expect(screen.getByText(/休憩開始/i)).toBeEnabled();
+      expect(screen.getByText(/休憩終了/i)).toBeDisabled();
+      expect(screen.getByText(/勤務終了/i)).toBeEnabled();
+      expect(screen.getByText(/直行/i)).toBeDisabled();
+      expect(screen.getByText(/直帰/i)).toBeEnabled();
 
-  // 出勤後状態で「休憩開始」「勤務終了」「直帰」ボタンのみが有効化されていることを確認
-  await waitFor(() => {
-    expect(canvas.getByText(/勤務開始/i)).toBeDisabled();
-    expect(canvas.getByText(/休憩開始/i)).toBeEnabled();
-    expect(canvas.getByText(/休憩終了/i)).toBeDisabled();
-    expect(canvas.getByText(/勤務終了/i)).toBeEnabled();
-    expect(canvas.getByText(/直行/i)).toBeDisabled();
-    expect(canvas.getByText(/直帰/i)).toBeEnabled();
+      const restStartButton = screen.getByRole("button", { name: /休憩開始/i });
+      void userEvent.click(restStartButton);
+    });
 
-    const restStartButton = canvas.getByRole("button", { name: /休憩開始/i });
-    void userEvent.click(restStartButton);
-  });
+    // 休憩中状態で「休憩終了」ボタンのみが有効化されていることを確認
+    await waitFor(() => {
+      expect(screen.getByText(/勤務開始/i)).toBeDisabled();
+      expect(screen.getByText(/休憩開始/i)).toBeDisabled();
+      expect(screen.getByText(/休憩終了/i)).toBeEnabled();
+      expect(screen.getByText(/勤務終了/i)).toBeDisabled();
+      expect(screen.getByText(/直行/i)).toBeDisabled();
+      expect(screen.getByText(/直帰/i)).toBeDisabled();
 
-  // 休憩中状態で「休憩終了」ボタンのみが有効化されていることを確認
-  await waitFor(() => {
-    expect(canvas.getByText(/勤務開始/i)).toBeDisabled();
-    expect(canvas.getByText(/休憩開始/i)).toBeDisabled();
-    expect(canvas.getByText(/休憩終了/i)).toBeEnabled();
-    expect(canvas.getByText(/勤務終了/i)).toBeDisabled();
-    expect(canvas.getByText(/直行/i)).toBeDisabled();
-    expect(canvas.getByText(/直帰/i)).toBeDisabled();
+      const restEndButton = screen.getByRole("button", { name: /休憩終了/i });
+      void userEvent.click(restEndButton);
+    });
 
-    const restEndButton = canvas.getByRole("button", { name: /休憩終了/i });
-    void userEvent.click(restEndButton);
-  });
+    // 休憩終了後の状態で「勤務終了」「直帰」「休憩開始」ボタンのみが有効化されていることを確認
+    await waitFor(() => {
+      expect(screen.getByText(/勤務開始/i)).toBeDisabled();
+      expect(screen.getByText(/休憩開始/i)).toBeEnabled();
+      expect(screen.getByText(/休憩終了/i)).toBeDisabled();
+      expect(screen.getByText(/勤務終了/i)).toBeEnabled();
+      expect(screen.getByText(/直行/i)).toBeDisabled();
+      expect(screen.getByText(/直帰/i)).toBeEnabled();
 
-  // 休憩終了後の状態で「勤務終了」「直帰」「休憩開始」ボタンのみが有効化されていることを確認
-  await waitFor(() => {
-    expect(canvas.getByText(/勤務開始/i)).toBeDisabled();
-    expect(canvas.getByText(/休憩開始/i)).toBeEnabled();
-    expect(canvas.getByText(/休憩終了/i)).toBeDisabled();
-    expect(canvas.getByText(/勤務終了/i)).toBeEnabled();
-    expect(canvas.getByText(/直行/i)).toBeDisabled();
-    expect(canvas.getByText(/直帰/i)).toBeEnabled();
+      const endButton = screen.getByRole("button", { name: /勤務終了/i });
+      void userEvent.click(endButton);
+    });
 
-    const endButton = canvas.getByRole("button", { name: /勤務終了/i });
-    void userEvent.click(endButton);
-  });
+    // 勤務終了後の状態ですべてのボタンが無効化されていることを確認
+    await waitFor(() => {
+      expect(screen.getByText(/勤務開始/i)).toBeDisabled();
+      expect(screen.getByText(/休憩開始/i)).toBeDisabled();
+      expect(screen.getByText(/休憩終了/i)).toBeDisabled();
 
-  // 勤務終了後の状態ですべてのボタンが無効化されていることを確認
-  await waitFor(() => {
-    expect(canvas.getByText(/勤務開始/i)).toBeDisabled();
-    expect(canvas.getByText(/休憩開始/i)).toBeDisabled();
-    expect(canvas.getByText(/休憩終了/i)).toBeDisabled();
+      const endButton = screen.getByRole("button", { name: /勤務終了/i });
+      expect(endButton).toBeDisabled();
 
-    const endButton = canvas.getByRole("button", { name: /勤務終了/i });
-    expect(endButton).toBeDisabled();
-
-    expect(canvas.getByText(/直行/i)).toBeDisabled();
-    expect(canvas.getByText(/直帰/i)).toBeDisabled();
-  });
+      expect(screen.getByText(/直行/i)).toBeDisabled();
+      expect(screen.getByText(/直帰/i)).toBeDisabled();
+    });
+  },
 };

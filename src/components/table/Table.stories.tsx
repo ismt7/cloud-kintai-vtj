@@ -1,6 +1,5 @@
 import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
 import dayjs from "dayjs";
 import { rest } from "msw";
 import { Provider } from "react-redux";
@@ -68,93 +67,90 @@ const mockStore = configureStore({
 });
 
 export default {
-  title: "Component/Table",
   component: Table,
-  decorators: [
-    (story) => (
-      <Provider store={mockStore}>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
-      </Provider>
-    ),
-  ],
   argTypes: {
     backgroundColor: { control: "color" },
   },
-} as ComponentMeta<typeof Table>;
-
-const Template: ComponentStory<typeof Table> = () => <Table />;
-
-export const Primary = Template.bind({});
-Primary.args = {};
+};
 
 const now = dayjs();
 const fromDate = now.subtract(30, "d");
-Primary.parameters = {
-  msw: {
-    handlers: [
-      rest.get(
-        `${REACT_APP_BASE_PATH}/attendances/1/${fromDate.format(
-          "YYYYMMDD"
-        )}/${now.format("YYYYMMDD")}`,
-        (req, res, ctx) =>
-          res(
-            ctx.status(200),
-            ctx.json(
-              (() => {
-                const data = [];
-                for (let i = 0; i < 10; i += 1) {
-                  const targetDate = now.subtract(Math.abs(i - 9), "d");
-                  const isHoliday = [0, 6].indexOf(targetDate.day()) !== -1;
+export const Primary = {
+  args: {},
+  render: () => (
+    <Provider store={mockStore}>
+      <ThemeProvider theme={theme}>
+        <Table />
+      </ThemeProvider>
+    </Provider>
+  ),
+  parameters: {
+    msw: {
+      handlers: [
+        rest.get(
+          `${REACT_APP_BASE_PATH}/attendances/1/${fromDate.format(
+            "YYYYMMDD"
+          )}/${now.format("YYYYMMDD")}`,
+          (req, res, ctx) =>
+            res(
+              ctx.status(200),
+              ctx.json(
+                (() => {
+                  const data = [];
+                  for (let i = 0; i < 10; i += 1) {
+                    const targetDate = now.subtract(Math.abs(i - 9), "d");
+                    const isHoliday = [0, 6].indexOf(targetDate.day()) !== -1;
 
-                  // eslint-disable-next-line no-continue
-                  if (isHoliday) continue;
+                    // eslint-disable-next-line no-continue
+                    if (isHoliday) continue;
 
-                  data.push({
-                    attendance_id: i + 1,
-                    staff_id: 1,
-                    work_date: targetDate.format("YYYY-MM-DD"),
-                    start_time: `${targetDate.format("YYYY-MM-DD")}T09:00:00`,
-                    end_time: `${targetDate.format("YYYY-MM-DD")}T18:00:00`,
-                    go_directly_flag: false,
-                    return_directly_flag: false,
-                    remarks: isHoliday ? "" : "備考です",
-                  });
-                }
-                return data;
-              })()
+                    data.push({
+                      attendance_id: i + 1,
+                      staff_id: 1,
+                      work_date: targetDate.format("YYYY-MM-DD"),
+                      start_time: `${targetDate.format("YYYY-MM-DD")}T09:00:00`,
+                      end_time: `${targetDate.format("YYYY-MM-DD")}T18:00:00`,
+                      go_directly_flag: false,
+                      return_directly_flag: false,
+                      remarks: isHoliday ? "" : "備考です",
+                    });
+                  }
+                  return data;
+                })()
+              )
             )
-          )
-      ),
-      rest.get(
-        `${REACT_APP_BASE_PATH}/rests/1/${fromDate.format(
-          "YYYYMMDD"
-        )}/${now.format("YYYYMMDD")}`,
-        (req, res, ctx) =>
-          res(
-            ctx.status(200),
-            ctx.json(
-              (() => {
-                const data = [];
-                for (let i = 0; i < 10; i += 1) {
-                  const targetDate = now.subtract(Math.abs(i - 9), "d");
-                  const isHoliday = [0, 6].indexOf(targetDate.day()) !== -1;
+        ),
+        rest.get(
+          `${REACT_APP_BASE_PATH}/rests/1/${fromDate.format(
+            "YYYYMMDD"
+          )}/${now.format("YYYYMMDD")}`,
+          (req, res, ctx) =>
+            res(
+              ctx.status(200),
+              ctx.json(
+                (() => {
+                  const data = [];
+                  for (let i = 0; i < 10; i += 1) {
+                    const targetDate = now.subtract(Math.abs(i - 9), "d");
+                    const isHoliday = [0, 6].indexOf(targetDate.day()) !== -1;
 
-                  // eslint-disable-next-line no-continue
-                  if (isHoliday) continue;
+                    // eslint-disable-next-line no-continue
+                    if (isHoliday) continue;
 
-                  data.push({
-                    rest_time_id: i + 1,
-                    staff_id: 1,
-                    work_date: targetDate.format("YYYY-MM-DD"),
-                    start_time: `${targetDate.format("YYYY-MM-DD")}T12:00:00`,
-                    end_time: `${targetDate.format("YYYY-MM-DD")}T13:00:00`,
-                  });
-                }
-                return data;
-              })()
+                    data.push({
+                      rest_time_id: i + 1,
+                      staff_id: 1,
+                      work_date: targetDate.format("YYYY-MM-DD"),
+                      start_time: `${targetDate.format("YYYY-MM-DD")}T12:00:00`,
+                      end_time: `${targetDate.format("YYYY-MM-DD")}T13:00:00`,
+                    });
+                  }
+                  return data;
+                })()
+              )
             )
-          )
-      ),
-    ],
+        ),
+      ],
+    },
   },
 };

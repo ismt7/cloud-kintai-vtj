@@ -1,3 +1,4 @@
+// cspell: ignore testid
 import { useEffect, useState } from "react";
 
 import CheckIcon from "@mui/icons-material/Check";
@@ -11,7 +12,11 @@ import {
   selectTimeRecorder,
 } from "./TimeRecorderSlice";
 
-const TimeRecorderRemarks = ({ staffId }: { staffId: number | undefined }) => {
+export interface TimeRecorderRemarksProps {
+  staffId: number | undefined;
+}
+
+const TimeRecorderRemarks = ({ staffId }: TimeRecorderRemarksProps) => {
   const timeRecorderData = useAppSelectorV2(selectTimeRecorder);
   const currentRemarksText = timeRecorderData.data.attendance?.remarks || "";
 

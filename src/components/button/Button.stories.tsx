@@ -1,106 +1,126 @@
 import React from "react";
 
 import { ThemeProvider } from "@mui/material";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import { theme } from "../../lib/theme";
 
 import Button from "./Button";
 
+import type { ButtonProps } from "./Button";
+
 export default {
-  title: "Component/Button",
   component: Button,
   argTypes: {
     backgroundColor: { control: "color" },
   },
-  decorators: [
-    (story) => <ThemeProvider theme={theme}>{story()}</ThemeProvider>,
-  ],
-} as ComponentMeta<typeof Button>;
-
-const Template: ComponentStory<typeof Button> = (args) => <Button {...args} />;
-
-export const Save = Template.bind({});
-Save.storyName = "保存";
-Save.args = { color: "primary", label: "保存" };
-
-export const Cancel = Template.bind({});
-Cancel.storyName = "キャンセル";
-Cancel.args = { color: "cancel", label: "キャンセル" };
-
-export const Disabled = Template.bind({});
-Disabled.args = {
-  disabled: true,
+  render: (args: ButtonProps) => (
+    <ThemeProvider theme={theme}>
+      <Button {...args} />
+    </ThemeProvider>
+  ),
 };
 
-export const ClockIn = Template.bind({});
-ClockIn.storyName = "勤務開始";
-ClockIn.args = {
-  variant: "outlined",
-  color: "clock_in",
-  size: "large",
-  label: "勤務開始",
+export const Save = {
+  storyName: "保存",
+  args: { color: "primary", label: "保存" }
 };
 
-export const ClockOut = Template.bind({});
-ClockOut.storyName = "勤務終了";
-ClockOut.args = {
-  variant: "outlined",
-  color: "clock_out",
-  size: "large",
-  label: "勤務終了",
+export const Cancel = {
+  storyName: "キャンセル",
+  args: { color: "cancel", label: "キャンセル" },
 };
 
-export const RestStart = Template.bind({});
-RestStart.storyName = "休憩開始";
-RestStart.args = {
-  variant: "text",
-  color: "rest",
-  size: "large",
-  label: "休憩開始",
+export const Disabled = {
+  args: {
+    disabled: true,
+  }
 };
 
-export const RestEnd = Template.bind({});
-RestEnd.storyName = "休憩終了";
-RestEnd.args = {
-  variant: "text",
-  color: "rest",
-  size: "large",
-  label: "休憩終了",
+export const ClockIn = {
+  storyName: "勤務開始",
+  args: {
+    variant: "outlined",
+    color: "clock_in",
+    size: "large",
+    label: "勤務開始",
+  }
 };
 
-export const GoDirectly = Template.bind({});
-GoDirectly.storyName = "直行";
-GoDirectly.args = {
-  variant: "text",
-  color: "clock_in",
-  size: "large",
-  label: "直行",
+export const ClockOut = {
+  storyName: "勤務終了",
+  args: {
+    variant: "outlined",
+    color: "clock_out",
+    size: "large",
+    label: "勤務終了",
+  }
 };
 
-export const ReturnDirectly = Template.bind({});
-ReturnDirectly.storyName = "直帰";
-ReturnDirectly.args = {
-  variant: "text",
-  color: "clock_out",
-  size: "large",
-  label: "直帰",
+export const RestStart = {
+  stroyName: "休憩開始",
+  args: {
+    variant: "text",
+    color: "rest",
+    size: "large",
+    label: "休憩開始",
+  }
 };
 
-export const Login = Template.bind({});
-Login.storyName = "ログイン";
-Login.args = {
-  color: "login",
-  variant: "outlined",
-  label: "ログイン",
-  width: "108px",
-  height: "42.5px",
+export const RestEnd = {
+  storyName: "休憩終了",
+  args: {
+    variant: "text",
+    color: "rest",
+    size: "large",
+    label: "休憩終了",
+  }
 };
 
-export const Logout = Template.bind({});
-Logout.storyName = "ログアウト";
-Logout.args = { color: "logout", variant: "contained", label: "ログアウト" };
+export const GoDirectly = {
+  storyName: "直行",
+  args: {
+    variant: "text",
+    color: "clock_in",
+    size: "large",
+    label: "直行",
+  }
+};
 
-export const EditSmall = Template.bind({});
-EditSmall.storyName = "編集(一覧用)";
-EditSmall.args = { color: "primary", size: "small", label: "編集" };
+export const ReturnDirectly = {
+  storyName: "直帰",
+  args: {
+    variant: "text",
+    color: "clock_out",
+    size: "large",
+    label: "直帰",
+  }
+};
+
+export const Login = {
+  storyName: "ログイン",
+  args: {
+    color: "login",
+    variant: "outlined",
+    label: "ログイン",
+    width: "108px",
+    height: "42.5px",
+  }
+};
+
+export const Logout = {
+  storyName: "ログアウト",
+  args: {
+    color: "logout",
+    variant: "contained",
+    label: "ログアウト"
+  }
+};
+
+export const EditSmall = {
+  storyName: "編集(一覧用)",
+  args: {
+    color: "primary",
+    size: "small",
+    label: "編集"
+  }
+};

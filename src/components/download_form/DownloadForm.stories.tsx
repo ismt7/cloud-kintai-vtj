@@ -1,7 +1,6 @@
 // cspell:words reduxjs
 import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { Provider } from "react-redux";
 
 import {
@@ -44,26 +43,24 @@ const mockStore = configureStore({
 });
 
 export default {
-  title: "Component/DownloadForm",
   component: DownloadForm,
   argTypes: {
     backgroundColor: { control: "color" },
   },
-  decorators: [
-    (story) => (
-      <Provider store={mockStore}>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
-      </Provider>
-    ),
-  ],
-} as ComponentMeta<typeof DownloadForm>;
+};
 
-const Template: ComponentStory<typeof DownloadForm> = () => <DownloadForm />;
-
-export const Default = Template.bind({});
-Default.args = {};
-Default.parameters = {
-  msw: {
-    handlers: [getStaffList200()],
+export const Default = {
+  render: () => (
+    <Provider store={mockStore}>
+      <ThemeProvider theme={theme}>
+        <DownloadForm />
+      </ThemeProvider>
+    </Provider>
+  ),
+  args: {},
+  parameters: {
+    msw: {
+      handlers: [getStaffList200()],
+    },
   },
 };

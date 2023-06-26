@@ -2,7 +2,6 @@ import { MemoryRouter } from "react-router-dom";
 
 import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { Provider } from "react-redux";
 
 import {
@@ -21,7 +20,7 @@ import {
 } from "../../lib/reducers/timeRecordSlice";
 import { theme } from "../../lib/theme";
 
-import Header from "./Header";
+import Header, { HeaderProps } from "./Header";
 
 const mockStore = configureStore({
   reducer: {
@@ -58,27 +57,25 @@ const mockStore = configureStore({
 });
 
 export default {
-  title: "Component/Header",
   component: Header,
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof Header>;
+};
 
-const Template: ComponentStory<typeof Header> = (args) => <Header {...args} />;
-
-export const Default = Template.bind({});
-Default.storyName = "デフォルト";
-Default.args = {};
-Default.decorators = [
-  (story) => (
+export const Default = {
+  render: (args: HeaderProps) => (
     <Provider store={mockStore}>
       <MemoryRouter>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+        <ThemeProvider theme={theme}>
+          <Header {...args} />
+        </ThemeProvider>
       </MemoryRouter>
     </Provider>
   ),
-];
+  storyName: "デフォルト",
+  args: {},
+};
 
 const loginMockStore = configureStore({
   reducer: {
@@ -100,31 +97,33 @@ const loginMockStore = configureStore({
     }),
   },
 });
-export const LoggedIn = Template.bind({});
-LoggedIn.storyName = "ログイン";
-LoggedIn.args = {};
-LoggedIn.decorators = [
-  (story) => (
+export const LoggedIn = {
+  storyName: "ログイン",
+  args: {},
+  render: (args: HeaderProps) => (
     <Provider store={loginMockStore}>
       <MemoryRouter>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+        <ThemeProvider theme={theme}>
+          <Header {...args} />
+        </ThemeProvider>
       </MemoryRouter>
     </Provider>
   ),
-];
+};
 
-export const LoggedOut = Template.bind({});
-LoggedOut.storyName = "ログアウト";
-LoggedOut.args = {};
-LoggedOut.decorators = [
-  (story) => (
+export const LoggedOut = {
+  storyName: "ログアウト",
+  args: {},
+  render: (args: HeaderProps) => (
     <Provider store={mockStore}>
       <MemoryRouter>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+        <ThemeProvider theme={theme}>
+          <Header {...args} />
+        </ThemeProvider>
       </MemoryRouter>
     </Provider>
   ),
-];
+};
 
 const staffAdminMockStore = configureStore({
   reducer: {
@@ -159,18 +158,19 @@ const staffAdminMockStore = configureStore({
     }),
   },
 });
-export const StaffAdmin = Template.bind({});
-StaffAdmin.storyName = "スタッフ管理者";
-StaffAdmin.args = {};
-StaffAdmin.decorators = [
-  (story) => (
+export const StaffAdmin = {
+  storyName: "スタッフ管理者",
+  args: {},
+  render: (args: HeaderProps) => (
     <Provider store={staffAdminMockStore}>
       <MemoryRouter>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+        <ThemeProvider theme={theme}>
+          <Header {...args} />
+        </ThemeProvider>
       </MemoryRouter>
     </Provider>
   ),
-];
+};
 
 const systemAdminMockStore = configureStore({
   reducer: {
@@ -206,15 +206,16 @@ const systemAdminMockStore = configureStore({
   },
 });
 
-export const Admin = Template.bind({});
-Admin.storyName = "システム管理者";
-Admin.args = {};
-Admin.decorators = [
-  (story) => (
+export const Admin = {
+  storyName: "システム管理者",
+  args: {},
+  render: (args: HeaderProps) => (
     <Provider store={systemAdminMockStore}>
       <MemoryRouter>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+        <ThemeProvider theme={theme}>
+          <Header {...args} />
+        </ThemeProvider>
       </MemoryRouter>
     </Provider>
   ),
-];
+};

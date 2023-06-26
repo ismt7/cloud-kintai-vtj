@@ -1,7 +1,6 @@
 import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
 import { expect } from "@storybook/jest";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { waitFor, within, screen, fireEvent, userEvent } from "@storybook/testing-library";
 import { Provider } from "react-redux";
 
@@ -38,7 +37,6 @@ import {
 import StaffForm from "./StaffForm";
 
 export default {
-  title: "Component/StaffForm",
   component: StaffForm,
   argTypes: {
     backgroundColor: { control: "color" },
@@ -53,9 +51,8 @@ export default {
       ],
     },
   },
-} as ComponentMeta<typeof StaffForm>;
-
-const Template: ComponentStory<typeof StaffForm> = () => <StaffForm />;
+  render: () => <StaffForm />,
+};
 
 const mockStoreForSystemAdmin = configureStore({
   reducer: {
@@ -99,114 +96,113 @@ const mockStoreForSystemAdmin = configureStore({
   },
 });
 
-export const SystemAdmin = Template.bind({});
-SystemAdmin.storyName = "システム管理者";
-SystemAdmin.args = {};
-SystemAdmin.decorators = [
-  (story) => (
+export const SystemAdmin = {
+  storyName: "システム管理者",
+  args: {},
+  render: () => (
     <Provider store={mockStoreForSystemAdmin}>
-      <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <StaffForm />
+      </ThemeProvider>
     </Provider>
   ),
-];
-SystemAdmin.play = async ({ canvasElement }) => {
-  const wait = async (ms: number | undefined) =>
-    new Promise<void>((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, ms);
+  play: async () => {
+    const wait = async (ms: number | undefined) =>
+      new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, ms);
+      });
+
+    await wait(500);
+
+    await waitFor(async () => {
+      const button = screen.getByRole("button", { name: "作成" });
+      expect(button).toBeDisabled();
     });
 
-  const canvas = within(canvasElement);
+    // 名前(姓)
+    await waitFor(async () => {
+      const lastName = screen.queryByTestId("last-name");
+      expect(lastName).toBeEnabled();
+      if (lastName) {
+        void userEvent.type(lastName, "田中");
+        expect(lastName).toHaveValue("田中");
+      }
+    });
 
-  await wait(500);
+    await waitFor(async () => {
+      const button = screen.getByRole("button", { name: "作成" });
+      expect(button).toBeDisabled();
+    });
 
-  await waitFor(async () => {
-    const button = canvas.getByRole("button", { name: "作成" });
-    expect(button).toBeDisabled();
-  });
+    // 名前(名)
+    await waitFor(async () => {
+      const firstName = screen.queryByTestId("first-name");
+      expect(firstName).toBeEnabled();
+      if (firstName) {
+        void userEvent.type(firstName, "太郎");
+        expect(firstName).toHaveValue("太郎");
+      }
+    });
 
-  // 名前(姓)
-  await waitFor(async () => {
-    const lastName = canvas.queryByTestId("last-name");
-    expect(lastName).toBeEnabled();
-    if (lastName) {
-      void userEvent.type(lastName, "田中");
-      expect(lastName).toHaveValue("田中");
-    }
-  });
+    await waitFor(async () => {
+      const button = screen.getByRole("button", { name: "作成" });
+      expect(button).toBeDisabled();
+    });
 
-  await waitFor(async () => {
-    const button = canvas.getByRole("button", { name: "作成" });
-    expect(button).toBeDisabled();
-  });
+    // メールアドレス(エラー)
+    await waitFor(async () => {
+      const mailAddress = screen.queryByTestId("mail-address");
+      expect(mailAddress).toBeEnabled();
+      if (mailAddress) {
+        void userEvent.type(mailAddress, "aaaa");
+        expect(screen.getByText(/入力内容に誤りがあります/i)).toBeEnabled();
+      }
+    });
 
-  // 名前(名)
-  await waitFor(async () => {
-    const firstName = canvas.queryByTestId("first-name");
-    expect(firstName).toBeEnabled();
-    if (firstName) {
-      void userEvent.type(firstName, "太郎");
-      expect(firstName).toHaveValue("太郎");
-    }
-  });
+    await waitFor(async () => {
+      const button = screen.getByRole("button", { name: "作成" });
+      expect(button).toBeDisabled();
+    });
 
-  await waitFor(async () => {
-    const button = canvas.getByRole("button", { name: "作成" });
-    expect(button).toBeDisabled();
-  });
+    // メールアドレス(正常)
+    await waitFor(async () => {
+      const mailAddress = screen.queryByTestId("mail-address");
+      expect(mailAddress).toBeEnabled();
+      if (mailAddress) {
+        void userEvent.clear(mailAddress);
+        void userEvent.type(mailAddress, "tanaka@example.com");
+        expect(mailAddress).toHaveValue("tanaka@example.com");
+      }
+    });
 
-  // メールアドレス(エラー)
-  await waitFor(async () => {
-    const mailAddress = canvas.queryByTestId("mail-address");
-    expect(mailAddress).toBeEnabled();
-    if (mailAddress) {
-      void userEvent.type(mailAddress, "aaaa");
-      expect(canvas.getByText(/入力内容に誤りがあります/i)).toBeEnabled();
-    }
-  });
+    await waitFor(async () => {
+      const button = screen.getByRole("button", { name: "作成" });
+      expect(button).toBeEnabled();
+    });
 
-  await waitFor(async () => {
-    const button = canvas.getByRole("button", { name: "作成" });
-    expect(button).toBeDisabled();
-  });
+    // 役割
+    await waitFor(async () => {
+      const staffRole = screen.queryByTestId("staff-role");
+      if (staffRole) {
+        const button = within(staffRole).getByRole("button");
+        void userEvent.click(button);
 
-  // メールアドレス(正常)
-  await waitFor(async () => {
-    const mailAddress = canvas.queryByTestId("mail-address");
-    expect(mailAddress).toBeEnabled();
-    if (mailAddress) {
-      void userEvent.clear(mailAddress);
-      void userEvent.type(mailAddress, "tanaka@example.com");
-      expect(mailAddress).toHaveValue("tanaka@example.com");
-    }
-  });
+        const listbox = within(screen.getByRole("presentation")).getByRole(
+          "listbox"
+        );
+        const options = within(listbox).getAllByRole("option");
 
-  await waitFor(async () => {
-    const button = canvas.getByRole("button", { name: "作成" });
-    expect(button).toBeEnabled();
-  });
+        expect(options[0]).toHaveTextContent("システム管理者");
+        expect(options[1]).toHaveTextContent("スタッフ");
+        expect(options[2]).toHaveTextContent("スタッフ管理者");
 
-  // 役割
-  await waitFor(async () => {
-    const staffRole = canvas.queryByTestId("staff-role");
-    if (staffRole) {
-      const button = within(staffRole).getByRole("button");
-      void userEvent.click(button);
-
-      const listbox = within(screen.getByRole("presentation")).getByRole(
-        "listbox"
-      );
-      const options = within(listbox).getAllByRole("option");
-
-      expect(options[0]).toHaveTextContent("システム管理者");
-      expect(options[1]).toHaveTextContent("スタッフ");
-      expect(options[2]).toHaveTextContent("スタッフ管理者");
-
-      fireEvent.click(options[0]);
-      expect(button).toHaveTextContent("システム管理者");
-    }
-  });
+        fireEvent.click(options[0]);
+        expect(button).toHaveTextContent("システム管理者");
+      }
+    });
+  },
 };
 
 const mockStoreForStaffAdmin = configureStore({
@@ -251,31 +247,19 @@ const mockStoreForStaffAdmin = configureStore({
   },
 });
 
-export const StaffAdmin = Template.bind({});
-StaffAdmin.storyName = "スタッフ管理者";
-StaffAdmin.args = {};
-StaffAdmin.decorators = [
-  (story) => (
+export const StaffAdmin = {
+  storyName: "スタッフ管理者",
+  args: {},
+  render: () => (
     <Provider store={mockStoreForStaffAdmin}>
-      <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <StaffForm />
+      </ThemeProvider>
     </Provider>
   ),
-];
-StaffAdmin.play = async ({ canvasElement }) => {
-  const wait = async (ms: number | undefined) =>
-    new Promise<void>((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, ms);
-    });
+  play: async () => {
+    const staffRole = screen.queryByTestId("staff-role");
 
-  const canvas = within(canvasElement);
-
-  await wait(500);
-
-  // 役割
-  await waitFor(async () => {
-    const staffRole = canvas.queryByTestId("staff-role");
     if (staffRole) {
       const button = within(staffRole).getByRole("button");
       void userEvent.click(button);
@@ -291,7 +275,7 @@ StaffAdmin.play = async ({ canvasElement }) => {
       fireEvent.click(options[1]);
       expect(button).toHaveTextContent("スタッフ管理者");
     }
-  });
+  },
 };
 
 const mockStoreUpdateStaff = configureStore({
@@ -350,36 +334,25 @@ const mockStoreUpdateStaff = configureStore({
   },
 });
 
-export const UpdateStaff = Template.bind({});
-UpdateStaff.storyName = "スタッフ更新";
-UpdateStaff.args = {};
-UpdateStaff.decorators = [
-  (story) => (
+export const UpdateStaff = {
+  storyName: "スタッフ更新",
+  args: {},
+  render: () => (
     <Provider store={mockStoreUpdateStaff}>
-      <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <StaffForm />
+      </ThemeProvider>
     </Provider>
   ),
-];
-UpdateStaff.play = async ({ canvasElement }) => {
-  const wait = async (ms: number | undefined) =>
-    new Promise<void>((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, ms);
-    });
-
-  const canvas = within(canvasElement);
-
-  await wait(500);
-
+  play: async () => {
   await waitFor(async () => {
-    const button = canvas.getByRole("button", { name: "保存" });
+    const button = screen.getByRole("button", { name: "保存" });
     expect(button).toBeDisabled();
   });
 
   // 名前(姓)
   await waitFor(async () => {
-    const lastName = canvas.queryByTestId("last-name");
+    const lastName = screen.queryByTestId("last-name");
     expect(lastName).toBeEnabled();
     if (lastName) {
       void userEvent.clear(lastName);
@@ -389,13 +362,13 @@ UpdateStaff.play = async ({ canvasElement }) => {
   });
 
   await waitFor(async () => {
-    const button = canvas.getByRole("button", { name: "保存" });
+    const button = screen.getByRole("button", { name: "保存" });
     expect(button).toBeEnabled();
   });
 
   // 名前(名)
   await waitFor(async () => {
-    const firstName = canvas.queryByTestId("first-name");
+    const firstName = screen.queryByTestId("first-name");
     expect(firstName).toBeEnabled();
     if (firstName) {
       void userEvent.clear(firstName);
@@ -405,29 +378,29 @@ UpdateStaff.play = async ({ canvasElement }) => {
   });
 
   await waitFor(async () => {
-    const button = canvas.getByRole("button", { name: "保存" });
+    const button = screen.getByRole("button", { name: "保存" });
     expect(button).toBeEnabled();
   });
 
   // メールアドレス(エラー)
   await waitFor(async () => {
-    const mailAddress = canvas.queryByTestId("mail-address");
+    const mailAddress = screen.queryByTestId("mail-address");
     expect(mailAddress).toBeEnabled();
     if (mailAddress) {
       void userEvent.clear(mailAddress);
       void userEvent.type(mailAddress, "aaaa");
-      expect(canvas.getByText(/入力内容に誤りがあります/i)).toBeEnabled();
+      expect(screen.getByText(/入力内容に誤りがあります/i)).toBeEnabled();
     }
   });
 
   await waitFor(async () => {
-    const button = canvas.getByRole("button", { name: "保存" });
+    const button = screen.getByRole("button", { name: "保存" });
     expect(button).toBeDisabled();
   });
 
   // メールアドレス(正常)
   await waitFor(async () => {
-    const mailAddress = canvas.queryByTestId("mail-address");
+    const mailAddress = screen.queryByTestId("mail-address");
     expect(mailAddress).toBeEnabled();
     if (mailAddress) {
       void userEvent.clear(mailAddress);
@@ -437,13 +410,13 @@ UpdateStaff.play = async ({ canvasElement }) => {
   });
 
   await waitFor(async () => {
-    const button = canvas.getByRole("button", { name: "保存" });
+    const button = screen.getByRole("button", { name: "保存" });
     expect(button).toBeEnabled();
   });
 
   // 役割
   await waitFor(async () => {
-    const staffRole = canvas.queryByTestId("staff-role");
+    const staffRole = screen.queryByTestId("staff-role");
     if (staffRole) {
       const button = within(staffRole).getByRole("button");
       void userEvent.click(button);
@@ -462,9 +435,9 @@ UpdateStaff.play = async ({ canvasElement }) => {
   });
 
   await waitFor(async () => {
-    const lastName = canvas.queryByTestId("last-name");
-    const firstName = canvas.queryByTestId("first-name");
-    const mailAddress = canvas.queryByTestId("mail-address");
+    const lastName = screen.queryByTestId("last-name");
+    const firstName = screen.queryByTestId("first-name");
+    const mailAddress = screen.queryByTestId("mail-address");
 
     if (lastName && firstName && mailAddress) {
       void userEvent.clear(lastName);
@@ -474,7 +447,8 @@ UpdateStaff.play = async ({ canvasElement }) => {
   });
 
   await waitFor(async () => {
-    const button = canvas.getByRole("button", { name: "保存" });
+    const button = screen.getByRole("button", { name: "保存" });
     expect(button).toBeDisabled();
   });
+},
 };

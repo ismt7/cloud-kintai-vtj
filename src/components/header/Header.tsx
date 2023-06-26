@@ -11,7 +11,7 @@ import { LoginStaffStatus, selectLoginStaff } from "../../lib/reducers/loginStaf
 import Button from "../button/Button";
 import Link from "../link/Link";
 
-interface HeaderProps {
+export interface HeaderProps {
   signIn?: () => void;
   signOut?: () => void;
 }
