@@ -4,99 +4,138 @@ import { ThemeProvider } from "@mui/material";
 
 import { theme } from "../../lib/theme";
 
-import Button from "./Button";
+import Button, { ButtonProps } from "./Button";
 
-import type { ButtonProps } from "./Button";
+import type { Meta, StoryObj } from "@storybook/react";
 
-export default {
+const meta: Meta<typeof Button> = {
   component: Button,
-  argTypes: {
-    backgroundColor: { control: "color" },
-  },
   render: (args: ButtonProps) => (
     <ThemeProvider theme={theme}>
       <Button {...args} />
     </ThemeProvider>
   ),
+  parameters: {
+    docs: {
+      controls: { exclude: ["style"] },
+    },
+  },
+  argTypes: {
+    label: {
+      description: "ボタンのラベル",
+    },
+    color: {
+      description: "ボタンの色",
+    },
+    variant: {
+      description: "ボタンの種類",
+    },
+    disabled: {
+      description: "ボタンの無効化",
+    },
+    size: {
+      description: "ボタンのサイズ",
+    },
+    width: {
+      description: "ボタンの幅",
+    },
+    height: {
+      description: "ボタンの高さ",
+    },
+    borderRadius: {
+      description: "ボタンの角丸",
+    },
+    onClick: {
+      description: "ボタンのクリック時の処理",
+    },
+  },
 };
 
-export const Save = {
+export default meta;
+type Story = StoryObj<typeof Button>;
+
+export const Default: Story = {
+  storyName: "デフォルト",
+  args: { label: "ボタン" },
+};
+
+export const Save: Story = {
   storyName: "保存",
-  args: { color: "primary", label: "保存" }
+  args: { color: "primary", label: "保存" },
 };
 
-export const Cancel = {
+export const Cancel: Story = {
   storyName: "キャンセル",
   args: { color: "cancel", label: "キャンセル" },
 };
 
-export const Disabled = {
+export const Disabled: Story = {
   args: {
     disabled: true,
-  }
+  },
 };
 
-export const ClockIn = {
+export const ClockIn: Story = {
   storyName: "勤務開始",
   args: {
     variant: "outlined",
     color: "clock_in",
     size: "large",
     label: "勤務開始",
-  }
+  },
 };
 
-export const ClockOut = {
+export const ClockOut: Story = {
   storyName: "勤務終了",
   args: {
     variant: "outlined",
     color: "clock_out",
     size: "large",
     label: "勤務終了",
-  }
+  },
 };
 
-export const RestStart = {
-  stroyName: "休憩開始",
+export const RestStart: Story = {
+  storyName: "休憩開始",
   args: {
     variant: "text",
     color: "rest",
     size: "large",
     label: "休憩開始",
-  }
+  },
 };
 
-export const RestEnd = {
+export const RestEnd: Story = {
   storyName: "休憩終了",
   args: {
     variant: "text",
     color: "rest",
     size: "large",
     label: "休憩終了",
-  }
+  },
 };
 
-export const GoDirectly = {
+export const GoDirectly: Story = {
   storyName: "直行",
   args: {
     variant: "text",
     color: "clock_in",
     size: "large",
     label: "直行",
-  }
+  },
 };
 
-export const ReturnDirectly = {
+export const ReturnDirectly: Story = {
   storyName: "直帰",
   args: {
     variant: "text",
     color: "clock_out",
     size: "large",
     label: "直帰",
-  }
+  },
 };
 
-export const Login = {
+export const Login: Story = {
   storyName: "ログイン",
   args: {
     color: "login",
@@ -104,23 +143,23 @@ export const Login = {
     label: "ログイン",
     width: "108px",
     height: "42.5px",
-  }
+  },
 };
 
-export const Logout = {
+export const Logout: Story = {
   storyName: "ログアウト",
   args: {
     color: "logout",
     variant: "contained",
-    label: "ログアウト"
-  }
+    label: "ログアウト",
+  },
 };
 
-export const EditSmall = {
+export const EditSmall: Story = {
   storyName: "編集(一覧用)",
   args: {
     color: "primary",
     size: "small",
-    label: "編集"
-  }
+    label: "編集",
+  },
 };

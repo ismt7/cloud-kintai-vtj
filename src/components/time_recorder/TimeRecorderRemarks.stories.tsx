@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@mui/material";
 import { expect } from "@storybook/jest";
+import { Meta, StoryObj } from "@storybook/react";
 import { userEvent, waitFor, screen } from "@storybook/testing-library";
 import { Provider } from "react-redux";
 
@@ -10,14 +11,8 @@ import TimeRecorderRemarks, {
   TimeRecorderRemarksProps,
 } from "./TimeRecorderRemarks";
 
-export default {
+const meta: Meta<typeof TimeRecorderRemarks> = {
   component: TimeRecorderRemarks,
-};
-
-export const Default = {
-  args: {
-    staffId: 1,
-  },
   render: (args: TimeRecorderRemarksProps) => (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
@@ -25,6 +20,15 @@ export const Default = {
       </ThemeProvider>
     </Provider>
   ),
+};
+
+export default meta;
+type Story = StoryObj<typeof TimeRecorderRemarks>;
+
+export const Default: Story = {
+  args: {
+    staffId: 1,
+  },
   play: async () => {
     const inputClearText = "このテキストは入力後にクリアされるテキストです。";
     const remarksClearText = screen.getByRole("textbox");

@@ -1,21 +1,20 @@
 import { ThemeProvider } from "@mui/material";
+import { Meta, StoryObj } from "@storybook/react";
 
 import { theme } from "../../lib/theme";
 
 import Footer from "./Footer";
 
-export default {
+const meta: Meta<typeof Footer> = {
   component: Footer,
-  argTypes: {
-    backgroundColor: { control: "color" },
-  },
-};
-
-export const Default = {
   render: () => (
     <ThemeProvider theme={theme}>
       <Footer />
     </ThemeProvider>
   ),
-  args: {},
 };
+
+export default meta;
+type Story = StoryObj<typeof Footer>;
+
+export const Default: Story = {};

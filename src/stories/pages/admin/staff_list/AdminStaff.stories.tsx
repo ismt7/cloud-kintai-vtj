@@ -5,7 +5,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { Provider } from "react-redux";
 
-import { getStaffList200 } from "../../../../components/time_recorder/mocks";
+import { getStaffList200 } from "../../../../components/time_recorder/mocks/ApiMocks";
 import {
   AttendanceStatus,
   testAttendanceSlice,

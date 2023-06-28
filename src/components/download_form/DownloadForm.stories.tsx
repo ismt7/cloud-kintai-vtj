@@ -12,8 +12,9 @@ import {
   testStaffListReducer,
 } from "../../lib/reducers/staffListReducer";
 import { theme } from "../../lib/theme";
-import { getStaffList200 } from "../time_recorder/mocks";
+import { getStaffList200 } from "../time_recorder/mocks/ApiMocks";
 
+import { Meta, StoryObj } from "@storybook/react";
 import DownloadForm from "./DownloadForm";
 
 const mockStore = configureStore({
@@ -42,14 +43,8 @@ const mockStore = configureStore({
   },
 });
 
-export default {
+const meta: Meta<typeof DownloadForm> = {
   component: DownloadForm,
-  argTypes: {
-    backgroundColor: { control: "color" },
-  },
-};
-
-export const Default = {
   render: () => (
     <Provider store={mockStore}>
       <ThemeProvider theme={theme}>
@@ -57,10 +52,14 @@ export const Default = {
       </ThemeProvider>
     </Provider>
   ),
-  args: {},
   parameters: {
     msw: {
       handlers: [getStaffList200()],
     },
   },
 };
+
+export default meta;
+type Story = StoryObj<typeof DownloadForm>;
+
+export const Default: Story = {};

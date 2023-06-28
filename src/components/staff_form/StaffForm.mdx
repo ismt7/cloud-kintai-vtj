@@ -1,0 +1,61 @@
+import {
+  Canvas,
+  Meta,
+  Title,
+  Subtitle,
+  Description,
+  Primary,
+  Controls,
+  Stories,
+  Source,
+  Story,
+} from "@storybook/blocks";
+
+import * as StaffFormStories from "./StaffForm.stories";
+
+<Meta of={StaffFormStories} />
+
+# StaffForm
+
+アプリケーション内で使用するスタッフのフォームです。\
+具体的なユースケースが決まっているものは、ストーリーに記載されています。
+
+<Primary />
+
+# パラメーター
+
+コンポーネント内で使用できるパラメーターです。\
+パラメーターを変更することで上にあるコンポーネントが変化します。
+
+<Controls />
+
+# ストーリー
+
+コンポーネントのユースケースを記載しています。\
+既存のコンポーネントを使用する際に参考にしてください。
+
+## スタッフ作成
+
+システム管理者とスタッフ管理者のいずれもスタッフを作成できます。\
+システム管理者のみ権限で`システム管理者`を選択できます。
+
+### システム管理者
+
+<Canvas of={StaffFormStories.SystemAdminCreateStaff} />
+
+### スタッフ管理者
+
+<Canvas of={StaffFormStories.StaffAdminCreateStaff} />
+
+## スタッフ更新
+
+システム管理者とスタッフ管理者のいずれもスタッフを更新できます。\
+システム管理者のみ権限で`システム管理者`を選択できます。
+
+### システム管理者
+
+<Canvas of={StaffFormStories.SystemAdminUpdateStaff} />
+
+### スタッフ管理者
+
+<Canvas of={StaffFormStories.StaffAdminUpdateStaff} />

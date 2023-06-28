@@ -40,7 +40,10 @@ async function fetchAttendances(
       toWorkDate,
     })
     .then((r) => r)
-    .catch(() => null);
+    .catch((e) => {
+      console.log("error", e);
+      return null;
+    });
 
   if (!attendances) return null;
 
@@ -123,10 +126,9 @@ function getWorkTimeTotal(attendanceTime: number, restTime: number) {
 }
 
 function getWorkElapsedTime(matchedAttendance: OriginAttendance) {
-  return dayjs.utc(matchedAttendance.endTime).diff(
-    dayjs.utc(matchedAttendance.startTime),
-    "minute"
-  );
+  return dayjs
+    .utc(matchedAttendance.endTime)
+    .diff(dayjs.utc(matchedAttendance.startTime), "minute");
 }
 
 function getRestTimeTotal(restTime: number) {
@@ -186,9 +188,11 @@ const fetchTimeRecordList = createAsyncThunk(
       );
 
       const startTime = matchedAttendance.startTime
-        ? dayjs.utc(matchedAttendance.startTime).local() : undefined;
+        ? dayjs.utc(matchedAttendance.startTime).local()
+        : undefined;
       const endTime = matchedAttendance.endTime
-        ? dayjs.utc(matchedAttendance.endTime).local() : undefined;
+        ? dayjs.utc(matchedAttendance.endTime).local()
+        : undefined;
 
       timeRecordList.push({
         id: i,

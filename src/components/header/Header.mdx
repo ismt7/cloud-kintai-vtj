@@ -1,0 +1,63 @@
+import {
+  Canvas,
+  Meta,
+  Title,
+  Subtitle,
+  Description,
+  Primary,
+  Controls,
+  Stories,
+  Source,
+  Story,
+} from "@storybook/blocks";
+
+import * as HeaderStories from "./Header.stories";
+
+<Meta of={HeaderStories} />
+
+# Header
+
+アプリケーション内で使用するヘッダーです。\
+具体的なユースケースが決まっているものは、ストーリーに記載されています。
+
+<Primary />
+
+# パラメーター
+
+コンポーネント内で使用できるパラメーターです。\
+パラメーターを変更することで上にあるコンポーネントが変化します。
+
+<Controls />
+
+# ストーリー
+
+コンポーネントのユースケースを記載しています。\
+既存のコンポーネントを使用する際に参考にしてください。
+
+## スタッフ
+
+### 未ログイン
+
+未ログイン時のヘッダーです。
+
+<Canvas of={HeaderStories.LoggedIn} />
+
+### ログイン中
+
+ログイン中のヘッダーです。
+
+<Canvas of={HeaderStories.LoggedOut} />
+
+## スタッフ管理者
+
+スタッフ管理者のヘッダーです。\
+スタッフ管理者はスタッフの登録・編集・削除ができます。
+
+<Canvas of={HeaderStories.StaffAdmin} />
+
+## システム管理者
+
+システム管理者のヘッダーです。\
+システム管理者は全ての機能を使用できます。
+
+<Canvas of={HeaderStories.Admin} />

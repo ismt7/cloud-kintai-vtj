@@ -4,11 +4,10 @@ import { theme } from "../../lib/theme";
 
 import Clock from "./Clock";
 
-export default {
+import type { Meta, StoryObj } from "@storybook/react";
+
+const meta: Meta<typeof Clock> = {
   component: Clock,
-  argTypes: {
-    backgroundColor: { control: "color" },
-  },
   render: () => (
     <ThemeProvider theme={theme}>
       <Clock />
@@ -16,7 +15,9 @@ export default {
   ),
 };
 
-export const Default = {
+export default meta;
+type Story = StoryObj<typeof Clock>;
+
+export const Default: Story = {
   storyName: "デフォルト",
-  args: {},
 };

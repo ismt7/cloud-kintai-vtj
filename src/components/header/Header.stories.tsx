@@ -2,6 +2,7 @@ import { MemoryRouter } from "react-router-dom";
 
 import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
+import { Meta, StoryObj } from "@storybook/react";
 import { Provider } from "react-redux";
 
 import {
@@ -56,14 +57,25 @@ const mockStore = configureStore({
   },
 });
 
-export default {
+const meta: Meta<typeof Header> = {
   component: Header,
   parameters: {
     layout: "fullscreen",
   },
+  argTypes: {
+    signIn: {
+      description: "ログインボタンを押したときの処理",
+    },
+    signOut: {
+      description: "ログアウトボタンを押したときの処理",
+    },
+  },
 };
 
-export const Default = {
+export default meta;
+type Story = StoryObj<typeof Header>;
+
+export const Default: Story = {
   render: (args: HeaderProps) => (
     <Provider store={mockStore}>
       <MemoryRouter>
@@ -74,7 +86,6 @@ export const Default = {
     </Provider>
   ),
   storyName: "デフォルト",
-  args: {},
 };
 
 const loginMockStore = configureStore({
@@ -97,7 +108,7 @@ const loginMockStore = configureStore({
     }),
   },
 });
-export const LoggedIn = {
+export const LoggedIn: Story = {
   storyName: "ログイン",
   args: {},
   render: (args: HeaderProps) => (
@@ -111,7 +122,7 @@ export const LoggedIn = {
   ),
 };
 
-export const LoggedOut = {
+export const LoggedOut: Story = {
   storyName: "ログアウト",
   args: {},
   render: (args: HeaderProps) => (
@@ -158,7 +169,7 @@ const staffAdminMockStore = configureStore({
     }),
   },
 });
-export const StaffAdmin = {
+export const StaffAdmin: Story = {
   storyName: "スタッフ管理者",
   args: {},
   render: (args: HeaderProps) => (
@@ -206,7 +217,7 @@ const systemAdminMockStore = configureStore({
   },
 });
 
-export const Admin = {
+export const Admin: Story = {
   storyName: "システム管理者",
   args: {},
   render: (args: HeaderProps) => (

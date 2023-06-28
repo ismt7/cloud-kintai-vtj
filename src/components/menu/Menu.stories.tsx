@@ -1,14 +1,12 @@
 import { ThemeProvider } from "@mui/material";
+import { Meta, StoryObj } from "@storybook/react";
 
 import { theme } from "../../lib/theme";
 
 import Menu from "./Menu";
 
-export default {
+const meta: Meta<typeof Menu> = {
   component: Menu,
-  argTypes: {
-    backgroundColor: { control: "color" },
-  },
   render: () => (
     <ThemeProvider theme={theme}>
       <Menu />
@@ -16,7 +14,9 @@ export default {
   ),
 };
 
-export const Default = {
+export default meta;
+type Story = StoryObj<typeof Menu>;
+
+export const Default: Story = {
   storyName: "デフォルト",
-  args: {},
 };

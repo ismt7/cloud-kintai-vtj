@@ -1,11 +1,18 @@
 import dayjs from "dayjs";
 import { rest } from "msw";
 
-import { AttendanceClockIn, AttendanceClockOut, RestEnd, RestStart, StaffCreate, UpdateRemarksRequest } from "../../api";
-import MockStaffList from "../staff_list/data/StaffList";
+import {
+  AttendanceClockIn,
+  AttendanceClockOut,
+  RestEnd,
+  RestStart,
+  StaffCreate,
+  UpdateRemarksRequest,
+} from "../../../api";
+import MockStaffList from "../../staff_list/data/StaffList";
 
 const MOCK_STAFF_ID = 999;
-const REACT_APP_BASE_PATH = process.env.REACT_APP_BASE_PATH || "";
+export const REACT_APP_BASE_PATH = process.env.REACT_APP_BASE_PATH || "";
 const today = dayjs().format("YYYYMMDD");
 
 type MemoryStorage = {
@@ -53,7 +60,6 @@ export const postAttendancesClockInHandler200 = () =>
         })
       );
     }
-
   );
 
 // ============================================================
@@ -63,24 +69,24 @@ export const patchAttendancesClockOutHandler200 = () =>
   rest.patch(
     `${REACT_APP_BASE_PATH}/v1/attendances/${MOCK_STAFF_ID}/${today}/clock_out`,
     async (req, res, ctx) => {
-        const requestData: AttendanceClockOut = await req.json();
+      const requestData: AttendanceClockOut = await req.json();
 
-        memoryStorage.attendance_end_time = requestData.endTime;
+      memoryStorage.attendance_end_time = requestData.endTime;
 
-        return res(
-          ctx.status(200),
-          ctx.json({
-            attendance_id: 1,
-            staff_id: MOCK_STAFF_ID,
-            work_date: dayjs(requestData.endTime).format("YYYY-MM-DD"),
-            start_time: dayjs(memoryStorage.attendance_start_time).toISOString(),
-            end_time: dayjs(requestData.endTime).toISOString(),
-            go_directly_flag: false,
-            return_directly_flag: false,
-            remarks: "",
-          })
-        );
-      }
+      return res(
+        ctx.status(200),
+        ctx.json({
+          attendance_id: 1,
+          staff_id: MOCK_STAFF_ID,
+          work_date: dayjs(requestData.endTime).format("YYYY-MM-DD"),
+          start_time: dayjs(memoryStorage.attendance_start_time).toISOString(),
+          end_time: dayjs(requestData.endTime).toISOString(),
+          go_directly_flag: false,
+          return_directly_flag: false,
+          remarks: "",
+        })
+      );
+    }
   );
 
 // ============================================================
@@ -109,9 +115,9 @@ export const postRestStartHandler200 = () =>
 //  休憩終了
 // ============================================================
 export const patchRestEndHandler200 = () =>
-rest.patch(
-  `${REACT_APP_BASE_PATH}/v1/rests/${MOCK_STAFF_ID}/${today}/end`,
-  async (req, res, ctx) => {
+  rest.patch(
+    `${REACT_APP_BASE_PATH}/v1/rests/${MOCK_STAFF_ID}/${today}/end`,
+    async (req, res, ctx) => {
       const requestData: RestEnd = await req.json();
 
       return res(
@@ -125,7 +131,7 @@ rest.patch(
         })
       );
     }
-);
+  );
 
 // ============================================================
 //  備考更新
@@ -134,22 +140,22 @@ export const patchRemarksHandler200 = () =>
   rest.patch(
     `${REACT_APP_BASE_PATH}/v1/attendances/${MOCK_STAFF_ID}/${today}/remarks`,
     async (req, res, ctx) => {
-        const requestData: UpdateRemarksRequest = await req.json();
+      const requestData: UpdateRemarksRequest = await req.json();
 
-        return res(
-          ctx.status(200),
-          ctx.json({
-            attendance_id: 1,
-            staff_id: MOCK_STAFF_ID,
-            work_date: dayjs(today).format("YYYY-MM-DD"),
-            start_time: dayjs(memoryStorage.attendance_start_time).toISOString(),
-            end_time: dayjs(memoryStorage.attendance_end_time).toISOString(),
-            go_directly_flag: false,
-            return_directly_flag: false,
-            remarks: requestData.attendanceRemarks,
-          })
-        );
-      }
+      return res(
+        ctx.status(200),
+        ctx.json({
+          attendance_id: 1,
+          staff_id: MOCK_STAFF_ID,
+          work_date: dayjs(today).format("YYYY-MM-DD"),
+          start_time: dayjs(memoryStorage.attendance_start_time).toISOString(),
+          end_time: dayjs(memoryStorage.attendance_end_time).toISOString(),
+          go_directly_flag: false,
+          return_directly_flag: false,
+          remarks: requestData.attendanceRemarks,
+        })
+      );
+    }
   );
 
 export const getStaffHandler200 = () =>

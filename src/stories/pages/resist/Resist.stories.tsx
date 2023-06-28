@@ -12,7 +12,7 @@ import {
   patchRestEndHandler200,
   postAttendancesClockInHandler200,
   postRestStartHandler200,
-} from "../../../components/time_recorder/mocks";
+} from "../../../components/time_recorder/mocks/ApiMocks";
 import { theme } from "../../../lib/theme";
 
 import Resist from "./Resist";
@@ -26,7 +26,7 @@ export default {
   decorators: [
     (story) => (
       <MemoryRouter>
-          <ThemeProvider theme={theme}>{story()}</ThemeProvider>
+        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
       </MemoryRouter>
     ),
   ],
