@@ -21,33 +21,15 @@ const meta: Meta<typeof Button> = {
     },
   },
   argTypes: {
-    label: {
-      description: "ボタンのラベル",
-    },
-    color: {
-      description: "ボタンの色",
-    },
-    variant: {
-      description: "ボタンの種類",
-    },
-    disabled: {
-      description: "ボタンの無効化",
-    },
-    size: {
-      description: "ボタンのサイズ",
-    },
-    width: {
-      description: "ボタンの幅",
-    },
-    height: {
-      description: "ボタンの高さ",
-    },
-    borderRadius: {
-      description: "ボタンの角丸",
-    },
-    onClick: {
-      description: "ボタンのクリック時の処理",
-    },
+    label: { description: "ボタンのラベル" },
+    color: { description: "ボタンの色" },
+    variant: { description: "ボタンの種類" },
+    disabled: { description: "ボタンの無効化" },
+    size: { description: "ボタンのサイズ" },
+    width: { description: "ボタンの幅" },
+    height: { description: "ボタンの高さ" },
+    borderRadius: { description: "ボタンの角丸" },
+    onClick: { description: "ボタンのクリック時の処理" },
   },
 };
 
@@ -57,21 +39,70 @@ type Story = StoryObj<typeof Button>;
 export const Default: Story = {
   storyName: "デフォルト",
   args: { label: "ボタン" },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<Button
+  label="ボタン"
+/>`,
+      },
+    },
+  },
 };
 
 export const Save: Story = {
   storyName: "保存",
-  args: { color: "primary", label: "保存" },
+  args: {
+    color: "primary",
+    label: "保存",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<Button
+  color="primary"
+  label="保存"
+/>`,
+      },
+    },
+  },
 };
 
 export const Cancel: Story = {
   storyName: "キャンセル",
-  args: { color: "cancel", label: "キャンセル" },
+  args: {
+    color: "cancel",
+    label: "キャンセル",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<Button
+  color="cancel"
+  label="キャンセル"
+/>`,
+      },
+    },
+  },
 };
 
 export const Disabled: Story = {
   args: {
     disabled: true,
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<Button
+  disabled
+  label="ボタン"
+/>`,
+      },
+    },
   },
 };
 
@@ -83,6 +114,19 @@ export const ClockIn: Story = {
     size: "large",
     label: "勤務開始",
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<Button
+  variant="outlined"
+  color="clock_in"
+  size="large"
+  label="勤務開始"
+/>`,
+      },
+    },
+  },
 };
 
 export const ClockOut: Story = {
@@ -92,6 +136,19 @@ export const ClockOut: Story = {
     color: "clock_out",
     size: "large",
     label: "勤務終了",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<Button
+  variant="outlined"
+  color="clock_out"
+  size="large"
+  label="勤務終了"
+/>`,
+      },
+    },
   },
 };
 
@@ -103,6 +160,19 @@ export const RestStart: Story = {
     size: "large",
     label: "休憩開始",
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<Button
+  variant="text"
+  color="rest"
+  size="large"
+  label="休憩開始"
+/>`,
+      },
+    },
+  },
 };
 
 export const RestEnd: Story = {
@@ -112,6 +182,19 @@ export const RestEnd: Story = {
     color: "rest",
     size: "large",
     label: "休憩終了",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<Button
+  variant="text"
+  color="rest"
+  size="large"
+  label="休憩終了"
+/>`,
+      },
+    },
   },
 };
 
@@ -123,6 +206,19 @@ export const GoDirectly: Story = {
     size: "large",
     label: "直行",
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<Button
+  variant="text"
+  color="clock_in"
+  size="large"
+  label="直行"
+/>`,
+      },
+    },
+  },
 };
 
 export const ReturnDirectly: Story = {
@@ -132,6 +228,19 @@ export const ReturnDirectly: Story = {
     color: "clock_out",
     size: "large",
     label: "直帰",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<Button
+  variant="text"
+  color="clock_out"
+  size="large"
+  label="直帰"
+/>`,
+      },
+    },
   },
 };
 
@@ -144,6 +253,20 @@ export const Login: Story = {
     width: "108px",
     height: "42.5px",
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<Button
+  color="login"
+  variant="outlined"
+  label="ログイン"
+  width="108px"
+  height="42.5px"
+/>`,
+      },
+    },
+  },
 };
 
 export const Logout: Story = {
@@ -153,6 +276,18 @@ export const Logout: Story = {
     variant: "contained",
     label: "ログアウト",
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<Button
+  color="logout"
+  variant="contained"
+  label="ログアウト"
+/>`,
+      },
+    },
+  },
 };
 
 export const EditSmall: Story = {
@@ -161,5 +296,17 @@ export const EditSmall: Story = {
     color: "primary",
     size: "small",
     label: "編集",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<Button
+  color="primary"
+  size="small"
+  label="編集"
+/>`,
+      },
+    },
   },
 };

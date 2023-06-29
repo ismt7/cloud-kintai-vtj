@@ -1,6 +1,7 @@
 // cspell:words reduxjs
 import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
+import { Meta, StoryObj } from "@storybook/react";
 import { Provider } from "react-redux";
 
 import {
@@ -14,7 +15,6 @@ import {
 import { theme } from "../../lib/theme";
 import { getStaffList200 } from "../time_recorder/mocks/ApiMocks";
 
-import { Meta, StoryObj } from "@storybook/react";
 import DownloadForm from "./DownloadForm";
 
 const mockStore = configureStore({
@@ -62,4 +62,13 @@ const meta: Meta<typeof DownloadForm> = {
 export default meta;
 type Story = StoryObj<typeof DownloadForm>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<DownloadForm />`,
+      },
+    },
+  },
+};
