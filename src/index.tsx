@@ -15,6 +15,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import RequireAuth from "./pages/RequireAuth";
 import Top from "./pages/Top";
+import AdminAttendance from "./pages/admin/AdminAttendance";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminStaff from "./pages/admin/AdminStaff";
 import reportWebVitals from "./reportWebVitals";
@@ -71,6 +72,14 @@ const router = createBrowserRouter([
         element: (
           <RequireAuth>
             <AdminStaff />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/admin/attendances/",
+        element: (
+          <RequireAuth>
+            <AdminAttendance />
           </RequireAuth>
         ),
       },

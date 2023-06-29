@@ -1,11 +1,11 @@
 import { Box } from "@mui/material";
 
-import Table from "../components/table/Table";
+import AttendanceList from "../components/attendance_list/AttendanceList";
 
 function List() {
   return (
     <Box sx={{ px: { lg: "20%" } }}>
-      <Table />
+      <AttendanceList />
     </Box>
   );
 }
