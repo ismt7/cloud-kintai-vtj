@@ -1,3 +1,5 @@
+const organizeImports = require("prettier-plugin-organize-imports");
+
 module.exports = {
   printWidth: 120,
   tabWidth: 2,
@@ -9,4 +11,5 @@ module.exports = {
   bracketSameLine: false,
   arrowParens: "always",
   singleAttributePerLine: true,
+  plugins: [organizeImports],
 };
