@@ -133,11 +133,12 @@ export const registerRestStart = createAsyncThunk(
     staffId: number;
     workDate: number;
     startTime: dayjs.Dayjs;
-  }) => restRegisterStart({
-    staffId,
-    workDate,
-    startTime: startTime.toISOString(),
-  })
+  }) =>
+    restRegisterStart({
+      staffId,
+      workDate,
+      startTime: startTime.toISOString(),
+    })
 );
 
 export const registerRestEnd = createAsyncThunk(

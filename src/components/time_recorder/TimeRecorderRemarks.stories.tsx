@@ -1,11 +1,9 @@
-import { ThemeProvider } from "@mui/material";
 import { expect } from "@storybook/jest";
 import { Meta, StoryObj } from "@storybook/react";
 import { userEvent, waitFor, screen } from "@storybook/testing-library";
 import { Provider } from "react-redux";
 
 import { store } from "../../app/store";
-import { theme } from "../../lib/theme";
 
 import TimeRecorderRemarks, {
   TimeRecorderRemarksProps,
@@ -15,9 +13,7 @@ const meta: Meta<typeof TimeRecorderRemarks> = {
   component: TimeRecorderRemarks,
   render: (args: TimeRecorderRemarksProps) => (
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <TimeRecorderRemarks {...args} />
-      </ThemeProvider>
+      <TimeRecorderRemarks {...args} />
     </Provider>
   ),
 };

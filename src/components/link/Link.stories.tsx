@@ -1,17 +1,10 @@
-import { ThemeProvider } from "@mui/material";
 import { Meta, StoryObj } from "@storybook/react";
-
-import { theme } from "../../lib/theme";
 
 import Link from "./Link";
 
 const meta: Meta<typeof Link> = {
   component: Link,
-  render: () => (
-    <ThemeProvider theme={theme}>
-      <Link label="リンク" />
-    </ThemeProvider>
-  ),
+  render: () => <Link label="リンク" />,
   argTypes: {
     label: {
       description: "リンクのラベル",

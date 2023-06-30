@@ -1,25 +1,9 @@
-import React from "react";
-
-import { ThemeProvider } from "@mui/material";
-
-import { theme } from "../../lib/theme";
-
-import Button, { ButtonProps } from "./Button";
-
 import type { Meta, StoryObj } from "@storybook/react";
+import Button, { ButtonProps } from "./Button";
 
 const meta: Meta<typeof Button> = {
   component: Button,
-  render: (args: ButtonProps) => (
-    <ThemeProvider theme={theme}>
-      <Button {...args} />
-    </ThemeProvider>
-  ),
-  parameters: {
-    docs: {
-      controls: { exclude: ["style"] },
-    },
-  },
+  render: (args: ButtonProps) => <Button {...args} />,
   argTypes: {
     label: { description: "ボタンのラベル" },
     color: { description: "ボタンの色" },
@@ -41,11 +25,8 @@ export const Default: Story = {
   args: { label: "ボタン" },
   parameters: {
     docs: {
-      source: {
-        code: `
-<Button
-  label="ボタン"
-/>`,
+      description: {
+        story: "汎用的に使用できるボタンです。",
       },
     },
   },
@@ -59,12 +40,8 @@ export const Save: Story = {
   },
   parameters: {
     docs: {
-      source: {
-        code: `
-<Button
-  color="primary"
-  label="保存"
-/>`,
+      description: {
+        story: "汎用的に使用できる保存ボタンです。",
       },
     },
   },
@@ -78,12 +55,8 @@ export const Cancel: Story = {
   },
   parameters: {
     docs: {
-      source: {
-        code: `
-<Button
-  color="cancel"
-  label="キャンセル"
-/>`,
+      description: {
+        story: "汎用的に使用できるキャンセルボタンです。",
       },
     },
   },
@@ -95,12 +68,8 @@ export const Disabled: Story = {
   },
   parameters: {
     docs: {
-      source: {
-        code: `
-<Button
-  disabled
-  label="ボタン"
-/>`,
+      description: {
+        story: "汎用的に使用できる無効化されたボタンです。",
       },
     },
   },
@@ -116,14 +85,8 @@ export const ClockIn: Story = {
   },
   parameters: {
     docs: {
-      source: {
-        code: `
-<Button
-  variant="outlined"
-  color="clock_in"
-  size="large"
-  label="勤務開始"
-/>`,
+      description: {
+        story: "<TimeRecorder /> で使用する勤務開始ボタンです。",
       },
     },
   },
@@ -139,14 +102,8 @@ export const ClockOut: Story = {
   },
   parameters: {
     docs: {
-      source: {
-        code: `
-<Button
-  variant="outlined"
-  color="clock_out"
-  size="large"
-  label="勤務終了"
-/>`,
+      description: {
+        story: "<TimeRecorder /> で使用する勤務終了ボタンです。",
       },
     },
   },
@@ -162,14 +119,8 @@ export const RestStart: Story = {
   },
   parameters: {
     docs: {
-      source: {
-        code: `
-<Button
-  variant="text"
-  color="rest"
-  size="large"
-  label="休憩開始"
-/>`,
+      description: {
+        story: "<TimeRecorder /> で使用する休憩開始ボタンです。",
       },
     },
   },
@@ -185,14 +136,8 @@ export const RestEnd: Story = {
   },
   parameters: {
     docs: {
-      source: {
-        code: `
-<Button
-  variant="text"
-  color="rest"
-  size="large"
-  label="休憩終了"
-/>`,
+      description: {
+        story: "<TimeRecorder /> で使用する休憩終了ボタンです。",
       },
     },
   },
@@ -208,14 +153,8 @@ export const GoDirectly: Story = {
   },
   parameters: {
     docs: {
-      source: {
-        code: `
-<Button
-  variant="text"
-  color="clock_in"
-  size="large"
-  label="直行"
-/>`,
+      description: {
+        story: "<TimeRecorder /> で使用する直行ボタンです。",
       },
     },
   },
@@ -231,14 +170,8 @@ export const ReturnDirectly: Story = {
   },
   parameters: {
     docs: {
-      source: {
-        code: `
-<Button
-  variant="text"
-  color="clock_out"
-  size="large"
-  label="直帰"
-/>`,
+      description: {
+        story: "<TimeRecorder /> で使用する直帰ボタンです。",
       },
     },
   },
@@ -255,15 +188,8 @@ export const Login: Story = {
   },
   parameters: {
     docs: {
-      source: {
-        code: `
-<Button
-  color="login"
-  variant="outlined"
-  label="ログイン"
-  width="108px"
-  height="42.5px"
-/>`,
+      description: {
+        story: "汎用的に使用できるログインボタンです。",
       },
     },
   },
@@ -278,13 +204,8 @@ export const Logout: Story = {
   },
   parameters: {
     docs: {
-      source: {
-        code: `
-<Button
-  color="logout"
-  variant="contained"
-  label="ログアウト"
-/>`,
+      description: {
+        story: "汎用的に使用できるログアウトボタンです。",
       },
     },
   },
@@ -299,13 +220,8 @@ export const EditSmall: Story = {
   },
   parameters: {
     docs: {
-      source: {
-        code: `
-<Button
-  color="primary"
-  size="small"
-  label="編集"
-/>`,
+      description: {
+        story: "一覧用の編集ボタンです。",
       },
     },
   },

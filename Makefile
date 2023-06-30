@@ -10,6 +10,11 @@ start:
 	docker compose up -d frontend; \
 	docker compose logs -f frontend
 
+dev-start:
+	cd infra && \
+	docker compose up -d; \
+	docker compose logs -f
+
 stop:
 	cd infra && docker compose down
 
@@ -34,3 +39,6 @@ openapi-codegen:
 		-i http://host.docker.internal:8000/openapi.json \
 		-g typescript-fetch \
 		-o /local/src/api
+
+gen-component:
+	npx hygen sbgen with-prompt

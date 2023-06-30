@@ -1,5 +1,4 @@
 // cspell:words reduxjs
-import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
 import { Meta, StoryObj } from "@storybook/react";
 import { Provider } from "react-redux";
@@ -12,7 +11,6 @@ import {
   StaffListStatus,
   testStaffListReducer,
 } from "../../lib/reducers/staffListReducer";
-import { theme } from "../../lib/theme";
 import { getStaffList200 } from "../time_recorder/mocks/ApiMocks";
 
 import DownloadForm from "./DownloadForm";
@@ -47,9 +45,7 @@ const meta: Meta<typeof DownloadForm> = {
   component: DownloadForm,
   render: () => (
     <Provider store={mockStore}>
-      <ThemeProvider theme={theme}>
-        <DownloadForm />
-      </ThemeProvider>
+      <DownloadForm />
     </Provider>
   ),
   parameters: {

@@ -1,6 +1,5 @@
 import { MemoryRouter } from "react-router-dom";
 
-import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
 import { Meta, StoryObj } from "@storybook/react";
 import { Provider } from "react-redux";
@@ -19,7 +18,6 @@ import {
   TimeRecordStatus,
   TimeRecordStatusText,
 } from "../../lib/reducers/timeRecordSlice";
-import { theme } from "../../lib/theme";
 
 import Header, { HeaderProps } from "./Header";
 
@@ -79,9 +77,7 @@ export const Default: Story = {
   render: (args: HeaderProps) => (
     <Provider store={mockStore}>
       <MemoryRouter>
-        <ThemeProvider theme={theme}>
-          <Header {...args} />
-        </ThemeProvider>
+        <Header {...args} />
       </MemoryRouter>
     </Provider>
   ),
@@ -114,9 +110,7 @@ export const LoggedIn: Story = {
   render: (args: HeaderProps) => (
     <Provider store={loginMockStore}>
       <MemoryRouter>
-        <ThemeProvider theme={theme}>
-          <Header {...args} />
-        </ThemeProvider>
+        <Header {...args} />
       </MemoryRouter>
     </Provider>
   ),
@@ -128,9 +122,7 @@ export const LoggedOut: Story = {
   render: (args: HeaderProps) => (
     <Provider store={mockStore}>
       <MemoryRouter>
-        <ThemeProvider theme={theme}>
-          <Header {...args} />
-        </ThemeProvider>
+        <Header {...args} />
       </MemoryRouter>
     </Provider>
   ),
@@ -175,9 +167,7 @@ export const StaffAdmin: Story = {
   render: (args: HeaderProps) => (
     <Provider store={staffAdminMockStore}>
       <MemoryRouter>
-        <ThemeProvider theme={theme}>
-          <Header {...args} />
-        </ThemeProvider>
+        <Header {...args} />
       </MemoryRouter>
     </Provider>
   ),
@@ -223,9 +213,7 @@ export const Admin: Story = {
   render: (args: HeaderProps) => (
     <Provider store={systemAdminMockStore}>
       <MemoryRouter>
-        <ThemeProvider theme={theme}>
-          <Header {...args} />
-        </ThemeProvider>
+        <Header {...args} />
       </MemoryRouter>
     </Provider>
   ),

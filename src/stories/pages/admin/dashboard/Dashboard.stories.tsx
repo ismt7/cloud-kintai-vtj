@@ -1,9 +1,7 @@
 import { MemoryRouter } from "react-router-dom";
 
-import { ThemeProvider } from "@mui/material";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
-import { theme } from "../../../../lib/theme";
 
 import Dashboard from "./Dashboard";
 
@@ -13,13 +11,7 @@ export default {
   argTypes: {
     backgroundColor: { control: "color" },
   },
-  decorators: [
-    (story) => (
-      <MemoryRouter>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
-      </MemoryRouter>
-    ),
-  ],
+  decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
 } as ComponentMeta<typeof Dashboard>;
 
 const Template: ComponentStory<typeof Dashboard> = () => <Dashboard />;

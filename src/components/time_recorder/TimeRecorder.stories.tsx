@@ -1,8 +1,5 @@
-import { ThemeProvider } from "@mui/material";
 import { Meta, StoryObj } from "@storybook/react";
 import { Provider } from "react-redux";
-
-import { theme } from "../../lib/theme";
 
 import TimeRecorder from "./TimeRecorder";
 import GetInteraction from "./interactions/Interaction";
@@ -36,9 +33,7 @@ const meta: Meta<typeof TimeRecorder> = {
   },
   render: () => (
     <Provider store={GetStoreMock()}>
-      <ThemeProvider theme={theme}>
-        <TimeRecorder />
-      </ThemeProvider>
+      <TimeRecorder />
     </Provider>
   ),
 };

@@ -1,6 +1,5 @@
 import { MemoryRouter } from "react-router-dom";
 
-import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { Provider } from "react-redux";
@@ -31,7 +30,6 @@ import {
   TimeRecordStatus,
   TimeRecordStatusText,
 } from "../../../../lib/reducers/timeRecordSlice";
-import { theme } from "../../../../lib/theme";
 
 import AdminStaff from "./AdminStaff";
 
@@ -86,9 +84,7 @@ export default {
   decorators: [
     (story) => (
       <Provider store={mockStore}>
-        <MemoryRouter>
-          <ThemeProvider theme={theme}>{story()}</ThemeProvider>
-        </MemoryRouter>
+        <MemoryRouter>{story()}</MemoryRouter>
       </Provider>
     ),
   ],

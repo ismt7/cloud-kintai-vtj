@@ -1,6 +1,5 @@
 import { MemoryRouter } from "react-router-dom";
 
-import { ThemeProvider } from "@mui/material";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import {
@@ -13,7 +12,6 @@ import {
   postAttendancesClockInHandler200,
   postRestStartHandler200,
 } from "../../../components/time_recorder/mocks/ApiMocks";
-import { theme } from "../../../lib/theme";
 
 import Resist from "./Resist";
 
@@ -23,13 +21,7 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-  decorators: [
-    (story) => (
-      <MemoryRouter>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
-      </MemoryRouter>
-    ),
-  ],
+  decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
 } as ComponentMeta<typeof Resist>;
 
 const Template: ComponentStory<typeof Resist> = (args) => <Resist {...args} />;

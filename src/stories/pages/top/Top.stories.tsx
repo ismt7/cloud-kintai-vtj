@@ -1,9 +1,6 @@
 import { MemoryRouter } from "react-router-dom";
 
-import { ThemeProvider } from "@mui/material";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-
-import { theme } from "../../../lib/theme";
 
 // import { within, userEvent } from "@storybook/testing-library";
 import Top from "./Top";
@@ -15,13 +12,7 @@ export default {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
-  decorators: [
-    (story) => (
-      <MemoryRouter>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
-      </MemoryRouter>
-    ),
-  ],
+  decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
 } as ComponentMeta<typeof Top>;
 
 const Template: ComponentStory<typeof Top> = (args) => <Top {...args} />;

@@ -1,7 +1,4 @@
-import { ThemeProvider } from "@mui/material";
 import { Provider } from "react-redux";
-
-import { theme } from "../../lib/theme";
 
 import AttendanceList from "./AttendanceList";
 import { GetAttendanceList, GetRestList } from "./mocks/ApiMock";
@@ -23,9 +20,7 @@ const meta: Meta<typeof AttendanceList> = {
   },
   render: () => (
     <Provider store={GetStoreMock()}>
-      <ThemeProvider theme={theme}>
-        <AttendanceList />
-      </ThemeProvider>
+      <AttendanceList />
     </Provider>
   ),
 };

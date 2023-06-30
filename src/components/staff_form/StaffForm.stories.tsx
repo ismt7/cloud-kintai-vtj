@@ -1,8 +1,6 @@
-import { ThemeProvider } from "@mui/material";
 import { Meta, StoryObj } from "@storybook/react";
 import { Provider } from "react-redux";
 
-import { theme } from "../../lib/theme";
 import {
   deleteStaffHandler200,
   patchStaffRoleHandler200,
@@ -55,9 +53,7 @@ export const SystemAdminCreateStaff: Story = {
   storyName: "スタッフ作成(システム管理者)",
   render: () => (
     <Provider store={GetStoreMockForSystemAdminCreateStaff}>
-      <ThemeProvider theme={theme}>
-        <StaffForm />
-      </ThemeProvider>
+      <StaffForm />
     </Provider>
   ),
   play: GetSystemAdminCreateStaffInteraction(),
@@ -67,9 +63,7 @@ export const SystemAdminUpdateStaff: Story = {
   storyName: "スタッフ更新(システム管理者)",
   render: () => (
     <Provider store={GetStoreMockForSystemAdminUpdateStaff}>
-      <ThemeProvider theme={theme}>
-        <StaffForm />
-      </ThemeProvider>
+      <StaffForm />
     </Provider>
   ),
 };
@@ -79,9 +73,7 @@ export const StaffAdminCreateStaff: Story = {
   args: {},
   render: () => (
     <Provider store={GetStoreMockForStaffAdmin}>
-      <ThemeProvider theme={theme}>
-        <StaffForm />
-      </ThemeProvider>
+      <StaffForm />
     </Provider>
   ),
   play: GetStaffAdminCreateStaffInteraction(),
@@ -92,9 +84,7 @@ export const StaffAdminUpdateStaff: Story = {
   args: {},
   render: () => (
     <Provider store={GetStoreMockStaffAdminUpdateStaff}>
-      <ThemeProvider theme={theme}>
-        <StaffForm />
-      </ThemeProvider>
+      <StaffForm />
     </Provider>
   ),
   play: GetStaffAdminUpdateStaffInteraction(),

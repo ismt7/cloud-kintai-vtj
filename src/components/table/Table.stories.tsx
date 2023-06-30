@@ -1,4 +1,3 @@
-import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
 import { rest } from "msw";
@@ -22,7 +21,6 @@ import {
   TimeRecordStatus,
   TimeRecordStatusText,
 } from "../../lib/reducers/timeRecordSlice";
-import { theme } from "../../lib/theme";
 
 import Table from "./Table";
 
@@ -79,9 +77,7 @@ export const Primary = {
   args: {},
   render: () => (
     <Provider store={mockStore}>
-      <ThemeProvider theme={theme}>
-        <Table />
-      </ThemeProvider>
+      <Table />
     </Provider>
   ),
   parameters: {

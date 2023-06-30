@@ -5,8 +5,8 @@ import { Amplify } from "aws-amplify";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useLocation, useNavigate } from "react-router";
 
-import awsConfig from "../aws-exports";
 import "@aws-amplify/ui-react/styles.css";
+import awsConfig from "../aws-exports";
 import { useAppDispatch, useAppSelector } from "../lib/hooks";
 import { LoginStaffStatus } from "../lib/reducers/loginStaffReducer";
 import fetchStaff from "../lib/staff/FetchStaff";
