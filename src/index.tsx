@@ -1,24 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import "./index.css";
 
 import { Authenticator } from "@aws-amplify/ui-react";
 import { ThemeProvider } from "@mui/material";
 import { Provider } from "react-redux";
 
-import Layout from "./Layout";
 import { store } from "./app/store";
+import Layout from "./Layout";
 import { theme } from "./lib/theme";
+import AdminAttendance from "./pages/admin/AdminAttendance";
 import AdminAttendanceEditor from "./pages/admin/AdminAttendanceEditor";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminStaff from "./pages/admin/AdminStaff";
 import List from "./pages/List";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import RequireAuth from "./pages/RequireAuth";
 import Top from "./pages/Top";
-import AdminAttendance from "./pages/admin/AdminAttendance";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminStaff from "./pages/admin/AdminStaff";
 import reportWebVitals from "./reportWebVitals";
 
 const router = createBrowserRouter([
