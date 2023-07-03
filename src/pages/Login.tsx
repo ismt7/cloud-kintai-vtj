@@ -9,7 +9,7 @@ import "@aws-amplify/ui-react/styles.css";
 import awsConfig from "../aws-exports";
 import { useAppDispatch, useAppSelector } from "../lib/hooks";
 import { LoginStaffStatus } from "../lib/reducers/loginStaffReducer";
-import fetchStaff from "../lib/staff/FetchStaff";
+import fetchLoginStaff from "../lib/staff/FetchLoginStaff";
 import { selectLoginStaff } from "../lib/store";
 
 Amplify.configure(awsConfig);
@@ -34,7 +34,7 @@ function Login() {
         staff.status === LoginStaffStatus.NOT_PROCESSING
       ) {
         void dispatch(
-          fetchStaff({
+          fetchLoginStaff({
             mailAddress: user.attributes.email,
           })
         );

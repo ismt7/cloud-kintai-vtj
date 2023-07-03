@@ -8,7 +8,7 @@ import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
 import { useAppDispatch } from "./lib/hooks";
 import { clearLoginStaff } from "./lib/reducers/loginStaffReducer";
-import fetchStaff from "./lib/staff/FetchStaff";
+import fetchLoginStaff from "./lib/staff/FetchLoginStaff";
 
 function Layout() {
   const { signOut, user } = useAuthenticator((context) => [context.user]);
@@ -23,7 +23,7 @@ function Layout() {
 
   useEffect(() => {
     if (!user?.attributes?.email) return;
-    void dispatch(fetchStaff({ mailAddress: user.attributes.email }));
+    void dispatch(fetchLoginStaff({ mailAddress: user.attributes.email }));
   }, [user]);
 
   return (
