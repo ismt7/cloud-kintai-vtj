@@ -17,6 +17,8 @@ import staffReducer from "../lib/reducers/staffReducer";
 // eslint-disable-next-line import/no-cycle
 import staffRoleReducer from "../lib/reducers/staffRoleReducer";
 // eslint-disable-next-line import/no-cycle
+import attendanceEditorReducer from "../components/attendance_editor/attendanceEditorSlice";
+// eslint-disable-next-line import/no-cycle
 import timeRecordListReducer from "../lib/reducers/timeRecordListReducer";
 
 export const store = configureStore({
@@ -27,6 +29,7 @@ export const store = configureStore({
     staffRoleReducer,
     staffListReducer,
     attendanceReducer,
+    attendanceEditorReducer,
     restReducer,
     timeRecordListReducer,
     jobTermReducer,

@@ -10,6 +10,7 @@ import { Provider } from "react-redux";
 import Layout from "./Layout";
 import { store } from "./app/store";
 import { theme } from "./lib/theme";
+import AdminAttendanceEditor from "./pages/admin/AdminAttendanceEditor";
 import List from "./pages/List";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -80,6 +81,14 @@ const router = createBrowserRouter([
         element: (
           <RequireAuth>
             <AdminAttendance />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/admin/attendances/edit/:id",
+        element: (
+          <RequireAuth>
+            <AdminAttendanceEditor />
           </RequireAuth>
         ),
       },
