@@ -1,10 +1,9 @@
 import { Provider } from "react-redux";
 
+import type { Meta, StoryObj } from "@storybook/react";
 import AttendanceList from "./AttendanceList";
 import { GetAttendanceList, GetRestList } from "./mocks/ApiMock";
 import GetStoreMock from "./mocks/MockReducer";
-
-import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof AttendanceList> = {
   component: AttendanceList,
