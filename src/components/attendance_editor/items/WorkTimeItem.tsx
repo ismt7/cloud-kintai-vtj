@@ -1,6 +1,5 @@
 // cspell:ignore ampm
-import DeleteIcon from "@mui/icons-material/Delete";
-import { Box, IconButton, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import dayjs from "dayjs";
@@ -105,11 +104,6 @@ export default function WorkTimeItem() {
                 />
               </Box>
             </Stack>
-          </Box>
-          <Box>
-            <IconButton aria-label="staff-search">
-              <DeleteIcon />
-            </IconButton>
           </Box>
           <Box sx={{ flexGrow: 2 }} textAlign={"right"}>
             <Typography variant="body1">{totalTime}時間</Typography>
