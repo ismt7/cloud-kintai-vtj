@@ -29,8 +29,8 @@ export function GetAttendanceList() {
                 parent_attendance_id: null,
                 staff_id: 1,
                 work_date: targetDate.format("YYYY-MM-DD"),
-                start_time: `${targetDate.format("YYYY-MM-DD")}T09:00:00+08:00`,
-                end_time: `${targetDate.format("YYYY-MM-DD")}T18:00:00+08:00`,
+                start_time: `${targetDate.format("YYYY-MM-DD")}T09:00:00+09:00`,
+                end_time: `${targetDate.format("YYYY-MM-DD")}T18:00:00+09:00`,
                 go_directly_flag: false,
                 return_directly_flag: false,
                 remarks: isHoliday ? "" : "備考です",
@@ -65,8 +65,8 @@ export function GetRestList() {
                 rest_time_id: i + 1,
                 staff_id: 1,
                 work_date: targetDate.format("YYYY-MM-DD"),
-                start_time: `${targetDate.format("YYYY-MM-DD")}T12:00:00+08:00`,
-                end_time: `${targetDate.format("YYYY-MM-DD")}T13:00:00+08:00`,
+                start_time: `${targetDate.format("YYYY-MM-DD")}T12:00:00+09:00`,
+                end_time: `${targetDate.format("YYYY-MM-DD")}T13:00:00+09:00`,
               });
             }
             return data;
