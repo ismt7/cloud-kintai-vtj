@@ -2,13 +2,7 @@ import { useEffect, useState } from "react";
 
 import CloudDoneIcon from "@mui/icons-material/CloudDone";
 import CloudQueueIcon from "@mui/icons-material/CloudQueue";
-import {
-  Box,
-  List,
-  ListItemButton,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, List, ListItemButton, Stack, Typography } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
@@ -56,7 +50,7 @@ const JobTerm = () => {
 
     setJobTermData((prevJobTermData) =>
       prevJobTermData.map((obj) =>
-        (obj.id === item.id
+        obj.id === item.id
           ? {
               id: obj.id,
               targetMonth: obj.targetMonth,
@@ -64,7 +58,7 @@ const JobTerm = () => {
               jobEndDate: obj.jobEndDate,
               status: JobTermStatus.NO_REGISTER,
             }
-          : obj)
+          : obj
       )
     );
   };
@@ -78,7 +72,7 @@ const JobTerm = () => {
 
     setJobTermData((prevJobTermData) =>
       prevJobTermData.map((obj) =>
-        (obj.id === item.id
+        obj.id === item.id
           ? {
               id: obj.id,
               targetMonth: obj.targetMonth,
@@ -86,7 +80,7 @@ const JobTerm = () => {
               jobEndDate: dayjs(event).format("YYYY-MM-DD"),
               status: JobTermStatus.NO_REGISTER,
             }
-          : obj)
+          : obj
       )
     );
   };
@@ -150,7 +144,9 @@ const JobTerm = () => {
                                 onChange={(event) => {
                                   startDatePickerHandler(event, item);
                                 }}
-                                slotProps={{ textField: { variant: "outlined" } }}
+                                slotProps={{
+                                  textField: { variant: "outlined" },
+                                }}
                               />
                             </Box>
                             <Box>〜</Box>
@@ -162,7 +158,9 @@ const JobTerm = () => {
                                 onChange={(event) => {
                                   endDatePickerHandler(event, item);
                                 }}
-                                slotProps={{ textField: { variant: "outlined" } }}
+                                slotProps={{
+                                  textField: { variant: "outlined" },
+                                }}
                               />
                             </Box>
                             <Box>
