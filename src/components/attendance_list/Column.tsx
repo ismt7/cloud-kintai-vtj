@@ -49,8 +49,9 @@ export default function GetColumns(): GridColDef[] {
     {
       field: "summary",
       headerName: "摘要",
-      align: "right",
+      align: "left",
       sortable: false,
+      width: 300,
       headerAlign: "center",
     },
     {

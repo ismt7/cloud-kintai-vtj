@@ -27,7 +27,7 @@ const AttendanceTable = () => {
   }, []);
 
   return (
-    <div style={{ height: "100vh", width: "100%" }}>
+    <div style={{ height: "93vh", width: "100%" }}>
       <DataGrid
         rows={timeRecordList.data}
         columns={GetColumns()}
