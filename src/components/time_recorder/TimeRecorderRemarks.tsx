@@ -5,18 +5,17 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Box, IconButton, Stack, TextField } from "@mui/material";
 
-import { useAppSelectorV2 } from "../../app/hooks";
+import dayjs from "dayjs";
+import { useAppDispatchV2, useAppSelectorV2 } from "../../app/hooks";
 
-import {
-  handleClickOfRemarksSaveButton,
-  selectTimeRecorder,
-} from "./TimeRecorderSlice";
+import { registerRemarks, selectTimeRecorder } from "./TimeRecorderSlice";
 
 export interface TimeRecorderRemarksProps {
   staffId: number | undefined;
 }
 
 const TimeRecorderRemarks = ({ staffId }: TimeRecorderRemarksProps) => {
+  const dispatch = useAppDispatchV2();
   const timeRecorderData = useAppSelectorV2(selectTimeRecorder);
   const currentRemarksText = timeRecorderData.data.attendance?.remarks || "";
 
@@ -39,6 +38,23 @@ const TimeRecorderRemarks = ({ staffId }: TimeRecorderRemarksProps) => {
     setRemarksSubmitButtonVisible(false);
     setRemarksClearButtonDisabled(false);
   }, [currentRemarksText]);
+
+  const handleClickOfRemarksSaveButton = ({ remarks }: { remarks: string }) => {
+    if (staffId === undefined) {
+      return;
+    }
+
+    const now = dayjs();
+    const workDate = Number(now.format("YYYYMMDD"));
+
+    void dispatch(
+      registerRemarks({
+        staffId,
+        workDate,
+        remarks,
+      })
+    );
+  };
 
   return (
     <Stack>
@@ -77,7 +93,6 @@ const TimeRecorderRemarks = ({ staffId }: TimeRecorderRemarksProps) => {
                   setRemarksClearButtonDisabled(true);
                   setRemarksSubmitButtonDisabled(true);
                   handleClickOfRemarksSaveButton({
-                    staffId,
                     remarks: remarksText,
                   });
                 }}

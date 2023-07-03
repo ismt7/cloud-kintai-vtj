@@ -397,28 +397,3 @@ export const handleClickRestEndButton =
       })
     );
   };
-
-export const handleClickOfRemarksSaveButton =
-  ({
-    staffId,
-    remarks,
-  }: {
-    staffId: number | undefined;
-    remarks: string;
-  }): AppThunk =>
-  (dispatch) => {
-    if (staffId === undefined) {
-      return;
-    }
-
-    const now = dayjs();
-    const workDate = Number(now.format("YYYYMMDD"));
-
-    void dispatch(
-      registerRemarks({
-        staffId,
-        workDate,
-        remarks,
-      })
-    );
-  };
