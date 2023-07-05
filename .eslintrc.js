@@ -40,6 +40,8 @@ module.exports = {
     "no-void": "off",
     "operator-linebreak": "off",
     "@typescript-eslint/indent": "off",
+    "no-confusing-arrow": "off",
+    "no-continue": "off",
   },
   settings: {
     react: {
