@@ -41,8 +41,7 @@ async function fetchAttendances(
     })
     .then((r) => r)
     .catch((e) => {
-      console.log("error", e);
-      return null;
+      throw e;
     });
 
   if (!attendances) return null;

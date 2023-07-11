@@ -1,6 +1,5 @@
-import Clock from "./Clock";
-
 import type { Meta, StoryObj } from "@storybook/react";
+import Clock from "./Clock";
 
 const meta: Meta<typeof Clock> = {
   component: Clock,

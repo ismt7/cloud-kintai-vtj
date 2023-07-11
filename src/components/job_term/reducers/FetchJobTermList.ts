@@ -68,8 +68,6 @@ const fetchJobTermList = createAsyncThunk(
       .then((r) => r)
       .catch(() => null);
 
-    console.log("workPeriods", workPeriods);
-
     if (!workPeriods) return [];
 
     const startYear = targetDate.subtract(1, "year").year();

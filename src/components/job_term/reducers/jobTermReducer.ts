@@ -49,8 +49,6 @@ export const updateJobTerm = createAsyncThunk(
         },
       })
       .catch((e) => {
-        console.log(e);
-
         throw e;
       });
   }
