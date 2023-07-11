@@ -1,25 +1,35 @@
-import { ThemeProvider } from "@mui/material";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
-
-import { theme } from "../../lib/theme";
+import { Meta, StoryObj } from "@storybook/react";
 
 import Link from "./Link";
 
-export default {
-  title: "Component/Link",
+const meta: Meta<typeof Link> = {
   component: Link,
+  render: () => <Link label="リンク" />,
   argTypes: {
-    backgroundColor: { control: "color" },
+    label: {
+      description: "リンクのラベル",
+    },
+    href: {
+      description: "リンク先のURL",
+    },
+    color: {
+      description: "リンクの色",
+    },
+    sx: {
+      description: "リンクのスタイル",
+    },
+    onClick: {
+      description: "リンクのクリック時の処理",
+    },
   },
-  decorators: [
-    (story) => <ThemeProvider theme={theme}>{story()}</ThemeProvider>,
-  ],
-} as ComponentMeta<typeof Link>;
+};
 
-const Template: ComponentStory<typeof Link> = () => <Link />;
+export default meta;
+type Story = StoryObj<typeof Link>;
 
-export const Default = Template.bind({});
-Default.storyName = "デフォルト";
-Default.args = {
-  label: "リンク",
+export const Default: Story = {
+  name: "デフォルト",
+  args: {
+    label: "リンク",
+  },
 };

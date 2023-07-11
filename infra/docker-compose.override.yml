@@ -37,6 +37,8 @@ services:
       - ../src/lib:/app/src/lib:delegated
       - ../src/pages:/app/src/pages:delegated
       - ../src/stories:/app/src/stories:delegated
+      - ../.storybook:/app/.storybook:delegated
+      - ../src/app:/app/src/app:delegated
 
     command: [ "npm", "run", "storybook" ]
     healthcheck:

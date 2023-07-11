@@ -19,7 +19,7 @@ import type {
   Rest,
   RestEnd,
   RestStart,
-} from '../models';
+} from '../models/index';
 import {
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
@@ -29,7 +29,7 @@ import {
     RestEndToJSON,
     RestStartFromJSON,
     RestStartToJSON,
-} from '../models';
+} from '../models/index';
 
 export interface GetRestRequest {
     staffId: number;

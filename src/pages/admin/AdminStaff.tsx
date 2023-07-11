@@ -3,7 +3,7 @@ import { Box, Stack } from "@mui/material";
 import StaffForm from "../../components/staff_form/StaffForm";
 import StaffList from "../../components/staff_list/StaffList";
 
-function AdminStaff() {
+export default function AdminStaff() {
   return (
     <Stack direction="row" sx={{ height: 1 }}>
       <Box sx={{ width: "350px", height: 1 }}>
@@ -15,4 +15,3 @@ function AdminStaff() {
     </Stack>
   );
 }
-export default AdminStaff;

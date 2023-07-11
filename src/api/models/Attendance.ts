@@ -127,7 +127,7 @@ export function AttendanceToJSON(value?: Attendance | null): any {
         'attendance_id': value.attendanceId,
         'parent_attendance_id': value.parentAttendanceId,
         'staff_id': value.staffId,
-        'work_date': (value.workDate.toISOString().substr(0,10)),
+        'work_date': (value.workDate.toISOString().substring(0,10)),
         'start_time': (value.startTime.toISOString()),
         'end_time': (value.endTime.toISOString()),
         'go_directly_flag': value.goDirectlyFlag,

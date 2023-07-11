@@ -1,18 +1,32 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Provider } from "react-redux";
 
+import type { Meta, StoryObj } from "@storybook/react";
 import AttendanceList from "./AttendanceList";
+import { GetAttendanceList, GetRestList } from "./mocks/ApiMock";
+import GetStoreMock from "./mocks/MockReducer";
 
-export default {
-  title: "component/AttendanceList",
+const meta: Meta<typeof AttendanceList> = {
   component: AttendanceList,
-  argTypes: {
-    backgroundColor: { control: "color" },
+  parameters: {
+    msw: {
+      handlers: [GetAttendanceList(), GetRestList()],
+    },
+    docs: {
+      source: {
+        code: "<AttendanceList />",
+      },
+    },
   },
-} as ComponentMeta<typeof AttendanceList>;
+  render: () => (
+    <Provider store={GetStoreMock()}>
+      <AttendanceList />
+    </Provider>
+  ),
+};
 
-const Template: ComponentStory<typeof AttendanceList> = () => (
-  <AttendanceList />
-);
+export default meta;
+type Story = StoryObj<typeof AttendanceList>;
 
-export const Primary = Template.bind({});
-Primary.args = {};
+export const Default: Story = {};
+
+export const NoData: Story = {};

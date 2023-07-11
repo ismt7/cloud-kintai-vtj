@@ -63,6 +63,14 @@ function isResting({
   return true;
 }
 
+function isLeaveWork(attendance: OriginAttendance | null) {
+  if (!attendance) return false;
+  if (!attendance.startTime) return false;
+  if (!attendance.endTime) return false;
+
+  return true;
+}
+
 export function getCurrentWorkStatus(
   attendance: OriginAttendance | null,
   rest: OriginRest | null
@@ -78,6 +86,13 @@ export function getCurrentWorkStatus(
     return {
       code: WorkStatusCodes.RESTING,
       text: WorkStatusTexts.RESTING,
+    };
+  }
+
+  if (isLeaveWork(attendance)) {
+    return {
+      code: WorkStatusCodes.LEFT_WORK,
+      text: WorkStatusTexts.LEFT_WORK,
     };
   }
 
