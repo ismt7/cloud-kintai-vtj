@@ -21,7 +21,7 @@ import type {
   AttendanceRemarks,
   HTTPValidationError,
   MonthlyAttendance,
-} from '../models';
+} from '../models/index';
 import {
     AttendanceFromJSON,
     AttendanceToJSON,
@@ -35,7 +35,7 @@ import {
     HTTPValidationErrorToJSON,
     MonthlyAttendanceFromJSON,
     MonthlyAttendanceToJSON,
-} from '../models';
+} from '../models/index';
 
 export interface GetAttendanceRequest {
     staffId: number;

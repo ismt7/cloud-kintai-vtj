@@ -19,7 +19,7 @@ import type {
   Staff,
   StaffCreate,
   StaffUpdate,
-} from '../models';
+} from '../models/index';
 import {
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
@@ -29,7 +29,7 @@ import {
     StaffCreateToJSON,
     StaffUpdateFromJSON,
     StaffUpdateToJSON,
-} from '../models';
+} from '../models/index';
 
 export interface CreateStaffRequest {
     staffCreate: StaffCreate;

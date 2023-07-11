@@ -5,7 +5,7 @@ import { Color, Variant } from "../../lib/theme";
 
 type Size = "small" | "medium" | "large";
 
-interface ButtonProps {
+export interface ButtonProps {
   color?: Color;
   variant?: Variant;
   disabled?: boolean;

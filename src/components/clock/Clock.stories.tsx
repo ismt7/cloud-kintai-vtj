@@ -1,22 +1,14 @@
-import { ThemeProvider } from "@mui/material";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
-
-import { theme } from "../../lib/theme";
-
+import type { Meta, StoryObj } from "@storybook/react";
 import Clock from "./Clock";
 
-export default {
-  title: "Component/Clock",
+const meta: Meta<typeof Clock> = {
   component: Clock,
-  argTypes: {
-    backgroundColor: { control: "color" },
-  },
-  decorators: [
-    (story) => <ThemeProvider theme={theme}>{story()}</ThemeProvider>,
-  ],
-} as ComponentMeta<typeof Clock>;
+  render: () => <Clock />,
+};
 
-const Template: ComponentStory<typeof Clock> = () => <Clock />;
+export default meta;
+type Story = StoryObj<typeof Clock>;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default: Story = {
+  name: "デフォルト",
+};

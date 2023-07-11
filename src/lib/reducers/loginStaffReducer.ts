@@ -3,7 +3,7 @@ import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
 import { Staff } from "../../api";
 // eslint-disable-next-line import/no-cycle
 import { RootState } from "../../app/store";
-import fetchStaff from "../staff/FetchStaff";
+import fetchLoginStaff from "../staff/FetchLoginStaff";
 
 export enum LoginStaffStatus {
   NOT_PROCESSING = "NOT_PROCESSING",
@@ -26,14 +26,14 @@ export const getLoginStaffExtraReducers = (
   builder: ActionReducerMapBuilder<LoginStaffState>
 ) => {
   builder
-    .addCase(fetchStaff.pending, (state) => {
+    .addCase(fetchLoginStaff.pending, (state) => {
       state.status = LoginStaffStatus.PROCESSING;
     })
-    .addCase(fetchStaff.fulfilled, (state, action) => {
+    .addCase(fetchLoginStaff.fulfilled, (state, action) => {
       state.status = LoginStaffStatus.DONE;
       state.data = action.payload as Staff;
     })
-    .addCase(fetchStaff.rejected, (state) => {
+    .addCase(fetchLoginStaff.rejected, (state) => {
       state.status = LoginStaffStatus.ERROR;
     });
 };

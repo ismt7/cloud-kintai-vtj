@@ -23,14 +23,12 @@ const StaffList = () => {
   const createStaff = useAppSelector(selectStaff);
   const staffs = useAppSelector(selectStaffList);
   const [staffName, setStaffName] = useState<string>("");
-  const [filteredStaffs, setFilteredStaffs] = useState<Staff[]>(
-    staffs.data || []
-  );
+  const [filteredStaffs, setFilteredStaffs] = useState<Staff[]>(staffs.data);
   const dispatch = useAppDispatch();
 
   const handleSearchStaff = () => {
     if (staffName === "") {
-      setFilteredStaffs(staffs.data || []);
+      setFilteredStaffs(staffs.data);
       return;
     }
 
@@ -55,7 +53,7 @@ const StaffList = () => {
   }, [staffName]);
 
   useEffect(() => {
-    setFilteredStaffs(staffs.data || []);
+    setFilteredStaffs(staffs.data);
   }, [staffs]);
 
   return (

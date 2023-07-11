@@ -18,7 +18,7 @@ import type {
   HTTPValidationError,
   WorkPeriodPerMonth,
   WorkPeriodPerMonthCreate,
-} from '../models';
+} from '../models/index';
 import {
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
@@ -26,7 +26,7 @@ import {
     WorkPeriodPerMonthToJSON,
     WorkPeriodPerMonthCreateFromJSON,
     WorkPeriodPerMonthCreateToJSON,
-} from '../models';
+} from '../models/index';
 
 export interface CreateWorkPeriodPerMonthRequest {
     workPeriodPerMonthCreate: WorkPeriodPerMonthCreate;
