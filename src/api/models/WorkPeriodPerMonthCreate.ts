@@ -21,10 +21,10 @@ import { exists, mapValues } from '../runtime';
 export interface WorkPeriodPerMonthCreate {
     /**
      * 
-     * @type {Date}
+     * @type {string}
      * @memberof WorkPeriodPerMonthCreate
      */
-    targetMonth: Date;
+    targetMonth: string;
     /**
      * 
      * @type {Date}
@@ -61,7 +61,7 @@ export function WorkPeriodPerMonthCreateFromJSONTyped(json: any, ignoreDiscrimin
     }
     return {
         
-        'targetMonth': (new Date(json['target_month'])),
+        'targetMonth': json['target_month'],
         'jobStartDate': (new Date(json['job_start_date'])),
         'jobEndDate': (new Date(json['job_end_date'])),
     };
@@ -76,7 +76,7 @@ export function WorkPeriodPerMonthCreateToJSON(value?: WorkPeriodPerMonthCreate 
     }
     return {
         
-        'target_month': (value.targetMonth.toISOString()),
+        'target_month': value.targetMonth,
         'job_start_date': (value.jobStartDate.toISOString()),
         'job_end_date': (value.jobEndDate.toISOString()),
     };
