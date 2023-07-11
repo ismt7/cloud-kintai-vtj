@@ -101,7 +101,7 @@ export function RestToJSON(value?: Rest | null): any {
         'rest_time_id': value.restTimeId,
         'parent_rest_time_id': value.parentRestTimeId,
         'staff_id': value.staffId,
-        'work_date': (value.workDate.toISOString().substr(0,10)),
+        'work_date': (value.workDate.toISOString().substring(0,10)),
         'start_time': (value.startTime.toISOString()),
         'end_time': value.endTime === undefined ? undefined : (value.endTime.toISOString()),
     };

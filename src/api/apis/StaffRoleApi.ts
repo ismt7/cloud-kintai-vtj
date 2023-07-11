@@ -18,7 +18,7 @@ import type {
   HTTPValidationError,
   StaffRole,
   StaffRoleUpdate,
-} from '../models';
+} from '../models/index';
 import {
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
@@ -26,7 +26,7 @@ import {
     StaffRoleToJSON,
     StaffRoleUpdateFromJSON,
     StaffRoleUpdateToJSON,
-} from '../models';
+} from '../models/index';
 
 export interface GetStaffRoleByIdRequest {
     staffId: number;

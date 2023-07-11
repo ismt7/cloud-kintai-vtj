@@ -1,28 +1,19 @@
 import { MemoryRouter } from "react-router-dom";
 
-import { ThemeProvider } from "@mui/material";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
-
-import { theme } from "../../../../lib/theme";
+import { Meta, StoryObj } from "@storybook/react";
 
 import Dashboard from "./Dashboard";
 
-export default {
-  title: "Page/Admin/Dashboard",
+const meta: Meta<typeof Dashboard> = {
   component: Dashboard,
-  argTypes: {
-    backgroundColor: { control: "color" },
-  },
-  decorators: [
-    (story) => (
-      <MemoryRouter>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
-      </MemoryRouter>
-    ),
-  ],
-} as ComponentMeta<typeof Dashboard>;
+  render: () => (
+    <MemoryRouter>
+      <Dashboard />
+    </MemoryRouter>
+  ),
+};
 
-const Template: ComponentStory<typeof Dashboard> = () => <Dashboard />;
+export default meta;
+type Story = StoryObj<typeof Dashboard>;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default: Story = {};

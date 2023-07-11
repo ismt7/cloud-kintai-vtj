@@ -1,7 +1,6 @@
 // cspell:words reduxjs
-import { ThemeProvider } from "@mui/material";
 import { configureStore } from "@reduxjs/toolkit";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 import { Provider } from "react-redux";
 
 import {
@@ -12,8 +11,7 @@ import {
   StaffListStatus,
   testStaffListReducer,
 } from "../../lib/reducers/staffListReducer";
-import { theme } from "../../lib/theme";
-import { getStaffList200 } from "../time_recorder/mocks";
+import { getStaffList200 } from "../time_recorder/mocks/ApiMocks";
 
 import DownloadForm from "./DownloadForm";
 
@@ -43,27 +41,30 @@ const mockStore = configureStore({
   },
 });
 
-export default {
-  title: "Component/DownloadForm",
+const meta: Meta<typeof DownloadForm> = {
   component: DownloadForm,
-  argTypes: {
-    backgroundColor: { control: "color" },
+  render: () => (
+    <Provider store={mockStore}>
+      <DownloadForm />
+    </Provider>
+  ),
+  parameters: {
+    msw: {
+      handlers: [getStaffList200()],
+    },
   },
-  decorators: [
-    (story) => (
-      <Provider store={mockStore}>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
-      </Provider>
-    ),
-  ],
-} as ComponentMeta<typeof DownloadForm>;
+};
 
-const Template: ComponentStory<typeof DownloadForm> = () => <DownloadForm />;
+export default meta;
+type Story = StoryObj<typeof DownloadForm>;
 
-export const Default = Template.bind({});
-Default.args = {};
-Default.parameters = {
-  msw: {
-    handlers: [getStaffList200()],
+export const Default: Story = {
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<DownloadForm />`,
+      },
+    },
   },
 };

@@ -47,13 +47,13 @@ exports[`DownloadForm Component( ダウンロードフォームにレイアウ�
                     inputmode="text"
                     placeholder="YYYY/MM/DD"
                     type="text"
-                    value="2023/01/01"
+                    value="2023/06/11"
                   />
                   <div
                     class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
                   >
                     <button
-                      aria-label="Choose date, selected date is Jan 1, 2023"
+                      aria-label="Choose date, selected date is Jun 11, 2023"
                       class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root"
                       tabindex="0"
                       type="button"
@@ -119,13 +119,13 @@ exports[`DownloadForm Component( ダウンロードフォームにレイアウ�
                     inputmode="text"
                     placeholder="YYYY/MM/DD"
                     type="text"
-                    value="2023/01/31"
+                    value="2023/07/11"
                   />
                   <div
                     class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
                   >
                     <button
-                      aria-label="Choose date, selected date is Jan 31, 2023"
+                      aria-label="Choose date, selected date is Jul 11, 2023"
                       class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root"
                       tabindex="0"
                       type="button"
@@ -188,14 +188,14 @@ exports[`DownloadForm Component( ダウンロードフォームにレイアウ�
                 role="button"
                 tabindex="0"
               >
-                2023/01
+                2023/07
               </div>
               <input
                 aria-hidden="true"
                 aria-invalid="false"
                 class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
                 tabindex="-1"
-                value="202301"
+                value="202307"
               />
               <svg
                 aria-hidden="true"

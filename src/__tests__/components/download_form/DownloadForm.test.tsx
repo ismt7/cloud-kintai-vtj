@@ -3,8 +3,14 @@ import { fireEvent, render, within } from "@testing-library/react";
 import { Provider } from "react-redux";
 
 import DownloadForm from "../../../components/download_form/DownloadForm";
-import { LoginStaffStatus, testLoginStaffReducer } from "../../../lib/reducers/loginStaffReducer";
-import { StaffListStatus, testStaffListReducer } from "../../../lib/reducers/staffListReducer";
+import {
+  LoginStaffStatus,
+  testLoginStaffReducer,
+} from "../../../lib/reducers/loginStaffReducer";
+import {
+  StaffListStatus,
+  testStaffListReducer,
+} from "../../../lib/reducers/staffListReducer";
 
 const mockStore = configureStore({
   reducer: {

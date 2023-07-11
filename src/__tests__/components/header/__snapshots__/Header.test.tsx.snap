@@ -29,7 +29,7 @@ exports[` 1`] = `
             class="MuiBox-root css-0"
           >
             <a
-              class="MuiTypography-root MuiTypography-button MuiLink-root MuiLink-underlineAlways css-ynz886-MuiTypography-root-MuiLink-root"
+              class="MuiTypography-root MuiTypography-button MuiLink-root MuiLink-underlineAlways css-ih31ub-MuiTypography-root-MuiLink-root"
               href="/register"
             >
               勤怠打刻
@@ -39,7 +39,7 @@ exports[` 1`] = `
             class="MuiBox-root css-0"
           >
             <a
-              class="MuiTypography-root MuiTypography-button MuiLink-root MuiLink-underlineAlways css-ynz886-MuiTypography-root-MuiLink-root"
+              class="MuiTypography-root MuiTypography-button MuiLink-root MuiLink-underlineAlways css-ih31ub-MuiTypography-root-MuiLink-root"
               href="/list"
             >
               勤怠一覧
@@ -49,7 +49,7 @@ exports[` 1`] = `
             class="MuiBox-root css-0"
           >
             <a
-              class="MuiTypography-root MuiTypography-button MuiLink-root MuiLink-underlineAlways css-ynz886-MuiTypography-root-MuiLink-root"
+              class="MuiTypography-root MuiTypography-button MuiLink-root MuiLink-underlineAlways css-ih31ub-MuiTypography-root-MuiLink-root"
               href="/"
             >
               リンク
@@ -59,7 +59,7 @@ exports[` 1`] = `
             class="MuiBox-root css-0"
           >
             <a
-              class="MuiTypography-root MuiTypography-button MuiLink-root MuiLink-underlineAlways css-ynz886-MuiTypography-root-MuiLink-root"
+              class="MuiTypography-root MuiTypography-button MuiLink-root MuiLink-underlineAlways css-ih31ub-MuiTypography-root-MuiLink-root"
               href="/"
             >
               リンク
@@ -69,7 +69,7 @@ exports[` 1`] = `
             class="MuiBox-root css-0"
           >
             <a
-              class="MuiTypography-root MuiTypography-button MuiLink-root MuiLink-underlineAlways css-ynz886-MuiTypography-root-MuiLink-root"
+              class="MuiTypography-root MuiTypography-button MuiLink-root MuiLink-underlineAlways css-ih31ub-MuiTypography-root-MuiLink-root"
               href="/admin/staff"
             >
               スタッフ管理
@@ -79,10 +79,20 @@ exports[` 1`] = `
             class="MuiBox-root css-0"
           >
             <a
-              class="MuiTypography-root MuiTypography-button MuiLink-root MuiLink-underlineAlways css-ynz886-MuiTypography-root-MuiLink-root"
-              href="/admin/attendance"
+              class="MuiTypography-root MuiTypography-button MuiLink-root MuiLink-underlineAlways css-ih31ub-MuiTypography-root-MuiLink-root"
+              href="/admin/attendances"
             >
               勤怠管理
+            </a>
+          </div>
+          <div
+            class="MuiBox-root css-0"
+          >
+            <a
+              class="MuiTypography-root MuiTypography-button MuiLink-root MuiLink-underlineAlways css-ih31ub-MuiTypography-root-MuiLink-root"
+              href="/admin/master"
+            >
+              マスタ管理
             </a>
           </div>
         </div>
@@ -114,7 +124,7 @@ exports[` 1`] = `
         class="MuiBox-root css-13h7r5n"
       >
         <p
-          class="MuiTypography-root MuiTypography-body1 css-1p3bzad-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 css-qqggt6-MuiTypography-root"
         >
           田中 太郎 さん
         </p>

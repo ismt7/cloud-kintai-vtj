@@ -85,7 +85,7 @@ export function MonthlyAttendanceToJSON(value?: MonthlyAttendance | null): any {
     return {
         
         'staff_id': value.staffId,
-        'target_date': (value.targetDate.toISOString().substr(0,10)),
+        'target_date': (value.targetDate.toISOString().substring(0,10)),
         'work_total': value.workTotal,
         'work_days': value.workDays,
     };

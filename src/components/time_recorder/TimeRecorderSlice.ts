@@ -133,11 +133,12 @@ export const registerRestStart = createAsyncThunk(
     staffId: number;
     workDate: number;
     startTime: dayjs.Dayjs;
-  }) => restRegisterStart({
-    staffId,
-    workDate,
-    startTime: startTime.toISOString(),
-  })
+  }) =>
+    restRegisterStart({
+      staffId,
+      workDate,
+      startTime: startTime.toISOString(),
+    })
 );
 
 export const registerRestEnd = createAsyncThunk(
@@ -393,31 +394,6 @@ export const handleClickRestEndButton =
         staffId,
         workDate,
         endTime,
-      })
-    );
-  };
-
-export const handleClickOfRemarksSaveButton =
-  ({
-    staffId,
-    remarks,
-  }: {
-    staffId: number | undefined;
-    remarks: string;
-  }): AppThunk =>
-  (dispatch) => {
-    if (staffId === undefined) {
-      return;
-    }
-
-    const now = dayjs();
-    const workDate = Number(now.format("YYYYMMDD"));
-
-    void dispatch(
-      registerRemarks({
-        staffId,
-        workDate,
-        remarks,
       })
     );
   };
