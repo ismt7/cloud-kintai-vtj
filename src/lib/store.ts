@@ -1,7 +1,7 @@
 // cspell:words reduxjs
 import { configureStore } from "@reduxjs/toolkit";
 
-import jobTermReducer from "./reducers/jobTermReducer";
+import jobTermReducer from "../components/job_term/reducers/jobTermReducer";
 import loginStaffReducer from "./reducers/loginStaffReducer";
 import staffListReducer from "./reducers/staffListReducer";
 import staffReducer from "./reducers/staffReducer";

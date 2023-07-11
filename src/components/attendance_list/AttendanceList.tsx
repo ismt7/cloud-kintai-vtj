@@ -10,16 +10,18 @@ import fetchTimeRecordList from "../../lib/time_record_list/FetchTimeRecordList"
 import GetColumns from "./Column";
 
 const AttendanceTable = () => {
-  const staff = useAppSelector(selectLoginStaff);
-  const timeRecordList = useAppSelector(selectTimeRecordList);
-  const dispatch = useAppDispatch();
   const now = dayjs();
 
+  const { data: staff } = useAppSelector(selectLoginStaff);
+  const { data: timeRecords } = useAppSelector(selectTimeRecordList);
+
+  const dispatch = useAppDispatch();
   useEffect(() => {
-    if (!staff.data) return;
+    if (!staff) return;
+
     void dispatch(
       fetchTimeRecordList({
-        staffId: staff.data.staffId,
+        staffId: staff.staffId,
         targetFromWorkDate: now.subtract(30, "d"),
         targetToWorkDate: now,
       })
@@ -27,39 +29,37 @@ const AttendanceTable = () => {
   }, []);
 
   return (
-    <div style={{ height: "93vh", width: "100%" }}>
-      <DataGrid
-        rows={timeRecordList.data}
-        columns={GetColumns()}
-        checkboxSelection
-        slots={{
-          noRowsOverlay: () => <div>データがありません</div>,
-          footer: () => null,
-        }}
-        sx={{
-          "& .super-app-theme--saturday": {
-            backgroundColor: "#2ACEDB",
+    <DataGrid
+      rows={timeRecords}
+      columns={GetColumns()}
+      checkboxSelection
+      slots={{
+        noRowsOverlay: () => <div>データがありません</div>,
+        footer: () => null,
+      }}
+      sx={{
+        "& .super-app-theme--saturday": {
+          backgroundColor: "#2ACEDB",
+        },
+        "& .super-app-theme--sunday": {
+          backgroundColor: "#B33D47",
+          color: "white",
+          "&:hover": {
+            color: "black",
           },
-          "& .super-app-theme--sunday": {
-            backgroundColor: "#B33D47",
-            color: "white",
-            "&:hover": {
-              color: "black",
-            },
-          },
-        }}
-        getRowClassName={(params: { row: { dayOfWeek: string } }) => {
-          switch (params.row.dayOfWeek) {
-            case "土":
-              return "super-app-theme--saturday";
-            case "日":
-              return "super-app-theme--sunday";
-            default:
-              return "super-app-theme--default";
-          }
-        }}
-      />
-    </div>
+        },
+      }}
+      getRowClassName={(params: { row: { dayOfWeek: string } }) => {
+        switch (params.row.dayOfWeek) {
+          case "土":
+            return "super-app-theme--saturday";
+          case "日":
+            return "super-app-theme--sunday";
+          default:
+            return "super-app-theme--default";
+        }
+      }}
+    />
   );
 };
 export default AttendanceTable;

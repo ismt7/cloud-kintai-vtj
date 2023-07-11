@@ -1,31 +1,18 @@
 import { Box, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { useAppDispatchV2, useAppSelectorV2 } from "../../../app/hooks";
-import {
-  fetchAttendance,
-  selectAttendanceEditor,
-} from "../attendanceEditorSlice";
+import { useAppSelectorV2 } from "../../../app/hooks";
+import { selectAttendanceEditor } from "../attendanceEditorSlice";
 
 export default function WorkDateItem() {
-  const dispatch = useAppDispatchV2();
-  const attendanceEditorData = useAppSelectorV2(selectAttendanceEditor);
-  const { attendance } = attendanceEditorData;
-  const [workDate, setWorkDate] = useState<dayjs.Dayjs | undefined>(undefined);
+  const { attendance } = useAppSelectorV2(selectAttendanceEditor);
+  const [workDate, setWorkDate] = useState<dayjs.Dayjs | undefined>(
+    attendance?.workDate ? dayjs(attendance.workDate) : undefined
+  );
 
   useEffect(() => {
-    void dispatch(
-      fetchAttendance({
-        staffId: 999,
-        workDate: Number(dayjs().format("YYYYMMDD")),
-      })
-    );
-  }, []);
-
-  useEffect(() => {
-    if (attendance) {
-      setWorkDate(dayjs(attendance.workDate));
-    }
+    if (!attendance) return;
+    setWorkDate(attendance?.workDate ? dayjs(attendance.workDate) : undefined);
   }, [attendance]);
 
   return (

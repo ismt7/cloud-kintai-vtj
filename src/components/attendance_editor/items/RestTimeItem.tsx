@@ -6,128 +6,131 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useAppDispatchV2, useAppSelectorV2 } from "../../../app/hooks";
-import { fetchRests, selectAttendanceEditor } from "../attendanceEditorSlice";
-
-interface RestTime {
-  startTime?: dayjs.Dayjs;
-  endTime?: dayjs.Dayjs;
-  totalTime: string;
-}
+import { OriginRest } from "../../../lib/time_record/FetchRest";
+import { selectAttendanceEditor } from "../attendanceEditorSlice";
+import { updateRests } from "../mocks/MockReducer";
 
 export default function RestTimeItem() {
-  const dispatch = useAppDispatchV2();
-  const attendanceEditorData = useAppSelectorV2(selectAttendanceEditor);
-  const { rests } = attendanceEditorData;
+  const { rests } = useAppSelectorV2(selectAttendanceEditor);
 
-  const [restTimes, setRestTimes] = useState<RestTime[]>([]);
-
-  useEffect(() => {
-    void dispatch(
-      fetchRests({
-        staffId: 999,
-        workDate: Number(dayjs().format("YYYYMMDD")),
-      })
-    );
-  }, []);
+  const [restTimes, setRestTimes] = useState<OriginRest[]>(rests ?? []);
+  const [totalRestTimes, setTotalRestTimes] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!rests) {
-      return;
-    }
+    setRestTimes(rests ?? []);
 
-    const updatedRests = rests.map((rest) => {
+    // 合計時間を計算
+    const newTotalRestTimes = rests?.map((rest) => {
       const { startTime, endTime } = rest;
+      if (!startTime || !endTime) {
+        return "0";
+      }
 
-      const totalTime = (() => {
-        if (!startTime || !endTime) {
-          return "0";
-        }
-
-        const diff = dayjs(endTime).diff(dayjs(startTime), "hour", true);
-        return diff.toFixed(1);
-      })();
-
-      return {
-        startTime: dayjs(startTime),
-        endTime: dayjs(endTime),
-        totalTime,
-      };
+      const diff = dayjs(endTime).diff(startTime, "hour", true);
+      return diff.toFixed(1);
     });
-
-    setRestTimes(updatedRests);
+    setTotalRestTimes(newTotalRestTimes ?? []);
   }, [rests]);
 
-  const formItems = restTimes.map((restTime, index) => (
-    <Box key={index}>
-      <Stack direction="row" spacing={2} alignItems={"center"}>
-        <Box>
-          <Stack direction="row" spacing={1} alignItems={"center"}>
-            <Box>
-              <TimePicker
-                label="開始時刻"
-                ampm={false}
-                value={restTime.startTime}
-                viewRenderers={{
-                  hours: renderTimeViewClock,
-                  minutes: renderTimeViewClock,
-                }}
-                onChange={(date) => {
-                  const newRestTimes = [...restTimes];
-                  newRestTimes[index].startTime = date ?? undefined;
+  const dispatch = useAppDispatchV2();
+  useEffect(() => {
+    void dispatch(updateRests(restTimes));
+  }, [restTimes]);
 
-                  if (date && restTime.endTime) {
-                    const diff = restTime.endTime.diff(date, "hour", true);
-                    newRestTimes[index].totalTime = diff.toFixed(1);
-                  }
+  const formItems = restTimes.map((restTime, index) => {
+    const { startTime, endTime } = restTime;
 
-                  setRestTimes(newRestTimes);
-                }}
-              />
-            </Box>
-            <Box>～</Box>
-            <Box>
-              <TimePicker
-                label="終了時刻"
-                ampm={false}
-                value={restTime.endTime}
-                viewRenderers={{
-                  hours: renderTimeViewClock,
-                  minutes: renderTimeViewClock,
-                }}
-                onChange={(date) => {
-                  const newRestTimes = [...restTimes];
-                  newRestTimes[index].endTime = date ?? undefined;
+    return (
+      <Box key={index}>
+        <Stack direction="row" spacing={2} alignItems={"center"}>
+          <Box>
+            <Stack direction="row" spacing={1} alignItems={"center"}>
+              <Box>
+                <TimePicker
+                  label="開始時刻"
+                  ampm={false}
+                  value={startTime ? dayjs(startTime) : null}
+                  viewRenderers={{
+                    hours: renderTimeViewClock,
+                    minutes: renderTimeViewClock,
+                  }}
+                  onChange={(newStartTime) => {
+                    const newRestTimes = [...restTimes];
+                    newRestTimes[index] = {
+                      ...newRestTimes[index],
+                      startTime: newStartTime?.toISOString() ?? undefined,
+                    };
+                    setRestTimes(newRestTimes);
 
-                  if (date && restTime.startTime) {
-                    const diff = date.diff(restTime.startTime, "hour", true);
-                    newRestTimes[index].totalTime = diff.toFixed(1);
-                  }
+                    // 合計時間を計算
+                    if (newStartTime && endTime) {
+                      const newTotalRestTimes = [...totalRestTimes];
+                      const diff = dayjs(endTime).diff(
+                        newStartTime,
+                        "hour",
+                        true
+                      );
+                      newTotalRestTimes[index] = diff.toFixed(1);
+                      setTotalRestTimes(newTotalRestTimes);
+                    }
+                  }}
+                />
+              </Box>
+              <Box>～</Box>
+              <Box>
+                <TimePicker
+                  label="終了時刻"
+                  ampm={false}
+                  value={endTime ? dayjs(endTime) : null}
+                  viewRenderers={{
+                    hours: renderTimeViewClock,
+                    minutes: renderTimeViewClock,
+                  }}
+                  onChange={(newEndTime) => {
+                    const newRestTimes = [...restTimes];
+                    newRestTimes[index] = {
+                      ...newRestTimes[index],
+                      endTime: newEndTime?.toISOString() ?? undefined,
+                    };
+                    setRestTimes(newRestTimes);
 
-                  setRestTimes(newRestTimes);
-                }}
-              />
-            </Box>
-          </Stack>
-        </Box>
-        <Box>
-          <IconButton
-            aria-label="staff-search"
-            onClick={() => {
-              const newRestTimes = [...restTimes];
-              newRestTimes.splice(index, 1);
-              setRestTimes(newRestTimes);
-            }}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </Box>
-        <Box sx={{ flexGrow: 2 }} textAlign={"right"}>
-          {restTime.totalTime}時間
-        </Box>
-      </Stack>
-    </Box>
-  ));
+                    // 合計時間を計算
+                    if (newEndTime && startTime) {
+                      const newTotalRestTimes = [...totalRestTimes];
+                      const diff = dayjs(newEndTime).diff(
+                        startTime,
+                        "hour",
+                        true
+                      );
+                      newTotalRestTimes[index] = diff.toFixed(1);
+                      setTotalRestTimes(newTotalRestTimes);
+                    }
+                  }}
+                />
+              </Box>
+            </Stack>
+          </Box>
+          <Box>
+            <IconButton
+              aria-label="staff-search"
+              onClick={() => {
+                const newRestTimes = [...restTimes];
+                newRestTimes.splice(index, 1);
+                setRestTimes(newRestTimes);
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+          <Box sx={{ flexGrow: 2 }} textAlign={"right"}>
+            {totalRestTimes[index] ?? "0.0"}時間
+          </Box>
+        </Stack>
+      </Box>
+    );
+  });
 
   return (
     <Stack direction="row">
@@ -139,11 +142,15 @@ export default function RestTimeItem() {
             <IconButton
               aria-label="staff-search"
               onClick={() => {
-                const newRestTimes = [...restTimes];
+                const { targetWorkDate, targetStaffId } = useParams();
+
+                const newRestTimes = [...(restTimes ?? [])];
                 newRestTimes.push({
+                  restTimeId: 0,
+                  staffId: Number(targetStaffId),
+                  workDate: targetWorkDate,
                   startTime: undefined,
                   endTime: undefined,
-                  totalTime: "0",
                 });
                 setRestTimes(newRestTimes);
               }}

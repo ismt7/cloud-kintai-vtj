@@ -4,15 +4,19 @@ import {
   testAttendanceEditorSlice,
 } from "../attendanceEditorSlice";
 
+const testReducer = testAttendanceEditorSlice({
+  status: AttendanceEditorStatus.NOT_PROCESSING,
+  staff: undefined,
+  attendance: undefined,
+  rests: undefined,
+});
+
 export default function GetStoreMock() {
   return configureStore({
     reducer: {
-      attendanceEditorReducer: testAttendanceEditorSlice({
-        status: AttendanceEditorStatus.NOT_PROCESSING,
-        staff: undefined,
-        attendance: undefined,
-        rests: undefined,
-      }),
+      attendanceEditorReducer: testReducer.reducer,
     },
   });
 }
+
+export const { updateAttendance, updateRests } = testReducer.actions;

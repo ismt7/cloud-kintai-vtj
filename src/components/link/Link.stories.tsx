@@ -28,7 +28,7 @@ export default meta;
 type Story = StoryObj<typeof Link>;
 
 export const Default: Story = {
-  storyName: "デフォルト",
+  name: "デフォルト",
   args: {
     label: "リンク",
   },

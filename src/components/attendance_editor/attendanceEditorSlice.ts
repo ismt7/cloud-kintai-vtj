@@ -2,6 +2,7 @@ import {
   ActionReducerMapBuilder,
   createAsyncThunk,
   createSlice,
+  PayloadAction,
 } from "@reduxjs/toolkit";
 import {
   AttendanceApi,
@@ -95,6 +96,21 @@ export const fetchRests = createAsyncThunk(
   }
 );
 
+const getReducers = () => ({
+  updateAttendance: (
+    state: AttendanceEditorState,
+    action: PayloadAction<OriginAttendance>
+  ) => {
+    state.attendance = action.payload;
+  },
+  updateRests: (
+    state: AttendanceEditorState,
+    action: PayloadAction<OriginRest[]>
+  ) => {
+    state.rests = action.payload;
+  },
+});
+
 const getExtraReducers = (
   builder: ActionReducerMapBuilder<AttendanceEditorState>
 ) => {
@@ -141,10 +157,11 @@ const getExtraReducers = (
 const attendanceEditorSlice = createSlice({
   name: "attendanceEditor",
   initialState,
-  reducers: {},
+  reducers: getReducers(),
   extraReducers: (builder) => getExtraReducers(builder),
 });
 
+export const { updateAttendance } = attendanceEditorSlice.actions;
 export default attendanceEditorSlice.reducer;
 
 export const testAttendanceEditorSlice = (
@@ -153,9 +170,9 @@ export const testAttendanceEditorSlice = (
   createSlice({
     name: "attendanceEditor",
     initialState: customInitialState,
-    reducers: {},
+    reducers: getReducers(),
     extraReducers: (builder) => getExtraReducers(builder),
-  }).reducer;
+  });
 
 export const selectAttendanceEditor = (state: RootState) =>
   state.attendanceEditorReducer;

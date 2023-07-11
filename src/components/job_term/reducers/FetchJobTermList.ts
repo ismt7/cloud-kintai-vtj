@@ -1,16 +1,21 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 
-import { Configuration, MasterApi } from "../../api";
+import { Configuration, MasterApi } from "../../../api";
 
+import { GetConfiguration } from "../../time_recorder/TimeRecorderAPI";
 import {
   mappedOriginWorkPeriodPerMonth,
   OriginWorkPeriodPerMonth,
 } from "./FetchWorkPeriodPerMonth";
 
+dayjs.extend(utc);
+
 export enum JobTermStatus {
   NO_REGISTER = "NO_REGISTER",
-  REGISTERED = "REGISTERED",
+  NO_SYNCED = "NO_SYNCED",
+  SYNCED = "REGISTERED",
 }
 
 export interface JobTermList {
@@ -51,18 +56,19 @@ const fetchJobTermList = createAsyncThunk(
   }: {
     targetDate: dayjs.Dayjs;
   }): Promise<JobTermList[]> => {
-    const conf = new Configuration({
-      basePath: process.env.REACT_APP_BASE_PATH,
-    });
+    // dayjs()で月初を取得
+    const beginOfMonth = dayjs(
+      new Date(targetDate.year(), targetDate.month(), 1)
+    ).format("YYYYMMDD");
 
     const workPeriods = await fetchWorkPeriodPerMonth(
-      conf,
-      dayjs(new Date(targetDate.year(), targetDate.month(), 1)).format(
-        "YYYYMMDD"
-      )
+      GetConfiguration(),
+      beginOfMonth
     )
       .then((r) => r)
       .catch(() => null);
+
+    console.log("workPeriods", workPeriods);
 
     if (!workPeriods) return [];
 
@@ -72,9 +78,11 @@ const fetchJobTermList = createAsyncThunk(
     const jobTermList: JobTermList[] = [];
     for (let targetYear = startYear; targetYear <= endYear; targetYear += 1) {
       for (let targetMonth = 0; targetMonth < 12; targetMonth += 1) {
-        const defaultTargetMonth = dayjs(
-          new Date(targetYear, targetMonth, 1)
-        ).format("YYYY-MM-DD");
+        const defaultTargetMonth = dayjs()
+          .year(targetYear)
+          .month(targetMonth)
+          .day(1)
+          .format("YYYYMM");
 
         const defaultJobStartDate = dayjs(
           new Date(targetYear, targetMonth, 1)
@@ -85,22 +93,19 @@ const fetchJobTermList = createAsyncThunk(
         ).format("YYYY-MM-DD");
 
         const matchWorkPeriod = workPeriods?.find(
-          (workPeriod) =>
-            dayjs(workPeriod.targetMonth).format("YYYY-MM-DD") ===
-            defaultTargetMonth
+          (workPeriod) => workPeriod.targetMonth === defaultTargetMonth
         );
 
         const newJobTerm = ((): JobTermList => {
           if (matchWorkPeriod) {
             return {
               id: targetMonth,
-              targetMonth:
-                dayjs(matchWorkPeriod.targetMonth).format("YYYY-MM-DD") ?? "",
+              targetMonth: matchWorkPeriod.targetMonth ?? defaultTargetMonth,
               jobStartDate:
                 dayjs(matchWorkPeriod.jobStartDate).format("YYYY-MM-DD") ?? "",
               jobEndDate:
                 dayjs(matchWorkPeriod.jobEndDate).format("YYYY-MM-DD") ?? "",
-              status: JobTermStatus.REGISTERED,
+              status: JobTermStatus.SYNCED,
             };
           }
 

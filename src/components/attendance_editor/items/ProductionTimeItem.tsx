@@ -1,48 +1,29 @@
 import { Box, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { useAppDispatchV2, useAppSelectorV2 } from "../../../app/hooks";
-import {
-  fetchAttendance,
-  fetchRests,
-  selectAttendanceEditor,
-} from "../attendanceEditorSlice";
+import { useAppSelectorV2 } from "../../../app/hooks";
+import { selectAttendanceEditor } from "../attendanceEditorSlice";
 
 export default function ProductionTimeItem() {
-  const dispatch = useAppDispatchV2();
-  const attendanceEditorData = useAppSelectorV2(selectAttendanceEditor);
-  const { attendance, rests } = attendanceEditorData;
-
-  const [productionTime, setProductionTime] = useState<string>("0");
-
-  useEffect(() => {
-    void dispatch(
-      fetchAttendance({
-        staffId: 999,
-        workDate: Number(dayjs().format("YYYYMMDD")),
-      })
-    );
-
-    void dispatch(
-      fetchRests({
-        staffId: 999,
-        workDate: Number(dayjs().format("YYYYMMDD")),
-      })
-    );
-  }, []);
+  const { attendance, rests } = useAppSelectorV2(selectAttendanceEditor);
+  const [productionTime, setProductionTime] = useState<string>("0.0");
 
   useEffect(() => {
     if (!attendance || !rests) return;
+
     const productionTotalTime = dayjs(attendance.endTime).diff(
       dayjs(attendance.startTime),
-      "hour"
+      "hour",
+      true
     );
+
     const restTotalTime = rests.reduce(
-      (acc, cur) => acc + dayjs(cur.endTime).diff(dayjs(cur.startTime), "hour"),
+      (acc, cur) =>
+        acc + dayjs(cur.endTime).diff(dayjs(cur.startTime), "hour", true),
       0
     );
 
-    setProductionTime(String(productionTotalTime - restTotalTime));
+    setProductionTime((productionTotalTime - restTotalTime).toFixed(1));
   }, [attendance, rests]);
 
   return (

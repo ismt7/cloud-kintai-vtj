@@ -110,6 +110,18 @@ const Header = ({ signIn, signOut }: HeaderProps) => {
                     }}
                   />
                 </Box>
+                <Box>
+                  <Link
+                    label="マスタ管理"
+                    href="/admin/master"
+                    sx={{
+                      display: "block",
+                      height: 1,
+                      lineHeight: "32px",
+                      px: 1,
+                    }}
+                  />
+                </Box>
               </>
             )}
           </Stack>

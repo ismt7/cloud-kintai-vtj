@@ -4,35 +4,36 @@ import { Box, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 
 import { useAppDispatchV2, useAppSelectorV2 } from "../../app/hooks";
-import { LoginStaffStatus, selectLoginStaff } from "../../lib/reducers/loginStaffReducer";
-import Button from "../button/Button";
+import {
+  LoginStaffStatus,
+  selectLoginStaff,
+} from "../../lib/reducers/loginStaffReducer";
 import Clock from "../clock/Clock";
 
+import ClockInItem from "./items/ClockInItem";
+import ClockOutItem from "./items/ClockOutItem";
+import GoDirectlyItem from "./items/GoDirectlyItem";
+import RestEndItem from "./items/RestEndItem";
+import RestStartItem from "./items/RestStartItem";
+import ReturnDirectly from "./items/ReturnDirectlyItem";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
-import {
-  fetchCurrentData,
-  handleClickClockInButton,
-  handleClickClockOutButton,
-  handleClickRestEndButton,
-  handleClickRestStartButton,
-  selectTimeRecorder,
-} from "./TimeRecorderSlice";
-import { WorkStatusCodes } from "./WorkStatusCodes";
+import { fetchCurrentData, selectTimeRecorder } from "./TimeRecorderSlice";
 
 const TimeRecorder = () => {
-  const timeRecorderData = useAppSelectorV2(selectTimeRecorder);
+  const { workStatus } = useAppSelectorV2(selectTimeRecorder);
+  const { data: staff, status: staffStateStatus } =
+    useAppSelectorV2(selectLoginStaff);
+
   const dispatch = useAppDispatchV2();
-  const staff = useAppSelectorV2(selectLoginStaff);
-
   useEffect(() => {
-    if (staff.status === LoginStaffStatus.ERROR || !staff.data) return;
+    if (staffStateStatus === LoginStaffStatus.ERROR || !staff) {
+      return;
+    }
 
-    void dispatch(
-      fetchCurrentData({
-        staffId: staff.data?.staffId,
-        workDate: Number(dayjs().format("YYYYMMDD")),
-      })
-    );
+    const now = dayjs();
+    const workDate = Number(now.format("YYYYMMDD"));
+
+    void dispatch(fetchCurrentData({ staffId: staff.staffId, workDate }));
   }, []);
 
   return (
@@ -40,7 +41,7 @@ const TimeRecorder = () => {
       <Stack spacing={3}>
         <Box>
           <Typography variant="h6" textAlign="center">
-            {timeRecorderData.workStatus.text}
+            {workStatus.text}
           </Typography>
         </Box>
         <Box>
@@ -54,52 +55,10 @@ const TimeRecorder = () => {
             justifyContent="space-evenly"
           >
             <Box>
-              <Button
-                color="clock_in"
-                label="勤務開始"
-                onClick={() => {
-                  void dispatch(
-                    handleClickClockInButton({
-                      staffId: staff.data?.staffId,
-                      goDirectlyFlag: false,
-                    })
-                  );
-                }}
-                size="large"
-                variant={
-                  timeRecorderData.workStatus.code ===
-                  WorkStatusCodes.BEFORE_WORK
-                    ? "outlined"
-                    : "contained"
-                }
-                disabled={
-                  timeRecorderData.workStatus.code !==
-                  WorkStatusCodes.BEFORE_WORK
-                }
-              />
+              <ClockInItem staffId={staff?.staffId} workStatus={workStatus} />
             </Box>
             <Box>
-              <Button
-                color="clock_out"
-                label="勤務終了"
-                onClick={() => {
-                  void dispatch(
-                    handleClickClockOutButton({
-                      staffId: staff.data?.staffId,
-                      returnDirectlyFlag: false,
-                    })
-                  );
-                }}
-                size="large"
-                variant={
-                  timeRecorderData.workStatus.code === WorkStatusCodes.WORKING
-                    ? "outlined"
-                    : "contained"
-                }
-                disabled={
-                  timeRecorderData.workStatus.code !== WorkStatusCodes.WORKING
-                }
-              />
+              <ClockOutItem staffId={staff?.staffId} workStatus={workStatus} />
             </Box>
           </Stack>
         </Box>
@@ -113,41 +72,15 @@ const TimeRecorder = () => {
             <Box>
               <Stack direction="row" spacing={1}>
                 <Box>
-                  <Button
-                    color="clock_in"
-                    label="直行"
-                    onClick={() => {
-                      void dispatch(
-                        handleClickClockInButton({
-                          staffId: staff.data?.staffId,
-                          goDirectlyFlag: true,
-                        })
-                      );
-                    }}
-                    variant="text"
-                    disabled={
-                      timeRecorderData.workStatus.code !==
-                      WorkStatusCodes.BEFORE_WORK
-                    }
+                  <GoDirectlyItem
+                    staffId={staff?.staffId}
+                    workStatus={workStatus}
                   />
                 </Box>
                 <Box>
-                  <Button
-                    color="clock_out"
-                    label="直帰"
-                    onClick={() => {
-                      void dispatch(
-                        handleClickClockOutButton({
-                          staffId: staff.data?.staffId,
-                          returnDirectlyFlag: true,
-                        })
-                      );
-                    }}
-                    variant="text"
-                    disabled={
-                      timeRecorderData.workStatus.code !==
-                      WorkStatusCodes.WORKING
-                    }
+                  <ReturnDirectly
+                    staffId={staff?.staffId}
+                    workStatus={workStatus}
                   />
                 </Box>
               </Stack>
@@ -155,39 +88,15 @@ const TimeRecorder = () => {
             <Box>
               <Stack direction="row" spacing={1}>
                 <Box>
-                  <Button
-                    color="rest"
-                    label="休憩開始"
-                    onClick={() => {
-                      void dispatch(
-                        handleClickRestStartButton({
-                          staffId: staff.data?.staffId,
-                        })
-                      );
-                    }}
-                    variant="text"
-                    disabled={
-                      timeRecorderData.workStatus.code !==
-                      WorkStatusCodes.WORKING
-                    }
+                  <RestStartItem
+                    staffId={staff?.staffId}
+                    workStatus={workStatus}
                   />
                 </Box>
                 <Box>
-                  <Button
-                    color="rest"
-                    label="休憩終了"
-                    onClick={() => {
-                      void dispatch(
-                        handleClickRestEndButton({
-                          staffId: staff.data?.staffId,
-                        })
-                      );
-                    }}
-                    variant="text"
-                    disabled={
-                      timeRecorderData.workStatus.code !==
-                      WorkStatusCodes.RESTING
-                    }
+                  <RestEndItem
+                    staffId={staff?.staffId}
+                    workStatus={workStatus}
                   />
                 </Box>
               </Stack>
@@ -195,7 +104,7 @@ const TimeRecorder = () => {
           </Stack>
         </Box>
         <Box>
-          <TimeRecorderRemarks staffId={staff.data?.staffId} />
+          <TimeRecorderRemarks staffId={staff?.staffId} />
         </Box>
       </Stack>
     </Box>

@@ -21,7 +21,7 @@ export default meta;
 type Story = StoryObj<typeof Button>;
 
 export const Default: Story = {
-  storyName: "デフォルト",
+  name: "デフォルト",
   args: { label: "ボタン" },
   parameters: {
     docs: {
@@ -33,7 +33,7 @@ export const Default: Story = {
 };
 
 export const Save: Story = {
-  storyName: "保存",
+  name: "保存",
   args: {
     color: "primary",
     label: "保存",
@@ -48,7 +48,7 @@ export const Save: Story = {
 };
 
 export const Cancel: Story = {
-  storyName: "キャンセル",
+  name: "キャンセル",
   args: {
     color: "cancel",
     label: "キャンセル",
@@ -76,7 +76,7 @@ export const Disabled: Story = {
 };
 
 export const ClockIn: Story = {
-  storyName: "勤務開始",
+  name: "勤務開始",
   args: {
     variant: "outlined",
     color: "clock_in",
@@ -93,7 +93,7 @@ export const ClockIn: Story = {
 };
 
 export const ClockOut: Story = {
-  storyName: "勤務終了",
+  name: "勤務終了",
   args: {
     variant: "outlined",
     color: "clock_out",
@@ -110,7 +110,7 @@ export const ClockOut: Story = {
 };
 
 export const RestStart: Story = {
-  storyName: "休憩開始",
+  name: "休憩開始",
   args: {
     variant: "text",
     color: "rest",
@@ -127,7 +127,7 @@ export const RestStart: Story = {
 };
 
 export const RestEnd: Story = {
-  storyName: "休憩終了",
+  name: "休憩終了",
   args: {
     variant: "text",
     color: "rest",
@@ -144,7 +144,7 @@ export const RestEnd: Story = {
 };
 
 export const GoDirectly: Story = {
-  storyName: "直行",
+  name: "直行",
   args: {
     variant: "text",
     color: "clock_in",
@@ -161,7 +161,7 @@ export const GoDirectly: Story = {
 };
 
 export const ReturnDirectly: Story = {
-  storyName: "直帰",
+  name: "直帰",
   args: {
     variant: "text",
     color: "clock_out",
@@ -178,7 +178,7 @@ export const ReturnDirectly: Story = {
 };
 
 export const Login: Story = {
-  storyName: "ログイン",
+  name: "ログイン",
   args: {
     color: "login",
     variant: "outlined",
@@ -196,7 +196,7 @@ export const Login: Story = {
 };
 
 export const Logout: Story = {
-  storyName: "ログアウト",
+  name: "ログアウト",
   args: {
     color: "logout",
     variant: "contained",
@@ -212,7 +212,7 @@ export const Logout: Story = {
 };
 
 export const EditSmall: Story = {
-  storyName: "編集(一覧用)",
+  name: "編集(一覧用)",
   args: {
     color: "primary",
     size: "small",

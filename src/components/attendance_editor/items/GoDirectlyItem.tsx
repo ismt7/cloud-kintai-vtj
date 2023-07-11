@@ -1,31 +1,19 @@
 import { Box, Checkbox, Stack } from "@mui/material";
-import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useAppDispatchV2, useAppSelectorV2 } from "../../../app/hooks";
-import {
-  fetchAttendance,
-  selectAttendanceEditor,
-} from "../attendanceEditorSlice";
+import { selectAttendanceEditor } from "../attendanceEditorSlice";
+import { updateAttendance } from "../mocks/MockReducer";
 
 export default function GoDirectlyItem() {
-  const dispatch = useAppDispatchV2();
-  const attendanceEditorData = useAppSelectorV2(selectAttendanceEditor);
-  const { attendance } = attendanceEditorData;
-  const [goDirectly, setGoDirectly] = useState<boolean>(false);
+  const { attendance } = useAppSelectorV2(selectAttendanceEditor);
+  const [goDirectly, setGoDirectly] = useState<boolean>(
+    attendance?.goDirectlyFlag ?? false
+  );
 
   useEffect(() => {
-    void dispatch(
-      fetchAttendance({
-        staffId: 999,
-        workDate: Number(dayjs().format("YYYYMMDD")),
-      })
-    );
-  }, []);
+    if (!attendance) return;
 
-  useEffect(() => {
-    if (attendance) {
-      setGoDirectly(attendance.goDirectlyFlag);
-    }
+    setGoDirectly(attendance?.goDirectlyFlag ?? false);
   }, [attendance]);
 
   return (
@@ -34,7 +22,19 @@ export default function GoDirectlyItem() {
       <Box>
         <Checkbox
           checked={goDirectly}
-          onChange={() => setGoDirectly(!goDirectly)}
+          onChange={() => {
+            if (!attendance) return;
+
+            setGoDirectly(!goDirectly);
+
+            const dispatch = useAppDispatchV2();
+            void dispatch(
+              updateAttendance({
+                ...attendance,
+                goDirectlyFlag: !goDirectly,
+              })
+            );
+          }}
         />
       </Box>
     </Stack>

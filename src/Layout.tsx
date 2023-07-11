@@ -32,7 +32,7 @@ function Layout() {
         <Box>
           <Header signIn={signInHandler} signOut={signOutHandler} />
         </Box>
-        <Box sx={{ height: 1 }}>
+        <Box sx={{ flexGrow: 2 }}>
           <Outlet />
         </Box>
         <Box>

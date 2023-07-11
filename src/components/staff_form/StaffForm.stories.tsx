@@ -8,7 +8,6 @@ import {
   putStaffHandler200,
 } from "../time_recorder/mocks/ApiMocks";
 
-import StaffForm from "./StaffForm";
 import {
   GetStaffAdminCreateStaffInteraction,
   GetStaffAdminUpdateStaffInteraction,
@@ -22,6 +21,7 @@ import {
   GetStoreMockForSystemAdminCreateStaff,
   GetStoreMockForSystemAdminUpdateStaff,
 } from "./mocks/SystemAdminMock";
+import StaffForm from "./StaffForm";
 
 const meta: Meta<typeof StaffForm> = {
   component: StaffForm,
@@ -50,7 +50,7 @@ export default meta;
 type Story = StoryObj<typeof StaffForm>;
 
 export const SystemAdminCreateStaff: Story = {
-  storyName: "スタッフ作成(システム管理者)",
+  name: "スタッフ作成(システム管理者)",
   render: () => (
     <Provider store={GetStoreMockForSystemAdminCreateStaff}>
       <StaffForm />
@@ -60,7 +60,7 @@ export const SystemAdminCreateStaff: Story = {
 };
 
 export const SystemAdminUpdateStaff: Story = {
-  storyName: "スタッフ更新(システム管理者)",
+  name: "スタッフ更新(システム管理者)",
   render: () => (
     <Provider store={GetStoreMockForSystemAdminUpdateStaff}>
       <StaffForm />
@@ -69,7 +69,7 @@ export const SystemAdminUpdateStaff: Story = {
 };
 
 export const StaffAdminCreateStaff: Story = {
-  storyName: "スタッフ作成(スタッフ管理者)",
+  name: "スタッフ作成(スタッフ管理者)",
   args: {},
   render: () => (
     <Provider store={GetStoreMockForStaffAdmin}>
@@ -80,7 +80,7 @@ export const StaffAdminCreateStaff: Story = {
 };
 
 export const StaffAdminUpdateStaff: Story = {
-  storyName: "スタッフ更新(スタッフ管理者)",
+  name: "スタッフ更新(スタッフ管理者)",
   args: {},
   render: () => (
     <Provider store={GetStoreMockStaffAdminUpdateStaff}>

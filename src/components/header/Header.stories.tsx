@@ -81,7 +81,7 @@ export const Default: Story = {
       </MemoryRouter>
     </Provider>
   ),
-  storyName: "デフォルト",
+  name: "デフォルト",
 };
 
 const loginMockStore = configureStore({
@@ -105,7 +105,7 @@ const loginMockStore = configureStore({
   },
 });
 export const LoggedIn: Story = {
-  storyName: "ログイン",
+  name: "ログイン",
   args: {},
   render: (args: HeaderProps) => (
     <Provider store={loginMockStore}>
@@ -117,7 +117,7 @@ export const LoggedIn: Story = {
 };
 
 export const LoggedOut: Story = {
-  storyName: "ログアウト",
+  name: "ログアウト",
   args: {},
   render: (args: HeaderProps) => (
     <Provider store={mockStore}>
@@ -162,7 +162,7 @@ const staffAdminMockStore = configureStore({
   },
 });
 export const StaffAdmin: Story = {
-  storyName: "スタッフ管理者",
+  name: "スタッフ管理者",
   args: {},
   render: (args: HeaderProps) => (
     <Provider store={staffAdminMockStore}>
@@ -208,7 +208,7 @@ const systemAdminMockStore = configureStore({
 });
 
 export const Admin: Story = {
-  storyName: "システム管理者",
+  name: "システム管理者",
   args: {},
   render: (args: HeaderProps) => (
     <Provider store={systemAdminMockStore}>

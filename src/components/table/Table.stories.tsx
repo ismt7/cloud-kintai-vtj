@@ -84,11 +84,14 @@ export const Primary = {
     msw: {
       handlers: [
         rest.get(
-          `${REACT_APP_BASE_PATH}/attendances/1/${fromDate.format(
+          `${REACT_APP_BASE_PATH}/attendances/:staffId/${fromDate.format(
             "YYYYMMDD"
           )}/${now.format("YYYYMMDD")}`,
-          (req, res, ctx) =>
-            res(
+          (req, res, ctx) => {
+            const { params } = req;
+            const staffId = Number(params.staffId);
+
+            return res(
               ctx.status(200),
               ctx.json(
                 (() => {
@@ -102,7 +105,7 @@ export const Primary = {
 
                     data.push({
                       attendance_id: i + 1,
-                      staff_id: 1,
+                      staff_id: staffId,
                       work_date: targetDate.format("YYYY-MM-DD"),
                       start_time: `${targetDate.format("YYYY-MM-DD")}T09:00:00`,
                       end_time: `${targetDate.format("YYYY-MM-DD")}T18:00:00`,
@@ -114,14 +117,18 @@ export const Primary = {
                   return data;
                 })()
               )
-            )
+            );
+          }
         ),
         rest.get(
-          `${REACT_APP_BASE_PATH}/rests/1/${fromDate.format(
+          `${REACT_APP_BASE_PATH}/rests/:staffId/${fromDate.format(
             "YYYYMMDD"
           )}/${now.format("YYYYMMDD")}`,
-          (req, res, ctx) =>
-            res(
+          (req, res, ctx) => {
+            const { params } = req;
+            const staffId = Number(params.staffId);
+
+            return res(
               ctx.status(200),
               ctx.json(
                 (() => {
@@ -135,7 +142,7 @@ export const Primary = {
 
                     data.push({
                       rest_time_id: i + 1,
-                      staff_id: 1,
+                      staff_id: staffId,
                       work_date: targetDate.format("YYYY-MM-DD"),
                       start_time: `${targetDate.format("YYYY-MM-DD")}T12:00:00`,
                       end_time: `${targetDate.format("YYYY-MM-DD")}T13:00:00`,
@@ -144,7 +151,8 @@ export const Primary = {
                   return data;
                 })()
               )
-            )
+            );
+          }
         ),
       ],
     },

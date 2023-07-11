@@ -1,6 +1,6 @@
 import { MemoryRouter } from "react-router-dom";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 
 import {
   getAttendancesHandler200,
@@ -15,31 +15,32 @@ import {
 
 import Resist from "./Resist";
 
-export default {
-  title: "Page/Resist",
+const meta: Meta<typeof Resist> = {
   component: Resist,
   parameters: {
-    layout: "fullscreen",
+    msw: {
+      handlers: [
+        getAttendancesHandler200(),
+        getRestHandler200(),
+        postAttendancesClockInHandler200(),
+        patchAttendancesClockOutHandler200(),
+        getStaffHandler200(),
+        postRestStartHandler200(),
+        patchRestEndHandler200(),
+        patchRemarksHandler200(),
+      ],
+    },
   },
-  decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
-} as ComponentMeta<typeof Resist>;
+  render: () => (
+    <MemoryRouter>
+      <Resist />
+    </MemoryRouter>
+  ),
+};
 
-const Template: ComponentStory<typeof Resist> = (args) => <Resist {...args} />;
+export default meta;
+type Story = StoryObj<typeof Resist>;
 
-export const ResistPage = Template.bind({});
-ResistPage.storyName = "勤怠打刻ページ";
-ResistPage.args = {};
-ResistPage.parameters = {
-  msw: {
-    handlers: [
-      getAttendancesHandler200(),
-      getRestHandler200(),
-      postAttendancesClockInHandler200(),
-      patchAttendancesClockOutHandler200(),
-      getStaffHandler200(),
-      postRestStartHandler200(),
-      patchRestEndHandler200(),
-      patchRemarksHandler200(),
-    ],
-  },
+export const ResistPage: Story = {
+  name: "勤怠打刻ページ",
 };

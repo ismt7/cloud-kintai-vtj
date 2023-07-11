@@ -23,13 +23,18 @@ import fetchStaffList from "../../lib/staff/FetchStaffList";
 import Button from "../button/Button";
 
 const DownloadForm = () => {
-  const staffs = useAppSelectorV2(selectStaffList);
+  const { data: staffs } = useAppSelectorV2(selectStaffList);
   const dispatch = useAppDispatchV2();
 
-  const [startDate, setStartDate] = useState<Dayjs | null>(dayjs("2023-01-01"));
-  const [endDate, setEndDate] = useState<Dayjs | null>(dayjs("2023-01-31"));
-  const [aggregateMonth, setAggregateMonth] = useState(202301);
-  const [targetStaffs, setTargetStaffs] = useState<Staff[]>(staffs.data);
+  const now = dayjs();
+  const defaultStartDate = now.subtract(30, "day");
+  const defaultEndDate = now;
+  const defaultAggregateMonth = Number(now.format("YYYYMM"));
+
+  const [startDate, setStartDate] = useState<Dayjs | null>(defaultStartDate);
+  const [endDate, setEndDate] = useState<Dayjs | null>(defaultEndDate);
+  const [aggregateMonth, setAggregateMonth] = useState(defaultAggregateMonth);
+  const [targetStaffs, setTargetStaffs] = useState<Staff[]>(staffs);
 
   const handleStartDateChange = (newValue: Dayjs | null) => {
     setStartDate(newValue);
@@ -52,7 +57,7 @@ const DownloadForm = () => {
   }, []);
 
   useEffect(() => {
-    setTargetStaffs(staffs.data);
+    setTargetStaffs(staffs);
   }, [staffs]);
 
   return (

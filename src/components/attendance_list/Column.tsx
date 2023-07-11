@@ -1,6 +1,6 @@
-import { GridColDef } from "@mui/x-data-grid";
+import { GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 
-import Button from "../button/Button";
+import EditIcon from "@mui/icons-material/Edit";
 
 export default function GetColumns(): GridColDef[] {
   return [
@@ -55,14 +55,17 @@ export default function GetColumns(): GridColDef[] {
       headerAlign: "center",
     },
     {
-      field: "editAction",
-      headerName: "操作",
-      align: "center",
+      field: "actions",
+      type: "actions",
       sortable: false,
-      headerAlign: "center",
-      renderCell: () => (
-        <Button color="primary" size="small" label="編集" onClick={() => {}} />
-      ),
+      getActions: () => [
+        <GridActionsCellItem
+          key="edit"
+          icon={<EditIcon />}
+          onClick={() => {}}
+          label="編集"
+        />,
+      ],
     },
   ];
 }

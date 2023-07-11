@@ -25,13 +25,13 @@ const memoryStorage: MemoryStorage = {};
 
 export const getAttendancesHandler200 = () =>
   rest.get(
-    `${REACT_APP_BASE_PATH}/v1/attendances/${MOCK_STAFF_ID}/${today}`,
+    `${REACT_APP_BASE_PATH}/v1/attendances/:staffId/${today}`,
     (req, res, ctx) => res(ctx.status(200), ctx.json({}))
   );
 
 export const getRestHandler200 = () =>
   rest.get(
-    `${REACT_APP_BASE_PATH}/v1/rests/${MOCK_STAFF_ID}/${today}`,
+    `${REACT_APP_BASE_PATH}/v1/rests/:staffId/${today}`,
     (req, res, ctx) => res(ctx.status(200), ctx.json({}))
   );
 
@@ -159,50 +159,50 @@ export const patchRemarksHandler200 = () =>
   );
 
 export const getStaffHandler200 = () =>
-  rest.get(
-    `${REACT_APP_BASE_PATH}/v1/staffs/email/ishimoto%40virtualtech.jp`,
-    (req, res, ctx) =>
-      res(
-        ctx.status(200),
-        ctx.json({
-          last_name: "田中",
-          first_name: "太郎",
-          mail_address: "ishimoto@virtulatech.jp",
-          icon_path: undefined,
+  rest.get(`${REACT_APP_BASE_PATH}/v1/staffs/email/:email`, (req, res, ctx) => {
+    const { params } = req;
+    const email = String(params.email);
+    return res(
+      ctx.status(200),
+      ctx.json({
+        last_name: "田中",
+        first_name: "太郎",
+        mail_address: email,
+        icon_path: undefined,
+        staff_id: MOCK_STAFF_ID,
+        staff_roles: {
+          role_id: 2,
           staff_id: MOCK_STAFF_ID,
-          staff_roles: {
-            role_id: 2,
-            staff_id: MOCK_STAFF_ID,
-            role: {
-              role_name: "スタッフ",
-            },
+          role: {
+            role_name: "スタッフ",
           },
-        })
-      )
-  );
+        },
+      })
+    );
+  });
 
 export const putStaffHandler200 = () =>
-  rest.put(
-    `${REACT_APP_BASE_PATH}/v1/staffs/${MOCK_STAFF_ID}`,
-    (req, res, ctx) =>
-      res(
-        ctx.status(200),
-        ctx.json({
-          staff_id: MOCK_STAFF_ID,
-          last_name: "田中",
-          first_name: "太郎",
-          mail_address: "tanaka2@example.com",
-          icon_path: undefined,
-          staff_roles: {
-            role_id: 2,
-            staff_id: MOCK_STAFF_ID,
-            role: {
-              role_name: "スタッフ",
-            },
+  rest.put(`${REACT_APP_BASE_PATH}/v1/staffs/:staffId`, (req, res, ctx) => {
+    const { params } = req;
+    const staffId = Number(params.staffId);
+    return res(
+      ctx.status(200),
+      ctx.json({
+        staff_id: staffId,
+        last_name: "田中",
+        first_name: "太郎",
+        mail_address: "tanaka2@example.com",
+        icon_path: undefined,
+        staff_roles: {
+          role_id: 2,
+          staff_id: staffId,
+          role: {
+            role_name: "スタッフ",
           },
-        })
-      )
-  );
+        },
+      })
+    );
+  });
 
 export const postStaffHandler200 = () =>
   rest.post(`${REACT_APP_BASE_PATH}/v1/staffs`, async (req, res, ctx) => {
@@ -228,9 +228,8 @@ export const postStaffHandler200 = () =>
   });
 
 export const deleteStaffHandler200 = () =>
-  rest.delete(
-    `${REACT_APP_BASE_PATH}/v1/staffs/${MOCK_STAFF_ID}`,
-    (req, res, ctx) => res(ctx.status(200), ctx.json(null))
+  rest.delete(`${REACT_APP_BASE_PATH}/v1/staffs/:staffId`, (req, res, ctx) =>
+    res(ctx.status(200), ctx.json(null))
   );
 
 export const getStaffList200 = () =>

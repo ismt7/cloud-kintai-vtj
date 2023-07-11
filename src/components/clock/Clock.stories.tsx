@@ -11,5 +11,5 @@ export default meta;
 type Story = StoryObj<typeof Clock>;
 
 export const Default: Story = {
-  storyName: "デフォルト",
+  name: "デフォルト",
 };

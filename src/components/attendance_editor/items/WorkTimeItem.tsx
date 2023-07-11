@@ -6,65 +6,69 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useAppDispatchV2, useAppSelectorV2 } from "../../../app/hooks";
 import {
-  fetchAttendance,
   selectAttendanceEditor,
+  updateAttendance,
 } from "../attendanceEditorSlice";
 
 export default function WorkTimeItem() {
   const dispatch = useAppDispatchV2();
-  const attendanceEditorData = useAppSelectorV2(selectAttendanceEditor);
-  const { attendance } = attendanceEditorData;
+  const { attendance } = useAppSelectorV2(selectAttendanceEditor);
 
   const [startTime, setStartTime] = useState<dayjs.Dayjs | null>(null);
   const [endTime, setEndTime] = useState<dayjs.Dayjs | null>(null);
-  const [totalTime, setTotalTime] = useState<string>("0");
+  const [totalTime, setTotalTime] = useState<string>("0.0");
 
   useEffect(() => {
-    void dispatch(
-      fetchAttendance({
-        staffId: 999,
-        workDate: Number(dayjs().format("YYYYMMDD")),
-      })
-    );
-  }, []);
-
-  useEffect(() => {
-    if (!attendance) {
-      return;
-    }
+    if (!attendance) return;
 
     const attendanceStartTime = dayjs(attendance.startTime);
-    const attendanceEndTime = dayjs(attendance.endTime);
-
     setStartTime(attendanceStartTime);
+
+    const attendanceEndTime = dayjs(attendance.endTime);
     setEndTime(attendanceEndTime);
 
-    if (attendanceStartTime && attendanceEndTime) {
-      const diff = attendanceEndTime.diff(attendanceStartTime, "hour", true);
-      setTotalTime(diff.toFixed(1));
-    }
+    // 合計時間を計算
+    if (!attendanceStartTime || !attendanceEndTime) return;
+
+    const diff = attendanceEndTime.diff(attendanceStartTime, "hour", true);
+    setTotalTime(diff.toFixed(1));
   }, [attendance]);
 
-  const handleStartTimeChange = (date: dayjs.Dayjs | null) => {
-    if (date) {
-      setStartTime(date);
+  const handleStartTimeChange = (newStartTime: dayjs.Dayjs | null) => {
+    if (!newStartTime || !attendance) return;
 
-      if (endTime) {
-        const diff = endTime.diff(date, "hour", true);
-        setTotalTime(diff.toFixed(1));
-      }
-    }
+    setStartTime(newStartTime);
+
+    void dispatch(
+      updateAttendance({
+        ...attendance,
+        startTime: newStartTime.toISOString(),
+      })
+    );
+
+    // 合計時間を計算
+    if (!endTime) return;
+    const diff = endTime.diff(newStartTime, "hour", true);
+    setTotalTime(diff.toFixed(1));
   };
 
-  const handleEndTimeChange = (date: dayjs.Dayjs | null) => {
-    if (date) {
-      setEndTime(date);
+  const handleEndTimeChange = (newEndTime: dayjs.Dayjs | null) => {
+    if (!newEndTime || !attendance) return;
 
-      if (startTime) {
-        const diff = date.diff(startTime, "hour", true);
-        setTotalTime(diff.toFixed(1));
-      }
-    }
+    setEndTime(newEndTime);
+
+    void dispatch(
+      updateAttendance({
+        ...attendance,
+        endTime: newEndTime.toISOString(),
+      })
+    );
+
+    // 合計時間を計算
+    if (!startTime) return;
+
+    const diff = newEndTime.diff(startTime, "hour", true);
+    setTotalTime(diff.toFixed(1));
   };
 
   return (

@@ -8,11 +8,13 @@ import { ThemeProvider } from "@mui/material";
 import { Provider } from "react-redux";
 
 import { store } from "./app/store";
+import JobTerm from "./components/job_term/JobTerm";
 import Layout from "./Layout";
 import { theme } from "./lib/theme";
 import AdminAttendance from "./pages/admin/AdminAttendance";
 import AdminAttendanceEditor from "./pages/admin/AdminAttendanceEditor";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminMaster from "./pages/admin/AdminMaster";
 import AdminStaff from "./pages/admin/AdminStaff";
 import List from "./pages/List";
 import Login from "./pages/Login";
@@ -20,6 +22,7 @@ import Register from "./pages/Register";
 import RequireAuth from "./pages/RequireAuth";
 import Top from "./pages/Top";
 import reportWebVitals from "./reportWebVitals";
+import AdminMasterLayout from "./stories/pages/admin/master/AdminMasterLayout";
 
 const router = createBrowserRouter([
   {
@@ -85,12 +88,30 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/admin/attendances/edit/:id",
+        path: "/admin/attendances/edit/:targetWorkDate/:targetStaffId",
         element: (
           <RequireAuth>
             <AdminAttendanceEditor />
           </RequireAuth>
         ),
+      },
+      {
+        path: "/admin/master",
+        element: <AdminMasterLayout />,
+        children: [
+          {
+            path: "/admin/master/",
+            element: (
+              <RequireAuth>
+                <AdminMaster />
+              </RequireAuth>
+            ),
+          },
+          {
+            path: "/admin/master/job_term/:targetYear",
+            element: <JobTerm />,
+          },
+        ],
       },
     ],
   },

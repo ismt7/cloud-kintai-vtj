@@ -1,11 +1,11 @@
 import { expect } from "@storybook/jest";
 import { Meta, StoryObj } from "@storybook/react";
-import { userEvent, waitFor, screen } from "@storybook/testing-library";
+import { screen, userEvent, waitFor } from "@storybook/testing-library";
 import { Provider } from "react-redux";
 
-import StaffList from "./StaffList";
 import GetStaffList200 from "./mocks/ApiMock";
 import GetDefaultStoreMock from "./mocks/ReducerMock";
+import StaffList from "./StaffList";
 
 const meta: Meta<typeof StaffList> = {
   component: StaffList,
@@ -20,7 +20,7 @@ export default meta;
 type Story = StoryObj<typeof StaffList>;
 
 export const Default: Story = {
-  storyName: "デフォルト",
+  name: "デフォルト",
   parameters: {
     msw: {
       handlers: [GetStaffList200()],

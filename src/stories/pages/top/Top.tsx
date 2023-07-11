@@ -9,11 +9,11 @@ import Header from "../../../components/header/Header";
 
 const Top: React.FC = () => (
   <Provider store={store}>
-    <Stack sx={{ height: "100vh" }}>
+    <Stack sx={{ height: "100vmax" }}>
       <Box>
         <Header />
       </Box>
-      <Box sx={{ height: 1, py: 10, px: 50 }}>
+      <Box sx={{ height: 1, py: { lg: 5, xl: 10 }, px: { lg: 5, xl: 50 } }}>
         <Typography variant="h2">ようこそ</Typography>
         <Typography variant="h2">新しい勤怠システムへ</Typography>
 

@@ -14,7 +14,7 @@ interface ReasonRevision {
 }
 
 export default function ReasonRevisionItem() {
-  const [reasonRevision, setReasonRevision] = useState<number | null>(null);
+  const [reasonRevision, setReasonRevision] = useState<number | "">("");
 
   const reasonRevisions: ReasonRevision[] = [{ id: 1, name: "打刻忘れ" }];
 

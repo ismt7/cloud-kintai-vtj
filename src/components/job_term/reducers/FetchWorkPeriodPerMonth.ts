@@ -1,7 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
-
-import { MasterApi, WorkPeriodPerMonth } from "../../api";
+import { MasterApi, WorkPeriodPerMonth } from "../../../api";
 
 export interface OriginWorkPeriodPerMonth
   extends Omit<
@@ -24,9 +23,7 @@ export const mappedOriginWorkPeriodPerMonth = (
   workPeriodPerMonth: WorkPeriodPerMonth
 ): OriginWorkPeriodPerMonth => ({
   workPeriodPerMonthId: workPeriodPerMonth.workPeriodPerMonthId,
-  targetMonth: isNullDate(workPeriodPerMonth.targetMonth)
-    ? undefined
-    : dayjs(workPeriodPerMonth.targetMonth).toISOString(),
+  targetMonth: workPeriodPerMonth.targetMonth,
   jobStartDate: isNullDate(workPeriodPerMonth.jobStartDate)
     ? undefined
     : dayjs(workPeriodPerMonth.jobStartDate).toISOString(),

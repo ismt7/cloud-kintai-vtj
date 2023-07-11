@@ -1,31 +1,21 @@
 import { Box, Checkbox, Stack } from "@mui/material";
-import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useAppDispatchV2, useAppSelectorV2 } from "../../../app/hooks";
 import {
-  fetchAttendance,
   selectAttendanceEditor,
+  updateAttendance,
 } from "../attendanceEditorSlice";
 
 export default function ReturnDirectlyItem() {
-  const dispatch = useAppDispatchV2();
-  const attendanceEditorData = useAppSelectorV2(selectAttendanceEditor);
-  const { attendance } = attendanceEditorData;
-  const [returnDirectly, setReturnDirectly] = useState<boolean>(false);
+  const { attendance } = useAppSelectorV2(selectAttendanceEditor);
+  const [returnDirectly, setReturnDirectly] = useState<boolean>(
+    attendance?.returnDirectlyFlag ?? false
+  );
 
+  // attendanceが変更されたら実行される
   useEffect(() => {
-    void dispatch(
-      fetchAttendance({
-        staffId: 999,
-        workDate: Number(dayjs().format("YYYYMMDD")),
-      })
-    );
-  }, []);
-
-  useEffect(() => {
-    if (attendance) {
-      setReturnDirectly(attendance.returnDirectlyFlag);
-    }
+    if (!attendance) return;
+    setReturnDirectly(attendance?.returnDirectlyFlag ?? false);
   }, [attendance]);
 
   return (
@@ -34,7 +24,19 @@ export default function ReturnDirectlyItem() {
       <Box>
         <Checkbox
           checked={returnDirectly}
-          onChange={() => setReturnDirectly(!returnDirectly)}
+          onChange={() => {
+            if (!attendance) return;
+
+            setReturnDirectly(!returnDirectly);
+
+            const dispatch = useAppDispatchV2();
+            void dispatch(
+              updateAttendance({
+                ...attendance,
+                returnDirectlyFlag: !returnDirectly,
+              })
+            );
+          }}
         />
       </Box>
     </Stack>

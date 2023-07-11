@@ -1,25 +1,38 @@
-import { GridColDef } from "@mui/x-data-grid";
+import {
+  GridActionsCellItem,
+  GridColDef,
+  GridRowParams,
+} from "@mui/x-data-grid";
 
-import Button from "../button/Button";
+import EditIcon from "@mui/icons-material/Edit";
+import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 
 export default function GetColumns(): GridColDef[] {
+  const navigate = useNavigate();
+
   return [
     {
-      field: "code",
-      headerName: "コード",
+      field: "id",
+      type: "number",
+      headerName: "スタッフコード",
       align: "right",
       sortable: false,
+      width: 150,
       headerAlign: "center",
     },
     {
       field: "fullName",
+      type: "string",
       headerName: "氏名",
       align: "right",
       sortable: false,
       headerAlign: "center",
+      width: 150,
     },
     {
-      field: "status",
+      field: "workStatus",
+      type: "string",
       headerName: "ステータス",
       align: "right",
       sortable: false,
@@ -27,6 +40,7 @@ export default function GetColumns(): GridColDef[] {
     },
     {
       field: "clockInTime",
+      type: "string",
       headerName: "出勤時刻",
       align: "right",
       sortable: false,
@@ -34,17 +48,19 @@ export default function GetColumns(): GridColDef[] {
     },
     {
       field: "clockOutTime",
+      type: "string",
       headerName: "退勤時刻",
       align: "right",
       sortable: false,
       headerAlign: "center",
     },
     {
-      field: "workTimeTotal",
-      headerName: "勤務時間",
+      field: "totalWorkHoursPerMonth",
+      headerName: "総稼動時間(h)",
       align: "right",
       sortable: false,
       headerAlign: "center",
+      width: 150,
     },
     {
       field: "operatingRate",
@@ -52,23 +68,35 @@ export default function GetColumns(): GridColDef[] {
       align: "right",
       sortable: false,
       headerAlign: "center",
+      valueFormatter: (params) => {
+        const value = params.value as number;
+        return `${value} %`;
+      },
     },
     {
-      field: "workDays",
-      headerName: "勤務日数",
+      field: "totalWorkDaysPerMonth",
+      type: "number",
+      headerName: "勤務日数(日)",
       align: "right",
       sortable: false,
       headerAlign: "center",
     },
     {
-      field: "editAction",
-      headerName: "操作",
-      align: "center",
+      field: "actions",
+      type: "actions",
       sortable: false,
-      headerAlign: "center",
-      renderCell: () => (
-        <Button color="primary" size="small" label="詳細" onClick={() => {}} />
-      ),
+      getActions: (params: GridRowParams) => [
+        <GridActionsCellItem
+          key={params.id}
+          icon={<EditIcon />}
+          onClick={() => {
+            const now = dayjs();
+            const targetWorkDate = now.format("YYYYMMDD");
+            navigate(`/admin/attendances/edit/${targetWorkDate}/${params.id}`);
+          }}
+          label="編集"
+        />,
+      ],
     },
   ];
 }
