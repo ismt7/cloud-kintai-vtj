@@ -1,10 +1,10 @@
 import { Box, Stack } from "@mui/material";
 import { Provider } from "react-redux";
 
+import { store } from "../../../../app/store";
 import Footer from "../../../../components/footer/Footer";
 import Header from "../../../../components/header/Header";
 import Menu from "../../../../components/menu/Menu";
-import { store } from "../../../../lib/store";
 
 const Dashboard = () => (
   <Provider store={store}>

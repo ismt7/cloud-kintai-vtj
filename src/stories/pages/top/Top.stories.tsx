@@ -1,34 +1,24 @@
 import { MemoryRouter } from "react-router-dom";
 
-import { ThemeProvider } from "@mui/material";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 
-import { theme } from "../../../lib/theme";
-
-// import { within, userEvent } from "@storybook/testing-library";
 import Top from "./Top";
 
-export default {
-  title: "Page/Top",
+const meta: Meta<typeof Top> = {
   component: Top,
-  parameters: {
-    // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
-    layout: "fullscreen",
-  },
-  decorators: [
-    (story) => (
-      <MemoryRouter>
-        <ThemeProvider theme={theme}>{story()}</ThemeProvider>
-      </MemoryRouter>
-    ),
-  ],
-} as ComponentMeta<typeof Top>;
+  render: () => (
+    <MemoryRouter>
+      <Top />
+    </MemoryRouter>
+  ),
+};
 
-const Template: ComponentStory<typeof Top> = (args) => <Top {...args} />;
+export default meta;
+type Story = StoryObj<typeof Top>;
 
-export const TopPage = Template.bind({});
-TopPage.storyName = "トップページ";
-TopPage.args = {};
+export const Default: Story = {
+  name: "デフォルト",
+};
 
 // export const LoggedIn = Template.bind({});
 

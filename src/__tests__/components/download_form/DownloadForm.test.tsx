@@ -3,8 +3,14 @@ import { fireEvent, render, within } from "@testing-library/react";
 import { Provider } from "react-redux";
 
 import DownloadForm from "../../../components/download_form/DownloadForm";
-import { LoginStaffStatus, testLoginStaffReducer } from "../../../lib/reducers/loginStaffReducer";
-import { StaffListStatus, testStaffListReducer } from "../../../lib/reducers/staffListReducer";
+import {
+  LoginStaffStatus,
+  testLoginStaffReducer,
+} from "../../../lib/reducers/loginStaffReducer";
+import {
+  StaffListStatus,
+  testStaffListReducer,
+} from "../../../lib/reducers/staffListReducer";
 
 const mockStore = configureStore({
   reducer: {
@@ -32,8 +38,18 @@ const mockStore = configureStore({
   },
 });
 
+beforeAll(() => {
+  jest.useFakeTimers();
+});
+
+afterAll(() => {
+  jest.useRealTimers();
+});
+
 describe("DownloadForm Component(", () => {
   test("ダウンロードフォームにレイアウト崩れがないか(ビジュアルリグレッション)", () => {
+    jest.setSystemTime(new Date(2023, 0, 1, 9, 0, 0));
+
     const { asFragment } = render(
       <Provider store={mockStore}>
         <DownloadForm />

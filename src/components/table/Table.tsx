@@ -93,9 +93,9 @@ const Table = () => {
         rows={timeRecordList.data}
         columns={columns}
         checkboxSelection
-        components={{
-          NoRowsOverlay: () => <div>データがありません</div>,
-          Footer: () => null,
+        slots={{
+          noRowsOverlay: () => <div>データがありません</div>,
+          footer: () => null,
         }}
         sx={{
           "& .super-app-theme--saturday": {

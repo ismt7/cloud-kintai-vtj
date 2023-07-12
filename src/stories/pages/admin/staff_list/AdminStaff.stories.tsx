@@ -1,105 +1,32 @@
 import { MemoryRouter } from "react-router-dom";
 
-import { ThemeProvider } from "@mui/material";
-import { configureStore } from "@reduxjs/toolkit";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 import { Provider } from "react-redux";
 
-import { getStaffList200 } from "../../../../components/time_recorder/mocks";
-import {
-  AttendanceStatus,
-  testAttendanceSlice,
-} from "../../../../lib/reducers/attendanceReducer";
-import {
-  LoginStaffStatus,
-  testLoginStaffReducer,
-} from "../../../../lib/reducers/loginStaffReducer";
-import {
-  RestStatus,
-  testRestSlice,
-} from "../../../../lib/reducers/restReducer";
-import {
-  StaffListStatus,
-  testStaffListReducer,
-} from "../../../../lib/reducers/staffListReducer";
-import {
-  testTimeRecordListSlice,
-  TimeRecordListStatus,
-} from "../../../../lib/reducers/timeRecordListReducer";
-import {
-  testTimeRecordSlice,
-  TimeRecordStatus,
-  TimeRecordStatusText,
-} from "../../../../lib/reducers/timeRecordSlice";
-import { theme } from "../../../../lib/theme";
+import { getStaffList200 } from "../../../../components/time_recorder/mocks/ApiMocks";
 
 import AdminStaff from "./AdminStaff";
+import GetStoreMock from "./ReducerMock";
 
-const mockStore = configureStore({
-  reducer: {
-    timeRecordReducer: testTimeRecordSlice({
-      status: TimeRecordStatus.PROCESSING,
-      statusText: TimeRecordStatusText.PROCESSING,
-    }),
-    loginStaffReducer: testLoginStaffReducer({
-      status: LoginStaffStatus.DONE,
-      data: {
-        staffId: 999,
-        lastName: "田中",
-        firstName: "太郎",
-        mailAddress: "tanaka@example.com",
-        iconPath: "",
-        staffRoles: {
-          roleId: 2,
-          staffId: 999,
-          role: {
-            roleName: "スタッフ",
-          },
-        },
-      },
-    }),
-    staffListReducer: testStaffListReducer({
-      status: StaffListStatus.PROCESSING,
-      data: [],
-    }),
-    attendanceReducer: testAttendanceSlice({
-      status: AttendanceStatus.DONE,
-      data: null,
-    }),
-    restReducer: testRestSlice({
-      status: RestStatus.DONE,
-      data: null,
-    }),
-    timeRecordListReducer: testTimeRecordListSlice({
-      status: TimeRecordListStatus.DONE,
-      data: [],
-    }),
-  },
-});
-
-export default {
-  title: "Page/Admin/StaffList",
+const meta: Meta<typeof AdminStaff> = {
   component: AdminStaff,
-  argTypes: {
-    backgroundColor: { control: "color" },
+  parameters: {
+    msw: {
+      handlers: [getStaffList200()],
+    },
   },
-  decorators: [
-    (story) => (
-      <Provider store={mockStore}>
-        <MemoryRouter>
-          <ThemeProvider theme={theme}>{story()}</ThemeProvider>
-        </MemoryRouter>
-      </Provider>
-    ),
-  ],
-} as ComponentMeta<typeof AdminStaff>;
+  render: () => (
+    <Provider store={GetStoreMock()}>
+      <MemoryRouter>
+        <AdminStaff />
+      </MemoryRouter>
+    </Provider>
+  ),
+};
 
-const Template: ComponentStory<typeof AdminStaff> = () => <AdminStaff />;
+export default meta;
+type Story = StoryObj<typeof AdminStaff>;
 
-export const Default = Template.bind({});
-Default.args = {};
-Default.parameters = {
-  msw: {
-    handlers: [getStaffList200()],
-  },
+export const Default: Story = {
+  name: "デフォルト",
 };

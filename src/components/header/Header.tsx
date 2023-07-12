@@ -7,11 +7,14 @@ import { Box, IconButton, Stack, Typography } from "@mui/material";
 
 import { useAppSelectorV2 } from "../../app/hooks";
 import LogImage from "../../images/logo.png";
-import { LoginStaffStatus, selectLoginStaff } from "../../lib/reducers/loginStaffReducer";
+import {
+  LoginStaffStatus,
+  selectLoginStaff,
+} from "../../lib/reducers/loginStaffReducer";
 import Button from "../button/Button";
 import Link from "../link/Link";
 
-interface HeaderProps {
+export interface HeaderProps {
   signIn?: () => void;
   signOut?: () => void;
 }
@@ -98,7 +101,19 @@ const Header = ({ signIn, signOut }: HeaderProps) => {
                 <Box>
                   <Link
                     label="勤怠管理"
-                    href="/admin/attendance"
+                    href="/admin/attendances"
+                    sx={{
+                      display: "block",
+                      height: 1,
+                      lineHeight: "32px",
+                      px: 1,
+                    }}
+                  />
+                </Box>
+                <Box>
+                  <Link
+                    label="マスタ管理"
+                    href="/admin/master"
                     sx={{
                       display: "block",
                       height: 1,

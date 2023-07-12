@@ -19,22 +19,24 @@ function isNullDate(date: Date) {
   return nullDate.isSame(targetDate);
 }
 
-export const mappedOriginAttendance = (attendance: Attendance): OriginAttendance => ({
+export const mappedOriginAttendance = (
+  attendance: Attendance
+): OriginAttendance => ({
   attendanceId: attendance.attendanceId,
-    parentAttendanceId: attendance.parentAttendanceId,
-    staffId: attendance.staffId,
-    workDate: isNullDate(attendance.workDate)
-      ? undefined
-      : dayjs(attendance.workDate).toISOString(),
-    startTime: isNullDate(attendance.startTime)
-      ? undefined
-      : dayjs(attendance.startTime).toISOString(),
-    endTime: isNullDate(attendance.endTime)
-      ? undefined
-      : dayjs(attendance.endTime).toISOString(),
-    goDirectlyFlag: attendance.goDirectlyFlag,
-    returnDirectlyFlag: attendance.returnDirectlyFlag,
-    remarks: attendance.remarks,
+  parentAttendanceId: attendance.parentAttendanceId,
+  staffId: attendance.staffId,
+  workDate: isNullDate(attendance.workDate)
+    ? undefined
+    : attendance.workDate.toISOString(),
+  startTime: isNullDate(attendance.startTime)
+    ? undefined
+    : attendance.startTime.toISOString(),
+  endTime: isNullDate(attendance.endTime)
+    ? undefined
+    : attendance.endTime.toISOString(),
+  goDirectlyFlag: attendance.goDirectlyFlag,
+  returnDirectlyFlag: attendance.returnDirectlyFlag,
+  remarks: attendance.remarks,
 });
 
 export const mappedOriginRest = (rest: Rest): OriginRest => ({
@@ -52,7 +54,7 @@ export const mappedOriginRest = (rest: Rest): OriginRest => ({
     : dayjs(rest.endTime).toISOString(),
 });
 
-function getConfiguration() {
+export function GetConfiguration() {
   return new Configuration({
     basePath: process.env.REACT_APP_BASE_PATH,
   });
@@ -65,7 +67,7 @@ export async function fetchAttendance({
   staffId: number;
   workDate: number;
 }): Promise<OriginAttendance | null> {
-  const api = new AttendanceApi(getConfiguration());
+  const api = new AttendanceApi(GetConfiguration());
   const attendance = await api
     .getAttendance({
       staffId,
@@ -85,7 +87,7 @@ export async function fetchRest({
   staffId: number;
   workDate: number;
 }): Promise<OriginRest | null> {
-  const restApi = new RestApi(getConfiguration());
+  const restApi = new RestApi(GetConfiguration());
   return restApi
     .getRest({
       staffId,
@@ -109,7 +111,7 @@ export async function attendanceRegisterClockIn({
 }): Promise<OriginAttendance | null> {
   if (!staffId) return null;
 
-  const attendanceApi = new AttendanceApi(getConfiguration());
+  const attendanceApi = new AttendanceApi(GetConfiguration());
   const attendance = await attendanceApi
     .registerClockIn({
       staffId,
@@ -139,7 +141,7 @@ export async function attendanceRegisterClockOut({
 }): Promise<OriginAttendance | null> {
   if (!staffId) return null;
 
-  const attendanceApi = new AttendanceApi(getConfiguration());
+  const attendanceApi = new AttendanceApi(GetConfiguration());
   const attendance = await attendanceApi
     .registerClockOut({
       staffId,
@@ -166,7 +168,7 @@ export async function restRegisterStart({
   workDate: number;
   startTime: string;
 }) {
-  const restApi = new RestApi(getConfiguration());
+  const restApi = new RestApi(GetConfiguration());
   const rest = await restApi
     .registerStartRest({
       staffId,
@@ -194,7 +196,7 @@ export async function restRegisterEnd({
 }) {
   if (!staffId) return null;
 
-  const restApi = new RestApi(getConfiguration());
+  const restApi = new RestApi(GetConfiguration());
   const rest = await restApi
     .registerEndRest({
       staffId,
@@ -222,7 +224,7 @@ export async function attendanceRegisterRemarks({
 }) {
   if (!staffId) return null;
 
-  const attendanceApi = new AttendanceApi(getConfiguration());
+  const attendanceApi = new AttendanceApi(GetConfiguration());
   const attendance = await attendanceApi
     .updateRemarks({
       staffId,

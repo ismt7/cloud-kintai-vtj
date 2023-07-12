@@ -1,11 +1,11 @@
 import { Box, Stack } from "@mui/material";
 import { Provider } from "react-redux";
 
+import { store } from "../../../../app/store";
 import Footer from "../../../../components/footer/Footer";
 import Header from "../../../../components/header/Header";
 import StaffForm from "../../../../components/staff_form/StaffForm";
 import StaffList from "../../../../components/staff_list/StaffList";
-import { store } from "../../../../lib/store";
 
 const AdminStaff = () => (
   <Provider store={store}>
