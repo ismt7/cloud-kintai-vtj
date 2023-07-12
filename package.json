@@ -10,7 +10,7 @@
     "@mdx-js/react": "^2.3.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.5",
-    "@mui/x-data-grid": "^6.8.0",
+    "@mui/x-data-grid": "^6.9.2",
     "@mui/x-date-pickers": "^6.9.2",
     "@reduxjs/toolkit": "^1.9.5",
     "@storybook/addon-a11y": "^7.0.22",
