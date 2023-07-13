@@ -49,3 +49,6 @@ openapi-codegen-file:
 
 gen-component:
 	npx hygen sbgen with-prompt
+
+clean-docker:
+	docker system prune -f
