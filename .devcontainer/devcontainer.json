@@ -43,7 +43,9 @@
         "eamodio.gitlens",
         "yzhang.markdown-all-in-one",
         "PKief.material-icon-theme",
-        "tomoki1207.pdf"
+        "tomoki1207.pdf",
+        "bierner.markdown-mermaid",
+        "figma.figma-vscode-extension"
       ]
     }
   },
