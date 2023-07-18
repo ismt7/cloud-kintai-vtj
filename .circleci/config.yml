@@ -29,6 +29,9 @@ jobs:
             - project
 
   app-aaa:
+    docker:
+      - image: cimg/node:18.13.0
+
     steps:
       - attach_workspace:
           at: /home/circleci
