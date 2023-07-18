@@ -59,7 +59,7 @@ jobs:
           path: ./reports/
       - run: make ci-test
       - setup_remote_docker:
-        version: 24.0.4
+          version: 24.0.4
       - run: |
           cp .env.example .env
           make storybook
