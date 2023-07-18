@@ -52,12 +52,13 @@ jobs:
             --envName dev \
             --restore \
             -y
-      - run: make ci-test
       - run: |
           mkdir -p ./reports/eslint/
           make ci-eslint
       - store_test_results:
           path: ./reports/
+      - run: make ci-test
+      - run: make test-storybook
       - run:
           name: Codecov
           command: |
