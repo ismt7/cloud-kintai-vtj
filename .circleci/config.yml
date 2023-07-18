@@ -22,12 +22,18 @@ jobs:
       - image: cimg/node:18.13.0
     steps:
       - checkout
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
 
   app-test:
     docker:
       - image: cimg/node:18.13.0
 
     steps:
+      - attach_workspace:
+          at: /home/circleci
       - run:
           name: Install Amplify CLI
           command: npm install -g @aws-amplify/cli
