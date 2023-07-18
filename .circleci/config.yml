@@ -59,6 +59,7 @@ jobs:
           path: ./reports/
       - run: make ci-test
       - run: |
+          cp .env.example .env
           make storybook
           make test-storybook
       - run:
