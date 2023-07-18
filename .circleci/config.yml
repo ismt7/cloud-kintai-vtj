@@ -8,6 +8,10 @@ orbs:
 workflows:
   app-workflow:
     jobs:
+      - app-init
+      - app-aaa:
+          requires:
+            - app-init
       - app-test:
           context:
             - aws
