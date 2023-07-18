@@ -8,34 +8,12 @@ orbs:
 workflows:
   app-workflow:
     jobs:
-      - app-init
-      - app-aaa:
-          requires:
-            - app-init
       - app-test:
           context:
             - aws
       # - app-sast
 
 jobs:
-  app-init:
-    docker:
-      - image: cimg/node:18.13.0
-    steps:
-      - checkout
-      - persist_to_workspace:
-          root: .
-          paths:
-            - project
-
-  app-aaa:
-    docker:
-      - image: cimg/node:18.13.0
-
-    steps:
-      - attach_workspace:
-          at: /home/circleci
-
   app-test:
     docker:
       - image: cimg/node:18.13.0
