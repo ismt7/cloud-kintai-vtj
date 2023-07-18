@@ -9,17 +9,25 @@ workflows:
   app-workflow:
     jobs:
       - app-test:
+          requires:
+            - app-init
           context:
             - aws
+      - app-init
       # - app-sast
 
 jobs:
+  app-init:
+    docker:
+      - image: cimg/node:18.13.0
+    steps:
+      - checkout
+
   app-test:
     docker:
       - image: cimg/node:18.13.0
 
     steps:
-      - checkout
       - run:
           name: Install Amplify CLI
           command: npm install -g @aws-amplify/cli
