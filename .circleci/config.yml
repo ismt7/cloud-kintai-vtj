@@ -8,12 +8,13 @@ orbs:
 workflows:
   app-workflow:
     jobs:
-      - app-test:
+      - app-init
+      - app-aaa:
           requires:
             - app-init
+      - app-test:
           context:
             - aws
-      - app-init
       # - app-sast
 
 jobs:
@@ -27,13 +28,16 @@ jobs:
           paths:
             - project
 
+  app-aaa:
+    - attach_workspace:
+      at: /home/circleci
+
   app-test:
     docker:
       - image: cimg/node:18.13.0
 
     steps:
-      - attach_workspace:
-          at: /home/circleci
+      - checkout
       - run:
           name: Install Amplify CLI
           command: npm install -g @aws-amplify/cli
