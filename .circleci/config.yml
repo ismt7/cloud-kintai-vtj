@@ -31,7 +31,7 @@ jobs:
   app-aaa:
     steps:
       - attach_workspace:
-        at: /home/circleci
+          at: /home/circleci
 
   app-test:
     docker:
