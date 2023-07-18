@@ -16,9 +16,36 @@ workflows:
             - app-init
           context:
             - aws
-      - app-test:
+      - app-init-amplify:
           requires:
             - app-init-aws
+          context:
+            - aws
+      - app-install:
+          requires:
+            - app-init-amplify
+          context:
+            - aws
+      - app-test-eslint:
+          requires:
+            - app-install
+          context:
+            - aws
+      - app-test-pt:
+          requires:
+            - app-install
+          context:
+            - aws
+      - app-test-storybook:
+          requires:
+            - app-install
+          context:
+            - aws
+      - app-codecov:
+          requires:
+            - app-test-eslint
+            - app-test-pt
+            - app-test-storybook
           context:
             - aws
       # - app-sast
@@ -70,7 +97,7 @@ jobs:
             - project
             - .aws
 
-  app-test:
+  app-init-amplify:
     docker:
       - image: cimg/node:18.13.0
 
@@ -80,31 +107,102 @@ jobs:
       - run:
           name: Install Amplify CLI
           command: npm install -g @aws-amplify/cli
-      - run: npm install
       - run: |
           amplify pull \
             --appId d9rnf7q7x9f9e \
             --envName dev \
             --restore \
             -y
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - .aws
+            - .amplify
+
+    app-install:
+      docker:
+        - image: cimg/node:18.13.0
+
+      steps:
+        - attach_workspace:
+            at: /home/circleci
+        - run: npm install
+        - persist_to_workspace:
+            root: /home/circleci
+            paths:
+              - project
+              - .aws
+              - .amplify
+
+  app-test-eslint:
+    docker:
+      - image: cimg/node:18.13.0
+
+    steps:
+      - attach_workspace:
+          at: /home/circleci
       - run: |
           mkdir -p ./reports/eslint/
           make ci-eslint
       - store_test_results:
           path: ./reports/
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - .aws
+            - .amplify
+
+  app-test-pt:
+    docker:
+      - image: cimg/node:18.13.0
+
+    steps:
+      - attach_workspace:
+          at: /home/circleci
       - run: make ci-test
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - .aws
+            - .amplify
+
+  app-test-storybook:
+    docker:
+      - image: cimg/node:18.13.0
+
+    steps:
+      - attach_workspace:
+          at: /home/circleci
       - setup_remote_docker:
           version: 20.10.14
       - run: |
           cp .env.example .env
           make storybook
           make test-storybook
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - .aws
+            - .amplify
+
+  app-codecov:
+    docker:
+      - image: cimg/node:18.13.0
+
+    steps:
+      - attach_workspace:
+          at: /home/circleci
       - run:
           name: Codecov
           command: |
             curl -Os https://uploader.codecov.io/latest/linux/codecov
             chmod +x codecov
             ./codecov -t ${CODECOV_TOKEN}
+
   # app-sast:
   #   docker:
   #     - image: cimg/node:18.13.0
