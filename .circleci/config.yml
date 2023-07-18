@@ -9,7 +9,9 @@ workflows:
   app-workflow:
     jobs:
       - app-init
-      - app-init-amplify
+      - app-init-amplify:
+          requires:
+            - app-init
       - app-test:
           requires:
             - app-init-amplify
