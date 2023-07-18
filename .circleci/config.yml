@@ -58,7 +58,9 @@ jobs:
       - store_test_results:
           path: ./reports/
       - run: make ci-test
-      - run: make test-storybook
+      - run: |
+          make storybook
+          make test-storybook
       - run:
           name: Codecov
           command: |
