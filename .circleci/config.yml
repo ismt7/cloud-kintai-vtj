@@ -52,7 +52,6 @@ workflows:
 
 jobs:
   app-init:
-    name: Code Checkout
     docker:
       - image: cimg/node:18.13.0
 
@@ -64,7 +63,6 @@ jobs:
             - project
 
   app-init-aws:
-    name: AWS Initialization
     docker:
       - image: cimg/node:18.13.0
 
@@ -100,7 +98,6 @@ jobs:
             - .aws
 
   app-init-amplify:
-    name: Amplify Initialization
     docker:
       - image: cimg/node:18.13.0
 
@@ -124,7 +121,6 @@ jobs:
             - .amplify
 
   app-install:
-    name: Install Dependencies
     docker:
       - image: cimg/node:18.13.0
 
@@ -140,7 +136,6 @@ jobs:
             - .amplify
 
   app-test-eslint:
-    name: ESLint
     docker:
       - image: cimg/node:18.13.0
 
@@ -160,7 +155,6 @@ jobs:
             - .amplify
 
   app-test-pt:
-    name: Unit Test
     docker:
       - image: cimg/node:18.13.0
 
@@ -176,7 +170,6 @@ jobs:
             - .amplify
 
   app-test-storybook:
-    name: Storybook
     docker:
       - image: cimg/node:18.13.0
 
@@ -197,7 +190,6 @@ jobs:
             - .amplify
 
   app-codecov:
-    name: Codecov
     docker:
       - image: cimg/node:18.13.0
 
