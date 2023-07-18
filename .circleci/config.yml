@@ -120,20 +120,20 @@ jobs:
             - .aws
             - .amplify
 
-    app-install:
-      docker:
-        - image: cimg/node:18.13.0
+  app-install:
+    docker:
+      - image: cimg/node:18.13.0
 
-      steps:
-        - attach_workspace:
-            at: /home/circleci
-        - run: npm install
-        - persist_to_workspace:
-            root: /home/circleci
-            paths:
-              - project
-              - .aws
-              - .amplify
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+      - run: npm install
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - .aws
+            - .amplify
 
   app-test-eslint:
     docker:
