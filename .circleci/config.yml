@@ -9,10 +9,10 @@ workflows:
   app-workflow:
     jobs:
       - app-init
-      - app-aaa:
-          requires:
-            - app-init
+      - app-init-amplify
       - app-test:
+          requires:
+            - app-init-amplify
           context:
             - aws
       # - app-sast
@@ -29,21 +29,13 @@ jobs:
           paths:
             - project
 
-  app-aaa:
+  app-init-amplify:
     docker:
       - image: cimg/node:18.13.0
 
     steps:
       - attach_workspace:
           at: /home/circleci
-      - run: echo "Hello, world!"
-
-  app-test:
-    docker:
-      - image: cimg/node:18.13.0
-
-    steps:
-      - checkout
       - run:
           name: Install Amplify CLI
           command: npm install -g @aws-amplify/cli
@@ -69,6 +61,20 @@ jobs:
             region=${AWS_DEFAULT_REGION}
             output=json
             EOL
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - .aws
+            - .npm
+
+  app-test:
+    docker:
+      - image: cimg/node:18.13.0
+
+    steps:
+      - attach_workspace:
+          at: /home/circleci
       - run: npm install
       - run: |
           amplify pull \
