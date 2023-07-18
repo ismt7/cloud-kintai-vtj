@@ -9,12 +9,12 @@ workflows:
   app-workflow:
     jobs:
       - app-init
-      - app-init-amplify:
+      - app-init-aws:
           requires:
             - app-init
       - app-test:
           requires:
-            - app-init-amplify
+            - app-init-aws
           context:
             - aws
       # - app-sast
@@ -31,16 +31,13 @@ jobs:
           paths:
             - project
 
-  app-init-amplify:
+  app-init-aws:
     docker:
       - image: cimg/node:18.13.0
 
     steps:
       - attach_workspace:
           at: /home/circleci
-      - run:
-          name: Install Amplify CLI
-          command: npm install -g @aws-amplify/cli
       - aws-cli/install
       - aws-cli/assume_role_with_web_identity:
           role_arn: ${AWS_ROLE_ARN}
@@ -68,7 +65,6 @@ jobs:
           paths:
             - project
             - .aws
-            - .npm
 
   app-test:
     docker:
@@ -77,6 +73,9 @@ jobs:
     steps:
       - attach_workspace:
           at: /home/circleci
+      - run:
+          name: Install Amplify CLI
+          command: npm install -g @aws-amplify/cli
       - run: npm install
       - run: |
           amplify pull \
