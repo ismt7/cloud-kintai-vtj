@@ -100,6 +100,7 @@
     "@storybook/react-webpack5": "^7.0.21",
     "@storybook/test-runner": "^0.10.0",
     "babel-plugin-named-exports-order": "^0.0.2",
+    "chromatic": "^6.19.9",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-storybook": "^0.6.12",
     "eslint-plugin-unused-imports": "^2.0.0",
