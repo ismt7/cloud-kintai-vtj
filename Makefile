@@ -7,8 +7,7 @@ app-build:
 
 start:
 	cd infra && \
-	docker compose up -d frontend; \
-	docker compose logs -f frontend
+	docker compose up -d
 
 dev-start:
 	cd infra && \
