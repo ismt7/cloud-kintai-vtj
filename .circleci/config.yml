@@ -36,16 +36,16 @@ workflows:
             - app-install
           context:
             - aws
-      # - app-test-storybook:
-      #     requires:
-      #       - app-install
-      #     context:
-      #       - aws
+      - app-test-storybook:
+          requires:
+            - app-install
+          context:
+            - aws
       - app-codecov:
           requires:
             - app-test-eslint
             - app-test-pt
-            # - app-test-storybook
+            - app-test-storybook
           context:
             - aws
       # - app-sast
@@ -169,25 +169,27 @@ jobs:
             - .aws
             - .amplify
 
-  # app-test-storybook:
-  #   docker:
-  #     - image: cimg/node:18.13.0
+  app-test-storybook:
+    docker:
+      - image: cimg/node:18.13.0
 
-  #   steps:
-  #     - attach_workspace:
-  #         at: /home/circleci
-  #     - setup_remote_docker:
-  #         version: 20.10.14
-  #     - run: |
-  #         cp .env.example .env
-  #         make storybook
-  #         make test-storybook
-  #     - persist_to_workspace:
-  #         root: /home/circleci
-  #         paths:
-  #           - project
-  #           - .aws
-  #           - .amplify
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+      - setup_remote_docker:
+          version: 20.10.14
+      - run: |
+          cp .env.example .env
+          make storybook
+
+          # Storybookのアプリが起動するまで30秒間隔で10回リトライする
+          for i in {1..10};do make test-storybook && break;sleep 30;done
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - .aws
+            - .amplify
 
   app-codecov:
     docker:
