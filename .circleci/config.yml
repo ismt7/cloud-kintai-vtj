@@ -184,12 +184,6 @@ jobs:
       - run: |
           cp .env.example .env
           make chromatic
-      - persist_to_workspace:
-          root: /home/circleci
-          paths:
-            - project
-            - .aws
-            - .amplify
 
   app-codecov:
     docker:
