@@ -149,9 +149,7 @@ jobs:
       - persist_to_workspace:
           root: /home/circleci
           paths:
-            - project
-            - .aws
-            - .amplify
+            - project/reports
 
   app-test-pt:
     docker:
@@ -164,9 +162,7 @@ jobs:
       - persist_to_workspace:
           root: /home/circleci
           paths:
-            - project
-            - .aws
-            - .amplify
+            - project/reports
 
   app-test-storybook:
     docker:
