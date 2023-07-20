@@ -31,7 +31,7 @@ workflows:
             - app-install
           context:
             - aws
-      - app-test-pt:
+      - app-test-ut:
           requires:
             - app-install
           context:
@@ -44,7 +44,7 @@ workflows:
       - app-codecov:
           requires:
             - app-test-eslint
-            - app-test-pt
+            - app-test-ut
           context:
             - aws
       # - app-sast
@@ -126,7 +126,7 @@ jobs:
     steps:
       - attach_workspace:
           at: /home/circleci
-      - run: npm install
+      - run: npm ci
       - persist_to_workspace:
           root: /home/circleci
           paths:
@@ -151,7 +151,7 @@ jobs:
           paths:
             - project/reports
 
-  app-test-pt:
+  app-test-ut:
     docker:
       - image: cimg/node:18.13.0
 
