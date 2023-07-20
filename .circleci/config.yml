@@ -127,9 +127,7 @@ jobs:
       - attach_workspace:
           at: /home/circleci
       - restore_cache:
-          key:
-            - v1-deps-{{ checksum "package-lock.json" }}
-            - v1-deps-
+          key: v1-deps-{{ checksum "package-lock.json" }}
       - run: npm install
       - save_cache:
           key: v1-deps-{{ checksum "package-lock.json" }}
