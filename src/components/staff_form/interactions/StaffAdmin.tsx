@@ -1,18 +1,28 @@
+import { expect } from "@storybook/jest";
+
 import {
   fireEvent,
   screen,
   userEvent,
-  waitFor,
   within,
 } from "@storybook/testing-library";
 
 export function GetStaffAdminCreateStaffInteraction() {
   return async () => {
+    const sleep = async (ms: number | undefined) =>
+      new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, ms);
+      });
+
     const staffRole = screen.queryByTestId("staff-role");
 
     if (staffRole) {
       const button = within(staffRole).getByRole("button");
       void userEvent.click(button);
+
+      await sleep(500);
 
       const listbox = within(screen.getByRole("presentation")).getByRole(
         "listbox"
@@ -23,6 +33,9 @@ export function GetStaffAdminCreateStaffInteraction() {
       expect(options[1]).toHaveTextContent("スタッフ管理者");
 
       fireEvent.click(options[1]);
+
+      await sleep(500);
+
       expect(button).toHaveTextContent("スタッフ管理者");
     }
   };
@@ -30,110 +43,94 @@ export function GetStaffAdminCreateStaffInteraction() {
 
 export function GetStaffAdminUpdateStaffInteraction() {
   return async () => {
-    await waitFor(async () => {
-      const button = screen.getByRole("button", { name: "保存" });
-      expect(button).toBeDisabled();
-    });
+    const sleep = async (ms: number | undefined) =>
+      new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, ms);
+      });
+
+    const button = screen.getByRole("button", { name: "保存" });
+    expect(button).toBeDisabled();
 
     // 名前(姓)
-    await waitFor(async () => {
-      const lastName = screen.queryByTestId("last-name");
-      expect(lastName).toBeEnabled();
-      if (lastName) {
-        void userEvent.clear(lastName);
-        void userEvent.type(lastName, "鈴木");
-        expect(lastName).toHaveValue("鈴木");
-      }
-    });
+    const lastName = screen.queryByTestId("last-name");
+    expect(lastName).toBeEnabled();
+    if (lastName) {
+      void userEvent.clear(lastName);
+      void userEvent.type(lastName, "鈴木");
+      await sleep(500);
 
-    await waitFor(async () => {
-      const button = screen.getByRole("button", { name: "保存" });
-      expect(button).toBeEnabled();
-    });
+      expect(lastName).toHaveValue("鈴木");
+    }
+
+    expect(button).toBeEnabled();
 
     // 名前(名)
-    await waitFor(async () => {
-      const firstName = screen.queryByTestId("first-name");
-      expect(firstName).toBeEnabled();
-      if (firstName) {
-        void userEvent.clear(firstName);
-        void userEvent.type(firstName, "二郎");
-        expect(firstName).toHaveValue("二郎");
-      }
-    });
+    const firstName = screen.queryByTestId("first-name");
+    expect(firstName).toBeEnabled();
+    if (firstName) {
+      void userEvent.clear(firstName);
+      void userEvent.type(firstName, "二郎");
+      await sleep(500);
 
-    await waitFor(async () => {
-      const button = screen.getByRole("button", { name: "保存" });
-      expect(button).toBeEnabled();
-    });
+      expect(firstName).toHaveValue("二郎");
+    }
+
+    expect(button).toBeEnabled();
 
     // メールアドレス(エラー)
-    await waitFor(async () => {
-      const mailAddress = screen.queryByTestId("mail-address");
-      expect(mailAddress).toBeEnabled();
-      if (mailAddress) {
-        void userEvent.clear(mailAddress);
-        void userEvent.type(mailAddress, "aaaa");
-        expect(screen.getByText(/入力内容に誤りがあります/i)).toBeEnabled();
-      }
-    });
+    const mailAddress = screen.queryByTestId("mail-address");
+    expect(mailAddress).toBeEnabled();
+    if (mailAddress) {
+      void userEvent.clear(mailAddress);
+      void userEvent.type(mailAddress, "aaaa");
+      await sleep(500);
 
-    await waitFor(async () => {
-      const button = screen.getByRole("button", { name: "保存" });
-      expect(button).toBeDisabled();
-    });
+      expect(screen.getByText(/入力内容に誤りがあります/i)).toBeEnabled();
+    }
+
+    expect(button).toBeDisabled();
 
     // メールアドレス(正常)
-    await waitFor(async () => {
-      const mailAddress = screen.queryByTestId("mail-address");
-      expect(mailAddress).toBeEnabled();
-      if (mailAddress) {
-        void userEvent.clear(mailAddress);
-        void userEvent.type(mailAddress, "suzuki@example.com");
-        expect(mailAddress).toHaveValue("suzuki@example.com");
-      }
-    });
+    expect(mailAddress).toBeEnabled();
+    if (mailAddress) {
+      void userEvent.clear(mailAddress);
+      void userEvent.type(mailAddress, "suzuki@example.com");
+      await sleep(500);
 
-    await waitFor(async () => {
-      const button = screen.getByRole("button", { name: "保存" });
-      expect(button).toBeEnabled();
-    });
+      expect(mailAddress).toHaveValue("suzuki@example.com");
+    }
+
+    expect(button).toBeEnabled();
 
     // 役割
-    await waitFor(async () => {
-      const staffRole = screen.queryByTestId("staff-role");
-      if (staffRole) {
-        const button = within(staffRole).getByRole("button");
-        void userEvent.click(button);
+    const staffRole = screen.queryByTestId("staff-role");
+    if (staffRole) {
+      const selectButton = within(staffRole).getByRole("button");
+      void userEvent.click(selectButton);
 
-        const listbox = within(screen.getByRole("presentation")).getByRole(
-          "listbox"
-        );
-        const options = within(listbox).getAllByRole("option");
+      await sleep(500);
 
-        expect(options[0]).toHaveTextContent("スタッフ");
-        expect(options[1]).toHaveTextContent("スタッフ管理者");
+      const listbox = within(screen.getByRole("presentation")).getByRole(
+        "listbox"
+      );
+      const options = within(listbox).getAllByRole("option");
 
-        fireEvent.click(options[1]);
-        expect(button).toHaveTextContent("スタッフ管理者");
-      }
-    });
+      expect(options[0]).toHaveTextContent("スタッフ");
+      expect(options[1]).toHaveTextContent("スタッフ管理者");
 
-    await waitFor(async () => {
-      const lastName = screen.queryByTestId("last-name");
-      const firstName = screen.queryByTestId("first-name");
-      const mailAddress = screen.queryByTestId("mail-address");
+      fireEvent.click(options[1]);
+      await sleep(500);
 
-      if (lastName && firstName && mailAddress) {
-        void userEvent.clear(lastName);
-        void userEvent.clear(firstName);
-        void userEvent.clear(mailAddress);
-      }
-    });
+      expect(selectButton).toHaveTextContent("スタッフ管理者");
+    }
 
-    await waitFor(async () => {
-      const button = screen.getByRole("button", { name: "保存" });
-      expect(button).toBeDisabled();
-    });
+    if (lastName) void userEvent.clear(lastName);
+    if (firstName) void userEvent.clear(firstName);
+    if (mailAddress) void userEvent.clear(mailAddress);
+    await sleep(500);
+
+    expect(button).toBeDisabled();
   };
 }
