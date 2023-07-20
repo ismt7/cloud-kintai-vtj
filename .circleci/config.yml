@@ -180,10 +180,7 @@ jobs:
           version: 20.10.14
       - run: |
           cp .env.example .env
-          make storybook
-
-          # Storybookのアプリが起動するまで30秒間隔で10回リトライする
-          for i in {1..10};do make test-storybook && break;sleep 30;done
+          make chromatic
       - persist_to_workspace:
           root: /home/circleci
           paths:
