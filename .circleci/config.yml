@@ -23,25 +23,22 @@ workflows:
             - aws
       - app-install:
           requires:
-            - app-init
+            - app-init-aws
           context:
             - aws
       - app-test-eslint:
           requires:
             - app-install
-            - app-init-amplify
           context:
             - aws
       - app-test-pt:
           requires:
             - app-install
-            - app-init-amplify
           context:
             - aws
       - app-test-storybook:
           requires:
             - app-install
-            - app-init-amplify
           context:
             - aws
       - app-codecov:
