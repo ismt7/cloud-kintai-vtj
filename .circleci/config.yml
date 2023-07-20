@@ -23,7 +23,7 @@ workflows:
             - aws
       - app-install:
           requires:
-            - app-init-amplify
+            - app-init
           context:
             - aws
       - app-test-eslint:
@@ -45,7 +45,6 @@ workflows:
           requires:
             - app-test-eslint
             - app-test-pt
-            - app-test-storybook
           context:
             - aws
       # - app-sast
