@@ -52,3 +52,6 @@ gen-component:
 
 clean-docker:
 	docker system prune -f
+
+chromatic:
+	npm run chromatic
