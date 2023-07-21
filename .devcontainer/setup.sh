@@ -5,14 +5,10 @@ set -e
 BASE_PATH=/home/node
 
 # ========================================
-#  Add Custom settings in .bashrc
+#  Add Custom settings in .config.fish
 # ========================================
-BASHRC_PATH=${BASE_PATH}/.bashrc
-cat <<EOL >> $BASHRC_PATH
-
-# Custom settings
-source /workspaces/garaku-frontend/.devcontainer/.bashrc.custom
-EOL
+FISH_CONFIG_PATH=${BASE_PATH}/.config/fish/config.fish
+cp .devcontainer/fish/config.fish ${FISH_CONFIG_PATH}
 
 # ========================================
 #  Create aws credentials and config files
