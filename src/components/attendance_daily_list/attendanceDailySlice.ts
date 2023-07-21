@@ -139,7 +139,9 @@ export const fetchAttendances = createAsyncThunk(
     const staffs = await staffApi
       .getStaffs()
       .then((responses) => responses.map((res) => res))
-      .catch(() => []);
+      .catch((e) => {
+        throw e;
+      });
 
     const attendanceApi = new AttendanceApi(GetConfiguration());
     const restApi = new RestApi(GetConfiguration());
@@ -156,7 +158,9 @@ export const fetchAttendances = createAsyncThunk(
             toWorkDate,
           })
           .then((responses) => responses.map((r) => mappedOriginAttendance(r)))
-          .catch(() => []);
+          .catch((e) => {
+            throw e;
+          });
 
         // 今日の勤務データを取得
         const today = dayjs();
@@ -177,7 +181,9 @@ export const fetchAttendances = createAsyncThunk(
             toWorkDate,
           })
           .then((responses) => responses.map((r) => mappedOriginRest(r)))
-          .catch(() => []);
+          .catch((e) => {
+            throw e;
+          });
 
         // 今日の休憩データを取得
         const todayRests = rests.filter((r) => {
