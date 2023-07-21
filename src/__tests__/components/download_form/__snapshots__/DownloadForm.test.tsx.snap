@@ -3,7 +3,7 @@
 exports[`DownloadForm Component( ダウンロードフォームにレイアウト崩れがないか(ビジュアルリグレッション) 1`] = `
 <DocumentFragment>
   <div
-    class="MuiStack-root css-n2r28k-MuiStack-root"
+    class="MuiStack-root css-cklytt-MuiStack-root"
   >
     <div
       class="MuiBox-root css-1doaxl"
@@ -14,13 +14,13 @@ exports[`DownloadForm Component( ダウンロードフォームにレイアウ�
       class="MuiBox-root css-0"
     >
       <div
-        class="MuiStack-root css-j64l5d-MuiStack-root"
+        class="MuiStack-root css-7fsz91-MuiStack-root"
       >
         <div
           class="MuiBox-root css-0"
         >
           <div
-            class="MuiStack-root css-1q36rmd-MuiStack-root"
+            class="MuiStack-root css-2tuz9w-MuiStack-root"
           >
             <div
               class="MuiBox-root css-0"

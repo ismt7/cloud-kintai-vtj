@@ -3,13 +3,13 @@
 exports[` 1`] = `
 <DocumentFragment>
   <div
-    class="MuiStack-root css-1okj3ks-MuiStack-root"
+    class="MuiStack-root css-w9sbpi-MuiStack-root"
   >
     <div
       class="MuiBox-root css-0"
     >
       <div
-        class="MuiStack-root css-zsbir3-MuiStack-root"
+        class="MuiStack-root css-1opsk7g-MuiStack-root"
       >
         <div
           class="MuiBox-root css-0"
@@ -55,7 +55,7 @@ exports[` 1`] = `
           class="MuiBox-root css-0"
         >
           <div
-            class="MuiStack-root css-u10pvi-MuiStack-root"
+            class="MuiStack-root css-13fn6i7-MuiStack-root"
           >
             <div
               class="MuiBox-root css-0"
