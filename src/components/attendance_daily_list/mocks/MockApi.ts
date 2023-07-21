@@ -36,7 +36,7 @@ export function getAttendancesHandler200() {
         attendanceDailyList.push({
           attendance_id: Number(staffId + `0${attendanceId}`.slice(-2)),
           parent_attendance_id: null,
-          staff_id: staffId,
+          staff_id: Number(staffId),
           work_date: currentDate.format("YYYY-MM-DD"),
           start_time:
             Number(staffId) % 993 === 0 && isToWorkDate

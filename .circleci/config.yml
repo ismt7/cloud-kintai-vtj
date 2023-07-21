@@ -8,21 +8,66 @@ orbs:
 workflows:
   app-workflow:
     jobs:
-      - app-test:
+      - app-init:
+          context:
+            - aws
+      - app-init-aws:
+          requires:
+            - app-init
+          context:
+            - aws
+      - app-init-amplify:
+          requires:
+            - app-init-aws
+          context:
+            - aws
+      - app-install:
+          requires:
+            - app-init-amplify
+          context:
+            - aws
+      - app-test-eslint:
+          requires:
+            - app-install
+          context:
+            - aws
+      - app-test-ut:
+          requires:
+            - app-install
+          context:
+            - aws
+      - app-test-storybook:
+          requires:
+            - app-install
+          context:
+            - aws
+      - app-codecov:
+          requires:
+            - app-test-eslint
+            - app-test-ut
           context:
             - aws
       # - app-sast
 
 jobs:
-  app-test:
+  app-init:
     docker:
       - image: cimg/node:18.13.0
 
     steps:
       - checkout
-      - run:
-          name: Install Amplify CLI
-          command: npm install -g @aws-amplify/cli
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+
+  app-init-aws:
+    docker:
+      - image: cimg/node:18.13.0
+
+    steps:
+      - attach_workspace:
+          at: /home/circleci
       - aws-cli/install
       - aws-cli/assume_role_with_web_identity:
           role_arn: ${AWS_ROLE_ARN}
@@ -45,25 +90,115 @@ jobs:
             region=${AWS_DEFAULT_REGION}
             output=json
             EOL
-      - run: npm install
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - .aws
+
+  app-init-amplify:
+    docker:
+      - image: cimg/node:18.13.0
+
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+      - run:
+          name: Install Amplify CLI
+          command: npm install -g @aws-amplify/cli
       - run: |
           amplify pull \
             --appId d9rnf7q7x9f9e \
             --envName dev \
             --restore \
             -y
-      - run: make ci-test
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - .aws
+            - .amplify
+
+  app-install:
+    docker:
+      - image: cimg/node:18.13.0
+
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+      - restore_cache:
+          keys:
+            - v1-deps-{{ checksum "package-lock.json" }}
+            - v1-deps-
+      - run: npm install
+      - save_cache:
+          key: v1-deps-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - .aws
+            - .amplify
+
+  app-test-eslint:
+    docker:
+      - image: cimg/node:18.13.0
+
+    steps:
+      - attach_workspace:
+          at: /home/circleci
       - run: |
           mkdir -p ./reports/eslint/
           make ci-eslint
       - store_test_results:
           path: ./reports/
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project/reports
+
+  app-test-ut:
+    docker:
+      - image: cimg/node:18.13.0
+
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+      - run: make ci-test
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project/reports
+
+  app-test-storybook:
+    docker:
+      - image: cimg/node:18.13.0
+
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+      - setup_remote_docker:
+          version: 20.10.14
+      - run: |
+          cp .env.example .env
+          make chromatic
+
+  app-codecov:
+    docker:
+      - image: cimg/node:18.13.0
+
+    steps:
+      - attach_workspace:
+          at: /home/circleci
       - run:
           name: Codecov
           command: |
             curl -Os https://uploader.codecov.io/latest/linux/codecov
             chmod +x codecov
             ./codecov -t ${CODECOV_TOKEN}
+
   # app-sast:
   #   docker:
   #     - image: cimg/node:18.13.0
