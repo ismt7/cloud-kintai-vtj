@@ -69,3 +69,13 @@ fi
 if [ -n "${GIT_USER_EMAIL}" ]; then
   git config --local user.email "${GIT_USER_EMAIL}"
 fi
+
+# ========================================
+#  Dev environment setup
+# ========================================
+
+if [ ! -e ".env" ]; then
+  cp .env.example .env
+fi
+
+make start

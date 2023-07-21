@@ -7,8 +7,7 @@ app-build:
 
 start:
 	cd infra && \
-	docker compose up -d frontend; \
-	docker compose logs -f frontend
+	docker compose up -d
 
 dev-start:
 	cd infra && \
@@ -31,7 +30,8 @@ test-storybook:
 	npm run test-storybook
 
 storybook:
-	cd infra && docker compose up -d storybook
+	cd infra && \
+	docker compose up -d storybook
 
 openapi-codegen-url:
 	docker run --rm \
@@ -52,3 +52,6 @@ gen-component:
 
 clean-docker:
 	docker system prune -f
+
+chromatic:
+	npm run chromatic
