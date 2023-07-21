@@ -1,6 +1,6 @@
 import { expect } from "@storybook/jest";
 import { Meta, StoryObj } from "@storybook/react";
-import { userEvent, waitFor, screen } from "@storybook/testing-library";
+import { screen, userEvent } from "@storybook/testing-library";
 import { Provider } from "react-redux";
 
 import { store } from "../../app/store";
@@ -26,26 +26,31 @@ export const Default: Story = {
     staffId: 1,
   },
   play: async () => {
+    const sleep = async (ms: number | undefined) =>
+      new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, ms);
+      });
+
     const inputClearText = "このテキストは入力後にクリアされるテキストです。";
-    const remarksClearText = screen.getByRole("textbox");
-    void userEvent.type(remarksClearText, inputClearText);
+    const remarksText = screen.getByRole("textbox");
+    void userEvent.type(remarksText, inputClearText);
+    await sleep(500);
 
-    const afterRemarksText = screen.getByRole("textbox");
-    expect(afterRemarksText).toHaveValue(inputClearText);
+    expect(remarksText).toHaveValue(inputClearText);
 
-    await waitFor(() => {
-      const clearButton = screen.getByTestId("remarksClear");
-      void userEvent.click(clearButton);
-    });
+    const clearButton = screen.getByTestId("remarksClear");
+    void userEvent.click(clearButton);
+    await sleep(500);
 
-    await waitFor(() => {
-      const afterClearRemarksText = screen.getByRole("textbox");
-      expect(afterClearRemarksText).toHaveValue("");
-    });
+    expect(remarksText).toHaveValue("");
 
     const inputSaveText = "このテキストは入力後に保存されるテキストです。";
-    const remarksSaveText = screen.getByRole("textbox");
-    void userEvent.type(remarksSaveText, inputSaveText);
+    void userEvent.type(remarksText, inputSaveText);
+    await sleep(500);
+
+    expect(remarksText).toHaveValue(inputSaveText);
 
     const saveButton = screen.getByTestId("remarksSave");
     void userEvent.click(saveButton);
