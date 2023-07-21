@@ -9,7 +9,8 @@
     "ghcr.io/devcontainers/features/aws-cli:1": {},
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers-contrib/features/amplify-cli:2": {}
+    "ghcr.io/devcontainers-contrib/features/amplify-cli:2": {},
+    "ghcr.io/meaningful-ooo/devcontainer-features/fish:1": {}
   },
   "hostRequirements": {
     "cpus": 4,
