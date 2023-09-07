@@ -33,6 +33,12 @@ storybook:
 	cd infra && \
 	docker compose up -d storybook
 
+openapi-codegen:
+	npx openapi-generator-cli generate \
+		-i http://app:8000/openapi.json \
+		-g typescript-fetch \
+		-o src/api/
+
 openapi-codegen-url:
 	docker run --rm \
 		-v ${PWD}:/local openapitools/openapi-generator-cli generate \
