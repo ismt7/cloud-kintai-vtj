@@ -74,4 +74,4 @@ if [ ! -e ".env" ]; then
   cp .env.example .env
 fi
 
-make start
+# make start

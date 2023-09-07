@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+
+    volumes:
+      - ../..:/workspaces:cached
+
+    command: sleep infinity
+
+    networks:
+      - default
+      - garaku-shared-network
+
+networks:
+  garaku-shared-network:
+    external: true
