@@ -19,7 +19,7 @@ import {
   TimeRecordStatusText,
 } from "../../lib/reducers/timeRecordSlice";
 
-import Header, { HeaderProps } from "./Header";
+import Header from "./Header";
 
 const mockStore = configureStore({
   reducer: {
@@ -60,24 +60,16 @@ const meta: Meta<typeof Header> = {
   parameters: {
     layout: "fullscreen",
   },
-  argTypes: {
-    signIn: {
-      description: "ログインボタンを押したときの処理",
-    },
-    signOut: {
-      description: "ログアウトボタンを押したときの処理",
-    },
-  },
 };
 
 export default meta;
 type Story = StoryObj<typeof Header>;
 
 export const Default: Story = {
-  render: (args: HeaderProps) => (
+  render: () => (
     <Provider store={mockStore}>
       <MemoryRouter>
-        <Header {...args} />
+        <Header />
       </MemoryRouter>
     </Provider>
   ),
@@ -107,10 +99,10 @@ const loginMockStore = configureStore({
 export const LoggedIn: Story = {
   name: "ログイン",
   args: {},
-  render: (args: HeaderProps) => (
+  render: () => (
     <Provider store={loginMockStore}>
       <MemoryRouter>
-        <Header {...args} />
+        <Header />
       </MemoryRouter>
     </Provider>
   ),
@@ -119,10 +111,10 @@ export const LoggedIn: Story = {
 export const LoggedOut: Story = {
   name: "ログアウト",
   args: {},
-  render: (args: HeaderProps) => (
+  render: () => (
     <Provider store={mockStore}>
       <MemoryRouter>
-        <Header {...args} />
+        <Header />
       </MemoryRouter>
     </Provider>
   ),
@@ -164,10 +156,10 @@ const staffAdminMockStore = configureStore({
 export const StaffAdmin: Story = {
   name: "スタッフ管理者",
   args: {},
-  render: (args: HeaderProps) => (
+  render: () => (
     <Provider store={staffAdminMockStore}>
       <MemoryRouter>
-        <Header {...args} />
+        <Header />
       </MemoryRouter>
     </Provider>
   ),
@@ -210,10 +202,10 @@ const systemAdminMockStore = configureStore({
 export const Admin: Story = {
   name: "システム管理者",
   args: {},
-  render: (args: HeaderProps) => (
+  render: () => (
     <Provider store={systemAdminMockStore}>
       <MemoryRouter>
-        <Header {...args} />
+        <Header />
       </MemoryRouter>
     </Provider>
   ),
