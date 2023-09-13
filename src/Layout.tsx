@@ -4,18 +4,21 @@ import { Outlet } from "react-router-dom";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Box, Stack } from "@mui/material";
 
+import { OpenAPI, Service } from "./client";
 import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
-import { useAppDispatch } from "./lib/hooks";
-import fetchLoginStaff from "./lib/staff/FetchLoginStaff";
 
 function Layout() {
   const { user } = useAuthenticator();
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!user?.attributes?.email) return;
-    void dispatch(fetchLoginStaff({ mailAddress: user.attributes.email }));
+
+    OpenAPI.BASE = "http://app:8000";
+    const staff = Service.getStaffsStaffsGet(1);
+    console.log(staff);
+    // void dispatch(fetchLoginStaff({ mailAddress: user.attributes.email }));
   }, [user]);
 
   return (
