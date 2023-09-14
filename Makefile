@@ -6,8 +6,7 @@ app-build:
 	npm run build
 
 start:
-	cd infra && \
-	docker compose up -d
+	npm start
 
 dev-start:
 	cd infra && \
@@ -34,24 +33,10 @@ storybook:
 	docker compose up -d storybook
 
 openapi-codegen:
-	npx openapi-generator-cli generate \
-		-i http://app:8000/openapi.json \
-		-g typescript-fetch \
-		-o src/api/
-
-openapi-codegen-url:
-	docker run --rm \
-		-v ${PWD}:/local openapitools/openapi-generator-cli generate \
-		-i http://host.docker.internal:8000/openapi.json \
-		-g typescript-fetch \
-		-o /local/src/api
-
-openapi-codegen-file:
-	docker run --rm \
-		-v ${PWD}:/local openapitools/openapi-generator-cli generate \
-		-i /local/openapi.json \
-		-g typescript-fetch \
-		-o /local/src/api
+	npx openapi \
+		--input http://app:8000/openapi.json \
+		--output ./src/client \
+		--client axios
 
 gen-component:
 	npx hygen sbgen with-prompt
