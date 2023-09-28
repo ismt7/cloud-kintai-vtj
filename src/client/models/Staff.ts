@@ -7,11 +7,11 @@ export type Staff = {
     /**
      * 名前(姓)
      */
-    last_name: string;
+    last_name?: (string | null);
     /**
      * 名前(名)
      */
-    first_name: string;
+    first_name?: (string | null);
     /**
      * メールアドレス
      */
@@ -24,6 +24,10 @@ export type Staff = {
      * スタッフID
      */
     id: number;
+    /**
+     * CognitoユーザーID
+     */
+    cognito_user_id: string;
     /**
      * 作成日時
      */

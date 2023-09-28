@@ -7,11 +7,11 @@ export type StaffCreate = {
     /**
      * 名前(姓)
      */
-    last_name: string;
+    last_name?: (string | null);
     /**
      * 名前(名)
      */
-    first_name: string;
+    first_name?: (string | null);
     /**
      * メールアドレス
      */
@@ -20,5 +20,9 @@ export type StaffCreate = {
      * アイコンの格納場所
      */
     icon_path?: (string | null);
+    /**
+     * CognitoユーザーID
+     */
+    cognito_user_id: string;
 };
 

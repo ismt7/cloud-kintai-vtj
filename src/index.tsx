@@ -8,7 +8,7 @@ import { ThemeProvider } from "@mui/material";
 import { Provider } from "react-redux";
 
 import { store } from "./app/store";
-import JobTerm from "./components/job_term/JobTerm";
+import { OpenAPI } from "./client";
 import Layout from "./Layout";
 import { theme } from "./lib/theme";
 import AdminAttendance from "./pages/admin/AdminAttendance";
@@ -19,10 +19,11 @@ import AdminStaff from "./pages/admin/AdminStaff";
 import List from "./pages/List";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import RequireAuth from "./pages/RequireAuth";
 import Top from "./pages/Top";
 import reportWebVitals from "./reportWebVitals";
 import AdminMasterLayout from "./stories/pages/admin/master/AdminMasterLayout";
+
+OpenAPI.BASE = process.env.REACT_APP_BASE_PATH || "";
 
 const router = createBrowserRouter([
   {
@@ -35,19 +36,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/register",
-        element: (
-          <RequireAuth>
-            <Register />
-          </RequireAuth>
-        ),
+        element: <Register />,
       },
       {
         path: "/list",
-        element: (
-          <RequireAuth>
-            <List />
-          </RequireAuth>
-        ),
+        element: <List />,
       },
       {
         path: "/login",
@@ -65,35 +58,29 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/admin/",
-        element: (
-          <RequireAuth>
-            <AdminDashboard />
-          </RequireAuth>
-        ),
+        element: <AdminDashboard />,
       },
       {
         path: "/admin/staff",
-        element: (
-          <RequireAuth>
-            <AdminStaff />
-          </RequireAuth>
-        ),
+        element: <AdminStaff />,
+        children: [
+          {
+            index: true,
+            element: <AdminStaff />,
+          },
+          {
+            path: "/admin/staff/:staffId",
+            element: <AdminStaff />,
+          },
+        ],
       },
       {
         path: "/admin/attendances/",
-        element: (
-          <RequireAuth>
-            <AdminAttendance />
-          </RequireAuth>
-        ),
+        element: <AdminAttendance />,
       },
       {
         path: "/admin/attendances/edit/:targetWorkDate/:targetStaffId",
-        element: (
-          <RequireAuth>
-            <AdminAttendanceEditor />
-          </RequireAuth>
-        ),
+        element: <AdminAttendanceEditor />,
       },
       {
         path: "/admin/master",
@@ -101,15 +88,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "/admin/master/",
-            element: (
-              <RequireAuth>
-                <AdminMaster />
-              </RequireAuth>
-            ),
-          },
-          {
-            path: "/admin/master/job_term/:targetYear",
-            element: <JobTerm />,
+            element: <AdminMaster />,
           },
         ],
       },

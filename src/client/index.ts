@@ -18,6 +18,7 @@ export type { Staff } from './models/Staff';
 export type { StaffCreate } from './models/StaffCreate';
 export type { StaffRole } from './models/StaffRole';
 export type { StaffRoleCreate } from './models/StaffRoleCreate';
+export type { StaffUpdate } from './models/StaffUpdate';
 export type { ValidationError } from './models/ValidationError';
 
 export { Service } from './services/Service';

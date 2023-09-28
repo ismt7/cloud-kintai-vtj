@@ -12,6 +12,7 @@ import type { Staff } from '../models/Staff';
 import type { StaffCreate } from '../models/StaffCreate';
 import type { StaffRole } from '../models/StaffRole';
 import type { StaffRoleCreate } from '../models/StaffRoleCreate';
+import type { StaffUpdate } from '../models/StaffUpdate';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -27,7 +28,7 @@ export class Service {
      * @returns Attendance Successful Response
      * @throws ApiError
      */
-    public static createAttendanceAttendancePost(
+    public static createAttendance(
         requestBody: AttendanceCreate,
         xUserId?: number,
     ): CancelablePromise<Attendance> {
@@ -52,7 +53,7 @@ export class Service {
      * @returns Attendance Successful Response
      * @throws ApiError
      */
-    public static getAttendanceAttendanceAttendanceIdGet(
+    public static getAttendance(
         attendanceId: number,
         xUserId?: number,
     ): CancelablePromise<Attendance> {
@@ -80,7 +81,7 @@ export class Service {
      * @returns Attendance Successful Response
      * @throws ApiError
      */
-    public static updateAttendanceAttendanceAttendanceIdPut(
+    public static updateAttendance(
         attendanceId: number,
         requestBody: AttendanceCreate,
         xUserId?: number,
@@ -109,7 +110,7 @@ export class Service {
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static deleteAttendanceAttendanceAttendanceIdDelete(
+    public static deleteAttendance(
         attendanceId: number,
         xUserId?: number,
     ): CancelablePromise<any> {
@@ -133,7 +134,7 @@ export class Service {
      * @returns Attendance Successful Response
      * @throws ApiError
      */
-    public static getAttendancesAttendancesGet(): CancelablePromise<Array<Attendance>> {
+    public static getAttendances(): CancelablePromise<Array<Attendance>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/attendances',
@@ -149,7 +150,7 @@ export class Service {
      * @returns Attendance Successful Response
      * @throws ApiError
      */
-    public static getAttendancesByStaffIdStaffStaffIdFromDateToDateAttendancesGet(
+    public static getAttendancesByStaffId(
         staffId: number,
         fromDate: string,
         toDate: string,
@@ -176,7 +177,7 @@ export class Service {
      * @returns Rest Successful Response
      * @throws ApiError
      */
-    public static createRestRestPost(
+    public static createRest(
         requestBody: RestCreate,
         xUserId?: number,
     ): CancelablePromise<Rest> {
@@ -201,7 +202,7 @@ export class Service {
      * @returns Rest Successful Response
      * @throws ApiError
      */
-    public static getRestRestRestIdGet(
+    public static getRest(
         restId: number,
         xUserId?: number,
     ): CancelablePromise<Rest> {
@@ -229,7 +230,7 @@ export class Service {
      * @returns Rest Successful Response
      * @throws ApiError
      */
-    public static updateRestRestRestIdPut(
+    public static updateRest(
         restId: number,
         requestBody: RestCreate,
         xUserId?: number,
@@ -258,7 +259,7 @@ export class Service {
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static deleteRestRestRestIdDelete(
+    public static deleteRest(
         restId: number,
         xUserId?: number,
     ): CancelablePromise<any> {
@@ -283,7 +284,7 @@ export class Service {
      * @returns Rest Successful Response
      * @throws ApiError
      */
-    public static getRestsRestsGet(
+    public static getRests(
         xUserId?: number,
     ): CancelablePromise<Array<Rest>> {
         return __request(OpenAPI, {
@@ -299,6 +300,34 @@ export class Service {
     }
 
     /**
+     * スタッフの休憩情報取得
+     * スタッフの休憩情報を取得します
+     * @param staffId
+     * @param fromDate
+     * @param toDate
+     * @returns Rest Successful Response
+     * @throws ApiError
+     */
+    public static getRestsByStaffId(
+        staffId: number,
+        fromDate: string,
+        toDate: string,
+    ): CancelablePromise<Array<Rest>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/staff/{staff_id}/{from_date}/{to_date}/rest',
+            path: {
+                'staff_id': staffId,
+                'from_date': fromDate,
+                'to_date': toDate,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
      * スタッフの作成
      * スタッフを作成します
      * @param requestBody
@@ -306,7 +335,7 @@ export class Service {
      * @returns Staff Successful Response
      * @throws ApiError
      */
-    public static createStaffStaffPost(
+    public static createStaff(
         requestBody: StaffCreate,
         xUserId?: number,
     ): CancelablePromise<Staff> {
@@ -332,7 +361,7 @@ export class Service {
      * @returns Staff Successful Response
      * @throws ApiError
      */
-    public static getStaffStaffStaffIdGet(
+    public static getStaff(
         staffId: number,
         xUserId?: number,
     ): CancelablePromise<Staff> {
@@ -360,9 +389,9 @@ export class Service {
      * @returns Staff Successful Response
      * @throws ApiError
      */
-    public static updateStaffStaffStaffIdPut(
+    public static updateStaff(
         staffId: number,
-        requestBody: StaffCreate,
+        requestBody: StaffUpdate,
         xUserId?: number,
     ): CancelablePromise<Staff> {
         return __request(OpenAPI, {
@@ -389,7 +418,7 @@ export class Service {
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static deleteStaffStaffStaffIdDelete(
+    public static deleteStaff(
         staffId: number,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
@@ -405,12 +434,39 @@ export class Service {
     }
 
     /**
+     * スタッフの取得
+     * スタッフを取得します
+     * @param cognitoUserId
+     * @param xUserId
+     * @returns Staff Successful Response
+     * @throws ApiError
+     */
+    public static getStaffByCognitoUserId(
+        cognitoUserId: string,
+        xUserId?: number,
+    ): CancelablePromise<Staff> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/staff/cognito/{cognito_user_id}',
+            path: {
+                'cognito_user_id': cognitoUserId,
+            },
+            headers: {
+                'x-user-id': xUserId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
      * スタッフの一覧取得
      * @param xUserId
      * @returns Staff Successful Response
      * @throws ApiError
      */
-    public static getStaffsStaffsGet(
+    public static getStaffs(
         xUserId?: number,
     ): CancelablePromise<Array<Staff>> {
         return __request(OpenAPI, {
@@ -433,7 +489,7 @@ export class Service {
      * @returns StaffRole Successful Response
      * @throws ApiError
      */
-    public static createStaffRoleStaffRolePost(
+    public static createStaffRole(
         requestBody: StaffRoleCreate,
         xUserId?: number,
     ): CancelablePromise<StaffRole> {
@@ -459,7 +515,7 @@ export class Service {
      * @returns StaffRole Successful Response
      * @throws ApiError
      */
-    public static getStaffRoleStaffRoleStaffRoleIdGet(
+    public static getStaffRole(
         staffRoleId: number,
         xUserId?: number,
     ): CancelablePromise<StaffRole> {
@@ -485,7 +541,7 @@ export class Service {
      * @returns StaffRole Successful Response
      * @throws ApiError
      */
-    public static getStaffRolesStaffsRoleGet(
+    public static getStaffRoles(
         xUserId?: number,
     ): CancelablePromise<Array<StaffRole>> {
         return __request(OpenAPI, {
@@ -509,7 +565,7 @@ export class Service {
      * @returns StaffRole Successful Response
      * @throws ApiError
      */
-    public static updateStaffRoleStaffRoleStaffIdPut(
+    public static updateStaffRole(
         staffId: number,
         requestBody: StaffRoleCreate,
         xUserId?: number,
@@ -539,7 +595,7 @@ export class Service {
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static deleteStaffRoleStaffRoleStaffIdDelete(
+    public static deleteStaffRole(
         staffId: number,
         xUserId?: number,
     ): CancelablePromise<any> {
@@ -566,7 +622,7 @@ export class Service {
      * @returns Role Successful Response
      * @throws ApiError
      */
-    public static createRoleRolePost(
+    public static createRole(
         requestBody: RoleCreate,
         xUserId?: number,
     ): CancelablePromise<Role> {
@@ -592,7 +648,7 @@ export class Service {
      * @returns Role Successful Response
      * @throws ApiError
      */
-    public static getRoleRoleRoleIdGet(
+    public static getRole(
         roleId: number,
         xUserId?: number,
     ): CancelablePromise<Role> {
@@ -620,7 +676,7 @@ export class Service {
      * @returns Role Successful Response
      * @throws ApiError
      */
-    public static updateRoleRoleRoleIdPut(
+    public static updateRole(
         roleId: number,
         requestBody: RoleCreate,
         xUserId?: number,
@@ -650,7 +706,7 @@ export class Service {
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static deleteRoleRoleRoleIdDelete(
+    public static deleteRole(
         roleId: number,
         xUserId?: number,
     ): CancelablePromise<any> {
@@ -676,7 +732,7 @@ export class Service {
      * @returns Role Successful Response
      * @throws ApiError
      */
-    public static getRolesRolesGet(
+    public static getRoles(
         xUserId?: number,
     ): CancelablePromise<Array<Role>> {
         return __request(OpenAPI, {

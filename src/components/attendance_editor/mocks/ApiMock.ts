@@ -1,90 +1,155 @@
 import dayjs from "dayjs";
 import { rest } from "msw";
-import { REACT_APP_BASE_PATH } from "../../time_recorder/mocks/ApiMocks";
+
+export function GetStaffByCognitoUserId200() {
+  return rest.get("/staff/cognito/:cognitoUserId", (req, res, ctx) => {
+    const { params } = req;
+    const cognitoUserId = params.cognitoUserId as string;
+    const now = dayjs();
+
+    return res(
+      ctx.status(200),
+      ctx.json({
+        id: 2,
+        last_name: "田中",
+        first_name: "太郎",
+        mail_address: "tanaka@example.com",
+        icon_path: "",
+        cognito_user_id: cognitoUserId,
+        created_at: now.format("YYYY-MM-DDTHH:mm:ssZ"),
+        updated_at: null,
+        created_by: 1,
+        updated_by: null,
+      })
+    );
+  });
+}
 
 export function GetStaff200() {
-  return rest.get(
-    `${REACT_APP_BASE_PATH}/v1/staffs/:staffId`,
-    (req, res, ctx) => {
-      const { params } = req;
-      const staffId = Number(params.staffId);
+  return rest.get("/staff/:staffId", (req, res, ctx) => {
+    const { params } = req;
+    const staffId = Number(params.staffId);
+    const now = dayjs();
 
-      return res(
-        ctx.status(200),
-        ctx.json({
-          staff_id: staffId,
-          last_name: "田中",
-          first_name: "太郎",
-          mail_address: "tanaka@example.com",
-          icon_path: "",
-          staff_roles: {
-            role_id: 2,
-            staff_id: staffId,
-            role: {
-              role_name: "スタッフ",
-            },
-          },
-        })
-      );
-    }
-  );
+    return res(
+      ctx.status(200),
+      ctx.json({
+        id: staffId,
+        last_name: "田中",
+        first_name: "太郎",
+        mail_address: "tanaka@example.com",
+        icon_path: "",
+        cognito_user_id: "99999999-9999-9999-9999-999999999999",
+        created_at: now.format("YYYY-MM-DDTHH:mm:ssZ"),
+        updated_at: null,
+        created_by: 1,
+        updated_by: null,
+      })
+    );
+  });
 }
 
 export function GetAttendance200() {
   return rest.get(
-    `${REACT_APP_BASE_PATH}/v1/attendances/:staffId/:workDate`,
+    "/staff/:staffId/:fromDate/:toDate/attendances",
     (req, res, ctx) => {
       const { params } = req;
       const staffId = Number(params.staffId);
-
+      const fromDate = dayjs(params.fromDate as string);
       const now = dayjs();
+
+      const startTime = fromDate
+        .hour(9)
+        .minute(0)
+        .second(0)
+        .format("YYYY-MM-DDTHH:mm:ssZ");
+
+      const endTime = fromDate
+        .hour(18)
+        .minute(0)
+        .second(0)
+        .format("YYYY-MM-DDTHH:mm:ssZ");
 
       return res(
         ctx.status(200),
-        ctx.json({
-          attendance_id: 1,
-          parent_attendance_id: null,
-          staff_id: staffId,
-          work_date: now.format("YYYY-MM-DD"),
-          start_time: `${now.format("YYYY-MM-DD")}T09:00:00+09:00`,
-          end_time: `${now.format("YYYY-MM-DD")}T18:00:00+09:00`,
-          go_directly_flag: false,
-          return_directly_flag: false,
-          remarks: "備考です",
-        })
+        ctx.json([
+          {
+            id: 1,
+            staff_id: staffId,
+            work_date: fromDate.format("YYYY-MM-DD"),
+            start_time: startTime,
+            end_time: endTime,
+            go_directly_flag: false,
+            return_directly_flag: false,
+            remarks: "備考です",
+            created_at: now.format("YYYY-MM-DDTHH:mm:ssZ"),
+            updated_at: null,
+            created_by: 2,
+            updated_by: null,
+          },
+        ])
       );
     }
   );
 }
 
 export function GetRests200() {
-  return rest.get(
-    `${REACT_APP_BASE_PATH}/v1/rests/:staffId/:fromWorkDate/:toWorkDate`,
-    (req, res, ctx) => {
-      const { params } = req;
-      const staffId = Number(params.staffId);
+  return rest.get("/staff/:staffId/:fromDate/:toDate/rest", (req, res, ctx) => {
+    const { params } = req;
+    const staffId = Number(params.staffId);
+    const fromDate = dayjs(params.fromDate as string);
+    const now = dayjs();
 
-      const now = dayjs();
+    const lunchStartTime = fromDate
+      .hour(12)
+      .minute(0)
+      .second(0)
+      .format("YYYY-MM-DDTHH:mm:ssZ");
 
-      return res(
-        ctx.status(200),
-        ctx.json([
-          {
-            staff_id: staffId,
-            rest_time_id: 1,
-            work_date: now.format("YYYY-MM-DD"),
-            start_time: `${now.format("YYYY-MM-DD")}T12:00:00+09:00`,
-            end_time: `${now.format("YYYY-MM-DD")}T13:00:00+09:00`,
-          },
-          {
-            staff_id: staffId,
-            rest_time_id: 2,
-            work_date: now.format("YYYY-MM-DD"),
-            start_time: `${now.format("YYYY-MM-DD")}T15:00:00+09:00`,
-            end_time: `${now.format("YYYY-MM-DD")}T15:30:00+09:00`,
-          },
-        ])
-      );
-    }
-  );
+    const lunchEndTime = fromDate
+      .hour(13)
+      .minute(0)
+      .second(0)
+      .format("YYYY-MM-DDTHH:mm:ssZ");
+
+    const restStartTime = fromDate
+      .hour(15)
+      .minute(0)
+      .second(0)
+      .format("YYYY-MM-DDTHH:mm:ssZ");
+
+    const restEndTime = fromDate
+      .hour(15)
+      .minute(30)
+      .second(0)
+      .format("YYYY-MM-DDTHH:mm:ssZ");
+
+    return res(
+      ctx.status(200),
+      ctx.json([
+        {
+          id: 1,
+          staff_id: staffId,
+          work_date: now.format("YYYY-MM-DD"),
+          start_time: lunchStartTime,
+          end_time: lunchEndTime,
+          created_at: now.format("YYYY-MM-DDTHH:mm:ssZ"),
+          updated_at: null,
+          created_by: 2,
+          updated_by: null,
+        },
+        {
+          id: 2,
+          staff_id: staffId,
+          work_date: now.format("YYYY-MM-DD"),
+          start_time: restStartTime,
+          end_time: restEndTime,
+          created_at: now.format("YYYY-MM-DDTHH:mm:ssZ"),
+          updated_at: null,
+          created_by: 2,
+          updated_by: null,
+        },
+      ])
+    );
+  });
 }

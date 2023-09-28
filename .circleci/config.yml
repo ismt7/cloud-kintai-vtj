@@ -36,11 +36,6 @@ workflows:
             - app-install
           context:
             - aws
-      - app-test-storybook:
-          requires:
-            - app-install
-          context:
-            - aws
       - app-codecov:
           requires:
             - app-test-eslint
@@ -171,19 +166,6 @@ jobs:
           root: /home/circleci
           paths:
             - project/reports
-
-  app-test-storybook:
-    docker:
-      - image: cimg/node:18.13.0
-
-    steps:
-      - attach_workspace:
-          at: /home/circleci
-      - setup_remote_docker:
-          version: 20.10.14
-      - run: |
-          cp .env.example .env
-          make chromatic
 
   app-codecov:
     docker:

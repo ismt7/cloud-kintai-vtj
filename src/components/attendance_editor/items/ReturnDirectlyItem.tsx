@@ -1,43 +1,31 @@
 import { Box, Checkbox, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useAppDispatchV2, useAppSelectorV2 } from "../../../app/hooks";
-import {
-  selectAttendanceEditor,
-  updateAttendance,
-} from "../attendanceEditorSlice";
+import { Attendance } from "../../../client";
 
-export default function ReturnDirectlyItem() {
-  const { attendance } = useAppSelectorV2(selectAttendanceEditor);
-  const [returnDirectly, setReturnDirectly] = useState<boolean>(
-    attendance?.returnDirectlyFlag ?? false
-  );
+export default function ReturnDirectlyItem({
+  attendance,
+  callback,
+}: {
+  attendance: Attendance | null;
+  callback: (value: boolean) => void;
+}) {
+  if (!attendance) return <></>;
 
-  // attendanceが変更されたら実行される
+  const [checked, setChecked] = useState<boolean>(false);
+
   useEffect(() => {
-    if (!attendance) return;
-    setReturnDirectly(attendance?.returnDirectlyFlag ?? false);
-  }, [attendance]);
+    setChecked(attendance.return_directly_flag || false);
+  }, [attendance.return_directly_flag]);
+
+  useEffect(() => {
+    callback(checked);
+  }, [checked]);
 
   return (
     <Stack direction="row" alignItems={"center"}>
       <Box sx={{ fontWeight: "bold", width: "150px" }}>直帰</Box>
       <Box>
-        <Checkbox
-          checked={returnDirectly}
-          onChange={() => {
-            if (!attendance) return;
-
-            setReturnDirectly(!returnDirectly);
-
-            const dispatch = useAppDispatchV2();
-            void dispatch(
-              updateAttendance({
-                ...attendance,
-                returnDirectlyFlag: !returnDirectly,
-              })
-            );
-          }}
-        />
+        <Checkbox checked={checked} onChange={() => setChecked(!checked)} />
       </Box>
     </Stack>
   );

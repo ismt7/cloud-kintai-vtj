@@ -1,64 +1,70 @@
-import { useEffect, useState } from "react";
-
-import {
-  Autocomplete,
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Stack,
-  TextField,
-} from "@mui/material";
+import { Autocomplete, Box, Button, Stack, TextField } from "@mui/material";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import { Service, Staff } from "../../client";
+import { LoginStaff } from "../staff_list/StaffList";
 
-import { Staff } from "../../api";
-import { useAppDispatchV2, useAppSelectorV2 } from "../../app/hooks";
-import { selectStaffList } from "../../lib/reducers/staffListReducer";
-import fetchStaffList from "../../lib/staff/FetchStaffList";
-import Button from "../button/Button";
+interface FormState {
+  startDate: dayjs.Dayjs | null;
+  endDate: dayjs.Dayjs | null;
+  aggregateMonth: number;
+}
 
-const DownloadForm = () => {
-  const { data: staffs } = useAppSelectorV2(selectStaffList);
-  const dispatch = useAppDispatchV2();
+async function fetchStaffs(
+  loginStaff: LoginStaff,
+  callback: (value: Staff[]) => void
+) {
+  if (!loginStaff) return;
 
-  const now = dayjs();
-  const defaultStartDate = now.subtract(30, "day");
-  const defaultEndDate = now;
-  const defaultAggregateMonth = Number(now.format("YYYYMM"));
+  const staffs = await Service.getStaffs(loginStaff.id).catch((error) => {
+    console.log(error);
+    return [] as Staff[];
+  });
 
-  const [startDate, setStartDate] = useState<Dayjs | null>(defaultStartDate);
-  const [endDate, setEndDate] = useState<Dayjs | null>(defaultEndDate);
-  const [aggregateMonth, setAggregateMonth] = useState(defaultAggregateMonth);
-  const [targetStaffs, setTargetStaffs] = useState<Staff[]>(staffs);
+  callback(staffs);
+}
 
-  const handleStartDateChange = (newValue: Dayjs | null) => {
-    setStartDate(newValue);
-  };
+interface AggregateMonth {
+  id: number;
+  date: dayjs.Dayjs;
+}
 
-  const handleEndDateChange = (newValue: Dayjs | null) => {
-    setEndDate(newValue);
-  };
+const initialState: FormState = {
+  startDate: null,
+  endDate: null,
+  aggregateMonth: dayjs().month(),
+};
 
-  const handleAggregateMonthChange = (event: SelectChangeEvent<number>) => {
-    setAggregateMonth(event.target.value as number);
-  };
+const DownloadForm = ({ loginStaff }: { loginStaff: LoginStaff }) => {
+  const [formState, setFormState] = useState<FormState>(initialState);
+  const [staffs, setStaffs] = useState<Staff[]>([]);
+
+  const aggregateMonthList = [...Array<number>(12)].map(
+    (_, i) =>
+      ({
+        id: i,
+        date: dayjs().month(i),
+      } as AggregateMonth)
+  );
+
+  useEffect(() => {
+    if (!loginStaff) return;
+
+    void fetchStaffs(loginStaff, (value) => setStaffs(value));
+  }, [loginStaff]);
+
+  function changeHandler<T>(key: string, value: T) {
+    setFormState((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
+  }
 
   const handleBulkDownload = () => {
-    // console.log("bulk download");
+    // 処理なし
   };
-
-  useEffect(() => {
-    void dispatch(fetchStaffList());
-  }, []);
-
-  useEffect(() => {
-    setTargetStaffs(staffs);
-  }, [staffs]);
 
   return (
     <Stack
@@ -96,8 +102,8 @@ const DownloadForm = () => {
                   <DesktopDatePicker
                     label="開始日"
                     format="YYYY/MM/DD"
-                    value={startDate}
-                    onChange={handleStartDateChange}
+                    value={formState.startDate}
+                    onChange={(event) => changeHandler("startDate", event)}
                     slotProps={{ textField: { variant: "outlined" } }}
                   />
                 </Box>
@@ -106,39 +112,32 @@ const DownloadForm = () => {
                   <DesktopDatePicker
                     label="終了日"
                     format="YYYY/MM/DD"
-                    value={endDate}
-                    onChange={handleEndDateChange}
+                    value={formState.endDate}
+                    onChange={(event) => changeHandler("endDate", event)}
                     slotProps={{ textField: { variant: "outlined" } }}
                   />
                 </Box>
               </Stack>
             </Box>
             <Box>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  集計対象月
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={aggregateMonth}
-                  label="集計対象月"
-                  onChange={handleAggregateMonthChange}
-                >
-                  <MenuItem value={202301}>2023/01</MenuItem>
-                  <MenuItem value={202302}>2023/02</MenuItem>
-                  <MenuItem value={202303}>2023/03</MenuItem>
-                  <MenuItem value={202304}>2023/04</MenuItem>
-                  <MenuItem value={202305}>2023/05</MenuItem>
-                  <MenuItem value={202306}>2023/06</MenuItem>
-                  <MenuItem value={202307}>2023/07</MenuItem>
-                  <MenuItem value={202308}>2023/08</MenuItem>
-                  <MenuItem value={202309}>2023/09</MenuItem>
-                  <MenuItem value={202310}>2023/10</MenuItem>
-                  <MenuItem value={202311}>2023/11</MenuItem>
-                  <MenuItem value={202312}>2023/12</MenuItem>
-                </Select>
-              </FormControl>
+              <Autocomplete
+                multiple
+                limitTags={2}
+                id="multiple-limit-tags"
+                options={aggregateMonthList}
+                getOptionLabel={(option) =>
+                  `${option.date.format("YYYY年MM月")}`
+                }
+                defaultValue={[]}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="集計対象月"
+                    placeholder="集計対象月を選択..."
+                  />
+                )}
+                sx={{ width: "500px" }}
+              />
             </Box>
             <Box>
               <Autocomplete
@@ -146,9 +145,9 @@ const DownloadForm = () => {
                 multiple
                 limitTags={2}
                 id="multiple-limit-tags"
-                options={targetStaffs}
+                options={staffs}
                 getOptionLabel={(option) =>
-                  `${option.lastName} ${option.firstName}`
+                  `${option?.last_name || ""} ${option?.first_name || ""}`
                 }
                 defaultValue={[]}
                 renderInput={(params) => (
@@ -165,7 +164,7 @@ const DownloadForm = () => {
         </LocalizationProvider>
       </Box>
       <Box>
-        <Button label="一括ダウンロード" onClick={handleBulkDownload} />
+        <Button onClick={handleBulkDownload}>一括ダウンロード</Button>
       </Box>
     </Stack>
   );

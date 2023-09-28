@@ -1,20 +1,18 @@
-import { Box, Stack } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useAppDispatchV2 } from "../../app/hooks";
-import Button from "../button/Button";
-import {
-  fetchAttendance,
-  fetchRests,
-  fetchStaff,
-} from "./attendanceEditorSlice";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Attendance, Rest, Staff } from "../../client";
+import { LoginStaff } from "../staff_list/StaffList";
+import fetchAttendance from "./fetchAttendance";
+import fetchLoginStaff from "./fetchLoginStaff";
+import fetchRests from "./fetchRests";
+import fetchStaff from "./fetchStaff";
 import GoDirectlyItem from "./items/GoDirectlyItem";
 import ProductionTimeItem from "./items/ProductionTimeItem";
-import ReasonRemarksItem from "./items/ReasonRemarksItem";
-import ReasonRevisionItem from "./items/ReasonRevisionItem";
 import RemarksItem from "./items/RemarksItem";
 import RestTimeItem from "./items/RestTimeItem";
 import ReturnDirectlyItem from "./items/ReturnDirectlyItem";
@@ -23,70 +21,158 @@ import StaffNameItem from "./items/StaffNameItem";
 import WorkDateItem from "./items/WorkDateItem";
 import WorkTimeItem from "./items/WorkTimeItem";
 
-export default function AttendanceEditor() {
-  const dispatch = useAppDispatchV2();
+export default function AttendanceEditor({
+  cognitoUserId,
+}: {
+  cognitoUserId: string | undefined;
+}) {
   const { targetWorkDate, targetStaffId } = useParams();
+  const navigate = useNavigate();
+
+  const [loginStaff, setLoginStaff] = useState<LoginStaff>(null);
+  const [staff, setStaff] = useState<Staff | null>(null);
+  const [attendance, setAttendance] = useState<Attendance | null>(null);
+  const [rests, setRests] = useState<Rest[] | null>(null);
+  const [totalWorkTime, setTotalWorkTime] = useState<number>(0);
+  const [totalRestTime, setTotalRestTime] = useState<number>(0);
+  const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
+
   useEffect(() => {
-    void dispatch(
-      fetchStaff({
-        staffId: Number(targetStaffId),
-      })
-    );
+    if (!cognitoUserId) return;
 
-    void dispatch(
-      fetchAttendance({
-        staffId: Number(targetStaffId),
-        workDate: Number(targetWorkDate),
-      })
-    );
+    void fetchLoginStaff(cognitoUserId)
+      .then((value) => setLoginStaff(value))
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [cognitoUserId]);
 
-    void dispatch(
-      fetchRests({
-        staffId: Number(targetStaffId),
-        workDate: Number(targetWorkDate),
+  useEffect(() => {
+    if (!loginStaff || !targetStaffId) return;
+
+    void fetchStaff(loginStaff, Number(targetStaffId))
+      .then((value) => setStaff(value))
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [loginStaff]);
+
+  useEffect(() => {
+    if (!staff || !targetWorkDate) return;
+
+    const fromDate = dayjs(targetWorkDate);
+    const toDate = fromDate;
+
+    void fetchAttendance(staff.id, fromDate, toDate)
+      .then((value) => setAttendance(value))
+      .catch((error) => {
+        console.log(error);
+      });
+
+    void fetchRests(staff.id, fromDate, toDate)
+      .then((value) => {
+        setRests(value);
       })
-    );
-  }, []);
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [staff, targetWorkDate]);
+
+  useEffect(() => {
+    const productionTime = totalWorkTime - totalRestTime;
+    setTotalProductionTime(productionTime);
+  }, [totalWorkTime, totalRestTime]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Stack spacing={2}>
         <Box>
-          <StaffNameItem />
+          <StaffNameItem staff={staff} />
         </Box>
         <Box>
-          <WorkDateItem />
+          <WorkDateItem attendance={attendance} />
         </Box>
         <Box>
-          <GoDirectlyItem />
+          <GoDirectlyItem
+            attendance={attendance}
+            callback={(value) => {
+              if (!attendance) return;
+
+              setAttendance({
+                ...attendance,
+                go_directly_flag: value,
+              });
+            }}
+          />
         </Box>
         <Box>
-          <ReturnDirectlyItem />
+          <ReturnDirectlyItem
+            attendance={attendance}
+            callback={(value) => {
+              if (!attendance) return;
+
+              setAttendance({
+                ...attendance,
+                return_directly_flag: value,
+              });
+            }}
+          />
         </Box>
         <Box>
-          <WorkTimeItem />
+          <WorkTimeItem
+            attendance={attendance}
+            callback={({ startTime, endTime, totalTime }) => {
+              if (!attendance) return;
+
+              setAttendance({
+                ...attendance,
+                start_time: startTime.toISOString(),
+                end_time: endTime.toISOString(),
+              });
+
+              setTotalWorkTime(totalTime);
+            }}
+          />
         </Box>
         <Box>
-          <RestTimeItem />
+          <RestTimeItem
+            rests={rests}
+            staffId={staff?.id}
+            workDate={targetWorkDate}
+            callback={(editRests, totalTime) => {
+              setRests(editRests);
+              setTotalRestTime(totalTime);
+            }}
+          />
         </Box>
         <Box>
           <SeparatorItem />
         </Box>
         <Box>
-          <ProductionTimeItem />
+          <ProductionTimeItem time={totalProductionTime} />
         </Box>
         <Box>
-          <RemarksItem />
+          <RemarksItem
+            attendance={attendance}
+            callback={(value) => {
+              if (!attendance) return;
+
+              setAttendance({
+                ...attendance,
+                remarks: value,
+              });
+            }}
+          />
         </Box>
-        <Box>
+        {/* <Box>
           <hr />
-        </Box>
-        <Box>
+        </Box> */}
+        {/* <Box>
           <ReasonRevisionItem />
-        </Box>
-        <Box>
+        </Box> */}
+        {/* <Box>
           <ReasonRemarksItem />
-        </Box>
+        </Box> */}
         <Box>
           <Stack
             direction="row"
@@ -97,13 +183,19 @@ export default function AttendanceEditor() {
             <Box>
               <Button
                 color="cancel"
-                label="キャンセル"
-                onClick={() => {}}
                 variant="text"
-              />
+                sx={{ width: "150px" }}
+                onClick={() => {
+                  navigate("/admin/attendances");
+                }}
+              >
+                キャンセル
+              </Button>
             </Box>
             <Box>
-              <Button label="変更" width="150px" />
+              <Button variant="contained" sx={{ width: "150px" }}>
+                保存
+              </Button>
             </Box>
           </Stack>
         </Box>

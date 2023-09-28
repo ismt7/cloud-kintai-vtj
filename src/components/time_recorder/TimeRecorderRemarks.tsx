@@ -5,55 +5,71 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Box, IconButton, Stack, TextField } from "@mui/material";
 
-import dayjs from "dayjs";
-import { useAppDispatchV2, useAppSelectorV2 } from "../../app/hooks";
-
-import { registerRemarks, selectTimeRecorder } from "./TimeRecorderSlice";
+import { Attendance, Service, Staff } from "../../client";
 
 export interface TimeRecorderRemarksProps {
-  staffId: number | undefined;
+  staffId: Staff["id"] | undefined;
+  attendance: Attendance | null;
+  callback: (value: Attendance | null) => void;
 }
 
-const TimeRecorderRemarks = ({ staffId }: TimeRecorderRemarksProps) => {
-  const dispatch = useAppDispatchV2();
-  const timeRecorderData = useAppSelectorV2(selectTimeRecorder);
-  const currentRemarksText = timeRecorderData.data.attendance?.remarks || "";
+async function updateRemarks({
+  staffId,
+  attendance,
+  changedRemarks,
+  callback,
+}: {
+  staffId: TimeRecorderRemarksProps["staffId"];
+  attendance: TimeRecorderRemarksProps["attendance"];
+  changedRemarks: Attendance["remarks"];
+  callback: (value: Attendance | null) => void;
+}) {
+  if (!staffId || !attendance) return;
 
-  const [remarksTextFieldDisabled, setRemarksTextFieldDisabled] =
-    useState<boolean>(false);
-  const [remarksSubmitButtonVisible, setRemarksSubmitButtonVisible] =
-    useState<boolean>(false);
-  const [remarksText, setRemarksText] = useState<string>(
-    currentRemarksText || ""
-  );
-  const [remarksSubmitButtonDisabled, setRemarksSubmitButtonDisabled] =
-    useState<boolean>(false);
-  const [remarksClearButtonDisabled, setRemarksClearButtonDisabled] =
-    useState<boolean>(true);
+  const { id: attendanceId } = attendance;
+  const response = await Service.updateAttendance(
+    attendanceId,
+    {
+      ...attendance,
+      remarks: changedRemarks,
+    },
+    staffId
+  ).catch((error) => {
+    console.log(error);
+    return null;
+  });
+
+  if (!response) {
+    callback(null);
+    return;
+  }
+
+  callback(response);
+}
+
+const TimeRecorderRemarks = ({
+  staffId,
+  attendance,
+  callback,
+}: TimeRecorderRemarksProps) => {
+  const [formState, setFormState] = useState<Attendance["remarks"]>(undefined);
+  const [isChanged, setIsChanged] = useState(false);
 
   useEffect(() => {
-    setRemarksText(currentRemarksText || "");
-    setRemarksTextFieldDisabled(false);
-    setRemarksSubmitButtonDisabled(false);
-    setRemarksSubmitButtonVisible(false);
-    setRemarksClearButtonDisabled(false);
-  }, [currentRemarksText]);
+    setFormState(attendance?.remarks);
+  }, [attendance]);
 
-  const handleClickOfRemarksSaveButton = ({ remarks }: { remarks: string }) => {
-    if (staffId === undefined) {
-      return;
-    }
+  useEffect(() => {
+    setIsChanged(attendance?.remarks !== formState);
+  }, [formState]);
 
-    const now = dayjs();
-    const workDate = Number(now.format("YYYYMMDD"));
-
-    void dispatch(
-      registerRemarks({
-        staffId,
-        workDate,
-        remarks,
-      })
-    );
+  const clickSaveButtonHandler = () => {
+    void updateRemarks({
+      staffId,
+      attendance,
+      changedRemarks: formState,
+      callback,
+    });
   };
 
   return (
@@ -64,21 +80,15 @@ const TimeRecorderRemarks = ({ staffId }: TimeRecorderRemarksProps) => {
           multiline
           minRows={2}
           fullWidth
-          value={remarksText}
-          disabled={remarksTextFieldDisabled}
-          onChange={(event) => {
-            const currentRemarks = currentRemarksText || "";
-            setRemarksSubmitButtonVisible(
-              event.target.value !== currentRemarks
-            );
-
-            setRemarksText(event.target.value);
-          }}
+          value={formState}
           placeholder="備考欄：客先名やイベント名などを記載"
+          onChange={(event) => {
+            setFormState(event.target.value);
+          }}
         />
       </Box>
-      {remarksSubmitButtonVisible && (
-        <Box>
+      <Box>
+        {isChanged && (
           <Stack
             direction="row"
             justifyContent="flex-end"
@@ -86,34 +96,22 @@ const TimeRecorderRemarks = ({ staffId }: TimeRecorderRemarksProps) => {
             spacing={0}
           >
             <Box>
-              <IconButton
-                disabled={remarksSubmitButtonDisabled}
-                onClick={() => {
-                  setRemarksTextFieldDisabled(true);
-                  setRemarksClearButtonDisabled(true);
-                  setRemarksSubmitButtonDisabled(true);
-                  handleClickOfRemarksSaveButton({
-                    remarks: remarksText,
-                  });
-                }}
-              >
+              <IconButton onClick={clickSaveButtonHandler}>
                 <CheckIcon color="success" data-testid="remarksSave" />
               </IconButton>
             </Box>
             <Box>
               <IconButton
-                disabled={remarksClearButtonDisabled}
                 onClick={() => {
-                  setRemarksText(currentRemarksText || "");
-                  setRemarksSubmitButtonVisible(false);
+                  setFormState(attendance?.remarks);
                 }}
               >
                 <ClearIcon color="error" data-testid="remarksClear" />
               </IconButton>
             </Box>
           </Stack>
-        </Box>
-      )}
+        )}
+      </Box>
     </Stack>
   );
 };

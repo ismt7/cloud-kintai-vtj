@@ -2,157 +2,170 @@
 import AddAlarmIcon from "@mui/icons-material/AddAlarm";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, IconButton, Stack } from "@mui/material";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
+import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useAppDispatchV2, useAppSelectorV2 } from "../../../app/hooks";
-import { OriginRest } from "../../../lib/time_record/FetchRest";
-import { selectAttendanceEditor } from "../attendanceEditorSlice";
-import { updateRests } from "../mocks/MockReducer";
+import { Rest } from "../../../client";
 
-export default function RestTimeItem() {
-  const { rests } = useAppSelectorV2(selectAttendanceEditor);
+const initialRest = (staffId: number, workDate: string): Rest => ({
+  staff_id: staffId,
+  work_date: workDate,
+  start_time: undefined,
+  end_time: undefined,
+  id: 0,
+  created_at: "",
+  updated_at: null,
+  created_by: staffId,
+  updated_by: null,
+});
 
-  const [restTimes, setRestTimes] = useState<OriginRest[]>(rests ?? []);
-  const [totalRestTimes, setTotalRestTimes] = useState<string[]>([]);
+function RestTimePicker({
+  rest,
+  callback,
+  onDelete,
+}: {
+  rest: Rest;
+  callback: (
+    startTime: dayjs.Dayjs | null,
+    endTime: dayjs.Dayjs | null
+  ) => void;
+  onDelete?: () => void;
+}) {
+  const [startTime, setStartTime] = useState<dayjs.Dayjs | null>(null);
+  const [endTime, setEndTime] = useState<dayjs.Dayjs | null>(null);
+  const [totalRestTime, setTotalRestTime] = useState<string>("0.0");
 
   useEffect(() => {
-    setRestTimes(rests ?? []);
+    setStartTime(rest.start_time ? dayjs(rest.start_time) : null);
+  }, [rest.start_time]);
 
-    // 合計時間を計算
-    const newTotalRestTimes = rests?.map((rest) => {
-      const { startTime, endTime } = rest;
-      if (!startTime || !endTime) {
-        return "0";
-      }
+  useEffect(() => {
+    setEndTime(rest.end_time ? dayjs(rest.end_time) : null);
+  }, [rest.end_time]);
 
-      const diff = dayjs(endTime).diff(startTime, "hour", true);
-      return diff.toFixed(1);
-    });
-    setTotalRestTimes(newTotalRestTimes ?? []);
+  useEffect(() => {
+    if (startTime && endTime) {
+      const diff = endTime.diff(startTime, "hour", true);
+      setTotalRestTime(diff.toFixed(1));
+    }
+  }, [startTime, endTime]);
+
+  return (
+    <Stack direction="row" spacing={1} alignItems={"center"}>
+      <Box>
+        <TimePicker
+          value={startTime}
+          ampm={false}
+          viewRenderers={{
+            hours: renderTimeViewClock,
+            minutes: renderTimeViewClock,
+          }}
+          onChange={(newStartTime) => {
+            setStartTime(newStartTime);
+            callback(newStartTime, endTime);
+          }}
+        />
+      </Box>
+      <Box>～</Box>
+      <Box>
+        <TimePicker
+          value={endTime}
+          ampm={false}
+          viewRenderers={{
+            hours: renderTimeViewClock,
+            minutes: renderTimeViewClock,
+          }}
+          onChange={(newEndTime) => {
+            setEndTime(newEndTime);
+            callback(startTime, newEndTime);
+          }}
+        />
+      </Box>
+      <Box>
+        <IconButton aria-label="staff-search" onClick={onDelete}>
+          <DeleteIcon />
+        </IconButton>
+      </Box>
+      <Box sx={{ flexGrow: 1 }} textAlign={"right"}>
+        {`${totalRestTime}時間`}
+      </Box>
+    </Stack>
+  );
+}
+
+export default function RestTimeItem({
+  staffId,
+  workDate,
+  rests,
+  callback,
+}: {
+  staffId: number | undefined;
+  workDate: string | undefined;
+  rests: Rest[] | null;
+  callback: (editRests: Rest[], totalTime: number) => void;
+}) {
+  if (!rests) return <></>;
+
+  const [editRests, setEditRests] = useState<Rest[]>(rests);
+
+  useEffect(() => {
+    setEditRests(rests);
   }, [rests]);
 
-  const dispatch = useAppDispatchV2();
   useEffect(() => {
-    void dispatch(updateRests(restTimes));
-  }, [restTimes]);
+    if (!editRests) return;
 
-  const formItems = restTimes.map((restTime, index) => {
-    const { startTime, endTime } = restTime;
+    let totalTime = 0;
+    editRests.forEach((rest) => {
+      if (!rest.start_time || !rest.end_time) return;
 
-    return (
-      <Box key={index}>
-        <Stack direction="row" spacing={2} alignItems={"center"}>
-          <Box>
-            <Stack direction="row" spacing={1} alignItems={"center"}>
-              <Box>
-                <TimePicker
-                  label="開始時刻"
-                  ampm={false}
-                  value={startTime ? dayjs(startTime) : null}
-                  viewRenderers={{
-                    hours: renderTimeViewClock,
-                    minutes: renderTimeViewClock,
-                  }}
-                  onChange={(newStartTime) => {
-                    const newRestTimes = [...restTimes];
-                    newRestTimes[index] = {
-                      ...newRestTimes[index],
-                      startTime: newStartTime?.toISOString() ?? undefined,
-                    };
-                    setRestTimes(newRestTimes);
+      const startTime = dayjs(rest.start_time);
+      const endTime = dayjs(rest.end_time);
 
-                    // 合計時間を計算
-                    if (newStartTime && endTime) {
-                      const newTotalRestTimes = [...totalRestTimes];
-                      const diff = dayjs(endTime).diff(
-                        newStartTime,
-                        "hour",
-                        true
-                      );
-                      newTotalRestTimes[index] = diff.toFixed(1);
-                      setTotalRestTimes(newTotalRestTimes);
-                    }
-                  }}
-                />
-              </Box>
-              <Box>～</Box>
-              <Box>
-                <TimePicker
-                  label="終了時刻"
-                  ampm={false}
-                  value={endTime ? dayjs(endTime) : null}
-                  viewRenderers={{
-                    hours: renderTimeViewClock,
-                    minutes: renderTimeViewClock,
-                  }}
-                  onChange={(newEndTime) => {
-                    const newRestTimes = [...restTimes];
-                    newRestTimes[index] = {
-                      ...newRestTimes[index],
-                      endTime: newEndTime?.toISOString() ?? undefined,
-                    };
-                    setRestTimes(newRestTimes);
+      if (!startTime.isValid() || !endTime.isValid()) return;
 
-                    // 合計時間を計算
-                    if (newEndTime && startTime) {
-                      const newTotalRestTimes = [...totalRestTimes];
-                      const diff = dayjs(newEndTime).diff(
-                        startTime,
-                        "hour",
-                        true
-                      );
-                      newTotalRestTimes[index] = diff.toFixed(1);
-                      setTotalRestTimes(newTotalRestTimes);
-                    }
-                  }}
-                />
-              </Box>
-            </Stack>
-          </Box>
-          <Box>
-            <IconButton
-              aria-label="staff-search"
-              onClick={() => {
-                const newRestTimes = [...restTimes];
-                newRestTimes.splice(index, 1);
-                setRestTimes(newRestTimes);
-              }}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </Box>
-          <Box sx={{ flexGrow: 2 }} textAlign={"right"}>
-            {totalRestTimes[index] ?? "0.0"}時間
-          </Box>
-        </Stack>
-      </Box>
-    );
-  });
+      const diff = endTime.diff(startTime, "hour", true);
+      totalTime += diff;
+    });
+
+    callback(editRests, totalTime);
+  }, [editRests]);
 
   return (
     <Stack direction="row">
       <Box sx={{ fontWeight: "bold", width: "150px" }}>休憩時間</Box>
       <Box sx={{ flexGrow: 2 }}>
         <Stack spacing={1}>
-          {formItems}
+          {editRests.map((rest, index) => (
+            <Box key={index}>
+              <RestTimePicker
+                rest={rest}
+                callback={(startTime, endTime) => {
+                  const newEditRests = [...editRests];
+                  newEditRests[index] = {
+                    ...newEditRests[index],
+                    start_time: startTime?.toISOString() ?? undefined,
+                    end_time: endTime?.toISOString() ?? undefined,
+                  };
+                  setEditRests(newEditRests);
+                }}
+                onDelete={() => {
+                  const newEditRests = [...editRests];
+                  newEditRests.splice(index, 1);
+                  setEditRests(newEditRests);
+                }}
+              />
+            </Box>
+          ))}
           <Box>
             <IconButton
               aria-label="staff-search"
               onClick={() => {
-                const { targetWorkDate, targetStaffId } = useParams();
+                if (!staffId || !workDate) return;
 
-                const newRestTimes = [...(restTimes ?? [])];
-                newRestTimes.push({
-                  restTimeId: 0,
-                  staffId: Number(targetStaffId),
-                  workDate: targetWorkDate,
-                  startTime: undefined,
-                  endTime: undefined,
-                });
-                setRestTimes(newRestTimes);
+                const newEditRests = [...editRests];
+                newEditRests.push(initialRest(staffId, workDate));
+                setEditRests(newEditRests);
               }}
             >
               <AddAlarmIcon />

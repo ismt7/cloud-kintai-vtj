@@ -1,15 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { Box, Stack, Typography } from "@mui/material";
-import dayjs from "dayjs";
 
-import { useAppDispatchV2, useAppSelectorV2 } from "../../app/hooks";
-import {
-  LoginStaffStatus,
-  selectLoginStaff,
-} from "../../lib/reducers/loginStaffReducer";
+import { Attendance, Rest, Staff } from "../../client";
 import Clock from "../clock/Clock";
-
+import fetchAttendance from "./fetchAttendance";
+import fetchLoginStaff from "./fetchLoginStaff";
+import fetchRest from "./fetchRest";
 import ClockInItem from "./items/ClockInItem";
 import ClockOutItem from "./items/ClockOutItem";
 import GoDirectlyItem from "./items/GoDirectlyItem";
@@ -17,95 +14,122 @@ import RestEndItem from "./items/RestEndItem";
 import RestStartItem from "./items/RestStartItem";
 import ReturnDirectly from "./items/ReturnDirectlyItem";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
-import { fetchCurrentData, selectTimeRecorder } from "./TimeRecorderSlice";
+import { getCurrentWorkStatusV2, WorkStatus } from "./WorkStatusCodes";
 
-const TimeRecorder = () => {
-  const { workStatus } = useAppSelectorV2(selectTimeRecorder);
-  const { data: staff, status: staffStateStatus } =
-    useAppSelectorV2(selectLoginStaff);
+const TimeRecorder = ({
+  cognitoUserId,
+}: {
+  cognitoUserId: string | undefined;
+}) => {
+  const [staff, setStaff] = useState<Staff | null>(null);
+  const [attendance, setAttendance] = useState<Attendance | null>(null);
+  const [rest, setRest] = useState<Rest | null>(null);
+  const [workStatus, setWorkStatus] = useState<WorkStatus | null>(null);
 
-  const dispatch = useAppDispatchV2();
   useEffect(() => {
-    if (staffStateStatus === LoginStaffStatus.ERROR || !staff) {
-      return;
-    }
+    if (!cognitoUserId) return;
+    void fetchLoginStaff(cognitoUserId, (value) => setStaff(value));
+  }, [cognitoUserId]);
 
-    const now = dayjs();
-    const workDate = Number(now.format("YYYYMMDD"));
+  useEffect(() => {
+    if (!staff) return;
+    void fetchAttendance(staff, (value) => setAttendance(value));
+    void fetchRest(staff, (value) => setRest(value));
+  }, [staff]);
 
-    void dispatch(fetchCurrentData({ staffId: staff.staffId, workDate }));
-  }, []);
+  useEffect(() => {
+    setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+  }, [attendance, rest]);
 
   return (
     <Box width="400px">
       <Stack spacing={3}>
         <Box>
           <Typography variant="h6" textAlign="center">
-            {workStatus.text}
+            {workStatus?.text || "読み込み中..."}
           </Typography>
         </Box>
-        <Box>
-          <Clock />
-        </Box>
-        <Box>
-          <Stack
-            direction="row"
-            spacing={10}
-            alignItems="flex-start"
-            justifyContent="space-evenly"
-          >
-            <Box>
-              <ClockInItem staffId={staff?.staffId} workStatus={workStatus} />
-            </Box>
-            <Box>
-              <ClockOutItem staffId={staff?.staffId} workStatus={workStatus} />
-            </Box>
+        <Clock />
+        <Stack
+          direction="row"
+          spacing={10}
+          alignItems="flex-start"
+          justifyContent="space-evenly"
+        >
+          <ClockInItem
+            staffId={staff?.id}
+            workStatus={workStatus}
+            attendance={attendance}
+            callback={(value) => {
+              setAttendance(value);
+              setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+            }}
+          />
+          <ClockOutItem
+            staffId={staff?.id}
+            workStatus={workStatus}
+            rest={rest}
+            callback={(value) => {
+              setRest(value);
+              setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+            }}
+          />
+        </Stack>
+        <Stack
+          direction="row"
+          spacing={5}
+          alignItems="flex-start"
+          justifyContent="center"
+        >
+          <Stack direction="row" spacing={1}>
+            <GoDirectlyItem
+              staffId={staff?.id}
+              workStatus={workStatus}
+              attendance={attendance}
+              callback={(value) => {
+                setAttendance(value);
+                setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+              }}
+            />
+            <ReturnDirectly
+              staffId={staff?.id}
+              workStatus={workStatus}
+              attendance={attendance}
+              callback={(value) => {
+                setAttendance(value);
+                setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+              }}
+            />
           </Stack>
-        </Box>
-        <Box>
-          <Stack
-            direction="row"
-            spacing={5}
-            alignItems="flex-start"
-            justifyContent="center"
-          >
-            <Box>
-              <Stack direction="row" spacing={1}>
-                <Box>
-                  <GoDirectlyItem
-                    staffId={staff?.staffId}
-                    workStatus={workStatus}
-                  />
-                </Box>
-                <Box>
-                  <ReturnDirectly
-                    staffId={staff?.staffId}
-                    workStatus={workStatus}
-                  />
-                </Box>
-              </Stack>
-            </Box>
-            <Box>
-              <Stack direction="row" spacing={1}>
-                <Box>
-                  <RestStartItem
-                    staffId={staff?.staffId}
-                    workStatus={workStatus}
-                  />
-                </Box>
-                <Box>
-                  <RestEndItem
-                    staffId={staff?.staffId}
-                    workStatus={workStatus}
-                  />
-                </Box>
-              </Stack>
-            </Box>
+          <Stack direction="row" spacing={1}>
+            <RestStartItem
+              staffId={staff?.id}
+              workStatus={workStatus}
+              rest={rest}
+              callback={(value) => {
+                setRest(value);
+                setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+              }}
+            />
+            <RestEndItem
+              staffId={staff?.id}
+              workStatus={workStatus}
+              rest={rest}
+              callback={(value) => {
+                setRest(value);
+                setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+              }}
+            />
           </Stack>
-        </Box>
-        <Box>
-          <TimeRecorderRemarks staffId={staff?.staffId} />
-        </Box>
+        </Stack>
+        <TimeRecorderRemarks
+          staffId={staff?.id}
+          attendance={attendance}
+          callback={(value) => {
+            setAttendance(value);
+            setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+          }}
+        />
       </Stack>
     </Box>
   );

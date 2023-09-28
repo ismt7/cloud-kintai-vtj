@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 const MockStaffList = [
   {
     staff_id: 990,
@@ -5,13 +7,11 @@ const MockStaffList = [
     first_name: "太郎",
     mail_address: "tanaka@example.com",
     icon_path: "",
-    staff_roles: {
-      role_id: 2,
-      staff_id: 990,
-      role: {
-        role_name: "スタッフ",
-      },
-    },
+    cognito_user_id: "99999999-9999-9999-9999-999999999990",
+    created_at: dayjs().format("YYYY-MM-DDTHH:mm:ssZ"),
+    updated_at: null,
+    created_by: 2,
+    updated_by: null,
   },
   {
     staff_id: 991,
@@ -19,13 +19,11 @@ const MockStaffList = [
     first_name: "花子",
     mail_address: "yamada@example.com",
     icon_path: "",
-    staff_roles: {
-      role_id: 2,
-      staff_id: 991,
-      role: {
-        role_name: "スタッフ",
-      },
-    },
+    cognito_user_id: "99999999-9999-9999-9999-999999999991",
+    created_at: dayjs().format("YYYY-MM-DDTHH:mm:ssZ"),
+    updated_at: null,
+    created_by: 2,
+    updated_by: null,
   },
   {
     staff_id: 992,
@@ -33,13 +31,11 @@ const MockStaffList = [
     first_name: "次郎",
     mail_address: "sato@example.com",
     icon_path: "",
-    staff_roles: {
-      role_id: 2,
-      staff_id: 992,
-      role: {
-        role_name: "スタッフ",
-      },
-    },
+    cognito_user_id: "99999999-9999-9999-9999-999999999992",
+    created_at: dayjs().format("YYYY-MM-DDTHH:mm:ssZ"),
+    updated_at: null,
+    created_by: 2,
+    updated_by: null,
   },
   {
     staff_id: 993,
@@ -47,13 +43,11 @@ const MockStaffList = [
     first_name: "三郎",
     mail_address: "suzuki@example.com",
     icon_path: "",
-    staff_roles: {
-      role_id: 2,
-      staff_id: 993,
-      role: {
-        role_name: "スタッフ",
-      },
-    },
+    cognito_user_id: "99999999-9999-9999-9999-999999999993",
+    created_at: dayjs().format("YYYY-MM-DDTHH:mm:ssZ"),
+    updated_at: null,
+    created_by: 2,
+    updated_by: null,
   },
   {
     staff_id: 994,
@@ -61,13 +55,11 @@ const MockStaffList = [
     first_name: "四郎",
     mail_address: "takahashi@example.com",
     icon_path: "",
-    staff_roles: {
-      role_id: 2,
-      staff_id: 994,
-      role: {
-        role_name: "スタッフ",
-      },
-    },
+    cognito_user_id: "99999999-9999-9999-9999-999999999994",
+    created_at: dayjs().format("YYYY-MM-DDTHH:mm:ssZ"),
+    updated_at: null,
+    created_by: 2,
+    updated_by: null,
   },
   {
     staff_id: 995,
@@ -75,13 +67,11 @@ const MockStaffList = [
     first_name: "五郎",
     mail_address: "ito@example.com",
     icon_path: "",
-    staff_roles: {
-      role_id: 2,
-      staff_id: 995,
-      role: {
-        role_name: "スタッフ",
-      },
-    },
+    cognito_user_id: "99999999-9999-9999-9999-999999999995",
+    created_at: dayjs().format("YYYY-MM-DDTHH:mm:ssZ"),
+    updated_at: null,
+    created_by: 2,
+    updated_by: null,
   },
   {
     staff_id: 996,
@@ -89,13 +79,11 @@ const MockStaffList = [
     first_name: "六郎",
     mail_address: "watanabe@example.com",
     icon_path: "",
-    staff_roles: {
-      role_id: 2,
-      staff_id: 996,
-      role: {
-        role_name: "スタッフ",
-      },
-    },
+    cognito_user_id: "99999999-9999-9999-9999-999999999996",
+    created_at: dayjs().format("YYYY-MM-DDTHH:mm:ssZ"),
+    updated_at: null,
+    created_by: 2,
+    updated_by: null,
   },
   {
     staff_id: 997,
@@ -103,13 +91,11 @@ const MockStaffList = [
     first_name: "七郎",
     mail_address: "yamamoto@example.com",
     icon_path: "",
-    staff_roles: {
-      role_id: 2,
-      staff_id: 997,
-      role: {
-        role_name: "スタッフ",
-      },
-    },
+    cognito_user_id: "99999999-9999-9999-9999-999999999997",
+    created_at: dayjs().format("YYYY-MM-DDTHH:mm:ssZ"),
+    updated_at: null,
+    created_by: 2,
+    updated_by: null,
   },
   {
     staff_id: 998,
@@ -117,13 +103,11 @@ const MockStaffList = [
     first_name: "八郎",
     mail_address: "nakamura@example.com",
     icon_path: "",
-    staff_roles: {
-      role_id: 2,
-      staff_id: 998,
-      role: {
-        role_name: "スタッフ",
-      },
-    },
+    cognito_user_id: "99999999-9999-9999-9999-999999999998",
+    created_at: dayjs().format("YYYY-MM-DDTHH:mm:ssZ"),
+    updated_at: null,
+    created_by: 2,
+    updated_by: null,
   },
   {
     staff_id: 999,
@@ -131,13 +115,11 @@ const MockStaffList = [
     first_name: "九郎",
     mail_address: "kobayashi@example.com",
     icon_path: "",
-    staff_roles: {
-      role_id: 2,
-      staff_id: 999,
-      role: {
-        role_name: "スタッフ",
-      },
-    },
+    cognito_user_id: "99999999-9999-9999-9999-999999999999",
+    created_at: dayjs().format("YYYY-MM-DDTHH:mm:ssZ"),
+    updated_at: null,
+    created_by: 2,
+    updated_by: null,
   },
 ];
 export default MockStaffList;

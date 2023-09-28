@@ -1,75 +1,45 @@
 // cspell:ignore ampm
 import { Box, Stack, Typography } from "@mui/material";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
+import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { useAppDispatchV2, useAppSelectorV2 } from "../../../app/hooks";
-import {
-  selectAttendanceEditor,
-  updateAttendance,
-} from "../attendanceEditorSlice";
+import { Attendance } from "../../../client";
 
-export default function WorkTimeItem() {
-  const dispatch = useAppDispatchV2();
-  const { attendance } = useAppSelectorV2(selectAttendanceEditor);
+export default function WorkTimeItem({
+  attendance,
+  callback,
+}: {
+  attendance: Attendance | null;
+  callback: (value: {
+    startTime: dayjs.Dayjs;
+    endTime: dayjs.Dayjs;
+    totalTime: number;
+  }) => void;
+}) {
+  if (!attendance) return <></>;
 
   const [startTime, setStartTime] = useState<dayjs.Dayjs | null>(null);
   const [endTime, setEndTime] = useState<dayjs.Dayjs | null>(null);
-  const [totalTime, setTotalTime] = useState<string>("0.0");
+  const [totalWorkTime, setTotalWorkTime] = useState<string>("0.0");
 
   useEffect(() => {
-    if (!attendance) return;
-
-    const attendanceStartTime = dayjs(attendance.startTime);
+    const attendanceStartTime = dayjs(attendance.start_time);
     setStartTime(attendanceStartTime);
+  }, [attendance.start_time]);
 
-    const attendanceEndTime = dayjs(attendance.endTime);
+  useEffect(() => {
+    const attendanceEndTime = dayjs(attendance.end_time);
     setEndTime(attendanceEndTime);
+  }, [attendance.end_time]);
 
-    // 合計時間を計算
-    if (!attendanceStartTime || !attendanceEndTime) return;
+  useEffect(() => {
+    if (!startTime || !endTime) return;
+    if (!startTime.isValid() || !endTime.isValid()) return;
 
-    const diff = attendanceEndTime.diff(attendanceStartTime, "hour", true);
-    setTotalTime(diff.toFixed(1));
-  }, [attendance]);
-
-  const handleStartTimeChange = (newStartTime: dayjs.Dayjs | null) => {
-    if (!newStartTime || !attendance) return;
-
-    setStartTime(newStartTime);
-
-    void dispatch(
-      updateAttendance({
-        ...attendance,
-        startTime: newStartTime.toISOString(),
-      })
-    );
-
-    // 合計時間を計算
-    if (!endTime) return;
-    const diff = endTime.diff(newStartTime, "hour", true);
-    setTotalTime(diff.toFixed(1));
-  };
-
-  const handleEndTimeChange = (newEndTime: dayjs.Dayjs | null) => {
-    if (!newEndTime || !attendance) return;
-
-    setEndTime(newEndTime);
-
-    void dispatch(
-      updateAttendance({
-        ...attendance,
-        endTime: newEndTime.toISOString(),
-      })
-    );
-
-    // 合計時間を計算
-    if (!startTime) return;
-
-    const diff = newEndTime.diff(startTime, "hour", true);
-    setTotalTime(diff.toFixed(1));
-  };
+    const diff = endTime.diff(startTime, "hour", true);
+    setTotalWorkTime(diff.toFixed(1));
+    callback({ startTime, endTime, totalTime: diff });
+  }, [startTime, endTime]);
 
   return (
     <Stack
@@ -78,39 +48,41 @@ export default function WorkTimeItem() {
       sx={{ boxSizing: "border-box" }}
     >
       <Box sx={{ fontWeight: "bold", width: "150px" }}>勤務時間</Box>
-      <Box sx={{ flexGrow: 2 }}>
+      <Box sx={{ flexGrow: 1 }}>
         <Stack direction="row" spacing={2} alignItems={"center"}>
           <Box>
             <Stack direction="row" spacing={1} alignItems={"center"}>
               <Box>
                 <TimePicker
-                  label="開始時刻"
                   ampm={false}
                   value={startTime}
                   viewRenderers={{
                     hours: renderTimeViewClock,
                     minutes: renderTimeViewClock,
                   }}
-                  onChange={handleStartTimeChange}
+                  onChange={(value) => {
+                    setStartTime(value);
+                  }}
                 />
               </Box>
               <Box>～</Box>
               <Box>
                 <TimePicker
-                  label="終了時刻"
                   ampm={false}
                   value={endTime}
                   viewRenderers={{
                     hours: renderTimeViewClock,
                     minutes: renderTimeViewClock,
                   }}
-                  onChange={handleEndTimeChange}
+                  onChange={(value) => {
+                    setEndTime(value);
+                  }}
                 />
               </Box>
             </Stack>
           </Box>
-          <Box sx={{ flexGrow: 2 }} textAlign={"right"}>
-            <Typography variant="body1">{totalTime}時間</Typography>
+          <Box sx={{ flexGrow: 1 }} textAlign={"right"}>
+            <Typography variant="body1">{totalWorkTime}時間</Typography>
           </Box>
         </Stack>
       </Box>

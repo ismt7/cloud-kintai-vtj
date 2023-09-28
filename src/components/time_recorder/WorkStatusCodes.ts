@@ -1,3 +1,4 @@
+import { Attendance, Rest } from "../../client";
 import { OriginAttendance } from "../../lib/time_record/FetchAttendance";
 import { OriginRest } from "../../lib/time_record/FetchRest";
 
@@ -45,6 +46,24 @@ function isWorking(
   return true;
 }
 
+function isWorkingV2(attendance: Attendance | null, rest: Rest | null) {
+  if (!attendance) return false;
+
+  if (rest) {
+    if (rest.start_time && !rest.end_time) {
+      return false;
+    }
+  }
+
+  if (!attendance.start_time) {
+    return false;
+  }
+
+  if (attendance.end_time) return false;
+
+  return true;
+}
+
 function isResting({
   attendance,
   rest,
@@ -63,10 +82,36 @@ function isResting({
   return true;
 }
 
+function isRestingV2({
+  attendance,
+  rest,
+}: {
+  attendance: Attendance | null;
+  rest: Rest | null;
+}) {
+  if (!attendance) return false;
+  if (!attendance.start_time) return false;
+  if (attendance.end_time) return false;
+
+  if (!rest) return false;
+  if (!rest.start_time) return false;
+  if (rest.end_time) return false;
+
+  return true;
+}
+
 function isLeaveWork(attendance: OriginAttendance | null) {
   if (!attendance) return false;
   if (!attendance.startTime) return false;
   if (!attendance.endTime) return false;
+
+  return true;
+}
+
+function isLeaveWorkV2(attendance: Attendance | null) {
+  if (!attendance) return false;
+  if (!attendance.start_time) return false;
+  if (!attendance.end_time) return false;
 
   return true;
 }
@@ -90,6 +135,37 @@ export function getCurrentWorkStatus(
   }
 
   if (isLeaveWork(attendance)) {
+    return {
+      code: WorkStatusCodes.LEFT_WORK,
+      text: WorkStatusTexts.LEFT_WORK,
+    };
+  }
+
+  return {
+    code: WorkStatusCodes.BEFORE_WORK,
+    text: WorkStatusTexts.BEFORE_WORK,
+  };
+}
+
+export function getCurrentWorkStatusV2(
+  attendance: Attendance | null,
+  rest: Rest | null
+): WorkStatus {
+  if (isWorkingV2(attendance, rest)) {
+    return {
+      code: WorkStatusCodes.WORKING,
+      text: WorkStatusTexts.WORKING,
+    };
+  }
+
+  if (isRestingV2({ attendance, rest })) {
+    return {
+      code: WorkStatusCodes.RESTING,
+      text: WorkStatusTexts.RESTING,
+    };
+  }
+
+  if (isLeaveWorkV2(attendance)) {
     return {
       code: WorkStatusCodes.LEFT_WORK,
       text: WorkStatusTexts.LEFT_WORK,

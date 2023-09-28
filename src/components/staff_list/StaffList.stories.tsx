@@ -1,18 +1,43 @@
 import { expect } from "@storybook/jest";
 import { Meta, StoryObj } from "@storybook/react";
 import { screen, userEvent, waitFor } from "@storybook/testing-library";
-import { Provider } from "react-redux";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
+import GetStaffs from "./mocks/ApiMock";
+import StaffList, { LoginStaff } from "./StaffList";
 
-import GetStaffList200 from "./mocks/ApiMock";
-import GetDefaultStoreMock from "./mocks/ReducerMock";
-import StaffList from "./StaffList";
+const loginStaff: LoginStaff = {
+  last_name: "ダミー",
+  first_name: "太郎",
+  mail_address: "example@example.com",
+  icon_path: "",
+  id: 1,
+  cognito_user_id: "DUMMY_COGNITO_USER_ID",
+  created_at: "2023-01-01T00:00:00Z",
+  updated_at: null,
+  created_by: 1,
+  updated_by: null,
+};
 
 const meta: Meta<typeof StaffList> = {
   component: StaffList,
+  parameters: {
+    msw: {
+      handlers: [GetStaffs()],
+    },
+  },
   render: () => (
-    <Provider store={GetDefaultStoreMock()}>
-      <StaffList />
-    </Provider>
+    <MemoryRouter initialEntries={["/admin/staff/999"]}>
+      <Routes>
+        <Route
+          path="/admin/staff"
+          element={<StaffList loginStaff={loginStaff} />}
+        />
+        <Route
+          path="/admin/staff/:staffId"
+          element={<StaffList loginStaff={loginStaff} />}
+        />
+      </Routes>
+    </MemoryRouter>
   ),
 };
 
@@ -21,11 +46,6 @@ type Story = StoryObj<typeof StaffList>;
 
 export const Default: Story = {
   name: "デフォルト",
-  parameters: {
-    msw: {
-      handlers: [GetStaffList200()],
-    },
-  },
   play: async () => {
     const sleep = async (ms: number | undefined) =>
       new Promise<void>((resolve) => {

@@ -1,21 +1,49 @@
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import { Box, Container, IconButton, Stack, Typography } from "@mui/material";
+import {
+  Avatar,
+  Badge,
+  Box,
+  Container,
+  IconButton,
+  Stack,
+} from "@mui/material";
 
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import { useAppSelectorV2 } from "../../app/hooks";
+import { useEffect, useState } from "react";
+import { Staff, StaffRole } from "../../client";
 import LogImage from "../../images/logo.png";
-import { selectLoginStaff } from "../../lib/reducers/loginStaffReducer";
 import Button from "../button/Button";
 import Link from "../link/Link";
+import fetchLoginStaff from "./fetchLoginStaff";
 
-const Header = () => {
-  const { signOut, user } = useAuthenticator();
+const Header = ({
+  cognitoUserId,
+  mailAddress,
+  signOut,
+}: {
+  cognitoUserId: string | undefined;
+  mailAddress: string | undefined;
+  signOut: () => void;
+}) => {
+  const [staff, setStaff] = useState<Staff | null>(null);
+  const [staffRole, setStaffRole] = useState<StaffRole | null>(null);
   const navigate = useNavigate();
 
-  const staff = useAppSelectorV2(selectLoginStaff);
+  useEffect(() => {
+    if (!cognitoUserId || !mailAddress) {
+      return;
+    }
+
+    void fetchLoginStaff(
+      cognitoUserId,
+      mailAddress,
+      (createdStaff, createdStaffRole) => {
+        setStaff(createdStaff);
+        setStaffRole(createdStaffRole);
+      }
+    );
+  }, [cognitoUserId, mailAddress]);
 
   const signIn = () => {
     navigate("/login");
@@ -40,47 +68,38 @@ const Header = () => {
   );
 
   const MenuItem = ({ roleId }: { roleId?: number }) => {
+    const viewableList = [];
     const menuList = [
-      {
-        label: "勤怠打刻",
-        href: "/register",
-      },
-      {
-        label: "勤怠一覧",
-        href: "/list",
-      },
-      {
-        label: "リンク",
-        href: "/",
-      },
-      {
-        label: "リンク",
-        href: "/",
-      },
+      { label: "勤怠打刻", href: "/register" },
+      { label: "勤怠一覧", href: "/list" },
+      { label: "リンク", href: "/" },
+      { label: "リンク", href: "/" },
     ];
 
     const adminMenuList = [
-      {
-        label: "スタッフ管理",
-        href: "/admin/staff",
-      },
-      {
-        label: "勤怠管理",
-        href: "/admin/attendances",
-      },
-      {
-        label: "マスタ管理",
-        href: "/admin/master",
-      },
+      { label: "スタッフ管理", href: "/admin/staff" },
+      { label: "勤怠管理", href: "/admin/attendances" },
+      { label: "マスタ管理", href: "/admin/master" },
     ];
 
-    if (roleId === 1 || roleId === 3) {
-      menuList.push(...adminMenuList);
+    switch (roleId) {
+      case 1: // システム管理者
+      case 2: // スタッフ管理者
+        viewableList.push(...menuList, ...adminMenuList);
+        break;
+
+      case 3: // スタッフ
+        viewableList.push(...menuList);
+        break;
+
+      default: // ゲスト
+        // 処理なし
+        break;
     }
 
     return (
       <Stack direction="row" spacing={0} sx={{ width: "auto", height: 1 }}>
-        {menuList.map((menu, index) => (
+        {viewableList.map((menu, index) => (
           <Box key={index}>
             <Link
               label={menu.label}
@@ -98,19 +117,9 @@ const Header = () => {
     );
   };
 
-  const StaffName = () => (
-    <Box sx={{ minWidth: "115px", textAlign: "center" }}>
-      <Typography variant="body1">
-        {staff.data?.lastName && staff.data?.firstName
-          ? `${staff.data.lastName} ${staff.data?.firstName} さん`
-          : "ゲスト さん"}
-      </Typography>
-    </Box>
-  );
-
-  const StaffIcon = () => (
+  const StaffIcon = ({ name }: { name: Staff["last_name"] }) => (
     <IconButton aria-label="account">
-      <AccountCircleIcon style={{ color: "white" }} />
+      <Avatar>{name?.slice(0, 1)}</Avatar>
     </IconButton>
   );
 
@@ -130,35 +139,32 @@ const Header = () => {
         >
           <Logo />
           <Box sx={{ width: 1, height: 1 }}>
-            <MenuItem roleId={staff.data?.staffRoles.roleId} />
+            <MenuItem roleId={staffRole?.role_id} />
           </Box>
           <Box>
-            <Stack direction="row" spacing={1}>
+            <Stack direction="row" alignItems={"center"} spacing={1}>
               <Box>
                 <Button
-                  color={user ? "logout" : "login"}
-                  label={user ? "ログアウト" : "ログイン"}
-                  onClick={user ? signOut : signIn}
-                  variant={user ? "contained" : "outlined"}
+                  color={cognitoUserId ? "logout" : "login"}
+                  label={cognitoUserId ? "ログアウト" : "ログイン"}
+                  onClick={cognitoUserId ? signOut : signIn}
+                  variant={cognitoUserId ? "contained" : "outlined"}
                   height="100%"
                   width="110px"
                 />
               </Box>
-            </Stack>
-          </Box>
-          <StaffName />
-          <Box>
-            <Stack direction="row">
               <Box>
                 <IconButton aria-label="notification">
-                  <NotificationsNoneIcon
-                    style={{ color: "white" }}
-                    fontSize="medium"
-                  />
+                  <Badge badgeContent={100} color="secondary">
+                    <NotificationsNoneIcon
+                      style={{ color: "white" }}
+                      fontSize="medium"
+                    />
+                  </Badge>
                 </IconButton>
               </Box>
               <Box>
-                <StaffIcon />
+                <StaffIcon name={staff?.last_name} />
               </Box>
             </Stack>
           </Box>

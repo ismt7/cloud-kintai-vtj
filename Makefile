@@ -29,8 +29,7 @@ test-storybook:
 	npm run test-storybook
 
 storybook:
-	cd infra && \
-	docker compose up -d storybook
+	npm run storybook
 
 openapi-codegen:
 	npx openapi \

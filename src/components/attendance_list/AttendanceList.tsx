@@ -1,36 +1,46 @@
-import { useEffect } from "react";
-
 import { DataGrid } from "@mui/x-data-grid";
-import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import { Attendance, Staff } from "../../client";
+import GetColumns, { DataGridProps } from "./Column";
+import fetchAttendanceList from "./fetchAttendanceList";
+import fetchLoginStaff from "./fetchLoginStaff";
+import getDayOfWeek, { DayOfWeek } from "./getDayOfWeek";
 
-import { useAppDispatch, useAppSelector } from "../../lib/hooks";
-import { selectLoginStaff, selectTimeRecordList } from "../../lib/store";
-import fetchTimeRecordList from "../../lib/time_record_list/FetchTimeRecordList";
+const AttendanceTable = ({
+  cognitoUserId,
+}: {
+  cognitoUserId: string | undefined;
+}) => {
+  const [staff, setStaff] = useState<Staff | null>(null);
+  const [attendances, setAttendances] = useState<DataGridProps[]>([]);
 
-import GetColumns from "./Column";
+  useEffect(() => {
+    if (!cognitoUserId) return;
 
-const AttendanceTable = () => {
-  const now = dayjs();
+    void fetchLoginStaff(cognitoUserId)
+      .then((value) => setStaff(value))
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [cognitoUserId]);
 
-  const { data: staff } = useAppSelector(selectLoginStaff);
-  const { data: timeRecords } = useAppSelector(selectTimeRecordList);
-
-  const dispatch = useAppDispatch();
   useEffect(() => {
     if (!staff) return;
 
-    void dispatch(
-      fetchTimeRecordList({
-        staffId: staff.staffId,
-        targetFromWorkDate: now.subtract(30, "d"),
-        targetToWorkDate: now,
+    void fetchAttendanceList(staff)
+      .then((value) => {
+        setAttendances(value);
       })
-    );
-  }, []);
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [staff]);
+
+  console.log(attendances);
 
   return (
     <DataGrid
-      rows={timeRecords}
+      rows={attendances}
       columns={GetColumns()}
       checkboxSelection
       slots={{
@@ -49,11 +59,14 @@ const AttendanceTable = () => {
           },
         },
       }}
-      getRowClassName={(params: { row: { dayOfWeek: string } }) => {
-        switch (params.row.dayOfWeek) {
-          case "土":
+      getRowClassName={(params: {
+        row: { workDate: Attendance["work_date"] };
+      }) => {
+        const dayOfWeek = getDayOfWeek(params.row.workDate);
+        switch (dayOfWeek) {
+          case DayOfWeek.Sat:
             return "super-app-theme--saturday";
-          case "日":
+          case DayOfWeek.Sun:
             return "super-app-theme--sunday";
           default:
             return "super-app-theme--default";
