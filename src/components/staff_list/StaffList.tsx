@@ -4,123 +4,135 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
-  Divider,
   IconButton,
   InputAdornment,
   List,
   ListItemButton,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
+import { Service, Staff } from "../../client";
 
-import { Staff } from "../../api";
-import { useAppDispatch, useAppSelector } from "../../lib/hooks";
-import { selectedStaff } from "../../lib/reducers/staffListReducer";
-import fetchStaffList from "../../lib/staff/FetchStaffList";
-import { selectStaff, selectStaffList } from "../../lib/store";
+export type LoginStaff = Staff | null;
 
-const StaffList = () => {
-  const createStaff = useAppSelector(selectStaff);
-  const staffs = useAppSelector(selectStaffList);
-  const [staffName, setStaffName] = useState<string>("");
-  const [filteredStaffs, setFilteredStaffs] = useState<Staff[]>(staffs.data);
-  const dispatch = useAppDispatch();
+async function fetchStaffs(staff: Staff, callback: (value: Staff[]) => void) {
+  const staffs = await Service.getStaffs(staff.id).catch((error) => {
+    console.log(error);
+    return [] as Staff[];
+  });
 
-  const handleSearchStaff = () => {
-    if (staffName === "") {
-      setFilteredStaffs(staffs.data);
-      return;
-    }
+  callback(staffs);
+}
 
-    const filtered = staffs.data.filter(
-      (staffData) =>
-        staffData.lastName.includes(staffName) ||
-        staffData.firstName.includes(staffName)
-    );
-    setFilteredStaffs(filtered);
-  };
+function searchFilter(item: Staff, searchText: string) {
+  if (searchText === "") {
+    return true;
+  }
 
-  const handleAddStaff = () => {
-    dispatch(selectedStaff(undefined));
-  };
+  if (!item.last_name || !item.first_name) {
+    return false;
+  }
 
-  useEffect(() => {
-    void dispatch(fetchStaffList());
-  }, [createStaff, staffs.selectedData]);
+  return (
+    item.last_name.includes(searchText) || item.first_name.includes(searchText)
+  );
+}
 
-  useEffect(() => {
-    handleSearchStaff();
-  }, [staffName]);
+const StaffList = ({ loginStaff }: { loginStaff: LoginStaff }) => {
+  const { staffId: paramStaffId } = useParams();
+  const navigate = useNavigate();
+
+  const [staffs, setStaffs] = useState<Staff[]>([]);
+  const [staffSearchText, setStaffSearchText] = useState<string>("");
 
   useEffect(() => {
-    setFilteredStaffs(staffs.data);
-  }, [staffs]);
+    if (!loginStaff) return;
+
+    void fetchStaffs(loginStaff, (value) => setStaffs(value));
+  }, [loginStaff]);
+
+  // const handleAddStaff = () => {
+  //   dispatch(selectedStaff(undefined));
+  // };
 
   return (
     <Stack
       sx={{
         width: 1,
         height: 1,
-        p: 1,
-        boxSizing: "border-box",
       }}
     >
       <Box>
         <Stack alignItems="center" direction="row" spacing={1}>
-          <Box sx={{ flexGrow: 2 }}>
+          <Box sx={{ flexGrow: 1 }}>
             <TextField
               id="standard-basic"
               variant="standard"
               placeholder="スタッフ名で検索"
-              value={staffName}
+              value={staffSearchText}
               sx={{ width: 1 }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="staff-search"
-                      onClick={handleSearchStaff}
+                      // onClick={handleSearchStaff}
+                      onClick={() => {
+                        /* 処理なし */
+                      }}
                     >
                       <SearchIcon />
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
-              onChange={(e) => setStaffName(e.target.value)}
+              onChange={(e) => setStaffSearchText(e.target.value)}
             />
           </Box>
           <Box>
-            <IconButton aria-label="staff-add" onClick={handleAddStaff}>
+            <IconButton
+              aria-label="staff-add"
+              // onClick={handleAddStaff}
+              onClick={() => {
+                /* 処理なし */
+              }}
+            >
               <PersonAddIcon />
             </IconButton>
           </Box>
         </Stack>
       </Box>
       <Box sx={{ height: 1, overflow: "scroll" }}>
-        {filteredStaffs.length === 0 ? (
+        {staffs.length === 0 ? (
           <Box sx={{ textAlign: "center" }}>スタッフが見つかりません</Box>
         ) : (
           <List>
-            {filteredStaffs.map((staffData) => (
-              <Box key={staffData.staffId}>
+            {staffs
+              .filter((item) => searchFilter(item, staffSearchText))
+              .map((item, index) => (
                 <ListItemButton
-                  selected={staffData.staffId === staffs.selectedData?.staffId}
+                  key={index}
+                  selected={item.id === Number(paramStaffId)}
                   sx={{ p: 1 }}
+                  divider
                   onClick={() => {
-                    dispatch(selectedStaff(staffData));
+                    navigate(`/admin/staff/${item.id}`);
                   }}
                 >
                   <Stack>
-                    <Box>ID: {staffData.staffId}</Box>
+                    <Box>ID: {item.id}</Box>
                     <Box>
-                      {staffData.lastName} {staffData.firstName}
+                      <Typography>
+                        {item.last_name && item.first_name
+                          ? `${item.last_name} ${item.first_name}`
+                          : "(未設定)"}
+                      </Typography>
                     </Box>
                   </Stack>
-                  <Divider />
                 </ListItemButton>
-                <Divider />
-              </Box>
-            ))}
+              ))}
           </List>
         )}
       </Box>

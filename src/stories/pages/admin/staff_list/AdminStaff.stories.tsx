@@ -1,12 +1,8 @@
-import { MemoryRouter } from "react-router-dom";
-
 import { Meta, StoryObj } from "@storybook/react";
-import { Provider } from "react-redux";
-
+import { MemoryRouter } from "react-router-dom";
 import { getStaffList200 } from "../../../../components/time_recorder/mocks/ApiMocks";
 
 import AdminStaff from "./AdminStaff";
-import GetStoreMock from "./ReducerMock";
 
 const meta: Meta<typeof AdminStaff> = {
   component: AdminStaff,
@@ -16,11 +12,9 @@ const meta: Meta<typeof AdminStaff> = {
     },
   },
   render: () => (
-    <Provider store={GetStoreMock()}>
-      <MemoryRouter>
-        <AdminStaff />
-      </MemoryRouter>
-    </Provider>
+    <MemoryRouter>
+      <AdminStaff />
+    </MemoryRouter>
   ),
 };
 

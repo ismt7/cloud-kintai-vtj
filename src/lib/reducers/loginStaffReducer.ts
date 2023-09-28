@@ -1,8 +1,8 @@
 import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
 
-import { Staff } from "../../api";
 // eslint-disable-next-line import/no-cycle
 import { RootState } from "../../app/store";
+import { Staff } from "../../client";
 import fetchLoginStaff from "../staff/FetchLoginStaff";
 
 export enum LoginStaffStatus {

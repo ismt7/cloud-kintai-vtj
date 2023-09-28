@@ -19,3 +19,9 @@ fi
 if [ ! -e .env ]; then
   cp .env.example .env
 fi
+
+# ========================================
+#  Create docker network
+# ========================================
+NETWORK_NAME=garaku-shared-network
+if [ -z "`docker network ls | grep ${NETWORK_NAME}`" ]; then docker network create ${NETWORK_NAME}; fi

@@ -1,7 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react";
-import { Provider } from "react-redux";
 
-import TimeRecorder from "./TimeRecorder";
 import GetInteraction from "./interactions/Interaction";
 import {
   getAttendancesHandler200,
@@ -13,7 +11,9 @@ import {
   postAttendancesClockInHandler200,
   postRestStartHandler200,
 } from "./mocks/ApiMocks";
-import GetStoreMock from "./mocks/MockReducer";
+import TimeRecorder from "./TimeRecorder";
+
+const COGNITO_USER_ID = "99999999-9999-9999-9999-999999999999";
 
 const meta: Meta<typeof TimeRecorder> = {
   component: TimeRecorder,
@@ -31,11 +31,7 @@ const meta: Meta<typeof TimeRecorder> = {
       ],
     },
   },
-  render: () => (
-    <Provider store={GetStoreMock()}>
-      <TimeRecorder />
-    </Provider>
-  ),
+  render: () => <TimeRecorder cognitoUserId={COGNITO_USER_ID} />,
 };
 
 export default meta;

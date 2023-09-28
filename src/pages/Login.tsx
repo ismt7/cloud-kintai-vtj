@@ -6,51 +6,28 @@ import { Amplify } from "aws-amplify";
 import "@aws-amplify/ui-react/styles.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import awsConfig from "../aws-exports";
-import { useAppDispatch, useAppSelector } from "../lib/hooks";
-import { LoginStaffStatus } from "../lib/reducers/loginStaffReducer";
-import fetchLoginStaff from "../lib/staff/FetchLoginStaff";
-import { selectLoginStaff } from "../lib/store";
 
 Amplify.configure(awsConfig);
 
 function Login() {
-  const { route, user } = useAuthenticator((context) => [
+  const { route } = useAuthenticator((context) => [
     context.route,
     context.user,
   ]);
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const staff = useAppSelector(selectLoginStaff);
   // eslint-disable-next-line max-len
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   const from = (location.state?.from as string) || "/";
 
   useEffect(() => {
     if (route === "authenticated") {
-      if (
-        user?.attributes?.email &&
-        staff.status === LoginStaffStatus.NOT_PROCESSING
-      ) {
-        void dispatch(
-          fetchLoginStaff({
-            mailAddress: user.attributes.email,
-          })
-        );
-      }
-
-      if (staff.status === LoginStaffStatus.DONE && staff.data?.mailAddress) {
-        navigate(from, { replace: true });
-      }
-
-      if (
-        staff.status === LoginStaffStatus.ERROR ||
-        (staff.status === LoginStaffStatus.DONE && !staff.data?.mailAddress)
-      ) {
-        navigate("/", { replace: true });
-      }
+      navigate(from, { replace: true });
+      return;
     }
-  }, [route, navigate, from, staff]);
+
+    navigate("/", { replace: true });
+  }, [route, navigate, from]);
 
   return (
     <View className="auth-wrapper">

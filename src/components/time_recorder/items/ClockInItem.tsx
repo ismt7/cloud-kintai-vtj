@@ -1,23 +1,56 @@
-import { useAppDispatchV2 } from "../../../app/hooks";
+import dayjs from "dayjs";
+import { Attendance, Service, Staff } from "../../../client";
 import Button from "../../button/Button";
-import { handleClickClockInButton } from "../TimeRecorderSlice";
 import { WorkStatus, WorkStatusCodes } from "../WorkStatusCodes";
 
 interface ClockInItemProps {
-  staffId: number | undefined;
-  workStatus: WorkStatus;
+  staffId: Staff["id"] | undefined;
+  workStatus: WorkStatus | null;
+  attendance: Attendance | null;
+  callback: (value: Attendance | null) => void;
 }
 
-export default function ClockInItem({ staffId, workStatus }: ClockInItemProps) {
-  const dispatch = useAppDispatchV2();
+async function clockIn({
+  staffId,
+  attendance,
+  callback,
+}: {
+  staffId: ClockInItemProps["staffId"];
+  attendance: ClockInItemProps["attendance"];
+  callback: (value: Attendance | null) => void;
+}) {
+  if (!staffId || !attendance) return;
 
+  const now = dayjs();
+  const { id: attendanceId } = attendance;
+  const response = await Service.updateAttendance(
+    attendanceId,
+    {
+      ...attendance,
+      start_time: now.toISOString(),
+    },
+    staffId
+  ).catch((error) => {
+    console.log(error);
+    return null;
+  });
+
+  if (!response) {
+    callback(null);
+    return;
+  }
+
+  callback(response);
+}
+
+export default function ClockInItem({
+  staffId,
+  attendance,
+  workStatus,
+  callback,
+}: ClockInItemProps) {
   const handleClick = () => {
-    void dispatch(
-      handleClickClockInButton({
-        staffId,
-        goDirectlyFlag: false,
-      })
-    );
+    void clockIn({ staffId, attendance, callback });
   };
 
   return (
@@ -27,11 +60,11 @@ export default function ClockInItem({ staffId, workStatus }: ClockInItemProps) {
       onClick={handleClick}
       size="large"
       variant={
-        workStatus.code === WorkStatusCodes.BEFORE_WORK
+        workStatus?.code === WorkStatusCodes.BEFORE_WORK
           ? "outlined"
           : "contained"
       }
-      disabled={workStatus.code !== WorkStatusCodes.BEFORE_WORK}
+      disabled={workStatus?.code !== WorkStatusCodes.BEFORE_WORK}
     />
   );
 }

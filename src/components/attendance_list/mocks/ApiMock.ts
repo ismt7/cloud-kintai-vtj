@@ -1,45 +1,65 @@
 import dayjs from "dayjs";
 import { rest } from "msw";
 
-const now = dayjs();
-const fromDate = now.subtract(30, "d");
+export function GetLoginStaff() {
+  return rest.get("/staff/cognito/:cognitoUserId", (req, res, ctx) => {
+    const { params } = req;
+    const cognitoUserId = Number(params.cognitoUserId);
 
-const REACT_APP_BASE_PATH = process.env.REACT_APP_BASE_PATH || "";
+    return res(
+      ctx.status(200),
+      ctx.json({
+        id: 1,
+        last_name: "テスト",
+        first_name: "太郎",
+        mail_address: "test@example.com",
+        icon_path: "",
+        cognito_user_id: cognitoUserId,
+        created_at: dayjs().format("YYYY-MM-DDTHH:mm:ssZ"),
+        updated_at: null,
+        created_by: 2,
+        updated_by: null,
+      })
+    );
+  });
+}
 
 export function GetAttendanceList() {
   return rest.get(
-    `${REACT_APP_BASE_PATH}/v1/attendances/:staffId/${fromDate.format(
-      "YYYYMMDD"
-    )}/${now.format("YYYYMMDD")}`,
+    "/staff/:staffId/:fromDate/:toDate/attendances",
     (req, res, ctx) => {
       const { params } = req;
       const staffId = Number(params.staffId);
+      const fromDate = dayjs(params.fromDate as string);
+      const toDate = dayjs(params.toDate as string);
 
       return res(
         ctx.status(200),
         ctx.json(
           (() => {
-            const data = [];
-            for (let i = 0; i < 10; i += 1) {
-              const targetDate = now.subtract(Math.abs(i - 9), "d");
-              const isHoliday = [0, 6].indexOf(targetDate.day()) !== -1;
-
-              // eslint-disable-next-line no-continue
-              if (isHoliday) continue;
-
-              data.push({
-                attendance_id: i + 1,
-                parent_attendance_id: null,
+            const responses = [];
+            for (
+              let date = fromDate, i = 1;
+              date.isBefore(toDate);
+              date = date.add(1, "d"), i += 1
+            ) {
+              responses.push({
+                id: i,
                 staff_id: staffId,
-                work_date: targetDate.format("YYYY-MM-DD"),
-                start_time: `${targetDate.format("YYYY-MM-DD")}T09:00:00+09:00`,
-                end_time: `${targetDate.format("YYYY-MM-DD")}T18:00:00+09:00`,
+                work_date: date.format("YYYY-MM-DD"),
+                start_time: `${date.format("YYYY-MM-DD")}T09:00:00+09:00`,
+                end_time: `${date.format("YYYY-MM-DD")}T18:00:00+09:00`,
                 go_directly_flag: false,
                 return_directly_flag: false,
-                remarks: isHoliday ? "" : "備考です",
+                remarks: "ここは備考です",
+                created_at: dayjs().format("YYYY-MM-DDTHH:mm:ssZ"),
+                updated_at: null,
+                created_by: 2,
+                updated_by: null,
               });
             }
-            return data;
+
+            return responses;
           })()
         )
       );
@@ -48,38 +68,38 @@ export function GetAttendanceList() {
 }
 
 export function GetRestList() {
-  return rest.get(
-    `${REACT_APP_BASE_PATH}/v1/rests/:staffId/${fromDate.format(
-      "YYYYMMDD"
-    )}/${now.format("YYYYMMDD")}`,
-    (req, res, ctx) => {
-      const { params } = req;
-      const staffId = Number(params.staffId);
+  return rest.get("/staff/:staffId/:fromDate/:toDate/rest", (req, res, ctx) => {
+    const { params } = req;
+    const staffId = Number(params.staffId);
+    const fromDate = dayjs(params.fromDate as string);
+    const toDate = dayjs(params.toDate as string);
 
-      return res(
-        ctx.status(200),
-        ctx.json(
-          (() => {
-            const data = [];
-            for (let i = 0; i < 10; i += 1) {
-              const targetDate = now.subtract(Math.abs(i - 9), "d");
-              const isHoliday = [0, 6].indexOf(targetDate.day()) !== -1;
+    return res(
+      ctx.status(200),
+      ctx.json(
+        (() => {
+          const responses = [];
+          for (
+            let date = fromDate;
+            date.isBefore(toDate);
+            date = date.add(1, "d")
+          ) {
+            responses.push({
+              id: 1,
+              staff_id: staffId,
+              work_date: date.format("YYYY-MM-DD"),
+              start_time: date.hour(12).minute(0).second(0).toISOString(),
+              end_time: date.hour(13).minute(0).second(0).toISOString(),
+              created_at: dayjs().toISOString(),
+              updated_at: null,
+              created_by: 2,
+              updated_by: null,
+            });
+          }
 
-              // eslint-disable-next-line no-continue
-              if (isHoliday) continue;
-
-              data.push({
-                rest_time_id: i + 1,
-                staff_id: staffId,
-                work_date: targetDate.format("YYYY-MM-DD"),
-                start_time: `${targetDate.format("YYYY-MM-DD")}T12:00:00+09:00`,
-                end_time: `${targetDate.format("YYYY-MM-DD")}T13:00:00+09:00`,
-              });
-            }
-            return data;
-          })()
-        )
-      );
-    }
-  );
+          return responses;
+        })()
+      )
+    );
+  });
 }

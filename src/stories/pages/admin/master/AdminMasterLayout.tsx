@@ -1,4 +1,4 @@
-import { Box, ListItemButton, Stack } from "@mui/material";
+import { Box, Container, ListItemButton, Stack } from "@mui/material";
 import { Outlet, useNavigate } from "react-router-dom";
 
 export default function Layout() {
@@ -33,8 +33,8 @@ export default function Layout() {
   ));
 
   return (
-    <>
-      <Stack direction="row" sx={{ height: 1, py: 2 }}>
+    <Container maxWidth="xl">
+      <Stack direction="row" sx={{ height: 1, pt: 2 }}>
         <Box>
           <Stack sx={{ height: 1 }}>{menuBoxList}</Stack>
         </Box>
@@ -42,6 +42,6 @@ export default function Layout() {
           <Outlet />
         </Box>
       </Stack>
-    </>
+    </Container>
   );
 }

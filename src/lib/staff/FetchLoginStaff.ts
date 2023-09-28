@@ -1,20 +1,45 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { Configuration, StaffApi } from "../../api";
+import { useAuthenticator } from "@aws-amplify/ui-react";
+import { Service, Staff } from "../../client";
 
 const fetchLoginStaff = createAsyncThunk(
   "loginStaff/fetchLoginStaff",
-  async ({ mailAddress }: { mailAddress: string }) => {
-    const conf = new Configuration({
-      basePath: process.env.REACT_APP_BASE_PATH,
-    });
-    const staffApi = new StaffApi(conf);
-    const staff = await staffApi
-      .getStaffByMailAddress({ mailAddress })
-      .then((r) => r)
-      .catch(() => undefined);
+  async (): Promise<Staff | null> => {
+    const { user } = useAuthenticator();
+    const cognitoUserId = user?.attributes?.sub;
+    const mailAddress = user?.attributes?.email;
 
-    return staff;
+    if (!cognitoUserId || !mailAddress) {
+      return null;
+    }
+
+    const staff = await Service.getStaffByCognitoUserId(cognitoUserId, 1).catch(
+      (e) => {
+        console.log(e);
+        return null;
+      }
+    );
+
+    if (staff) {
+      return staff;
+    }
+
+    const createdStaff = await Service.createStaff({
+      mail_address: mailAddress,
+      cognito_user_id: cognitoUserId,
+    }).catch((e) => {
+      console.log(e);
+      return null;
+    });
+
+    if (!createdStaff) {
+      return null;
+    }
+
+    console.log("createdStaff", createdStaff);
+
+    return createdStaff;
   }
 );
 export default fetchLoginStaff;

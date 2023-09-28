@@ -2,11 +2,24 @@ import {
   GridActionsCellItem,
   GridColDef,
   GridRowParams,
+  GridValueGetterParams,
 } from "@mui/x-data-grid";
 
 import EditIcon from "@mui/icons-material/Edit";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
+import { Attendance, Staff } from "../../client";
+
+export interface SummaryAttendance {
+  id: Staff["id"];
+  lastName: Staff["last_name"];
+  firstName: Staff["first_name"];
+  workStatus: string;
+  startTime: Attendance["start_time"];
+  endTime: Attendance["end_time"];
+  totalWorkHoursPerMonth: number;
+  totalWorkDaysPerMonth: number;
+}
 
 export default function GetColumns(): GridColDef[] {
   const navigate = useNavigate();
@@ -29,6 +42,10 @@ export default function GetColumns(): GridColDef[] {
       sortable: false,
       headerAlign: "center",
       width: 150,
+      valueGetter: (params: GridValueGetterParams<SummaryAttendance>) => {
+        const { lastName, firstName } = params.row;
+        return `${lastName || ""} ${firstName || ""}`;
+      },
     },
     {
       field: "workStatus",
@@ -39,7 +56,7 @@ export default function GetColumns(): GridColDef[] {
       headerAlign: "center",
     },
     {
-      field: "clockInTime",
+      field: "startTime",
       type: "string",
       headerName: "出勤時刻",
       align: "right",
@@ -47,7 +64,7 @@ export default function GetColumns(): GridColDef[] {
       headerAlign: "center",
     },
     {
-      field: "clockOutTime",
+      field: "endTime",
       type: "string",
       headerName: "退勤時刻",
       align: "right",
@@ -64,13 +81,15 @@ export default function GetColumns(): GridColDef[] {
     },
     {
       field: "operatingRate",
-      headerName: "稼働率",
+      headerName: "稼働率(%)",
       align: "right",
       sortable: false,
       headerAlign: "center",
-      valueFormatter: (params) => {
-        const value = params.value as number;
-        return `${value} %`;
+      valueGetter: (params: GridValueGetterParams<SummaryAttendance>) => {
+        const { totalWorkHoursPerMonth } = params.row;
+        const totalWorkHoursPerMonthNumber = Number(totalWorkHoursPerMonth);
+        if (totalWorkHoursPerMonthNumber === 0) return 0;
+        return Math.round((totalWorkHoursPerMonthNumber / 160) * 100);
       },
     },
     {

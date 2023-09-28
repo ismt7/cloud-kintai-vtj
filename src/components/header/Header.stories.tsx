@@ -1,71 +1,17 @@
-import { MemoryRouter } from "react-router-dom";
-
-import { configureStore } from "@reduxjs/toolkit";
 import { Meta, StoryObj } from "@storybook/react";
-import { Provider } from "react-redux";
+import { MemoryRouter } from "react-router-dom";
+import Header from "./Header";
+import { GetCognitoUserId, GetStaffRole, Role } from "./mocks/ApiMock";
 
-import {
-  AttendanceStatus,
-  testAttendanceSlice,
-} from "../../lib/reducers/attendanceReducer";
-import {
-  LoginStaffStatus,
-  testLoginStaffReducer,
-} from "../../lib/reducers/loginStaffReducer";
-import { RestStatus, testRestSlice } from "../../lib/reducers/restReducer";
-import {
-  testTimeRecordSlice,
-  TimeRecordStatus,
-  TimeRecordStatusText,
-} from "../../lib/reducers/timeRecordSlice";
-
-import Header, { HeaderProps } from "./Header";
-
-const mockStore = configureStore({
-  reducer: {
-    timeRecordReducer: testTimeRecordSlice({
-      status: TimeRecordStatus.PROCESSING,
-      statusText: TimeRecordStatusText.PROCESSING,
-    }),
-    loginStaffReducer: testLoginStaffReducer({
-      status: LoginStaffStatus.DONE,
-      data: {
-        staffId: 999,
-        lastName: "田中",
-        firstName: "太郎",
-        mailAddress: "tanaka@example.com",
-        iconPath: "",
-        staffRoles: {
-          roleId: 2,
-          staffId: 999,
-          role: {
-            roleName: "スタッフ",
-          },
-        },
-      },
-    }),
-    attendanceReducer: testAttendanceSlice({
-      status: AttendanceStatus.DONE,
-      data: null,
-    }),
-    restReducer: testRestSlice({
-      status: RestStatus.DONE,
-      data: null,
-    }),
-  },
-});
+const COGNITO_USER_ID = "99999999-9999-9999-9999-999999999999";
+const MAIL_ADDRESS = "example@example.com";
 
 const meta: Meta<typeof Header> = {
   component: Header,
   parameters: {
     layout: "fullscreen",
-  },
-  argTypes: {
-    signIn: {
-      description: "ログインボタンを押したときの処理",
-    },
-    signOut: {
-      description: "ログアウトボタンを押したときの処理",
+    msw: {
+      handlers: [GetCognitoUserId(), GetStaffRole()],
     },
   },
 };
@@ -74,147 +20,74 @@ export default meta;
 type Story = StoryObj<typeof Header>;
 
 export const Default: Story = {
-  render: (args: HeaderProps) => (
-    <Provider store={mockStore}>
-      <MemoryRouter>
-        <Header {...args} />
-      </MemoryRouter>
-    </Provider>
+  render: () => (
+    <MemoryRouter>
+      <Header
+        cognitoUserId={COGNITO_USER_ID}
+        mailAddress={MAIL_ADDRESS}
+        signOut={() => {
+          /* 処理なし */
+        }}
+      />
+    </MemoryRouter>
   ),
   name: "デフォルト",
 };
 
-const loginMockStore = configureStore({
-  reducer: {
-    timeRecordReducer: testTimeRecordSlice({
-      status: TimeRecordStatus.PROCESSING,
-      statusText: TimeRecordStatusText.PROCESSING,
-    }),
-    loginStaffReducer: testLoginStaffReducer({
-      status: LoginStaffStatus.DONE,
-      data: undefined,
-    }),
-    attendanceReducer: testAttendanceSlice({
-      status: AttendanceStatus.DONE,
-      data: null,
-    }),
-    restReducer: testRestSlice({
-      status: RestStatus.DONE,
-      data: null,
-    }),
-  },
-});
 export const LoggedIn: Story = {
   name: "ログイン",
   args: {},
-  render: (args: HeaderProps) => (
-    <Provider store={loginMockStore}>
-      <MemoryRouter>
-        <Header {...args} />
-      </MemoryRouter>
-    </Provider>
+  render: () => (
+    <MemoryRouter>
+      <Header
+        cognitoUserId={undefined}
+        mailAddress={undefined}
+        signOut={() => {
+          /* 処理なし */
+        }}
+      />
+    </MemoryRouter>
   ),
 };
 
-export const LoggedOut: Story = {
-  name: "ログアウト",
-  args: {},
-  render: (args: HeaderProps) => (
-    <Provider store={mockStore}>
-      <MemoryRouter>
-        <Header {...args} />
-      </MemoryRouter>
-    </Provider>
-  ),
-};
-
-const staffAdminMockStore = configureStore({
-  reducer: {
-    timeRecordReducer: testTimeRecordSlice({
-      status: TimeRecordStatus.PROCESSING,
-      statusText: TimeRecordStatusText.PROCESSING,
-    }),
-    loginStaffReducer: testLoginStaffReducer({
-      status: LoginStaffStatus.DONE,
-      data: {
-        staffId: 999,
-        lastName: "田中",
-        firstName: "太郎",
-        mailAddress: "tanaka@example.com",
-        iconPath: "",
-        staffRoles: {
-          roleId: 1,
-          staffId: 999,
-          role: {
-            roleName: "システム管理者",
-          },
-        },
-      },
-    }),
-    attendanceReducer: testAttendanceSlice({
-      status: AttendanceStatus.DONE,
-      data: null,
-    }),
-    restReducer: testRestSlice({
-      status: RestStatus.DONE,
-      data: null,
-    }),
-  },
-});
 export const StaffAdmin: Story = {
   name: "スタッフ管理者",
   args: {},
-  render: (args: HeaderProps) => (
-    <Provider store={staffAdminMockStore}>
-      <MemoryRouter>
-        <Header {...args} />
-      </MemoryRouter>
-    </Provider>
+  parameters: {
+    msw: {
+      handlers: [GetCognitoUserId(), GetStaffRole(Role.StaffAdmin)],
+    },
+  },
+  render: () => (
+    <MemoryRouter>
+      <Header
+        cognitoUserId={COGNITO_USER_ID}
+        mailAddress={MAIL_ADDRESS}
+        signOut={() => {
+          /* 処理なし */
+        }}
+      />
+    </MemoryRouter>
   ),
 };
-
-const systemAdminMockStore = configureStore({
-  reducer: {
-    timeRecordReducer: testTimeRecordSlice({
-      status: TimeRecordStatus.PROCESSING,
-      statusText: TimeRecordStatusText.PROCESSING,
-    }),
-    loginStaffReducer: testLoginStaffReducer({
-      status: LoginStaffStatus.DONE,
-      data: {
-        staffId: 999,
-        lastName: "田中",
-        firstName: "太郎",
-        mailAddress: "tanaka@example.com",
-        iconPath: "",
-        staffRoles: {
-          roleId: 1,
-          staffId: 999,
-          role: {
-            roleName: "システム管理者",
-          },
-        },
-      },
-    }),
-    attendanceReducer: testAttendanceSlice({
-      status: AttendanceStatus.DONE,
-      data: null,
-    }),
-    restReducer: testRestSlice({
-      status: RestStatus.DONE,
-      data: null,
-    }),
-  },
-});
 
 export const Admin: Story = {
   name: "システム管理者",
   args: {},
-  render: (args: HeaderProps) => (
-    <Provider store={systemAdminMockStore}>
-      <MemoryRouter>
-        <Header {...args} />
-      </MemoryRouter>
-    </Provider>
+  parameters: {
+    msw: {
+      handlers: [GetCognitoUserId(), GetStaffRole(Role.Admin)],
+    },
+  },
+  render: () => (
+    <MemoryRouter>
+      <Header
+        cognitoUserId={COGNITO_USER_ID}
+        mailAddress={MAIL_ADDRESS}
+        signOut={() => {
+          /* 処理なし */
+        }}
+      />
+    </MemoryRouter>
   ),
 };

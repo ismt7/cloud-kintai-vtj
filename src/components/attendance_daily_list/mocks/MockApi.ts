@@ -1,18 +1,21 @@
 import dayjs from "dayjs";
 import { rest } from "msw";
-import { REACT_APP_BASE_PATH } from "../../time_recorder/mocks/ApiMocks";
 import StaffMockData from "./StaffMockData";
 
-export function getStaffsHandler200() {
-  return rest.get(`${REACT_APP_BASE_PATH}/v1/staffs`, async (req, res, ctx) =>
-    res(ctx.status(200), ctx.json(StaffMockData))
+export function getStaffsHandler200(noData = false) {
+  return rest.get("/staffs", async (req, res, ctx) =>
+    res(ctx.status(200), ctx.json(noData ? [] : StaffMockData))
   );
 }
 
-export function getAttendancesHandler200() {
+export function getAttendancesHandler200(noData = false) {
   return rest.get(
-    `${REACT_APP_BASE_PATH}/v1/attendances/:staffId/:fromWorkDate/:toWorkDate`,
+    "/staff/:staffId/:fromWorkDate/:toWorkDate/attendances",
     async (req, res, ctx) => {
+      if (noData) {
+        return res(ctx.status(200), ctx.json([]));
+      }
+
       const { params } = req;
       const staffId = String(params.staffId);
 
@@ -21,9 +24,10 @@ export function getAttendancesHandler200() {
 
       const attendanceDailyList = [];
       let attendanceId = 1;
+
       for (
         let currentDate = fromWorkDate;
-        currentDate.isBefore(toWorkDate);
+        currentDate.isBefore(toWorkDate.add(1, "day"));
         currentDate = currentDate.add(1, "day")
       ) {
         // 土日は除外
@@ -33,22 +37,37 @@ export function getAttendancesHandler200() {
 
         const isToWorkDate = currentDate.isSame(toWorkDate.subtract(1, "day"));
 
+        const startTime =
+          Number(staffId) % 993 === 0 && isToWorkDate
+            ? null
+            : `${currentDate
+                .hour(9)
+                .minute(0)
+                .second(0)
+                .format("YYYY-MM-DDTHH:mm:ssZ")}`;
+
+        const endTime =
+          Number(staffId) % 2 === 0 && isToWorkDate
+            ? null
+            : `${currentDate
+                .hour(18)
+                .minute(0)
+                .second(0)
+                .format("YYYY-MM-DDTHH:mm:ssZ")}`;
+
         attendanceDailyList.push({
-          attendance_id: Number(staffId + `0${attendanceId}`.slice(-2)),
-          parent_attendance_id: null,
           staff_id: Number(staffId),
           work_date: currentDate.format("YYYY-MM-DD"),
-          start_time:
-            Number(staffId) % 993 === 0 && isToWorkDate
-              ? null
-              : `${currentDate.format("YYYY-MM-DD")}T09:00:00+09:00`,
-          end_time:
-            Number(staffId) % 2 === 0 && isToWorkDate
-              ? null
-              : `${currentDate.format("YYYY-MM-DD")}T18:00:00+09:00`,
+          start_time: startTime,
+          end_time: endTime,
           go_directly_flag: false,
           return_directly_flag: false,
           remarks: "備考です",
+          id: Number(staffId + `0${attendanceId}`.slice(-2)),
+          created_at: currentDate.format("YYYY-MM-DDTHH:mm:ssZ"),
+          updated_at: null,
+          created_by: Number(staffId),
+          updated_by: null,
         });
 
         attendanceId += 1;
@@ -59,10 +78,14 @@ export function getAttendancesHandler200() {
   );
 }
 
-export function getRestsHandler200() {
+export function getRestsHandler200(noData = false) {
   return rest.get(
-    `${REACT_APP_BASE_PATH}/v1/rests/:staffId/:fromWorkDate/:toWorkDate`,
+    "/staff/:staffId/:fromWorkDate/:toWorkDate/rest",
     async (req, res, ctx) => {
+      if (noData) {
+        return res(ctx.status(200), ctx.json([]));
+      }
+
       const { params } = req;
       const { staffId } = params;
 
