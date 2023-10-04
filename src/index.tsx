@@ -7,6 +7,8 @@ import { Authenticator } from "@aws-amplify/ui-react";
 import { ThemeProvider } from "@mui/material";
 import { Provider } from "react-redux";
 
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { store } from "./app/store";
 import { OpenAPI } from "./client";
 import Layout from "./Layout";
@@ -87,9 +89,10 @@ const router = createBrowserRouter([
         element: <AdminMasterLayout />,
         children: [
           {
-            path: "/admin/master/",
+            index: true,
             element: <AdminMaster />,
           },
+          {},
         ],
       },
     ],
@@ -104,7 +107,9 @@ root.render(
     <Provider store={store}>
       <Authenticator.Provider>
         <ThemeProvider theme={theme}>
-          <RouterProvider router={router} />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <RouterProvider router={router} />
+          </LocalizationProvider>
         </ThemeProvider>
       </Authenticator.Provider>
     </Provider>

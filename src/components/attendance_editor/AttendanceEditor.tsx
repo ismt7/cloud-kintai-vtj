@@ -1,6 +1,4 @@
 import { Box, Button, Stack } from "@mui/material";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -84,122 +82,120 @@ export default function AttendanceEditor({
   }, [totalWorkTime, totalRestTime]);
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Stack spacing={2}>
-        <Box>
-          <StaffNameItem staff={staff} />
-        </Box>
-        <Box>
-          <WorkDateItem attendance={attendance} />
-        </Box>
-        <Box>
-          <GoDirectlyItem
-            attendance={attendance}
-            callback={(value) => {
-              if (!attendance) return;
+    <Stack spacing={2}>
+      <Box>
+        <StaffNameItem staff={staff} />
+      </Box>
+      <Box>
+        <WorkDateItem attendance={attendance} />
+      </Box>
+      <Box>
+        <GoDirectlyItem
+          attendance={attendance}
+          callback={(value) => {
+            if (!attendance) return;
 
-              setAttendance({
-                ...attendance,
-                go_directly_flag: value,
-              });
-            }}
-          />
-        </Box>
-        <Box>
-          <ReturnDirectlyItem
-            attendance={attendance}
-            callback={(value) => {
-              if (!attendance) return;
+            setAttendance({
+              ...attendance,
+              go_directly_flag: value,
+            });
+          }}
+        />
+      </Box>
+      <Box>
+        <ReturnDirectlyItem
+          attendance={attendance}
+          callback={(value) => {
+            if (!attendance) return;
 
-              setAttendance({
-                ...attendance,
-                return_directly_flag: value,
-              });
-            }}
-          />
-        </Box>
-        <Box>
-          <WorkTimeItem
-            attendance={attendance}
-            callback={({ startTime, endTime, totalTime }) => {
-              if (!attendance) return;
+            setAttendance({
+              ...attendance,
+              return_directly_flag: value,
+            });
+          }}
+        />
+      </Box>
+      <Box>
+        <WorkTimeItem
+          attendance={attendance}
+          callback={({ startTime, endTime, totalTime }) => {
+            if (!attendance) return;
 
-              setAttendance({
-                ...attendance,
-                start_time: startTime.toISOString(),
-                end_time: endTime.toISOString(),
-              });
+            setAttendance({
+              ...attendance,
+              start_time: startTime.toISOString(),
+              end_time: endTime.toISOString(),
+            });
 
-              setTotalWorkTime(totalTime);
-            }}
-          />
-        </Box>
-        <Box>
-          <RestTimeItem
-            rests={rests}
-            staffId={staff?.id}
-            workDate={targetWorkDate}
-            callback={(editRests, totalTime) => {
-              setRests(editRests);
-              setTotalRestTime(totalTime);
-            }}
-          />
-        </Box>
-        <Box>
-          <SeparatorItem />
-        </Box>
-        <Box>
-          <ProductionTimeItem time={totalProductionTime} />
-        </Box>
-        <Box>
-          <RemarksItem
-            attendance={attendance}
-            callback={(value) => {
-              if (!attendance) return;
+            setTotalWorkTime(totalTime);
+          }}
+        />
+      </Box>
+      <Box>
+        <RestTimeItem
+          rests={rests}
+          staffId={staff?.id}
+          workDate={targetWorkDate}
+          callback={(editRests, totalTime) => {
+            setRests(editRests);
+            setTotalRestTime(totalTime);
+          }}
+        />
+      </Box>
+      <Box>
+        <SeparatorItem />
+      </Box>
+      <Box>
+        <ProductionTimeItem time={totalProductionTime} />
+      </Box>
+      <Box>
+        <RemarksItem
+          attendance={attendance}
+          callback={(value) => {
+            if (!attendance) return;
 
-              setAttendance({
-                ...attendance,
-                remarks: value,
-              });
-            }}
-          />
-        </Box>
-        {/* <Box>
+            setAttendance({
+              ...attendance,
+              remarks: value,
+            });
+          }}
+        />
+      </Box>
+      {/* <Box>
           <hr />
         </Box> */}
-        {/* <Box>
+      {/* <Box>
           <ReasonRevisionItem />
         </Box> */}
-        {/* <Box>
+      {/* <Box>
           <ReasonRemarksItem />
         </Box> */}
-        <Box>
-          <Stack
-            direction="row"
-            alignItems={"center"}
-            justifyContent={"center"}
-            spacing={3}
-          >
-            <Box>
-              <Button
-                color="cancel"
-                variant="text"
-                sx={{ width: "150px" }}
-                onClick={() => {
-                  navigate("/admin/attendances");
-                }}
-              >
-                キャンセル
-              </Button>
-            </Box>
-            <Box>
-              <Button variant="contained" sx={{ width: "150px" }}>
-                保存
-              </Button>
-            </Box>
-          </Stack>
-        </Box>
-      </Stack>
-    </LocalizationProvider>
+      <Box>
+        <Stack
+          direction="row"
+          alignItems={"center"}
+          justifyContent={"center"}
+          spacing={3}
+        >
+          <Box>
+            <Button
+              color="cancel"
+              variant="text"
+              sx={{ width: "150px" }}
+              onClick={() => {
+                navigate("/admin/attendances");
+              }}
+            >
+              キャンセル
+            </Button>
+          </Box>
+          <Box>
+            <Button variant="contained" sx={{ width: "150px" }}>
+              保存
+            </Button>
+          </Box>
+        </Stack>
+      </Box>
+    </Stack>
   );
 }
