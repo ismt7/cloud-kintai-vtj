@@ -15,7 +15,9 @@ import Layout from "./Layout";
 import { theme } from "./lib/theme";
 import AdminAttendance from "./pages/admin/AdminAttendance";
 import AdminAttendanceEditor from "./pages/admin/AdminAttendanceEditor";
+import AdminAttendancePrint from "./pages/admin/AdminAttendancePrint";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminHolidayCalendar from "./pages/admin/AdminHolidayCalendar/AdminHolidayCalendar";
 import AdminMaster from "./pages/admin/AdminMaster";
 import AdminStaff from "./pages/admin/AdminStaff";
 import List from "./pages/List";
@@ -59,11 +61,11 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "/admin/",
+        index: true,
         element: <AdminDashboard />,
       },
       {
-        path: "/admin/staff",
+        path: "staff",
         element: <AdminStaff />,
         children: [
           {
@@ -71,28 +73,44 @@ const router = createBrowserRouter([
             element: <AdminStaff />,
           },
           {
-            path: "/admin/staff/:staffId",
+            path: ":staffId",
             element: <AdminStaff />,
           },
         ],
       },
       {
-        path: "/admin/attendances/",
-        element: <AdminAttendance />,
+        path: "attendances",
+        children: [
+          {
+            index: true,
+            element: <AdminAttendance />,
+          },
+          {
+            path: "edit/:targetWorkDate/:staffId",
+            element: <AdminAttendanceEditor />,
+          },
+          {
+            path: "print",
+            element: <AdminAttendancePrint />,
+          },
+        ],
       },
       {
-        path: "/admin/attendances/edit/:targetWorkDate/:targetStaffId",
-        element: <AdminAttendanceEditor />,
-      },
-      {
-        path: "/admin/master",
+        path: "master",
         element: <AdminMasterLayout />,
         children: [
           {
             index: true,
             element: <AdminMaster />,
           },
-          {},
+          {
+            path: "job_term",
+            element: <AdminMaster />,
+          },
+          {
+            path: "holiday_calendar",
+            element: <AdminHolidayCalendar />,
+          },
         ],
       },
     ],

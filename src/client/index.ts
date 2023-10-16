@@ -8,7 +8,13 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { Attendance } from './models/Attendance';
+export type { AttendanceClosingDate } from './models/AttendanceClosingDate';
+export type { AttendanceClosingDateCreate } from './models/AttendanceClosingDateCreate';
 export type { AttendanceCreate } from './models/AttendanceCreate';
+export type { CompanyHolidayCalendar } from './models/CompanyHolidayCalendar';
+export type { CompanyHolidayCalendarCreate } from './models/CompanyHolidayCalendarCreate';
+export type { HolidayCalendar } from './models/HolidayCalendar';
+export type { HolidayCalendarCreate } from './models/HolidayCalendarCreate';
 export type { HTTPValidationError } from './models/HTTPValidationError';
 export type { Rest } from './models/Rest';
 export type { RestCreate } from './models/RestCreate';

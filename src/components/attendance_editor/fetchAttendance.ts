@@ -10,12 +10,14 @@ async function fetchAttendance(
     staffId,
     fromDate.format("YYYYMMDD"),
     toDate.format("YYYYMMDD")
-  ).catch((error) => {
-    throw error;
-  });
+  );
 
-  if (!attendances || attendances.length === 0 || attendances.length > 1) {
-    throw new Error("Invalid attendance");
+  if (attendances.length === 0) {
+    throw new Error("No attendance data");
+  }
+
+  if (attendances.length > 1) {
+    throw new Error("Too many attendance data");
   }
 
   return attendances[0];

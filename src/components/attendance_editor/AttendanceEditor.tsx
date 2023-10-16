@@ -1,14 +1,12 @@
 import { Box, Button, Stack } from "@mui/material";
 
-import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Attendance, Rest, Staff } from "../../client";
-import { LoginStaff } from "../staff_list/StaffList";
-import fetchAttendance from "./fetchAttendance";
-import fetchLoginStaff from "./fetchLoginStaff";
-import fetchRests from "./fetchRests";
-import fetchStaff from "./fetchStaff";
+import { Attendance, Rest } from "../../client";
+import useAttendance from "./hooks/useAttendance";
+import useLoginStaff from "./hooks/useLoginStaff";
+import useRests from "./hooks/useRests";
+import useStaff from "./hooks/useStaff";
 import GoDirectlyItem from "./items/GoDirectlyItem";
 import ProductionTimeItem from "./items/ProductionTimeItem";
 import RemarksItem from "./items/RemarksItem";
@@ -24,57 +22,29 @@ export default function AttendanceEditor({
 }: {
   cognitoUserId: string | undefined;
 }) {
-  const { targetWorkDate, targetStaffId } = useParams();
+  const { targetWorkDate, staffId: targetStaffId } = useParams();
+  const { loginStaff } = useLoginStaff(cognitoUserId);
+  const { staff } = useStaff(loginStaff, targetStaffId);
+  const { attendance, updateAttendance } = useAttendance(staff, targetWorkDate);
+  const { rests } = useRests(staff, targetWorkDate);
   const navigate = useNavigate();
 
-  const [loginStaff, setLoginStaff] = useState<LoginStaff>(null);
-  const [staff, setStaff] = useState<Staff | null>(null);
-  const [attendance, setAttendance] = useState<Attendance | null>(null);
-  const [rests, setRests] = useState<Rest[] | null>(null);
+  const [attendanceFormState, setAttendanceFormState] =
+    useState<Attendance | null>(null);
+  const [restFormStates, setRestFormStates] = useState<Rest[] | null>(null);
   const [totalWorkTime, setTotalWorkTime] = useState<number>(0);
   const [totalRestTime, setTotalRestTime] = useState<number>(0);
   const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
 
   useEffect(() => {
-    if (!cognitoUserId) return;
-
-    void fetchLoginStaff(cognitoUserId)
-      .then((value) => setLoginStaff(value))
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [cognitoUserId]);
+    if (!attendance) return;
+    setAttendanceFormState(attendance);
+  }, [attendance]);
 
   useEffect(() => {
-    if (!loginStaff || !targetStaffId) return;
-
-    void fetchStaff(loginStaff, Number(targetStaffId))
-      .then((value) => setStaff(value))
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [loginStaff]);
-
-  useEffect(() => {
-    if (!staff || !targetWorkDate) return;
-
-    const fromDate = dayjs(targetWorkDate);
-    const toDate = fromDate;
-
-    void fetchAttendance(staff.id, fromDate, toDate)
-      .then((value) => setAttendance(value))
-      .catch((error) => {
-        console.log(error);
-      });
-
-    void fetchRests(staff.id, fromDate, toDate)
-      .then((value) => {
-        setRests(value);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [staff, targetWorkDate]);
+    if (!rests) return;
+    setRestFormStates(rests);
+  }, [rests]);
 
   useEffect(() => {
     const productionTime = totalWorkTime - totalRestTime;
@@ -87,16 +57,16 @@ export default function AttendanceEditor({
         <StaffNameItem staff={staff} />
       </Box>
       <Box>
-        <WorkDateItem attendance={attendance} />
+        <WorkDateItem attendance={attendanceFormState} />
       </Box>
       <Box>
         <GoDirectlyItem
-          attendance={attendance}
+          attendance={attendanceFormState}
           callback={(value) => {
-            if (!attendance) return;
+            if (!attendanceFormState) return;
 
-            setAttendance({
-              ...attendance,
+            setAttendanceFormState({
+              ...attendanceFormState,
               go_directly_flag: value,
             });
           }}
@@ -104,12 +74,12 @@ export default function AttendanceEditor({
       </Box>
       <Box>
         <ReturnDirectlyItem
-          attendance={attendance}
+          attendance={attendanceFormState}
           callback={(value) => {
-            if (!attendance) return;
+            if (!attendanceFormState) return;
 
-            setAttendance({
-              ...attendance,
+            setAttendanceFormState({
+              ...attendanceFormState,
               return_directly_flag: value,
             });
           }}
@@ -117,12 +87,12 @@ export default function AttendanceEditor({
       </Box>
       <Box>
         <WorkTimeItem
-          attendance={attendance}
+          attendance={attendanceFormState}
           callback={({ startTime, endTime, totalTime }) => {
-            if (!attendance) return;
+            if (!attendanceFormState) return;
 
-            setAttendance({
-              ...attendance,
+            setAttendanceFormState({
+              ...attendanceFormState,
               start_time: startTime.toISOString(),
               end_time: endTime.toISOString(),
             });
@@ -133,11 +103,11 @@ export default function AttendanceEditor({
       </Box>
       <Box>
         <RestTimeItem
-          rests={rests}
+          rests={restFormStates}
           staffId={staff?.id}
           workDate={targetWorkDate}
           callback={(editRests, totalTime) => {
-            setRests(editRests);
+            setRestFormStates(editRests);
             setTotalRestTime(totalTime);
           }}
         />
@@ -150,12 +120,12 @@ export default function AttendanceEditor({
       </Box>
       <Box>
         <RemarksItem
-          attendance={attendance}
+          attendance={attendanceFormState}
           callback={(value) => {
-            if (!attendance) return;
+            if (!attendanceFormState) return;
 
-            setAttendance({
-              ...attendance,
+            setAttendanceFormState({
+              ...attendanceFormState,
               remarks: value,
             });
           }}
@@ -190,7 +160,11 @@ export default function AttendanceEditor({
             </Button>
           </Box>
           <Box>
-            <Button variant="contained" sx={{ width: "150px" }}>
+            <Button
+              variant="contained"
+              sx={{ width: "150px" }}
+              onClick={() => updateAttendance(attendanceFormState)}
+            >
               保存
             </Button>
           </Box>

@@ -15,6 +15,8 @@ async function fetchLoginStaff(
     return;
   }
 
+  console.log("cognitoUserId", cognitoUserId);
+
   // スタッフの存在確認
   const staff = await Service.getStaffByCognitoUserId(
     cognitoUserId,
@@ -23,6 +25,8 @@ async function fetchLoginStaff(
     console.log(e);
     return null;
   });
+
+  console.log("staff", staff);
 
   if (staff) {
     const staffRole = await Service.getStaffRole(
@@ -63,7 +67,7 @@ async function fetchLoginStaff(
   const GUEST_ROLE_ID = 4;
   const createdStaffRole = await Service.createStaffRole(
     {
-      staff_id: 1,
+      staff_id: createdStaff.id,
       role_id: GUEST_ROLE_ID,
     },
     SYSTEM_STAFF_ID

@@ -36,6 +36,17 @@ function DateCell({
   );
 }
 
+function Title() {
+  return (
+    <Typography
+      variant="h4"
+      sx={{ pl: 1, borderBottom: "solid 5px #0FA85E", color: "#0FA85E" }}
+    >
+      締日管理
+    </Typography>
+  );
+}
+
 const initialDates = [...Array(12).keys()].map((_, index) => {
   const date = dayjs().add(index, "month").date(20);
   return date;
@@ -46,12 +57,7 @@ export default function AdminMaster() {
 
   return (
     <Stack spacing={2} sx={{ px: 5, pt: 2 }}>
-      <Typography
-        variant="h4"
-        sx={{ pl: 1, borderBottom: "solid 5px #0FA85E", color: "#0FA85E" }}
-      >
-        締日管理
-      </Typography>
+      <Title />
       <Typography>
         月ごとに勤怠を締める日付を指定します。当月から1年分表示されています。
       </Typography>
