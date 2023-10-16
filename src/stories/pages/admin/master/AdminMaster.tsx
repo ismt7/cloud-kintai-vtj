@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { store } from "../../../../app/store";
 import Footer from "../../../../components/footer/Footer";
 import Header from "../../../../components/header/Header";
-import JobTerm from "../../../../pages/admin/JobTerm";
+import JobTerm from "../../../../pages/admin/JobTerm/JobTerm";
 
 export default function AdminMasterPage() {
   const { user, signOut } = useAuthenticator();
