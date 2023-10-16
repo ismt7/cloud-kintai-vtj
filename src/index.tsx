@@ -19,7 +19,7 @@ import AdminAttendancePrint from "./pages/admin/AdminAttendancePrint";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminHolidayCalendar from "./pages/admin/AdminHolidayCalendar/AdminHolidayCalendar";
 import AdminStaff from "./pages/admin/AdminStaff";
-import AdminMaster from "./pages/admin/JobTerm";
+import JobTerm from "./pages/admin/JobTerm";
 import List from "./pages/List";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -101,11 +101,11 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <AdminMaster />,
+            element: <JobTerm />,
           },
           {
             path: "job_term",
-            element: <AdminMaster />,
+            element: <JobTerm />,
           },
           {
             path: "holiday_calendar",

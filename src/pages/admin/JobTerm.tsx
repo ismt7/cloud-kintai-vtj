@@ -52,7 +52,7 @@ const initialDates = [...Array(12).keys()].map((_, index) => {
   return date;
 });
 
-export default function AdminMaster() {
+export default function JobTerm() {
   const [closingDates, setClosingDates] = useState<dayjs.Dayjs[]>(initialDates);
 
   return (

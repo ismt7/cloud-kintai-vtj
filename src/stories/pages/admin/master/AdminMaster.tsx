@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { store } from "../../../../app/store";
 import Footer from "../../../../components/footer/Footer";
 import Header from "../../../../components/header/Header";
-import AdminMaster from "../../../../pages/admin/JobTerm";
+import JobTerm from "../../../../pages/admin/JobTerm";
 
 export default function AdminMasterPage() {
   const { user, signOut } = useAuthenticator();
@@ -22,7 +22,7 @@ export default function AdminMasterPage() {
           />
         </Box>
         <Box sx={{ flexGrow: 2 }}>
-          <AdminMaster />
+          <JobTerm />
         </Box>
         <Box>
           <Footer />
