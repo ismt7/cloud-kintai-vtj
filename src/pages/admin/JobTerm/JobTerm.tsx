@@ -1,39 +1,110 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
-import { DatePicker, DateValidationError } from "@mui/x-date-pickers";
-import { PickerChangeHandlerContext } from "@mui/x-date-pickers/internals/hooks/usePicker/usePickerValue.types";
-import dayjs, { Dayjs } from "dayjs";
-import { useEffect, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import { Box, Button, LinearProgress, Stack, Typography } from "@mui/material";
+import {
+  DataGrid,
+  DataGridProps,
+  GridActionsCellItem,
+  GridColDef,
+  GridRowModes,
+  GridRowModesModel,
+  GridRowParams,
+} from "@mui/x-data-grid";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+import { AttendanceClosingDate } from "../../../client";
+import useClosingDates from "./hooks/useClosingDates";
 
-function DateCell({
-  index,
-  date,
-  beforeDate,
-  onChange,
-}: {
-  index: number;
-  date: dayjs.Dayjs;
-  beforeDate: dayjs.Dayjs;
-  onChange: (
-    value: Dayjs | null,
-    context: PickerChangeHandlerContext<DateValidationError>
-  ) => void;
-}) {
-  const [dayCount, setDayCount] = useState<number>(0);
+type Inputs = {
+  closingDate: dayjs.Dayjs | null;
+};
 
-  useEffect(() => {
-    setDayCount(dayjs(date).diff(beforeDate, "day"));
-  }, [date, beforeDate]);
+const variationSchema = z.object({
+  closingDate: z
+    .custom<dayjs.Dayjs>()
+    .refine((value) => !!value, {
+      message: "締日を選択してください。",
+    })
+    .refine(
+      (value) => {
+        if (!value) return false;
+        const now = dayjs();
+        const closingDate = dayjs(value);
+        const isBefore = closingDate.isBefore(now);
+        return !isBefore;
+      },
+      {
+        message: "締日は過去の日付を選択できません。",
+      }
+    ),
+});
 
-  return (
-    <Stack key={index} direction="row" alignItems="center" spacing={2}>
-      <DatePicker value={date} format="YYYY/MM/DD" onChange={onChange} />
-      <Box>
-        <Typography variant="body1">
-          {index === 0 ? "(当月)" : `${dayCount}日`}
-        </Typography>
-      </Box>
-    </Stack>
-  );
+function getColumns(
+  rowModelsModel: GridRowModesModel
+): GridColDef<AttendanceClosingDate>[] {
+  return [
+    {
+      field: "closing_date",
+      headerName: "締日",
+      width: 150,
+      editable: true,
+      valueGetter: (params) => {
+        const date = dayjs(params.row.closing_date);
+        return date.format("YYYY/MM/DD");
+      },
+    },
+    {
+      field: "created_at",
+      headerName: "作成日",
+      width: 150,
+      valueGetter: (params) => {
+        const date = dayjs(params.row.created_at);
+        return date.format("YYYY/MM/DD");
+      },
+    },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "操作",
+      getActions: (params: GridRowParams<AttendanceClosingDate>) => {
+        const isEditMode =
+          rowModelsModel[params.id]?.mode === GridRowModes.Edit;
+        if (isEditMode) {
+          return [
+            <GridActionsCellItem
+              key={params.row.id}
+              icon={<SaveIcon />}
+              label="保存"
+            />,
+            <GridActionsCellItem
+              key={params.row.id}
+              icon={<CloseIcon />}
+              label="キャンセル"
+            />,
+          ];
+        }
+
+        return [
+          <GridActionsCellItem
+            key={params.row.id}
+            icon={<EditIcon />}
+            label="編集"
+          />,
+          <GridActionsCellItem
+            key={params.row.id}
+            icon={<DeleteIcon />}
+            label="削除"
+          />,
+        ];
+      },
+    },
+  ];
 }
 
 function Title() {
@@ -47,41 +118,94 @@ function Title() {
   );
 }
 
-const initialDates = [...Array(12).keys()].map((_, index) => {
-  const date = dayjs().add(index, "month").date(20);
-  return date;
-});
-
 export default function JobTerm() {
-  const [closingDates, setClosingDates] = useState<dayjs.Dayjs[]>(initialDates);
+  const { closingDates, loading, createClosingDate } = useClosingDates();
+
+  const [rowModelsModel, setRowModelsModel] = useState<GridRowModesModel>({});
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isDirty, isValid, isSubmitting },
+    reset,
+    setValue,
+  } = useForm<Inputs>({
+    mode: "onChange",
+    resolver: zodResolver(variationSchema),
+  });
+
+  const onSubmit = (data: Inputs) => {
+    if (!data.closingDate) {
+      throw new Error("closingDate is null.");
+    }
+
+    void createClosingDate(data.closingDate).then(() => {
+      reset();
+      setValue("closingDate", null);
+    });
+  };
+
+  const processRowUpdate: DataGridProps<AttendanceClosingDate>["processRowUpdate"] =
+    (newRow) => {
+      console.log(newRow);
+      return newRow;
+    };
+
+  if (loading) return <LinearProgress />;
 
   return (
     <Stack spacing={2} sx={{ px: 5, pt: 2 }}>
       <Title />
-      <Typography>
-        月ごとに勤怠を締める日付を指定します。当月から1年分表示されています。
-      </Typography>
-      {/* <Stack spacing={2} sx={{ width: 200 }}> */}
-      <Stack spacing={2}>
-        {closingDates.map((date, index) => (
-          <DateCell
-            key={index}
-            index={index}
-            date={date}
-            beforeDate={closingDates[index - 1]}
-            onChange={(value) => {
-              if (value) {
-                const newDates = [...closingDates];
-                newDates[index] = value;
-                setClosingDates(newDates);
-              }
-            }}
-          />
-        ))}
-      </Stack>
+      <Typography>月ごとに勤怠を締める日付を指定します。</Typography>
       <Box>
-        <Button variant="contained">保存</Button>
+        <Stack spacing={2}>
+          <Box>
+            <Controller
+              name="closingDate"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <DatePicker
+                  value={value}
+                  format="YYYY/MM/DD"
+                  slotProps={{
+                    textField: {
+                      helperText: errors.closingDate?.message,
+                    },
+                  }}
+                  onChange={(date) => {
+                    if (!date) return;
+                    onChange(date);
+                  }}
+                />
+              )}
+            />
+          </Box>
+          <Box>
+            <Button
+              variant="contained"
+              disabled={!isDirty || !isValid || isSubmitting}
+              onClick={handleSubmit(onSubmit)}
+            >
+              追加
+            </Button>
+          </Box>
+        </Stack>
       </Box>
+      <DataGrid
+        rows={closingDates}
+        editMode="row"
+        rowModesModel={rowModelsModel}
+        onRowModesModelChange={(model) => setRowModelsModel(model)}
+        processRowUpdate={processRowUpdate}
+        sortModel={[
+          {
+            field: "closing_date",
+            sort: "desc",
+          },
+        ]}
+        autoHeight
+        columns={getColumns(rowModelsModel)}
+      />
     </Stack>
   );
 }

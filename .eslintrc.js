@@ -42,6 +42,7 @@ module.exports = {
     "@typescript-eslint/indent": "off",
     "no-confusing-arrow": "off",
     "no-continue": "off",
+    "@typescript-eslint/no-misused-promises": "off",
   },
   settings: {
     react: {
