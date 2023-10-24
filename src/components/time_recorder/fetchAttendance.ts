@@ -1,10 +1,7 @@
 import dayjs from "dayjs";
-import { Attendance, Service, Staff } from "../../client";
+import { Service, Staff } from "../../client";
 
-async function fetchAttendance(
-  staff: Staff,
-  callback: (value: Attendance | null) => void
-) {
+export default async function fetchAttendance(staff: Staff) {
   const now = dayjs();
   const today = now.format("YYYYMMDD");
   const fromDate = today;
@@ -14,9 +11,8 @@ async function fetchAttendance(
     staff.id,
     fromDate,
     toDate
-  ).catch((error) => {
-    console.log(error);
-    return null;
+  ).catch((e) => {
+    throw e;
   });
 
   if (!attendances || attendances.length === 0) {
@@ -26,16 +22,12 @@ async function fetchAttendance(
         work_date: now.format("YYYY-MM-DD"),
       },
       staff.id
-    ).catch((error) => {
-      console.log(error);
-      return null;
+    ).catch((e) => {
+      throw e;
     });
 
-    callback(createdAttendance);
-    return;
+    return createdAttendance;
   }
 
-  callback(attendances[0]);
+  return attendances[0];
 }
-
-export default fetchAttendance;

@@ -19,6 +19,7 @@ import AdminAttendancePrint from "./pages/admin/AdminAttendancePrint";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminHolidayCalendar from "./pages/admin/AdminHolidayCalendar/AdminHolidayCalendar";
 import AdminStaff from "./pages/admin/AdminStaff";
+import AdminStaffAttendanceList from "./pages/admin/AdminStaffAttendanceList/AdminStaffAttendanceList";
 import JobTerm from "./pages/admin/JobTerm/JobTerm";
 import List from "./pages/List";
 import Login from "./pages/Login";
@@ -66,7 +67,6 @@ const router = createBrowserRouter([
       },
       {
         path: "staff",
-        element: <AdminStaff />,
         children: [
           {
             index: true,
@@ -74,7 +74,16 @@ const router = createBrowserRouter([
           },
           {
             path: ":staffId",
-            element: <AdminStaff />,
+            children: [
+              {
+                index: true,
+                element: <AdminStaff />,
+              },
+              {
+                path: "attendance",
+                element: <AdminStaffAttendanceList />,
+              },
+            ],
           },
         ],
       },

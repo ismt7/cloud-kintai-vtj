@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useEffect } from "react";
@@ -17,13 +17,13 @@ function Register() {
     }
   }, [route]);
 
+  if (route !== "authenticated") {
+    return <CircularProgress />;
+  }
+
   return (
     <Box sx={{ height: 1, py: 10, justifyContent: "center", display: "flex" }}>
-      {route === "authenticated" ? (
-        <TimeRecorder cognitoUserId={cognitoUserId} />
-      ) : (
-        <Typography>Loading...</Typography>
-      )}
+      <TimeRecorder cognitoUserId={cognitoUserId} />
     </Box>
   );
 }

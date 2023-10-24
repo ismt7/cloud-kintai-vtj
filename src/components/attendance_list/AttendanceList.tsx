@@ -1,40 +1,28 @@
+import { useAuthenticator } from "@aws-amplify/ui-react";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { Attendance, Staff } from "../../client";
+import { Attendance } from "../../client";
+import useLoginStaff from "../attendance_editor/hooks/useLoginStaff";
 import GetColumns, { DataGridProps } from "./Column";
 import fetchAttendanceList from "./fetchAttendanceList";
-import fetchLoginStaff from "./fetchLoginStaff";
 import getDayOfWeek, { DayOfWeek } from "./getDayOfWeek";
 
-const AttendanceTable = ({
-  cognitoUserId,
-}: {
-  cognitoUserId: string | undefined;
-}) => {
-  const [staff, setStaff] = useState<Staff | null>(null);
+const AttendanceTable = () => {
+  const { user } = useAuthenticator();
+  const { loginStaff } = useLoginStaff(user?.attributes?.sub);
   const [attendances, setAttendances] = useState<DataGridProps[]>([]);
 
   useEffect(() => {
-    if (!cognitoUserId) return;
+    if (!loginStaff) return;
 
-    void fetchLoginStaff(cognitoUserId)
-      .then((value) => setStaff(value))
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [cognitoUserId]);
-
-  useEffect(() => {
-    if (!staff) return;
-
-    void fetchAttendanceList(staff)
+    void fetchAttendanceList(loginStaff)
       .then((value) => {
         setAttendances(value);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [staff]);
+  }, [loginStaff]);
 
   console.log(attendances);
 

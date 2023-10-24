@@ -1,7 +1,16 @@
 import dayjs from "dayjs";
-import { Service, Staff } from "../../client";
+import { Attendance, Rest, Service, Staff } from "../../client";
 
-async function fetchAttendanceList(staff: Staff) {
+export interface AttendanceOrigin {
+  id: Attendance["id"];
+  workDate: Attendance["work_date"];
+  startTime: Attendance["start_time"];
+  endTime: Attendance["end_time"];
+  remarks: Attendance["remarks"];
+  rests: Rest[];
+}
+
+async function fetchAttendanceList(staff: Staff): Promise<AttendanceOrigin[]> {
   const now = dayjs();
   const today = now.format("YYYYMMDD");
   const fromDate = now.subtract(30, "day").format("YYYYMMDD");
@@ -24,14 +33,16 @@ async function fetchAttendanceList(staff: Staff) {
     throw error;
   });
 
-  return attendances.map((attendance) => ({
-    id: attendance.id,
-    workDate: attendance.work_date,
-    startTime: attendance.start_time,
-    endTime: attendance.end_time,
-    remarks: attendance.remarks,
-    rests: rests.filter((rest) => rest.work_date === attendance.work_date),
-  }));
+  return attendances.map(
+    (attendance): AttendanceOrigin => ({
+      id: attendance.id,
+      workDate: attendance.work_date,
+      startTime: attendance.start_time,
+      endTime: attendance.end_time,
+      remarks: attendance.remarks,
+      rests: rests.filter((rest) => rest.work_date === attendance.work_date),
+    })
+  );
 }
 
 export default fetchAttendanceList;

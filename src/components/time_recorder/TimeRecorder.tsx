@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 
-import { Attendance, Rest, Staff } from "../../client";
+import { Attendance, Rest } from "../../client";
+import useLoginStaff from "../attendance_editor/hooks/useLoginStaff";
 import Clock from "../clock/Clock";
-import fetchAttendance from "./fetchAttendance";
-import fetchLoginStaff from "./fetchLoginStaff";
 import fetchRest from "./fetchRest";
 import ClockInItem from "./items/ClockInItem";
 import ClockOutItem from "./items/ClockOutItem";
@@ -21,25 +20,25 @@ const TimeRecorder = ({
 }: {
   cognitoUserId: string | undefined;
 }) => {
-  const [staff, setStaff] = useState<Staff | null>(null);
+  const { loginStaff, loading: loginStaffLoading } =
+    useLoginStaff(cognitoUserId);
   const [attendance, setAttendance] = useState<Attendance | null>(null);
   const [rest, setRest] = useState<Rest | null>(null);
   const [workStatus, setWorkStatus] = useState<WorkStatus | null>(null);
 
   useEffect(() => {
-    if (!cognitoUserId) return;
-    void fetchLoginStaff(cognitoUserId, (value) => setStaff(value));
-  }, [cognitoUserId]);
-
-  useEffect(() => {
-    if (!staff) return;
-    void fetchAttendance(staff, (value) => setAttendance(value));
-    void fetchRest(staff, (value) => setRest(value));
-  }, [staff]);
+    if (!loginStaff) return;
+    // void fetchAttendance(loginStaff, (value) => setAttendance(value));
+    void fetchRest(loginStaff, (value) => setRest(value));
+  }, [loginStaff]);
 
   useEffect(() => {
     setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
   }, [attendance, rest]);
+
+  if (loginStaffLoading || !loginStaff) {
+    return <CircularProgress />;
+  }
 
   return (
     <Box width="400px">
@@ -57,7 +56,7 @@ const TimeRecorder = ({
           justifyContent="space-evenly"
         >
           <ClockInItem
-            staffId={staff?.id}
+            staffId={loginStaff.id}
             workStatus={workStatus}
             attendance={attendance}
             callback={(value) => {
@@ -66,7 +65,7 @@ const TimeRecorder = ({
             }}
           />
           <ClockOutItem
-            staffId={staff?.id}
+            staffId={loginStaff.id}
             workStatus={workStatus}
             rest={rest}
             callback={(value) => {
@@ -83,7 +82,7 @@ const TimeRecorder = ({
         >
           <Stack direction="row" spacing={1}>
             <GoDirectlyItem
-              staffId={staff?.id}
+              staffId={loginStaff.id}
               workStatus={workStatus}
               attendance={attendance}
               callback={(value) => {
@@ -92,7 +91,7 @@ const TimeRecorder = ({
               }}
             />
             <ReturnDirectly
-              staffId={staff?.id}
+              staffId={loginStaff.id}
               workStatus={workStatus}
               attendance={attendance}
               callback={(value) => {
@@ -103,7 +102,7 @@ const TimeRecorder = ({
           </Stack>
           <Stack direction="row" spacing={1}>
             <RestStartItem
-              staffId={staff?.id}
+              staffId={loginStaff.id}
               workStatus={workStatus}
               rest={rest}
               callback={(value) => {
@@ -112,7 +111,7 @@ const TimeRecorder = ({
               }}
             />
             <RestEndItem
-              staffId={staff?.id}
+              staffId={loginStaff.id}
               workStatus={workStatus}
               rest={rest}
               callback={(value) => {
@@ -123,7 +122,7 @@ const TimeRecorder = ({
           </Stack>
         </Stack>
         <TimeRecorderRemarks
-          staffId={staff?.id}
+          staffId={loginStaff.id}
           attendance={attendance}
           callback={(value) => {
             setAttendance(value);
