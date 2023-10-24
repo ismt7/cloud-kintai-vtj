@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 import {
   CompanyHolidayCalendar,
   CompanyHolidayCalendarCreate,
-} from "../../../client";
-import { LoginStaff } from "../../../components/staff_list/StaffList";
-import createCompanyHolidayCalendarData from "./createCompanyHolidayCalendar";
-import deleteAllCompanyHolidayCalendarData from "./deleteAllCompanyHolidayCalendar";
-import fetchCompanyHolidayCalendar from "./fetchCompanyHolidayCalendar";
+} from "../../../../client";
+import { LoginStaff } from "../../../../components/staff_list/StaffList";
+import createCompanyHolidayCalendarData from "../createCompanyHolidayCalendar";
+import deleteAllCompanyHolidayCalendarData from "../deleteAllCompanyHolidayCalendar";
+import fetchCompanyHolidayCalendar from "../fetchCompanyHolidayCalendar";
 
 export default function useCompanyHolidayCalendars(loginStaff: LoginStaff) {
   const [companyHolidayCalendars, setCompanyHolidayCalendars] = useState<
     CompanyHolidayCalendar[]
   >([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function useCompanyHolidayCalendars(loginStaff: LoginStaff) {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [loginStaff]);
 
   const createCompanyHolidayCalendars = async (
     newCompanyHolidayCalendars: CompanyHolidayCalendarCreate[]
@@ -55,7 +55,7 @@ export default function useCompanyHolidayCalendars(loginStaff: LoginStaff) {
         setCompanyHolidayCalendars(response);
       })
       .catch((e: Error) => {
-        setError(e);
+        throw e;
       })
       .finally(() => {
         setLoading(false);

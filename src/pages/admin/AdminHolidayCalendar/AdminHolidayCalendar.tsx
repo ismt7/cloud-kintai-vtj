@@ -16,9 +16,10 @@ import * as xlsx from "xlsx";
 import { HolidayCalendar } from "../../../client";
 import { LoginStaff } from "../../../components/staff_list/StaffList";
 import company_holiday from "../../../templates/company_holiday.xlsx";
+import HolidayCalendarListGroup from "./HolidayCalendarListGroup";
+import useCompanyHolidayCalendars from "./hooks/useCompanyHolidayCalendars";
 import useHolidayCalendars from "./hooks/useHolidayCalendar";
 import useLoginStaff from "./hooks/useLoginStaff";
-import useCompanyHolidayCalendars from "./useCompanyHolidayCalendars";
 
 function Title() {
   return (
@@ -111,7 +112,7 @@ function ExcelFilePicker({ loginStaff }: { loginStaff: LoginStaff }) {
               const lines = csv.split("\n").map((line) => line.split(","));
 
               void createCompanyHolidayCalendars(
-                lines.map((row) => ({
+                lines.slice(1).map((row) => ({
                   name: String(row[1]),
                   holiday_date: dayjs(row[0]).format("YYYY-MM-DD"),
                 }))
@@ -172,6 +173,9 @@ function AdminHolidayCalendar() {
           </TableRow>
         </TableBody>
       </Table>
+      <Box>
+        <HolidayCalendarListGroup />
+      </Box>
     </Stack>
   );
 }
