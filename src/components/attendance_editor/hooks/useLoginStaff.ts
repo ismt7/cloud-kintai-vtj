@@ -11,13 +11,15 @@ function useLoginStaff(cognitoUserId: string | undefined) {
     if (!cognitoUserId) return;
 
     setLoading(true);
+    setError(null);
     void fetchLoginStaff(cognitoUserId)
       .then((value) => {
         setLoginStaff(value);
-        setLoading(false);
       })
       .catch((e: Error) => {
         setError(e);
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, [cognitoUserId]);
