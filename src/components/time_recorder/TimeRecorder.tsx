@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 
-import { Attendance, Rest } from "../../client";
 import useLoginStaff from "../attendance_editor/hooks/useLoginStaff";
 import Clock from "../clock/Clock";
-import fetchRest from "./fetchRest";
+import useAttendance from "./hooks/useAttendance";
+import useRest from "./hooks/useRest";
 import ClockInItem from "./items/ClockInItem";
 import ClockOutItem from "./items/ClockOutItem";
 import GoDirectlyItem from "./items/GoDirectlyItem";
@@ -22,21 +22,28 @@ const TimeRecorder = ({
 }) => {
   const { loginStaff, loading: loginStaffLoading } =
     useLoginStaff(cognitoUserId);
-  const [attendance, setAttendance] = useState<Attendance | null>(null);
-  const [rest, setRest] = useState<Rest | null>(null);
+  const {
+    attendance,
+    clockIn,
+    clockOut,
+    goDirectly,
+    returnDirectly,
+    updateRemarks,
+    loading: attendanceLoading,
+  } = useAttendance(loginStaff);
+  const {
+    rest,
+    restStart,
+    restEnd,
+    loading: restLoading,
+  } = useRest(loginStaff);
   const [workStatus, setWorkStatus] = useState<WorkStatus | null>(null);
-
-  useEffect(() => {
-    if (!loginStaff) return;
-    // void fetchAttendance(loginStaff, (value) => setAttendance(value));
-    void fetchRest(loginStaff, (value) => setRest(value));
-  }, [loginStaff]);
 
   useEffect(() => {
     setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
   }, [attendance, rest]);
 
-  if (loginStaffLoading || !loginStaff) {
+  if (loginStaffLoading || attendanceLoading || restLoading || !loginStaff) {
     return <CircularProgress />;
   }
 
@@ -56,21 +63,19 @@ const TimeRecorder = ({
           justifyContent="space-evenly"
         >
           <ClockInItem
-            staffId={loginStaff.id}
             workStatus={workStatus}
-            attendance={attendance}
-            callback={(value) => {
-              setAttendance(value);
-              setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+            onClick={() => {
+              void clockIn().then(() => {
+                setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+              });
             }}
           />
           <ClockOutItem
-            staffId={loginStaff.id}
             workStatus={workStatus}
-            rest={rest}
-            callback={(value) => {
-              setRest(value);
-              setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+            onClick={() => {
+              void clockOut().then(() => {
+                setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+              });
             }}
           />
         </Stack>
@@ -82,51 +87,47 @@ const TimeRecorder = ({
         >
           <Stack direction="row" spacing={1}>
             <GoDirectlyItem
-              staffId={loginStaff.id}
               workStatus={workStatus}
-              attendance={attendance}
-              callback={(value) => {
-                setAttendance(value);
-                setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+              onClick={() => {
+                void goDirectly().then(() => {
+                  setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+                });
               }}
             />
             <ReturnDirectly
-              staffId={loginStaff.id}
               workStatus={workStatus}
-              attendance={attendance}
-              callback={(value) => {
-                setAttendance(value);
-                setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+              onClick={() => {
+                void returnDirectly().then(() => {
+                  setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+                });
               }}
             />
           </Stack>
           <Stack direction="row" spacing={1}>
             <RestStartItem
-              staffId={loginStaff.id}
               workStatus={workStatus}
-              rest={rest}
-              callback={(value) => {
-                setRest(value);
-                setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+              onClick={() => {
+                void restStart().then(() => {
+                  setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+                });
               }}
             />
             <RestEndItem
-              staffId={loginStaff.id}
               workStatus={workStatus}
-              rest={rest}
-              callback={(value) => {
-                setRest(value);
-                setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+              onClick={() => {
+                void restEnd().then(() => {
+                  setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+                });
               }}
             />
           </Stack>
         </Stack>
         <TimeRecorderRemarks
-          staffId={loginStaff.id}
           attendance={attendance}
-          callback={(value) => {
-            setAttendance(value);
-            setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+          onSave={(remarks) => {
+            void updateRemarks(remarks || "").then(() => {
+              setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+            });
           }}
         />
       </Stack>

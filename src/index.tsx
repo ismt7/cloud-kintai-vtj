@@ -21,6 +21,12 @@ import AdminHolidayCalendar from "./pages/admin/AdminHolidayCalendar/AdminHolida
 import AdminStaff from "./pages/admin/AdminStaff";
 import AdminStaffAttendanceList from "./pages/admin/AdminStaffAttendanceList/AdminStaffAttendanceList";
 import JobTerm from "./pages/admin/JobTerm/JobTerm";
+import Document from "./pages/Document/Document";
+import RestEndDocument from "./pages/Document/RestEndDocument";
+import RestStartDocument from "./pages/Document/RestStartDocument";
+import StartDocument from "./pages/Document/StartDocument";
+import WorkEndDocument from "./pages/Document/WorkEndDocument";
+import WorkStartDocument from "./pages/Document/WorkStartDocument";
 import List from "./pages/List";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -50,6 +56,36 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
+      },
+      {
+        path: "docs",
+        element: <Document />,
+        children: [
+          {
+            index: true,
+            element: <StartDocument />,
+          },
+          {
+            path: "start",
+            element: <StartDocument />,
+          },
+          {
+            path: "work-start",
+            element: <WorkStartDocument />,
+          },
+          {
+            path: "work-end",
+            element: <WorkEndDocument />,
+          },
+          {
+            path: "rest-start",
+            element: <RestStartDocument />,
+          },
+          {
+            path: "rest-end",
+            element: <RestEndDocument />,
+          },
+        ],
       },
       {
         path: "*",

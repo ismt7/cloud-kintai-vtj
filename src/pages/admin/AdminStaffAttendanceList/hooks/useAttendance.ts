@@ -13,9 +13,7 @@ export default function useAttendance(staff: Staff | null) {
   );
 
   useEffect(() => {
-    if (!staff) {
-      return;
-    }
+    if (!staff) return;
 
     setLoading(true);
     setError(null);

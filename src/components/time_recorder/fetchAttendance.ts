@@ -16,17 +16,18 @@ export default async function fetchAttendance(staff: Staff) {
   });
 
   if (!attendances || attendances.length === 0) {
-    const createdAttendance = await Service.createAttendance(
-      {
-        staff_id: staff.id,
-        work_date: now.format("YYYY-MM-DD"),
-      },
-      staff.id
-    ).catch((e) => {
-      throw e;
-    });
+    // const createdAttendance = await Service.createAttendance(
+    //   {
+    //     staff_id: staff.id,
+    //     work_date: now.format("YYYY-MM-DD"),
+    //   },
+    //   staff.id
+    // ).catch((e) => {
+    //   throw e;
+    // });
 
-    return createdAttendance;
+    // return createdAttendance;
+    return null;
   }
 
   return attendances[0];

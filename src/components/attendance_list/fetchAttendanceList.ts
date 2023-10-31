@@ -7,6 +7,8 @@ export interface AttendanceOrigin {
   startTime: Attendance["start_time"];
   endTime: Attendance["end_time"];
   remarks: Attendance["remarks"];
+  createdAt: Attendance["created_at"];
+  updatedAt: Attendance["updated_at"];
   rests: Rest[];
 }
 
@@ -40,6 +42,8 @@ async function fetchAttendanceList(staff: Staff): Promise<AttendanceOrigin[]> {
       startTime: attendance.start_time,
       endTime: attendance.end_time,
       remarks: attendance.remarks,
+      createdAt: attendance.created_at,
+      updatedAt: attendance.updated_at,
       rests: rests.filter((rest) => rest.work_date === attendance.work_date),
     })
   );

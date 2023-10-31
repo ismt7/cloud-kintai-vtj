@@ -72,8 +72,7 @@ const Header = ({
     const menuList = [
       { label: "勤怠打刻", href: "/register" },
       { label: "勤怠一覧", href: "/list" },
-      { label: "リンク", href: "/" },
-      { label: "リンク", href: "/" },
+      { label: "ドキュメント", href: "/docs" },
     ];
 
     const adminMenuList = [
