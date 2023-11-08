@@ -7,13 +7,15 @@ import {
 } from "@mui/material";
 import { DataGrid, GridRowModesModel } from "@mui/x-data-grid";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import getColumns from "./getColumns";
 import useAttendance from "./hooks/useAttendance";
 import useStaff from "./hooks/useStaff";
 
 export default function AdminStaffAttendanceList() {
   const { staffId } = useParams();
+  const navigate = useNavigate();
+
   const { staff, loading: staffLoading } = useStaff(
     staffId ? Number(staffId) : undefined
   );
@@ -50,7 +52,12 @@ export default function AdminStaffAttendanceList() {
             rows={attendances || []}
             rowModesModel={rowModelsModel}
             onRowModesModelChange={(model) => setRowModelsModel(model)}
-            columns={getColumns(deleteAttendance, rowModelsModel)}
+            columns={getColumns(
+              deleteAttendance,
+              rowModelsModel,
+              staffId,
+              navigate
+            )}
             autoHeight
           />
         </Box>

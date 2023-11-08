@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { Box, Stack } from "@mui/material";
 
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import SnackbarGroup from "./components/ snackbar/SnackbarGroup";
 import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
 
@@ -27,6 +28,7 @@ function Layout() {
         <Box>
           <Footer />
         </Box>
+        <SnackbarGroup />
       </Stack>
     </>
   );

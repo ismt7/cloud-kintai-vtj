@@ -1,6 +1,9 @@
 import { Attendance, Service } from "../../client";
 
-async function createAttendanceData(staffId: number, body: Attendance) {
+export default async function createAttendanceData(
+  staffId: number,
+  body: Attendance
+) {
   return Service.createAttendance(
     {
       staff_id: body.staff_id,
@@ -14,5 +17,3 @@ async function createAttendanceData(staffId: number, body: Attendance) {
     staffId
   );
 }
-
-export default createAttendanceData;

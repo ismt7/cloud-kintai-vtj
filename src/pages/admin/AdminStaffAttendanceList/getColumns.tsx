@@ -10,11 +10,14 @@ import {
   GridValueGetterParams,
 } from "@mui/x-data-grid";
 import dayjs from "dayjs";
+import { NavigateFunction } from "react-router-dom";
 import { AttendanceOrigin } from "../../../components/attendance_list/fetchAttendanceList";
 
 export default function getColumns(
   deleteAttendance: (attendanceId: number) => Promise<void>,
-  rowModelsModel: GridRowModesModel
+  rowModelsModel: GridRowModesModel,
+  staffId: string | undefined,
+  navigate: NavigateFunction
 ) {
   return [
     {
@@ -130,6 +133,12 @@ export default function getColumns(
             key={params.row.id}
             icon={<EditIcon />}
             label="編集"
+            onClick={() => {
+              if (!staffId) return;
+
+              const workDate = dayjs(params.row.workDate).format("YYYYMMDD");
+              navigate(`/admin/attendances/edit/${workDate}/${staffId}`);
+            }}
           />,
           <GridActionsCellItem
             key={params.row.id}
