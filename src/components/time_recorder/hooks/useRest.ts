@@ -10,9 +10,7 @@ export default function useRest(loginStaff: LoginStaff) {
   const [rest, setRest] = useState<Rest | null>(null);
 
   useEffect(() => {
-    if (!loginStaff) {
-      return;
-    }
+    if (!loginStaff) return;
 
     setLoading(true);
     setError(null);
@@ -30,55 +28,48 @@ export default function useRest(loginStaff: LoginStaff) {
   }, [loginStaff]);
 
   const restStart = async () => {
-    if (!loginStaff) {
-      throw new Error("Login staff is not set");
-    }
+    if (!loginStaff) throw new Error("Login staff is not set");
 
-    let currentRest = rest;
-    if (!rest) {
-      currentRest = await Service.createRest(
+    const targetRest = await (async () => {
+      if (rest) return rest;
+
+      return Service.createRest(
         {
           staff_id: loginStaff.id,
-          work_date: new Date().toISOString(),
+          work_date: dayjs().format("YYYY-MM-DD"),
         },
         loginStaff.id
       ).catch((e) => {
         throw e;
       });
-    }
-
-    if (!currentRest) {
-      throw new Error("Rest is not created");
-    }
+    })();
 
     const now = dayjs();
-    const updatedRest = await Service.updateRest(
-      currentRest.id,
+    return Service.updateRest(
+      targetRest.id,
       {
         staff_id: loginStaff.id,
-        work_date: currentRest.work_date,
+        work_date: targetRest.work_date,
         start_time: now.toISOString(),
-        end_time: currentRest.end_time,
+        end_time: targetRest.end_time,
       },
       loginStaff.id
-    ).catch((e) => {
-      throw e;
-    });
-
-    setRest(updatedRest);
+    )
+      .then((response) => {
+        setRest(response);
+        return response;
+      })
+      .catch((e) => {
+        throw e;
+      });
   };
 
   const restEnd = async () => {
-    if (!loginStaff) {
-      throw new Error("Login staff is not set");
-    }
-
-    if (!rest) {
-      throw new Error("Rest is not set");
-    }
+    if (!loginStaff) throw new Error("Login staff is not set");
+    if (!rest) throw new Error("Rest is not set");
 
     const now = dayjs();
-    const updatedRest = await Service.updateRest(
+    return Service.updateRest(
       rest.id,
       {
         staff_id: loginStaff.id,
@@ -87,11 +78,14 @@ export default function useRest(loginStaff: LoginStaff) {
         end_time: now.toISOString(),
       },
       loginStaff.id
-    ).catch((e) => {
-      throw e;
-    });
-
-    setRest(updatedRest);
+    )
+      .then((response) => {
+        setRest(response);
+        return response;
+      })
+      .catch((e) => {
+        throw e;
+      });
   };
 
   return { loading, error, rest, restStart, restEnd };

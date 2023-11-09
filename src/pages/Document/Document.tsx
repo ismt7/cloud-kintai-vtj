@@ -11,28 +11,31 @@ import {
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
+interface DocumentOpen {
+  workStart: boolean;
+  workEnd: boolean;
+  rest: boolean;
+}
+
+const initialDocumentOpen: DocumentOpen = {
+  workStart: false,
+  workEnd: false,
+  rest: false,
+};
+
 export default function Document() {
   const navigate = useNavigate();
-  const [workStartOpen, setWorkStartOpen] = useState(false);
-  const [workEndOpen, setWorkEndOpen] = useState(false);
-  const [restOpen, setRestOpen] = useState(false);
+  const [open, setOpen] = useState<DocumentOpen>(initialDocumentOpen);
 
-  const handleWorkStartClick = () => {
-    setWorkStartOpen(!workStartOpen);
-    setWorkEndOpen(false);
-    setRestOpen(false);
-  };
-
-  const handleRestClick = () => {
-    setRestOpen(!restOpen);
-    setWorkStartOpen(false);
-    setWorkEndOpen(false);
-  };
-
-  const handleWorkEndClick = () => {
-    setWorkEndOpen(!workEndOpen);
-    setWorkStartOpen(false);
-    setRestOpen(false);
+  const handleClick = (key: keyof DocumentOpen) => {
+    const newOpen = { ...open };
+    newOpen[key] = !open[key];
+    Object.keys(open).forEach((k) => {
+      if (k !== key) {
+        newOpen[k as keyof DocumentOpen] = false;
+      }
+    });
+    setOpen(newOpen);
   };
 
   return (
@@ -43,11 +46,11 @@ export default function Document() {
             <ListItemButton onClick={() => navigate("/docs/start")}>
               <ListItemText primary="はじめに" />
             </ListItemButton>
-            <ListItemButton onClick={handleWorkStartClick}>
+            <ListItemButton onClick={() => handleClick("workStart")}>
               <ListItemText primary="出勤打刻" />
-              {workStartOpen ? <ExpandLess /> : <ExpandMore />}
+              {open.workStart ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-            <Collapse in={workStartOpen} timeout="auto" unmountOnExit>
+            <Collapse in={open.workStart} timeout="auto" unmountOnExit>
               <List>
                 <ListItemButton onClick={() => navigate("/docs/work-start")}>
                   <ListItemText primary="通常打刻" sx={{ pl: 2 }} />
@@ -57,11 +60,11 @@ export default function Document() {
                 </ListItemButton>
               </List>
             </Collapse>
-            <ListItemButton onClick={handleRestClick}>
+            <ListItemButton onClick={() => handleClick("rest")}>
               <ListItemText primary="休憩打刻" />
-              {workStartOpen ? <ExpandLess /> : <ExpandMore />}
+              {open.rest ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-            <Collapse in={restOpen} timeout="auto" unmountOnExit>
+            <Collapse in={open.rest} timeout="auto" unmountOnExit>
               <List>
                 <ListItemButton onClick={() => navigate("/docs/rest-start")}>
                   <ListItemText primary="休憩開始" sx={{ pl: 2 }} />
@@ -71,11 +74,11 @@ export default function Document() {
                 </ListItemButton>
               </List>
             </Collapse>
-            <ListItemButton onClick={handleWorkEndClick}>
+            <ListItemButton onClick={() => handleClick("workEnd")}>
               <ListItemText primary="退勤打刻" />
-              {workStartOpen ? <ExpandLess /> : <ExpandMore />}
+              {open.workEnd ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-            <Collapse in={workEndOpen} timeout="auto" unmountOnExit>
+            <Collapse in={open.workEnd} timeout="auto" unmountOnExit>
               <List>
                 <ListItemButton onClick={() => navigate("/docs/work-end")}>
                   <ListItemText primary="通常打刻" sx={{ pl: 2 }} />
@@ -85,6 +88,11 @@ export default function Document() {
                 </ListItemButton>
               </List>
             </Collapse>
+            <ListItemButton
+              onClick={() => navigate("/docs/attendance-remarks")}
+            >
+              <ListItemText primary="勤怠備考" />
+            </ListItemButton>
           </List>
         </Box>
         <Box sx={{ width: 1, p: 2 }}>

@@ -21,6 +21,7 @@ import AdminHolidayCalendar from "./pages/admin/AdminHolidayCalendar/AdminHolida
 import AdminStaff from "./pages/admin/AdminStaff";
 import AdminStaffAttendanceList from "./pages/admin/AdminStaffAttendanceList/AdminStaffAttendanceList";
 import JobTerm from "./pages/admin/JobTerm/JobTerm";
+import AttendanceRemarksDocument from "./pages/Document/AttendanceRemarksDocument";
 import Document from "./pages/Document/Document";
 import RestEndDocument from "./pages/Document/RestEndDocument";
 import RestStartDocument from "./pages/Document/RestStartDocument";
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
           {
             path: "rest-end",
             element: <RestEndDocument />,
+          },
+          {
+            path: "attendance-remarks",
+            element: <AttendanceRemarksDocument />,
           },
         ],
       },

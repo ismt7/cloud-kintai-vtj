@@ -16,19 +16,5 @@ export default async function fetchRest(staff: Staff) {
     throw e;
   });
 
-  // if (!rests || rests.length === 0) {
-  //   const createdRest = await Service.createRest(
-  //     {
-  //       staff_id: staffId,
-  //       work_date: now.format("YYYY-MM-DD"),
-  //     },
-  //     staffId
-  //   ).catch((e) => {
-  //     throw e;
-  //   });
-
-  //   return createdRest;
-  // }
-
   return rests ? rests[0] : null;
 }

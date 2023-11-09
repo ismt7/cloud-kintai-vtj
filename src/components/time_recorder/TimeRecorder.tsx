@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Box, CircularProgress, Stack, Typography } from "@mui/material";
+import { Box, LinearProgress, Stack, Typography } from "@mui/material";
 
 import { Logger } from "aws-amplify";
 import { useAppDispatchV2 } from "../../app/hooks";
@@ -31,11 +31,11 @@ import ReturnDirectly from "./items/ReturnDirectlyItem";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
 import { getCurrentWorkStatusV2, WorkStatus } from "./WorkStatusCodes";
 
-const TimeRecorder = ({
+export default function TimeRecorder({
   cognitoUserId,
 }: {
   cognitoUserId: string | undefined;
-}) => {
+}) {
   const dispatch = useAppDispatchV2();
   const { loginStaff, loading: loginStaffLoading } =
     useLoginStaff(cognitoUserId);
@@ -57,7 +57,7 @@ const TimeRecorder = ({
   const [workStatus, setWorkStatus] = useState<WorkStatus | null>(null);
 
   const logger = new Logger(
-    "useRecipe",
+    "TimeRecorder",
     process.env.NODE_ENV === "development" ? "DEBUG" : "ERROR"
   );
 
@@ -66,7 +66,7 @@ const TimeRecorder = ({
   }, [attendance, rest]);
 
   if (loginStaffLoading || attendanceLoading || restLoading || !loginStaff) {
-    return <CircularProgress />;
+    return <LinearProgress />;
   }
 
   return (
@@ -88,10 +88,7 @@ const TimeRecorder = ({
             workStatus={workStatus}
             onClick={() => {
               void clockIn()
-                .then(() => {
-                  setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
-                  dispatch(setSnackbarSuccess(S01001));
-                })
+                .then(() => dispatch(setSnackbarSuccess(S01001)))
                 .catch((e) => {
                   logger.debug(e);
                   dispatch(setSnackbarError(E01001));
@@ -102,10 +99,7 @@ const TimeRecorder = ({
             workStatus={workStatus}
             onClick={() => {
               void clockOut()
-                .then(() => {
-                  setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
-                  dispatch(setSnackbarSuccess(S01002));
-                })
+                .then(() => dispatch(setSnackbarSuccess(S01002)))
                 .catch((e) => {
                   logger.debug(e);
                   dispatch(setSnackbarError(E01002));
@@ -142,10 +136,7 @@ const TimeRecorder = ({
               workStatus={workStatus}
               onClick={() => {
                 void restStart()
-                  .then(() => {
-                    setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
-                    dispatch(setSnackbarSuccess(S01003));
-                  })
+                  .then(() => dispatch(setSnackbarSuccess(S01003)))
                   .catch((e) => {
                     logger.debug(e);
                     dispatch(setSnackbarError(E01003));
@@ -156,10 +147,7 @@ const TimeRecorder = ({
               workStatus={workStatus}
               onClick={() => {
                 void restEnd()
-                  .then(() => {
-                    setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
-                    dispatch(setSnackbarSuccess(S01004));
-                  })
+                  .then(() => dispatch(setSnackbarSuccess(S01004)))
                   .catch((e) => {
                     logger.debug(e);
                     dispatch(setSnackbarError(E01004));
@@ -179,6 +167,4 @@ const TimeRecorder = ({
       </Stack>
     </Box>
   );
-};
-
-export default TimeRecorder;
+}

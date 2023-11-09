@@ -1,40 +1,35 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { Box, CircularProgress, Stack } from "@mui/material";
+import { Box, LinearProgress, Stack, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 import { Attendance } from "../../client";
 import useLoginStaff from "../attendance_editor/hooks/useLoginStaff";
 import Title from "../Title/Title";
-import GetColumns, { DataGridProps } from "./Column";
-import fetchAttendanceList from "./fetchAttendanceList";
+import GetColumns from "./Column";
 import getDayOfWeek, { DayOfWeek } from "./getDayOfWeek";
+import useAttendance from "./hooks/useAttendance";
+import useHolidayCalendar from "./hooks/useHolidayCalendar";
 
-const AttendanceTable = () => {
+export default function AttendanceTable() {
   const { user } = useAuthenticator();
   const {
     loginStaff,
     loading: loginStaffLoading,
     error: loginStaffError,
   } = useLoginStaff(user?.attributes?.sub);
-  const [attendances, setAttendances] = useState<DataGridProps[]>([]);
+  const {
+    attendances,
+    loading: attendanceLoading,
+    error: attendanceError,
+  } = useAttendance(loginStaff);
+  const { holidayCalendars, loading: holidayCalendarLoading } =
+    useHolidayCalendar();
 
-  useEffect(() => {
-    if (!loginStaff) return;
-
-    void fetchAttendanceList(loginStaff)
-      .then((value) => {
-        setAttendances(value);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [loginStaff]);
-
-  if (loginStaffLoading) {
-    return <CircularProgress />;
+  if (loginStaffLoading || attendanceLoading || holidayCalendarLoading) {
+    return <LinearProgress />;
   }
 
-  if (loginStaffError) {
+  if (loginStaffError || attendanceError) {
     return <div>データ取得中に何らかの問題が発生しました</div>;
   }
 
@@ -43,26 +38,35 @@ const AttendanceTable = () => {
       <Box>
         <Title text="勤怠一覧" />
       </Box>
-      <Box>
+      <Box sx={{ px: 5 }}>
+        <Typography variant="body1">
+          今日から30日前までの勤怠情報を表示しています
+        </Typography>
+      </Box>
+      <Box sx={{ px: 5 }}>
         <DataGrid
-          rows={attendances}
-          columns={GetColumns()}
+          rows={attendances ?? []}
+          columns={GetColumns(holidayCalendars)}
           autoHeight
-          sx={{
-            "& .super-app-theme--saturday": {
-              backgroundColor: "#2ACEDB",
-            },
-            "& .super-app-theme--sunday": {
-              backgroundColor: "#B33D47",
-              color: "white",
-              "&:hover": {
-                color: "black",
-              },
-            },
-          }}
+          hideFooter={true}
+          getRowId={(row) => row.workDate}
           getRowClassName={(params: {
             row: { workDate: Attendance["work_date"] };
           }) => {
+            const today = dayjs().format("YYYY-MM-DD");
+            if (params.row.workDate === today) {
+              return "super-app-theme--today";
+            }
+
+            const isHoliday = holidayCalendars?.find(
+              (holidayCalendar) =>
+                holidayCalendar.holiday_date === params.row.workDate
+            );
+
+            if (isHoliday) {
+              return "super-app-theme--sunday";
+            }
+
             const dayOfWeek = getDayOfWeek(params.row.workDate);
             switch (dayOfWeek) {
               case DayOfWeek.Sat:
@@ -73,9 +77,20 @@ const AttendanceTable = () => {
                 return "super-app-theme--default";
             }
           }}
+          sx={{
+            "& .super-app-theme--saturday": {
+              backgroundColor: "#93FFFF",
+            },
+            "& .super-app-theme--sunday": {
+              backgroundColor: "#FF9393",
+            },
+            "& .super-app-theme--today": {
+              backgroundColor: "#FFFF93",
+              fontWeight: "bold",
+            },
+          }}
         />
       </Box>
     </Stack>
   );
-};
-export default AttendanceTable;
+}

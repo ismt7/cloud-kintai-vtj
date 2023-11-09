@@ -12,11 +12,16 @@ export interface AttendanceOrigin {
   rests: Rest[];
 }
 
-async function fetchAttendanceList(staff: Staff): Promise<AttendanceOrigin[]> {
+export default async function fetchAttendanceList(
+  staff: Staff
+): Promise<AttendanceOrigin[]> {
   const now = dayjs();
   const today = now.format("YYYYMMDD");
   const fromDate = now.subtract(30, "day").format("YYYYMMDD");
   const toDate = today;
+  const dateList = Array.from({ length: 30 }, (_, i) =>
+    now.subtract(i, "day").format("YYYY-MM-DD")
+  ).sort();
 
   const { id: staffId } = staff;
   const attendances = await Service.getAttendancesByStaffId(
@@ -35,18 +40,21 @@ async function fetchAttendanceList(staff: Staff): Promise<AttendanceOrigin[]> {
     throw error;
   });
 
-  return attendances.map(
-    (attendance): AttendanceOrigin => ({
-      id: attendance.id,
-      workDate: attendance.work_date,
-      startTime: attendance.start_time,
-      endTime: attendance.end_time,
-      remarks: attendance.remarks,
-      createdAt: attendance.created_at,
-      updatedAt: attendance.updated_at,
-      rests: rests.filter((rest) => rest.work_date === attendance.work_date),
-    })
-  );
-}
+  return dateList.map((targetDate): AttendanceOrigin => {
+    const targetAttendance = attendances.find(
+      (attendance) => attendance.work_date === targetDate
+    );
+    const targetRest = rests.find((rest) => rest.work_date === targetDate);
 
-export default fetchAttendanceList;
+    return {
+      id: targetAttendance?.id ?? 0,
+      workDate: targetAttendance?.work_date ?? targetDate,
+      startTime: targetAttendance?.start_time ?? "",
+      endTime: targetAttendance?.end_time ?? "",
+      remarks: targetAttendance?.remarks ?? "",
+      createdAt: targetAttendance?.created_at ?? "",
+      updatedAt: targetAttendance?.updated_at ?? "",
+      rests: targetRest ? [targetRest] : [],
+    };
+  });
+}

@@ -30,9 +30,13 @@ import RemarksItem from "./items/RemarksItem";
 // eslint-disable-next-line import/no-cycle
 import { calcTotalRestTime, RestTimeItem } from "./items/RestTimeItem";
 // eslint-disable-next-line import/no-cycle
+import { Logger } from "aws-amplify";
 import { useAppDispatchV2 } from "../../app/hooks";
 import { E00001 } from "../../errors";
-import { setSnackbarError } from "../../lib/reducers/snackbarReducer";
+import {
+  setSnackbarError,
+  setSnackbarSuccess,
+} from "../../lib/reducers/snackbarReducer";
 import { calcTotalWorkTime, WorkTimeItem } from "./items/WorkTimeItem";
 
 type RestInputs = {
@@ -88,6 +92,11 @@ export default function AttendanceEditor({
 
   const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
 
+  const logger = new Logger(
+    "AttendanceEditor",
+    process.env.NODE_ENV === "development" ? "DEBUG" : "ERROR"
+  );
+
   const {
     register,
     control,
@@ -123,71 +132,81 @@ export default function AttendanceEditor({
     });
   }, [watch]);
 
-  const onSubmit = (data: AttendanceEditorInputs) => {
+  const onSubmit = async (data: AttendanceEditorInputs) => {
     if (!staff || !attendance) {
       dispatch(setSnackbarError(E00001));
       return;
     }
 
-    // 勤怠情報
-    updateAttendance({
-      ...attendance,
-      start_time: data.startTime,
-      end_time: data.endTime || null,
-      go_directly_flag: data.goDirectlyFlag,
-      return_directly_flag: data.returnDirectlyFlag,
-      remarks: data.remarks,
-    }).catch((e) => {
-      console.error(e);
-    });
-
-    // 休憩情報(新規)
     const workDate = dayjs(targetWorkDate).format("YYYY-MM-DD");
-    data.rests
-      .filter((rest) => !rest.restId)
-      .forEach((rest) => {
-        createRest({
-          staff_id: staff.id,
-          work_date: workDate,
-          start_time: rest.startTime,
-          end_time: rest.endTime,
-        }).catch((e) => {
-          console.error(e);
-        });
-      });
+    await Promise.all([
+      // 勤怠情報
+      updateAttendance({
+        ...attendance,
+        start_time: data.startTime,
+        end_time: data.endTime || null,
+        go_directly_flag: data.goDirectlyFlag,
+        return_directly_flag: data.returnDirectlyFlag,
+        remarks: data.remarks,
+      }).catch((e) => {
+        logger.debug(e);
+        throw e;
+      }),
 
-    // 休憩情報(更新)
-    data.rests
-      .filter((rest) => rest.restId)
-      .forEach((rest) => {
-        if (!rest.restId) {
-          throw new Error("restId is null");
-        }
+      // 休憩情報(新規)
+      data.rests
+        .filter((rest) => !rest.restId)
+        .forEach((rest) => {
+          createRest({
+            staff_id: staff.id,
+            work_date: workDate,
+            start_time: rest.startTime,
+            end_time: rest.endTime,
+          }).catch((e) => {
+            throw e;
+          });
+        }),
 
-        const targetRest = rests?.find((r) => r.id === rest.restId);
-        if (!targetRest) {
-          throw new Error("targetRest is null");
-        }
+      // 休憩情報(更新)
+      data.rests
+        .filter((rest) => rest.restId)
+        .forEach((rest) => {
+          if (!rest.restId) {
+            throw new Error("restId is null");
+          }
 
-        updateRest({
-          ...targetRest,
-          id: rest.restId,
-          start_time: rest.startTime,
-          end_time: rest.endTime,
-        }).catch((e) => {
-          console.error(e);
-        });
-      });
+          const targetRest = rests?.find((r) => r.id === rest.restId);
+          if (!targetRest) {
+            throw new Error("targetRest is null");
+          }
 
-    // 休憩情報(削除)
-    rests
-      ?.filter(
-        (rest) => !data.rests.some((restInput) => rest.id === restInput.restId)
-      )
-      .forEach((rest) => {
-        deleteRest(rest).catch((e) => {
-          console.error(e);
-        });
+          updateRest({
+            ...targetRest,
+            id: rest.restId,
+            start_time: rest.startTime,
+            end_time: rest.endTime,
+          }).catch((e) => {
+            throw e;
+          });
+        }),
+
+      // 休憩情報(削除)
+      rests
+        ?.filter(
+          (rest) =>
+            !data.rests.some((restInput) => rest.id === restInput.restId)
+        )
+        .forEach((rest) => {
+          deleteRest(rest).catch((e) => {
+            throw e;
+          });
+        }),
+    ])
+      .then(() => {
+        dispatch(setSnackbarSuccess());
+      })
+      .catch((e) => {
+        console.error(e);
       });
   };
 

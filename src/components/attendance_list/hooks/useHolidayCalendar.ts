@@ -1,22 +1,21 @@
 import { useEffect, useState } from "react";
-import { LoginStaff } from "../../staff_list/StaffList";
-import fetchAttendanceList, { AttendanceOrigin } from "../fetchAttendanceList";
+import { HolidayCalendar, Service } from "../../../client";
 
-export default function useAttendance(staff: LoginStaff) {
+const ADMIN_ID = 1;
+
+export default function useHolidayCalendar() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [attendances, setAttendances] = useState<AttendanceOrigin[] | null>(
-    null
+  const [holidayCalendars, setHolidayCalendars] = useState<HolidayCalendar[]>(
+    []
   );
 
   useEffect(() => {
-    if (!staff) return;
-
     setLoading(true);
     setError(null);
-    fetchAttendanceList(staff)
+    Service.getHolidayCalendars(ADMIN_ID)
       .then((data) => {
-        setAttendances(data);
+        setHolidayCalendars(data);
       })
       .catch((e: Error) => {
         setError(e);
@@ -24,11 +23,11 @@ export default function useAttendance(staff: LoginStaff) {
       .finally(() => {
         setLoading(false);
       });
-  }, [staff]);
+  }, []);
 
   return {
     loading,
     error,
-    attendances,
+    holidayCalendars,
   };
 }
