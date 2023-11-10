@@ -12,7 +12,7 @@ export interface AttendanceOrigin {
   rests: Rest[];
 }
 
-export default async function fetchAttendanceList(
+export async function fetchAttendanceList(
   staff: Staff
 ): Promise<AttendanceOrigin[]> {
   const now = dayjs();

@@ -3,11 +3,11 @@ import { Box, LinearProgress, Stack, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { Attendance } from "../../client";
+import useAttendance from "../../hooks/useAttendance/useAttendance";
 import useLoginStaff from "../attendance_editor/hooks/useLoginStaff";
 import Title from "../Title/Title";
 import GetColumns from "./Column";
 import getDayOfWeek, { DayOfWeek } from "./getDayOfWeek";
-import useAttendance from "./hooks/useAttendance";
 import useHolidayCalendar from "./hooks/useHolidayCalendar";
 
 export default function AttendanceTable() {
@@ -43,7 +43,7 @@ export default function AttendanceTable() {
           今日から30日前までの勤怠情報を表示しています
         </Typography>
       </Box>
-      <Box sx={{ px: 5 }}>
+      <Box sx={{ px: 5, pb: 5 }}>
         <DataGrid
           rows={attendances ?? []}
           columns={GetColumns(holidayCalendars)}

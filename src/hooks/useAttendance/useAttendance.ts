@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
-import { LoginStaff } from "../../staff_list/StaffList";
-import fetchAttendanceList, { AttendanceOrigin } from "../fetchAttendanceList";
+import { Service } from "../../client";
+import { LoginStaff } from "../../components/staff_list/StaffList";
+import { AttendanceOrigin, fetchAttendanceList } from "./fetchAttendanceList";
+
+const ADMIN_USER_ID = 1;
 
 export default function useAttendance(staff: LoginStaff) {
   const [loading, setLoading] = useState(true);
@@ -26,9 +29,22 @@ export default function useAttendance(staff: LoginStaff) {
       });
   }, [staff]);
 
+  const deleteAttendance = async (attendanceId: number) =>
+    Service.deleteAttendance(attendanceId, ADMIN_USER_ID)
+      .then(() => {
+        setAttendances((prev) => {
+          if (!prev) return prev;
+          return prev.filter((attendance) => attendance.id !== attendanceId);
+        });
+      })
+      .catch((e: Error) => {
+        throw e;
+      });
+
   return {
     loading,
     error,
     attendances,
+    deleteAttendance,
   };
 }

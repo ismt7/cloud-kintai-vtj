@@ -86,10 +86,21 @@ export default function GetColumns(): GridColDef[] {
       sortable: false,
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<SummaryAttendance>) => {
-        const { totalWorkHoursPerMonth } = params.row;
+        const { totalWorkHoursPerMonth, totalWorkDaysPerMonth } = params.row;
         const totalWorkHoursPerMonthNumber = Number(totalWorkHoursPerMonth);
-        if (totalWorkHoursPerMonthNumber === 0) return 0;
-        return Math.round((totalWorkHoursPerMonthNumber / 160) * 100);
+        const currentTotalWorkHoursPerMonthNumber = totalWorkDaysPerMonth * 8;
+
+        if (
+          totalWorkHoursPerMonthNumber === 0 ||
+          currentTotalWorkHoursPerMonthNumber === 0
+        ) {
+          return 0;
+        }
+
+        return Math.round(
+          (totalWorkHoursPerMonthNumber / currentTotalWorkHoursPerMonthNumber) *
+            100
+        );
       },
     },
     {

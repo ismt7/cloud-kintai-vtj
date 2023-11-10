@@ -4,6 +4,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import {
   GridActionsCellItem,
+  GridColDef,
   GridRowModes,
   GridRowModesModel,
   GridRowParams,
@@ -11,54 +12,80 @@ import {
 } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { NavigateFunction } from "react-router-dom";
-import { AttendanceOrigin } from "../../../components/attendance_list/fetchAttendanceList";
+import { HolidayCalendar } from "../../../client";
+import { statusValueGetter } from "../../../components/attendance_list/Column";
+import getDayOfWeek from "../../../components/attendance_list/getDayOfWeek";
+import { AttendanceOrigin } from "../../../hooks/useAttendance/fetchAttendanceList";
 
 export default function getColumns(
   deleteAttendance: (attendanceId: number) => Promise<void>,
   rowModelsModel: GridRowModesModel,
   staffId: string | undefined,
-  navigate: NavigateFunction
-) {
+  navigate: NavigateFunction,
+  holidayCalendars: HolidayCalendar[]
+): GridColDef[] {
   return [
+    {
+      field: "status",
+      headerName: "ステータス",
+      align: "center",
+      valueGetter: (params: GridValueGetterParams<AttendanceOrigin>) => {
+        const { workDate, startTime, endTime } = params.row;
+        return statusValueGetter(
+          workDate,
+          startTime,
+          endTime,
+          holidayCalendars
+        );
+      },
+    },
     {
       field: "workDate",
       headerName: "勤務日",
-      width: 120,
+      width: 90,
       valueGetter: (params: GridValueGetterParams<AttendanceOrigin>) => {
-        const date = dayjs(params.row.workDate);
-        return date.format("YYYY/MM/DD");
+        const { workDate } = params.row;
+        const date = dayjs(workDate);
+        const isHoliday = holidayCalendars?.find(
+          ({ holiday_date }) => holiday_date === workDate
+        );
+        const dayOfWeek = isHoliday ? "祝" : getDayOfWeek(workDate);
+        return `${date.format("M/D")}(${dayOfWeek})`;
       },
     },
     {
       field: "startTime",
       headerName: "出勤時間",
-      width: 100,
+      width: 70,
       valueGetter: (params: GridValueGetterParams<AttendanceOrigin>) => {
-        if (!params.row.startTime) return "";
+        const { startTime } = params.row;
+        if (!startTime) return "";
 
-        const date = dayjs(params.row.startTime);
+        const date = dayjs(startTime);
         return date.format("HH:mm");
       },
     },
     {
       field: "endTime",
       headerName: "退勤時間",
-      width: 100,
+      width: 70,
       valueGetter: (params: GridValueGetterParams<AttendanceOrigin>) => {
-        if (!params.row.endTime) return "";
+        const { endTime } = params.row;
+        if (!endTime) return "";
 
-        const date = dayjs(params.row.endTime);
+        const date = dayjs(endTime);
         return date.format("HH:mm");
       },
     },
     {
       field: "restStartTime",
       headerName: "休憩開始(最近)",
-      width: 150,
+      width: 110,
       valueGetter: (params: GridValueGetterParams<AttendanceOrigin>) => {
-        if (params.row.rests.length === 0) return "";
+        const { rests } = params.row;
+        if (rests.length === 0) return "";
 
-        const rest = params.row.rests.reduce((a, b) => {
+        const rest = rests.reduce((a, b) => {
           const aDate = dayjs(a.created_at);
           const bDate = dayjs(b.created_at);
           return aDate.isAfter(bDate) ? a : b;
@@ -73,11 +100,12 @@ export default function getColumns(
     {
       field: "restEndTime",
       headerName: "休憩終了(最近)",
-      width: 150,
+      width: 110,
       valueGetter: (params: GridValueGetterParams<AttendanceOrigin>) => {
-        if (params.row.rests.length === 0) return "";
+        const { rests } = params.row;
+        if (rests.length === 0) return "";
 
-        const rest = params.row.rests.reduce((a, b) => {
+        const rest = rests.reduce((a, b) => {
           const aDate = dayjs(a.created_at);
           const bDate = dayjs(b.created_at);
           return aDate.isAfter(bDate) ? a : b;
@@ -92,19 +120,49 @@ export default function getColumns(
     {
       field: "createdAt",
       headerName: "作成日時",
-      width: 180,
+      width: 100,
       valueGetter(params: GridValueGetterParams<AttendanceOrigin>) {
-        const date = dayjs(params.row.createdAt);
-        return date.format("YYYY/MM/DD HH:mm");
+        const { createdAt } = params.row;
+        if (!createdAt) return "";
+
+        const date = dayjs(createdAt);
+        return date.format("M/D HH:mm");
       },
     },
     {
       field: "updatedAt",
       headerName: "更新日時",
-      width: 180,
+      width: 100,
       valueGetter(params: GridValueGetterParams<AttendanceOrigin>) {
-        const date = dayjs(params.row.updatedAt);
-        return date.format("YYYY/MM/DD HH:mm");
+        const { updatedAt } = params.row;
+        if (!updatedAt) return "";
+
+        const date = dayjs(updatedAt);
+        return date.format("M/D HH:mm");
+      },
+    },
+    {
+      field: "summary",
+      headerName: "摘要",
+      align: "left",
+      sortable: false,
+      width: 300,
+      headerAlign: "center",
+      valueGetter: (params: GridValueGetterParams<AttendanceOrigin>) => {
+        const { workDate } = params.row;
+        const isHoliday = holidayCalendars?.find(
+          ({ holiday_date }) => holiday_date === workDate
+        );
+
+        const summaryMessage = [];
+        if (isHoliday) {
+          summaryMessage.push(isHoliday.name);
+        }
+
+        if (params.row.remarks) {
+          summaryMessage.push(params.row.remarks);
+        }
+        return summaryMessage.join(" ");
       },
     },
     {

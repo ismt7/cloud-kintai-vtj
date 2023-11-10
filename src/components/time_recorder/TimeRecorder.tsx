@@ -9,10 +9,14 @@ import {
   E01002,
   E01003,
   E01004,
+  E01005,
+  E01006,
   S01001,
   S01002,
   S01003,
   S01004,
+  S01005,
+  S01006,
 } from "../../errors";
 import {
   setSnackbarError,
@@ -117,17 +121,23 @@ export default function TimeRecorder({
             <GoDirectlyItem
               workStatus={workStatus}
               onClick={() => {
-                void goDirectly().then(() => {
-                  setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
-                });
+                void goDirectly()
+                  .then(() => dispatch(setSnackbarSuccess(S01003)))
+                  .catch((e) => {
+                    logger.debug(e);
+                    dispatch(setSnackbarError(E01005));
+                  });
               }}
             />
             <ReturnDirectly
               workStatus={workStatus}
               onClick={() => {
-                void returnDirectly().then(() => {
-                  setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
-                });
+                void returnDirectly()
+                  .then(() => dispatch(setSnackbarSuccess(S01004)))
+                  .catch((e) => {
+                    logger.debug(e);
+                    dispatch(setSnackbarError(E01006));
+                  });
               }}
             />
           </Stack>
@@ -136,7 +146,7 @@ export default function TimeRecorder({
               workStatus={workStatus}
               onClick={() => {
                 void restStart()
-                  .then(() => dispatch(setSnackbarSuccess(S01003)))
+                  .then(() => dispatch(setSnackbarSuccess(S01005)))
                   .catch((e) => {
                     logger.debug(e);
                     dispatch(setSnackbarError(E01003));
@@ -147,7 +157,7 @@ export default function TimeRecorder({
               workStatus={workStatus}
               onClick={() => {
                 void restEnd()
-                  .then(() => dispatch(setSnackbarSuccess(S01004)))
+                  .then(() => dispatch(setSnackbarSuccess(S01006)))
                   .catch((e) => {
                     logger.debug(e);
                     dispatch(setSnackbarError(E01004));

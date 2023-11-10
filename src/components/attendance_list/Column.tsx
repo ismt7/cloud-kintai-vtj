@@ -9,6 +9,42 @@ import dayjs from "dayjs";
 import { Attendance, HolidayCalendar, Rest } from "../../client";
 import getDayOfWeek from "./getDayOfWeek";
 
+export function statusValueGetter(
+  workDate: Attendance["work_date"],
+  startTime: Attendance["start_time"],
+  endTime: Attendance["end_time"],
+  holidayCalendars: HolidayCalendar[]
+) {
+  const today = dayjs().format("YYYY-MM-DD");
+  const dayOfWeek = getDayOfWeek(workDate);
+  const isHoliday = holidayCalendars?.find(
+    (holiday) => holiday.holiday_date === workDate
+  );
+
+  if (isHoliday) return "";
+
+  switch (dayOfWeek) {
+    case "月":
+    case "火":
+    case "水":
+    case "木":
+    case "金":
+      if (today === workDate) {
+        if (!startTime) return "遅刻";
+        if (!endTime) return "勤務中";
+      }
+      return !startTime || !endTime ? "エラー" : "OK";
+
+    case "土":
+    case "日":
+      if (!startTime && !endTime) return "";
+      return "OK";
+
+    default:
+      return "";
+  }
+}
+
 export interface DataGridProps {
   id: Attendance["id"];
   workDate: Attendance["work_date"];
@@ -27,35 +63,13 @@ export default function GetColumns(
       headerName: "ステータス",
       align: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
-        const today = dayjs().format("YYYY-MM-DD");
-        const { startTime, endTime } = params.row;
-        const dayOfWeek = getDayOfWeek(params.row.workDate);
-        const isHoliday = holidayCalendars?.find(
-          (holiday) => holiday.holiday_date === params.row.workDate
+        const { workDate, startTime, endTime } = params.row;
+        return statusValueGetter(
+          workDate,
+          startTime,
+          endTime,
+          holidayCalendars
         );
-
-        if (isHoliday) return "";
-
-        switch (dayOfWeek) {
-          case "月":
-          case "火":
-          case "水":
-          case "木":
-          case "金":
-            if (today === params.row.workDate) {
-              if (!startTime) return "遅刻";
-              if (!endTime) return "勤務中";
-            }
-            return !startTime && !endTime ? "エラー" : "OK";
-
-          case "土":
-          case "日":
-            if (!startTime && !endTime) return "";
-            return "OK";
-
-          default:
-            return "";
-        }
       },
     },
     {
@@ -67,22 +81,12 @@ export default function GetColumns(
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
         const { workDate } = params.row;
         if (!workDate) return "";
-
-        const workDateFormat = dayjs(workDate).format("M/D");
-        return workDateFormat;
-      },
-    },
-    {
-      field: "dayOfWeek",
-      headerName: "曜日",
-      align: "right",
-      sortable: false,
-      headerAlign: "center",
-      valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
+        const date = dayjs(workDate);
         const isHoliday = holidayCalendars?.find(
-          (holiday) => holiday.holiday_date === params.row.workDate
+          ({ holiday_date }) => holiday_date === params.row.workDate
         );
-        return isHoliday ? "祝" : getDayOfWeek(params.row.workDate);
+        const dayOfWeek = isHoliday ? "祝" : getDayOfWeek(params.row.workDate);
+        return `${date.format("M/D")}(${dayOfWeek})`;
       },
     },
     {
@@ -95,8 +99,8 @@ export default function GetColumns(
         const { startTime } = params.row;
         if (!startTime) return "";
 
-        const startTimeFormat = dayjs(startTime).format("HH:mm");
-        return startTimeFormat;
+        const date = dayjs(startTime);
+        return date.format("HH:mm");
       },
     },
     {
@@ -109,8 +113,8 @@ export default function GetColumns(
         const { endTime } = params.row;
         if (!endTime) return "";
 
-        const endTimeFormat = dayjs(endTime).format("HH:mm");
-        return endTimeFormat;
+        const date = dayjs(endTime);
+        return date.format("HH:mm");
       },
     },
     {
@@ -186,8 +190,9 @@ export default function GetColumns(
       width: 300,
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
+        const { workDate } = params.row;
         const isHoliday = holidayCalendars?.find(
-          (holiday) => holiday.holiday_date === params.row.workDate
+          ({ holiday_date }) => holiday_date === workDate
         );
 
         const summaryMessage = [];

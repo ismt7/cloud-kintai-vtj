@@ -11,10 +11,25 @@ import {
 } from "@mui/material";
 
 import AddAlarmIcon from "@mui/icons-material/AddAlarm";
+import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAppDispatchV2 } from "../../app/hooks";
+import {
+  E00001,
+  E02003,
+  E03002,
+  E03003,
+  E03004,
+  E04001,
+  S04001,
+} from "../../errors";
+import {
+  setSnackbarError,
+  setSnackbarSuccess,
+} from "../../lib/reducers/snackbarReducer";
 import useAttendance from "./hooks/useAttendance";
 import useLoginStaff from "./hooks/useLoginStaff";
 import useRests from "./hooks/useRests";
@@ -30,13 +45,6 @@ import RemarksItem from "./items/RemarksItem";
 // eslint-disable-next-line import/no-cycle
 import { calcTotalRestTime, RestTimeItem } from "./items/RestTimeItem";
 // eslint-disable-next-line import/no-cycle
-import { Logger } from "aws-amplify";
-import { useAppDispatchV2 } from "../../app/hooks";
-import { E00001 } from "../../errors";
-import {
-  setSnackbarError,
-  setSnackbarSuccess,
-} from "../../lib/reducers/snackbarReducer";
 import { calcTotalWorkTime, WorkTimeItem } from "./items/WorkTimeItem";
 
 type RestInputs = {
@@ -150,7 +158,7 @@ export default function AttendanceEditor({
         remarks: data.remarks,
       }).catch((e) => {
         logger.debug(e);
-        throw e;
+        throw new Error(E02003);
       }),
 
       // 休憩情報(新規)
@@ -163,7 +171,8 @@ export default function AttendanceEditor({
             start_time: rest.startTime,
             end_time: rest.endTime,
           }).catch((e) => {
-            throw e;
+            logger.debug(e);
+            throw new Error(E03002);
           });
         }),
 
@@ -186,7 +195,8 @@ export default function AttendanceEditor({
             start_time: rest.startTime,
             end_time: rest.endTime,
           }).catch((e) => {
-            throw e;
+            logger.debug(e);
+            throw new Error(E03003);
           });
         }),
 
@@ -198,15 +208,16 @@ export default function AttendanceEditor({
         )
         .forEach((rest) => {
           deleteRest(rest).catch((e) => {
-            throw e;
+            logger.debug(e);
+            throw new Error(E03004);
           });
         }),
     ])
       .then(() => {
-        dispatch(setSnackbarSuccess());
+        dispatch(setSnackbarSuccess(S04001));
       })
-      .catch((e) => {
-        console.error(e);
+      .catch(() => {
+        dispatch(setSnackbarError(E04001));
       });
   };
 
