@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
-import { Rest, Service, Staff } from "../../client";
+import { Service, Staff } from "../../client";
 
-async function fetchRest(staff: Staff, callback: (value: Rest | null) => void) {
+export default async function fetchRest(staff: Staff) {
   const { id: staffId } = staff;
   const now = dayjs();
   const today = now.format("YYYYMMDD");
@@ -12,27 +12,9 @@ async function fetchRest(staff: Staff, callback: (value: Rest | null) => void) {
     staffId,
     fromDate,
     toDate
-  ).catch((error) => {
-    console.log(error);
-    return null;
+  ).catch((e) => {
+    throw e;
   });
 
-  if (!rests || rests.length === 0) {
-    const createdRest = await Service.createRest(
-      {
-        staff_id: staffId,
-        work_date: now.format("YYYY-MM-DD"),
-      },
-      staffId
-    ).catch((error) => {
-      console.log(error);
-      return null;
-    });
-
-    callback(createdRest);
-  }
-
-  callback(rests ? rests[0] : null);
+  return rests ? rests[0] : null;
 }
-
-export default fetchRest;

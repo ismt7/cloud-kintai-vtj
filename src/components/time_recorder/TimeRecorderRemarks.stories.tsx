@@ -22,9 +22,7 @@ export default meta;
 type Story = StoryObj<typeof TimeRecorderRemarks>;
 
 export const Default: Story = {
-  args: {
-    staffId: 1,
-  },
+  args: {},
   play: async () => {
     const sleep = async (ms: number | undefined) =>
       new Promise<void>((resolve) => {

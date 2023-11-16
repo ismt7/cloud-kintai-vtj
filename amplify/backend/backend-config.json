@@ -1,30 +1,68 @@
 {
   "auth": {
-    "garakufrontend9edb8cc5": {
+    "garakufrontend705c8f74": {
       "customAuth": false,
       "dependsOn": [],
-      "frontendAuthConfig": {
-        "mfaConfiguration": "OFF",
-        "mfaTypes": [
-          "SMS"
-        ],
-        "passwordProtectionSettings": {
-          "passwordPolicyCharacters": [],
-          "passwordPolicyMinLength": 8
-        },
-        "signupAttributes": [
-          "EMAIL"
-        ],
-        "socialProviders": [],
-        "usernameAttributes": [
-          "EMAIL"
-        ],
-        "verificationMechanisms": [
-          "EMAIL"
-        ]
-      },
       "providerPlugin": "awscloudformation",
-      "service": "Cognito"
+      "service": "Cognito",
+      "serviceType": "imported"
+    }
+  },
+  "hosting": {
+    "amplifyhosting": {
+      "providerPlugin": "awscloudformation",
+      "service": "amplifyhosting",
+      "type": "manual"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_auth_garakufrontend705c8f74_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "garakufrontend705c8f74"
+        }
+      ]
+    },
+    "AMPLIFY_auth_garakufrontend705c8f74_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "garakufrontend705c8f74"
+        }
+      ]
+    },
+    "AMPLIFY_auth_garakufrontend705c8f74_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "garakufrontend705c8f74"
+        }
+      ]
+    },
+    "AMPLIFY_auth_garakufrontend705c8f74_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "garakufrontend705c8f74"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
     }
   }
 }

@@ -21,12 +21,9 @@ function Login() {
   const from = (location.state?.from as string) || "/";
 
   useEffect(() => {
-    if (route === "authenticated") {
-      navigate(from, { replace: true });
-      return;
-    }
+    if (route !== "authenticated") return;
 
-    navigate("/", { replace: true });
+    navigate(from, { replace: true });
   }, [route, navigate, from]);
 
   return (

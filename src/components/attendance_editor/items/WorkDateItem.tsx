@@ -3,14 +3,10 @@ import dayjs from "dayjs";
 import { Attendance } from "../../../client";
 
 export default function WorkDateItem({
-  attendance,
+  workDate,
 }: {
-  attendance: Attendance | null;
+  workDate: Attendance["work_date"];
 }) {
-  if (!attendance) return <></>;
-
-  const { work_date: workDate } = attendance;
-
   return (
     <Stack direction="row" alignItems={"center"}>
       <Box sx={{ fontWeight: "bold", width: "150px" }}>勤務日</Box>

@@ -1,6 +1,5 @@
 import { Autocomplete, Box, Button, Stack, TextField } from "@mui/material";
-import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DesktopDatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Service, Staff } from "../../client";
@@ -91,77 +90,73 @@ const DownloadForm = ({ loginStaff }: { loginStaff: LoginStaff }) => {
         ダウンロードオプション
       </Box>
       <Box>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <Stack
-            spacing={3}
-            sx={{ display: "inline-block", boxSizing: "border-box" }}
-          >
-            <Box>
-              <Stack direction="row" spacing={1} alignItems="center">
-                <Box>
-                  <DesktopDatePicker
-                    label="開始日"
-                    format="YYYY/MM/DD"
-                    value={formState.startDate}
-                    onChange={(event) => changeHandler("startDate", event)}
-                    slotProps={{ textField: { variant: "outlined" } }}
-                  />
-                </Box>
-                <Box>〜</Box>
-                <Box>
-                  <DesktopDatePicker
-                    label="終了日"
-                    format="YYYY/MM/DD"
-                    value={formState.endDate}
-                    onChange={(event) => changeHandler("endDate", event)}
-                    slotProps={{ textField: { variant: "outlined" } }}
-                  />
-                </Box>
-              </Stack>
-            </Box>
-            <Box>
-              <Autocomplete
-                multiple
-                limitTags={2}
-                id="multiple-limit-tags"
-                options={aggregateMonthList}
-                getOptionLabel={(option) =>
-                  `${option.date.format("YYYY年MM月")}`
-                }
-                defaultValue={[]}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="集計対象月"
-                    placeholder="集計対象月を選択..."
-                  />
-                )}
-                sx={{ width: "500px" }}
-              />
-            </Box>
-            <Box>
-              <Autocomplete
-                data-testid="autocomplete"
-                multiple
-                limitTags={2}
-                id="multiple-limit-tags"
-                options={staffs}
-                getOptionLabel={(option) =>
-                  `${option?.last_name || ""} ${option?.first_name || ""}`
-                }
-                defaultValue={[]}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="対象者"
-                    placeholder="対象者を入力..."
-                  />
-                )}
-                sx={{ width: "500px" }}
-              />
-            </Box>
-          </Stack>
-        </LocalizationProvider>
+        <Stack
+          spacing={3}
+          sx={{ display: "inline-block", boxSizing: "border-box" }}
+        >
+          <Box>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Box>
+                <DesktopDatePicker
+                  label="開始日"
+                  format="YYYY/MM/DD"
+                  value={formState.startDate}
+                  onChange={(event) => changeHandler("startDate", event)}
+                  slotProps={{ textField: { variant: "outlined" } }}
+                />
+              </Box>
+              <Box>〜</Box>
+              <Box>
+                <DesktopDatePicker
+                  label="終了日"
+                  format="YYYY/MM/DD"
+                  value={formState.endDate}
+                  onChange={(event) => changeHandler("endDate", event)}
+                  slotProps={{ textField: { variant: "outlined" } }}
+                />
+              </Box>
+            </Stack>
+          </Box>
+          <Box>
+            <Autocomplete
+              multiple
+              limitTags={2}
+              id="multiple-limit-tags"
+              options={aggregateMonthList}
+              getOptionLabel={(option) => `${option.date.format("YYYY年MM月")}`}
+              defaultValue={[]}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="集計対象月"
+                  placeholder="集計対象月を選択..."
+                />
+              )}
+              sx={{ width: "500px" }}
+            />
+          </Box>
+          <Box>
+            <Autocomplete
+              data-testid="autocomplete"
+              multiple
+              limitTags={2}
+              id="multiple-limit-tags"
+              options={staffs}
+              getOptionLabel={(option) =>
+                `${option?.last_name || ""} ${option?.first_name || ""}`
+              }
+              defaultValue={[]}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="対象者"
+                  placeholder="対象者を入力..."
+                />
+              )}
+              sx={{ width: "500px" }}
+            />
+          </Box>
+        </Stack>
       </Box>
       <Box>
         <Button onClick={handleBulkDownload}>一括ダウンロード</Button>

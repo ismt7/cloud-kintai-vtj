@@ -7,15 +7,28 @@ import { Authenticator } from "@aws-amplify/ui-react";
 import { ThemeProvider } from "@mui/material";
 import { Provider } from "react-redux";
 
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { store } from "./app/store";
 import { OpenAPI } from "./client";
 import Layout from "./Layout";
 import { theme } from "./lib/theme";
 import AdminAttendance from "./pages/admin/AdminAttendance";
 import AdminAttendanceEditor from "./pages/admin/AdminAttendanceEditor";
+import AdminAttendancePrint from "./pages/admin/AdminAttendancePrint";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminMaster from "./pages/admin/AdminMaster";
+import AdminHolidayCalendar from "./pages/admin/AdminHolidayCalendar/AdminHolidayCalendar";
 import AdminStaff from "./pages/admin/AdminStaff";
+import AdminStaffAttendanceList from "./pages/admin/AdminStaffAttendanceList/AdminStaffAttendanceList";
+import JobTerm from "./pages/admin/JobTerm/JobTerm";
+import AttendanceRemarksDocument from "./pages/Document/AttendanceRemarksDocument";
+import Document from "./pages/Document/Document";
+import RestEndDocument from "./pages/Document/RestEndDocument";
+import RestStartDocument from "./pages/Document/RestStartDocument";
+import StartDocument from "./pages/Document/StartDocument";
+import WorkEndDocument from "./pages/Document/WorkEndDocument";
+import WorkStartDocument from "./pages/Document/WorkStartDocument";
+import Hoge from "./pages/Hoge";
 import List from "./pages/List";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -47,6 +60,44 @@ const router = createBrowserRouter([
         element: <Login />,
       },
       {
+        path: "docs",
+        element: <Document />,
+        children: [
+          {
+            index: true,
+            element: <StartDocument />,
+          },
+          {
+            path: "start",
+            element: <StartDocument />,
+          },
+          {
+            path: "work-start",
+            element: <WorkStartDocument />,
+          },
+          {
+            path: "work-end",
+            element: <WorkEndDocument />,
+          },
+          {
+            path: "rest-start",
+            element: <RestStartDocument />,
+          },
+          {
+            path: "rest-end",
+            element: <RestEndDocument />,
+          },
+          {
+            path: "attendance-remarks",
+            element: <AttendanceRemarksDocument />,
+          },
+        ],
+      },
+      {
+        path: "hoge",
+        element: <Hoge />,
+      },
+      {
         path: "*",
         element: <div>Not Found</div>,
       },
@@ -57,38 +108,63 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "/admin/",
+        index: true,
         element: <AdminDashboard />,
       },
       {
-        path: "/admin/staff",
-        element: <AdminStaff />,
+        path: "staff",
         children: [
           {
             index: true,
             element: <AdminStaff />,
           },
           {
-            path: "/admin/staff/:staffId",
-            element: <AdminStaff />,
+            path: ":staffId",
+            children: [
+              {
+                index: true,
+                element: <AdminStaff />,
+              },
+              {
+                path: "attendance",
+                element: <AdminStaffAttendanceList />,
+              },
+            ],
           },
         ],
       },
       {
-        path: "/admin/attendances/",
-        element: <AdminAttendance />,
+        path: "attendances",
+        children: [
+          {
+            index: true,
+            element: <AdminAttendance />,
+          },
+          {
+            path: "edit/:targetWorkDate/:staffId",
+            element: <AdminAttendanceEditor />,
+          },
+          {
+            path: "print",
+            element: <AdminAttendancePrint />,
+          },
+        ],
       },
       {
-        path: "/admin/attendances/edit/:targetWorkDate/:targetStaffId",
-        element: <AdminAttendanceEditor />,
-      },
-      {
-        path: "/admin/master",
+        path: "master",
         element: <AdminMasterLayout />,
         children: [
           {
-            path: "/admin/master/",
-            element: <AdminMaster />,
+            index: true,
+            element: <JobTerm />,
+          },
+          {
+            path: "job_term",
+            element: <JobTerm />,
+          },
+          {
+            path: "holiday_calendar",
+            element: <AdminHolidayCalendar />,
           },
         ],
       },
@@ -104,7 +180,9 @@ root.render(
     <Provider store={store}>
       <Authenticator.Provider>
         <ThemeProvider theme={theme}>
-          <RouterProvider router={router} />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <RouterProvider router={router} />
+          </LocalizationProvider>
         </ThemeProvider>
       </Authenticator.Provider>
     </Provider>

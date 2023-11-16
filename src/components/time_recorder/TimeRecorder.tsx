@@ -1,12 +1,31 @@
 import { useEffect, useState } from "react";
 
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, LinearProgress, Stack, Typography } from "@mui/material";
 
-import { Attendance, Rest, Staff } from "../../client";
+import { Logger } from "aws-amplify";
+import { useAppDispatchV2 } from "../../app/hooks";
+import {
+  E01001,
+  E01002,
+  E01003,
+  E01004,
+  E01005,
+  E01006,
+  S01001,
+  S01002,
+  S01003,
+  S01004,
+  S01005,
+  S01006,
+} from "../../errors";
+import {
+  setSnackbarError,
+  setSnackbarSuccess,
+} from "../../lib/reducers/snackbarReducer";
+import useLoginStaff from "../attendance_editor/hooks/useLoginStaff";
 import Clock from "../clock/Clock";
-import fetchAttendance from "./fetchAttendance";
-import fetchLoginStaff from "./fetchLoginStaff";
-import fetchRest from "./fetchRest";
+import useAttendance from "./hooks/useAttendance";
+import useRest from "./hooks/useRest";
 import ClockInItem from "./items/ClockInItem";
 import ClockOutItem from "./items/ClockOutItem";
 import GoDirectlyItem from "./items/GoDirectlyItem";
@@ -16,30 +35,43 @@ import ReturnDirectly from "./items/ReturnDirectlyItem";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
 import { getCurrentWorkStatusV2, WorkStatus } from "./WorkStatusCodes";
 
-const TimeRecorder = ({
+export default function TimeRecorder({
   cognitoUserId,
 }: {
   cognitoUserId: string | undefined;
-}) => {
-  const [staff, setStaff] = useState<Staff | null>(null);
-  const [attendance, setAttendance] = useState<Attendance | null>(null);
-  const [rest, setRest] = useState<Rest | null>(null);
+}) {
+  const dispatch = useAppDispatchV2();
+  const { loginStaff, loading: loginStaffLoading } =
+    useLoginStaff(cognitoUserId);
+  const {
+    attendance,
+    clockIn,
+    clockOut,
+    goDirectly,
+    returnDirectly,
+    updateRemarks,
+    loading: attendanceLoading,
+  } = useAttendance(loginStaff);
+  const {
+    rest,
+    restStart,
+    restEnd,
+    loading: restLoading,
+  } = useRest(loginStaff);
   const [workStatus, setWorkStatus] = useState<WorkStatus | null>(null);
 
-  useEffect(() => {
-    if (!cognitoUserId) return;
-    void fetchLoginStaff(cognitoUserId, (value) => setStaff(value));
-  }, [cognitoUserId]);
-
-  useEffect(() => {
-    if (!staff) return;
-    void fetchAttendance(staff, (value) => setAttendance(value));
-    void fetchRest(staff, (value) => setRest(value));
-  }, [staff]);
+  const logger = new Logger(
+    "TimeRecorder",
+    process.env.NODE_ENV === "development" ? "DEBUG" : "ERROR"
+  );
 
   useEffect(() => {
     setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
   }, [attendance, rest]);
+
+  if (loginStaffLoading || attendanceLoading || restLoading || !loginStaff) {
+    return <LinearProgress />;
+  }
 
   return (
     <Box width="400px">
@@ -57,21 +89,25 @@ const TimeRecorder = ({
           justifyContent="space-evenly"
         >
           <ClockInItem
-            staffId={staff?.id}
             workStatus={workStatus}
-            attendance={attendance}
-            callback={(value) => {
-              setAttendance(value);
-              setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+            onClick={() => {
+              void clockIn()
+                .then(() => dispatch(setSnackbarSuccess(S01001)))
+                .catch((e) => {
+                  logger.debug(e);
+                  dispatch(setSnackbarError(E01001));
+                });
             }}
           />
           <ClockOutItem
-            staffId={staff?.id}
             workStatus={workStatus}
-            rest={rest}
-            callback={(value) => {
-              setRest(value);
-              setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+            onClick={() => {
+              void clockOut()
+                .then(() => dispatch(setSnackbarSuccess(S01002)))
+                .catch((e) => {
+                  logger.debug(e);
+                  dispatch(setSnackbarError(E01002));
+                });
             }}
           />
         </Stack>
@@ -83,56 +119,62 @@ const TimeRecorder = ({
         >
           <Stack direction="row" spacing={1}>
             <GoDirectlyItem
-              staffId={staff?.id}
               workStatus={workStatus}
-              attendance={attendance}
-              callback={(value) => {
-                setAttendance(value);
-                setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+              onClick={() => {
+                void goDirectly()
+                  .then(() => dispatch(setSnackbarSuccess(S01003)))
+                  .catch((e) => {
+                    logger.debug(e);
+                    dispatch(setSnackbarError(E01005));
+                  });
               }}
             />
             <ReturnDirectly
-              staffId={staff?.id}
               workStatus={workStatus}
-              attendance={attendance}
-              callback={(value) => {
-                setAttendance(value);
-                setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+              onClick={() => {
+                void returnDirectly()
+                  .then(() => dispatch(setSnackbarSuccess(S01004)))
+                  .catch((e) => {
+                    logger.debug(e);
+                    dispatch(setSnackbarError(E01006));
+                  });
               }}
             />
           </Stack>
           <Stack direction="row" spacing={1}>
             <RestStartItem
-              staffId={staff?.id}
               workStatus={workStatus}
-              rest={rest}
-              callback={(value) => {
-                setRest(value);
-                setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+              onClick={() => {
+                void restStart()
+                  .then(() => dispatch(setSnackbarSuccess(S01005)))
+                  .catch((e) => {
+                    logger.debug(e);
+                    dispatch(setSnackbarError(E01003));
+                  });
               }}
             />
             <RestEndItem
-              staffId={staff?.id}
               workStatus={workStatus}
-              rest={rest}
-              callback={(value) => {
-                setRest(value);
-                setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+              onClick={() => {
+                void restEnd()
+                  .then(() => dispatch(setSnackbarSuccess(S01006)))
+                  .catch((e) => {
+                    logger.debug(e);
+                    dispatch(setSnackbarError(E01004));
+                  });
               }}
             />
           </Stack>
         </Stack>
         <TimeRecorderRemarks
-          staffId={staff?.id}
           attendance={attendance}
-          callback={(value) => {
-            setAttendance(value);
-            setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+          onSave={(remarks) => {
+            void updateRemarks(remarks || "").then(() => {
+              setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
+            });
           }}
         />
       </Stack>
     </Box>
   );
-};
-
-export default TimeRecorder;
+}

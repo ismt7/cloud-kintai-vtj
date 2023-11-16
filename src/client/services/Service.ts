@@ -3,7 +3,13 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { Attendance } from '../models/Attendance';
+import type { AttendanceClosingDate } from '../models/AttendanceClosingDate';
+import type { AttendanceClosingDateCreate } from '../models/AttendanceClosingDateCreate';
 import type { AttendanceCreate } from '../models/AttendanceCreate';
+import type { CompanyHolidayCalendar } from '../models/CompanyHolidayCalendar';
+import type { CompanyHolidayCalendarCreate } from '../models/CompanyHolidayCalendarCreate';
+import type { HolidayCalendar } from '../models/HolidayCalendar';
+import type { HolidayCalendarCreate } from '../models/HolidayCalendarCreate';
 import type { Rest } from '../models/Rest';
 import type { RestCreate } from '../models/RestCreate';
 import type { Role } from '../models/Role';
@@ -535,46 +541,24 @@ export class Service {
     }
 
     /**
-     * スタッフ権限の一覧取得
-     * スタッフ権限の一覧を取得します
-     * @param xUserId
-     * @returns StaffRole Successful Response
-     * @throws ApiError
-     */
-    public static getStaffRoles(
-        xUserId?: number,
-    ): CancelablePromise<Array<StaffRole>> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/staffs/role',
-            headers: {
-                'x-user-id': xUserId,
-            },
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
-
-    /**
      * スタッフ権限の更新
      * スタッフ権限を更新します
-     * @param staffId
+     * @param staffRoleId
      * @param requestBody
      * @param xUserId
      * @returns StaffRole Successful Response
      * @throws ApiError
      */
     public static updateStaffRole(
-        staffId: number,
+        staffRoleId: number,
         requestBody: StaffRoleCreate,
         xUserId?: number,
     ): CancelablePromise<StaffRole> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/staff/role/{staff_id}',
+            url: '/staff/role/{staff_role_id}',
             path: {
-                'staff_id': staffId,
+                'staff_role_id': staffRoleId,
             },
             headers: {
                 'x-user-id': xUserId,
@@ -590,21 +574,43 @@ export class Service {
     /**
      * スタッフ権限の削除
      * スタッフ権限を削除します
-     * @param staffId
+     * @param staffRoleId
      * @param xUserId
      * @returns any Successful Response
      * @throws ApiError
      */
     public static deleteStaffRole(
-        staffId: number,
+        staffRoleId: number,
         xUserId?: number,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/staff/role/{staff_id}',
+            url: '/staff/role/{staff_role_id}',
             path: {
-                'staff_id': staffId,
+                'staff_role_id': staffRoleId,
             },
+            headers: {
+                'x-user-id': xUserId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * スタッフ権限の一覧取得
+     * スタッフ権限の一覧を取得します
+     * @param xUserId
+     * @returns StaffRole Successful Response
+     * @throws ApiError
+     */
+    public static getStaffRoles(
+        xUserId?: number,
+    ): CancelablePromise<Array<StaffRole>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/staffs/role',
             headers: {
                 'x-user-id': xUserId,
             },
@@ -738,6 +744,449 @@ export class Service {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/roles',
+            headers: {
+                'x-user-id': xUserId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 休日カレンダーの作成
+     * 休日カレンダーを作成します。
+     * @param requestBody
+     * @param xUserId
+     * @returns HolidayCalendar Successful Response
+     * @throws ApiError
+     */
+    public static createHolidayCalendar(
+        requestBody: HolidayCalendarCreate,
+        xUserId?: number,
+    ): CancelablePromise<HolidayCalendar> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/holiday_calendar',
+            headers: {
+                'x-user-id': xUserId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 休日カレンダーの取得
+     * 休日カレンダーを取得します。
+     * @param holidayCalendarId
+     * @param xUserId
+     * @returns HolidayCalendar Successful Response
+     * @throws ApiError
+     */
+    public static getHolidayCalendar(
+        holidayCalendarId: number,
+        xUserId?: number,
+    ): CancelablePromise<HolidayCalendar> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/holiday_calendar/{holiday_calendar_id}',
+            path: {
+                'holiday_calendar_id': holidayCalendarId,
+            },
+            headers: {
+                'x-user-id': xUserId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 休日カレンダーの更新
+     * 休日カレンダーを更新します。
+     * @param holidayCalendarId
+     * @param requestBody
+     * @param xUserId
+     * @returns HolidayCalendar Successful Response
+     * @throws ApiError
+     */
+    public static updateHolidayCalendar(
+        holidayCalendarId: number,
+        requestBody: HolidayCalendarCreate,
+        xUserId?: number,
+    ): CancelablePromise<HolidayCalendar> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/holiday_calendar/{holiday_calendar_id}',
+            path: {
+                'holiday_calendar_id': holidayCalendarId,
+            },
+            headers: {
+                'x-user-id': xUserId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 休日カレンダーの削除
+     * 休日カレンダーを削除します。
+     * @param holidayCalendarId
+     * @param xUserId
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteHolidayCalendar(
+        holidayCalendarId: number,
+        xUserId?: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/holiday_calendar/{holiday_calendar_id}',
+            path: {
+                'holiday_calendar_id': holidayCalendarId,
+            },
+            headers: {
+                'x-user-id': xUserId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 休日カレンダーの一覧取得
+     * 休日カレンダーの一覧を取得します。
+     * @param xUserId
+     * @returns HolidayCalendar Successful Response
+     * @throws ApiError
+     */
+    public static getHolidayCalendars(
+        xUserId?: number,
+    ): CancelablePromise<Array<HolidayCalendar>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/holiday_calendars',
+            headers: {
+                'x-user-id': xUserId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 休日カレンダーの全削除
+     * 休日カレンダーを全削除します。
+     * @param xUserId
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteAllHolidayCalendar(
+        xUserId?: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/holiday_calendars',
+            headers: {
+                'x-user-id': xUserId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 会社休日カレンダーの作成
+     * 会社休日カレンダーを作成します。
+     * @param requestBody
+     * @param xUserId
+     * @returns CompanyHolidayCalendar Successful Response
+     * @throws ApiError
+     */
+    public static createCompanyHolidayCalendar(
+        requestBody: CompanyHolidayCalendarCreate,
+        xUserId?: number,
+    ): CancelablePromise<CompanyHolidayCalendar> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/company_holiday_calendar',
+            headers: {
+                'x-user-id': xUserId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 会社休日カレンダーの取得
+     * 会社休日カレンダーを取得します。
+     * @param companyHolidayCalendarId
+     * @param xUserId
+     * @returns CompanyHolidayCalendar Successful Response
+     * @throws ApiError
+     */
+    public static getCompanyHolidayCalendar(
+        companyHolidayCalendarId: number,
+        xUserId?: number,
+    ): CancelablePromise<CompanyHolidayCalendar> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/company_holiday_calendar/{company_holiday_calendar_id}',
+            path: {
+                'company_holiday_calendar_id': companyHolidayCalendarId,
+            },
+            headers: {
+                'x-user-id': xUserId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 会社休日カレンダーの更新
+     * 会社休日カレンダーを更新します。
+     * @param companyHolidayCalendarId
+     * @param requestBody
+     * @param xUserId
+     * @returns CompanyHolidayCalendar Successful Response
+     * @throws ApiError
+     */
+    public static updateCompanyHolidayCalendar(
+        companyHolidayCalendarId: number,
+        requestBody: CompanyHolidayCalendarCreate,
+        xUserId?: number,
+    ): CancelablePromise<CompanyHolidayCalendar> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/company_holiday_calendar/{company_holiday_calendar_id}',
+            path: {
+                'company_holiday_calendar_id': companyHolidayCalendarId,
+            },
+            headers: {
+                'x-user-id': xUserId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 会社休日カレンダーの削除
+     * 会社休日カレンダーを削除します。
+     * @param companyHolidayCalendarId
+     * @param xUserId
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteCompanyHolidayCalendar(
+        companyHolidayCalendarId: number,
+        xUserId?: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/company_holiday_calendar/{company_holiday_calendar_id}',
+            path: {
+                'company_holiday_calendar_id': companyHolidayCalendarId,
+            },
+            headers: {
+                'x-user-id': xUserId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 会社休日カレンダーの一覧取得
+     * 会社休日カレンダーの一覧を取得します。
+     * @param xUserId
+     * @returns CompanyHolidayCalendar Successful Response
+     * @throws ApiError
+     */
+    public static getCompanyHolidayCalendars(
+        xUserId?: number,
+    ): CancelablePromise<Array<CompanyHolidayCalendar>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/company_holiday_calendars',
+            headers: {
+                'x-user-id': xUserId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 会社休日カレンダーの全削除
+     * 会社休日カレンダーを全削除します。
+     * @param xUserId
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteAllCompanyHolidayCalendar(
+        xUserId?: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/company_holiday_calendars',
+            headers: {
+                'x-user-id': xUserId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 締め日の作成
+     * 締め日を作成します。
+     * @param requestBody
+     * @param xUserId
+     * @returns AttendanceClosingDate Successful Response
+     * @throws ApiError
+     */
+    public static createAttendanceClosingDate(
+        requestBody: AttendanceClosingDateCreate,
+        xUserId?: number,
+    ): CancelablePromise<AttendanceClosingDate> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/attendance_closing_date',
+            headers: {
+                'x-user-id': xUserId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 締め日の取得
+     * 締め日を取得します。
+     * @param attendanceClosingDateId
+     * @param xUserId
+     * @returns AttendanceClosingDate Successful Response
+     * @throws ApiError
+     */
+    public static getAttendanceClosingDate(
+        attendanceClosingDateId: number,
+        xUserId?: number,
+    ): CancelablePromise<AttendanceClosingDate> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/attendance_closing_date/{attendance_closing_date_id}',
+            path: {
+                'attendance_closing_date_id': attendanceClosingDateId,
+            },
+            headers: {
+                'x-user-id': xUserId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 締め日の更新
+     * 締め日を更新します。
+     * @param attendanceClosingDateId
+     * @param requestBody
+     * @param xUserId
+     * @returns AttendanceClosingDate Successful Response
+     * @throws ApiError
+     */
+    public static updateAttendanceClosingDate(
+        attendanceClosingDateId: number,
+        requestBody: AttendanceClosingDateCreate,
+        xUserId?: number,
+    ): CancelablePromise<AttendanceClosingDate> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/attendance_closing_date/{attendance_closing_date_id}',
+            path: {
+                'attendance_closing_date_id': attendanceClosingDateId,
+            },
+            headers: {
+                'x-user-id': xUserId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 締め日の削除
+     * 締め日を削除します。
+     * @param attendanceClosingDateId
+     * @param xUserId
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteAttendanceClosingDate(
+        attendanceClosingDateId: number,
+        xUserId?: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/attendance_closing_date/{attendance_closing_date_id}',
+            path: {
+                'attendance_closing_date_id': attendanceClosingDateId,
+            },
+            headers: {
+                'x-user-id': xUserId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * 締め日の取得
+     * 締め日を取得します。
+     * @param xUserId
+     * @returns AttendanceClosingDate Successful Response
+     * @throws ApiError
+     */
+    public static getAttendanceClosingDates(
+        xUserId?: number,
+    ): CancelablePromise<Array<AttendanceClosingDate>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/attendance_closing_dates',
             headers: {
                 'x-user-id': xUserId,
             },

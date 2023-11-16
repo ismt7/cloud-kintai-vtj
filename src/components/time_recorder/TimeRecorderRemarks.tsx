@@ -5,52 +5,16 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Box, IconButton, Stack, TextField } from "@mui/material";
 
-import { Attendance, Service, Staff } from "../../client";
+import { Attendance } from "../../client";
 
 export interface TimeRecorderRemarksProps {
-  staffId: Staff["id"] | undefined;
   attendance: Attendance | null;
-  callback: (value: Attendance | null) => void;
-}
-
-async function updateRemarks({
-  staffId,
-  attendance,
-  changedRemarks,
-  callback,
-}: {
-  staffId: TimeRecorderRemarksProps["staffId"];
-  attendance: TimeRecorderRemarksProps["attendance"];
-  changedRemarks: Attendance["remarks"];
-  callback: (value: Attendance | null) => void;
-}) {
-  if (!staffId || !attendance) return;
-
-  const { id: attendanceId } = attendance;
-  const response = await Service.updateAttendance(
-    attendanceId,
-    {
-      ...attendance,
-      remarks: changedRemarks,
-    },
-    staffId
-  ).catch((error) => {
-    console.log(error);
-    return null;
-  });
-
-  if (!response) {
-    callback(null);
-    return;
-  }
-
-  callback(response);
+  onSave: (remarks: Attendance["remarks"]) => void;
 }
 
 const TimeRecorderRemarks = ({
-  staffId,
   attendance,
-  callback,
+  onSave,
 }: TimeRecorderRemarksProps) => {
   const [formState, setFormState] = useState<Attendance["remarks"]>(undefined);
   const [isChanged, setIsChanged] = useState(false);
@@ -62,15 +26,6 @@ const TimeRecorderRemarks = ({
   useEffect(() => {
     setIsChanged(attendance?.remarks !== formState);
   }, [formState]);
-
-  const clickSaveButtonHandler = () => {
-    void updateRemarks({
-      staffId,
-      attendance,
-      changedRemarks: formState,
-      callback,
-    });
-  };
 
   return (
     <Stack>
@@ -96,7 +51,7 @@ const TimeRecorderRemarks = ({
             spacing={0}
           >
             <Box>
-              <IconButton onClick={clickSaveButtonHandler}>
+              <IconButton onClick={() => onSave(formState)}>
                 <CheckIcon color="success" data-testid="remarksSave" />
               </IconButton>
             </Box>

@@ -1,7 +1,8 @@
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridRowParams } from "@mui/x-data-grid";
 
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Service, Staff } from "../../client";
 import { LoginStaff } from "../staff_list/StaffList";
 import { getCurrentWorkStatusV2 } from "../time_recorder/WorkStatusCodes";
@@ -142,6 +143,7 @@ export default function AttendanceDailyList({
 }: {
   loginStaff: LoginStaff;
 }) {
+  const navigate = useNavigate();
   const [staffs, setStaffs] = useState<Staff[]>([]);
   const [summaryAttendances, setSummaryAttendances] = useState<
     SummaryAttendance[]
@@ -168,6 +170,10 @@ export default function AttendanceDailyList({
           loadingOverlay: () => <div>読み込み中...</div>,
           noRowsOverlay: () => <div>データがありません</div>,
           footer: () => null,
+        }}
+        onRowClick={(params: GridRowParams<SummaryAttendance>) => {
+          const staffId = params.row.id;
+          navigate(`/admin/staff/${staffId}/attendance`);
         }}
       />
     </div>
