@@ -1,6 +1,6 @@
 {
   "auth": {
-    "garakufrontend705c8f74": {
+    "garakufrontend556668f9": {
       "customAuth": false,
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
@@ -15,35 +15,91 @@
     }
   },
   "parameters": {
-    "AMPLIFY_auth_garakufrontend705c8f74_nativeClientId": {
+    "AMPLIFY_auth_garakufrontend556668f9_allowUnauthenticatedIdentities": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "garakufrontend705c8f74"
+          "resourceName": "garakufrontend556668f9"
         }
       ]
     },
-    "AMPLIFY_auth_garakufrontend705c8f74_userPoolId": {
+    "AMPLIFY_auth_garakufrontend556668f9_authRoleArn": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "garakufrontend705c8f74"
+          "resourceName": "garakufrontend556668f9"
         }
       ]
     },
-    "AMPLIFY_auth_garakufrontend705c8f74_userPoolName": {
+    "AMPLIFY_auth_garakufrontend556668f9_authRoleName": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "garakufrontend705c8f74"
+          "resourceName": "garakufrontend556668f9"
         }
       ]
     },
-    "AMPLIFY_auth_garakufrontend705c8f74_webClientId": {
+    "AMPLIFY_auth_garakufrontend556668f9_identityPoolId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "garakufrontend705c8f74"
+          "resourceName": "garakufrontend556668f9"
+        }
+      ]
+    },
+    "AMPLIFY_auth_garakufrontend556668f9_identityPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "garakufrontend556668f9"
+        }
+      ]
+    },
+    "AMPLIFY_auth_garakufrontend556668f9_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "garakufrontend556668f9"
+        }
+      ]
+    },
+    "AMPLIFY_auth_garakufrontend556668f9_unauthRoleArn": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "garakufrontend556668f9"
+        }
+      ]
+    },
+    "AMPLIFY_auth_garakufrontend556668f9_unauthRoleName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "garakufrontend556668f9"
+        }
+      ]
+    },
+    "AMPLIFY_auth_garakufrontend556668f9_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "garakufrontend556668f9"
+        }
+      ]
+    },
+    "AMPLIFY_auth_garakufrontend556668f9_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "garakufrontend556668f9"
+        }
+      ]
+    },
+    "AMPLIFY_auth_garakufrontend556668f9_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "garakufrontend556668f9"
         }
       ]
     },

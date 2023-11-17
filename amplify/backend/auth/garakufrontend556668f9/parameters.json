@@ -1,6 +1,6 @@
 {
-  "authSelections": "userPoolOnly",
-  "resourceName": "garakufrontend705c8f74",
+  "authSelections": "identityPoolAndUserPool",
+  "resourceName": "garakufrontend556668f9",
   "serviceType": "imported",
   "region": "ap-northeast-1",
   "usernameAttributes": [
