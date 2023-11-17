@@ -13,7 +13,6 @@ async function fetchStaffs(
   callback: (value: Staff[]) => void
 ) {
   if (!loginStaff) return;
-
   const staffs = await Service.getStaffs(loginStaff.id).catch((error) => {
     console.log(error);
     return [] as Staff[];

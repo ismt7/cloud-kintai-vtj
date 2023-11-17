@@ -23,7 +23,36 @@
       "hosting": {
         "amplifyhosting": {
           "appId": "dmghdnhtsemgt",
-          "type": "manual"
+          "type": "cicd"
+        }
+      }
+    }
+  },
+  "prd": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-garakufrontend-prd-64713-authRole",
+      "UnauthRoleArn": "arn:aws:iam::952389366704:role/amplify-garakufrontend-prd-64713-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::952389366704:role/amplify-garakufrontend-prd-64713-authRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-garakufrontend-prd-64713-deployment",
+      "UnauthRoleName": "amplify-garakufrontend-prd-64713-unauthRole",
+      "StackName": "amplify-garakufrontend-prd-64713",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:952389366704:stack/amplify-garakufrontend-prd-64713/f98a7b40-844b-11ee-bb94-0660f04e275f",
+      "AmplifyAppId": "dmghdnhtsemgt"
+    },
+    "categories": {
+      "auth": {
+        "garakufrontend705c8f74": {
+          "userPoolId": "ap-northeast-1_W1FpflGDF",
+          "userPoolName": "dev-garaku",
+          "webClientId": "1t8dutmu85a2av876ach5jte42",
+          "nativeClientId": "5shsang0899l09l77csv9b53ng"
+        }
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "dmghdnhtsemgt",
+          "type": "cicd"
         }
       }
     }
