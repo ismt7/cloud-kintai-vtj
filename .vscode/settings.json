@@ -19,7 +19,7 @@
   "workbench.panel.defaultLocation": "right",
   "git.branchPrefix": "feature/",
   "git.autoStash": true,
-  "git.branchProtection": ["main"],
+  "git.branchProtection": ["main", "develop"],
   "[javascript]": {
     "editor.tabSize": 2,
     "editor.insertSpaces": true,

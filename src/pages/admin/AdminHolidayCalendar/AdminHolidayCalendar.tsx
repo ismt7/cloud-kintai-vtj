@@ -2,6 +2,7 @@ import { useAuthenticator } from "@aws-amplify/ui-react";
 import {
   Box,
   Button,
+  LinearProgress,
   Stack,
   Table,
   TableBody,
@@ -13,13 +14,20 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as xlsx from "xlsx";
-import { HolidayCalendar } from "../../../client";
-import { LoginStaff } from "../../../components/staff_list/StaffList";
+import {
+  CreateCompanyHolidayCalendarInput,
+  CreateHolidayCalendarInput,
+} from "../../../API";
+import { useAppDispatchV2 } from "../../../app/hooks";
+import { E07001, E08001, S07001, S08001 } from "../../../errors";
+import useCompanyHolidayCalendars from "../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
+import useHolidayCalendar from "../../../hooks/useHolidayCalendars/useHolidayCalendars";
+import {
+  setSnackbarError,
+  setSnackbarSuccess,
+} from "../../../lib/reducers/snackbarReducer";
 import company_holiday from "../../../templates/company_holiday.xlsx";
 import HolidayCalendarListGroup from "./HolidayCalendarListGroup";
-import useCompanyHolidayCalendars from "./hooks/useCompanyHolidayCalendars";
-import useHolidayCalendars from "./hooks/useHolidayCalendar";
-import useLoginStaff from "./hooks/useLoginStaff";
 
 function Title() {
   return (
@@ -32,9 +40,11 @@ function Title() {
   );
 }
 
-function CSVFilePicker({ loginStaff }: { loginStaff: LoginStaff }) {
-  const { createHolidayCalendars } = useHolidayCalendars(loginStaff);
-
+function CSVFilePicker({
+  onSubmit,
+}: {
+  onSubmit: (data: CreateHolidayCalendarInput[]) => void;
+}) {
   const [name, setName] = useState<string | undefined>();
 
   return (
@@ -66,12 +76,17 @@ function CSVFilePicker({ loginStaff }: { loginStaff: LoginStaff }) {
                 .map(
                   (row) =>
                     ({
-                      holiday_date: dayjs(row[0]).format("YYYY-MM-DD"),
+                      holidayDate: dayjs(row[0]).format("YYYY-MM-DD"),
                       name: String(row[1]),
-                    } as HolidayCalendar)
+                    } as CreateHolidayCalendarInput)
                 );
 
-              void createHolidayCalendars(requestHolidayCalendars);
+              const result = window.confirm(
+                `以下の${requestHolidayCalendars.length}件のデータを登録しますか？`
+              );
+              if (!result) return;
+
+              onSubmit(requestHolidayCalendars);
             };
           }}
         />
@@ -81,10 +96,11 @@ function CSVFilePicker({ loginStaff }: { loginStaff: LoginStaff }) {
   );
 }
 
-function ExcelFilePicker({ loginStaff }: { loginStaff: LoginStaff }) {
-  const { createCompanyHolidayCalendars } =
-    useCompanyHolidayCalendars(loginStaff);
-
+function ExcelFilePicker({
+  onSubmit,
+}: {
+  onSubmit: (data: CreateCompanyHolidayCalendarInput[]) => void;
+}) {
   const [file, setFile] = useState<File | undefined>();
 
   return (
@@ -110,13 +126,19 @@ function ExcelFilePicker({ loginStaff }: { loginStaff: LoginStaff }) {
               const workbook = xlsx.read(data, { type: "array" });
               const csv = xlsx.utils.sheet_to_csv(workbook.Sheets.Sheet1);
               const lines = csv.split("\n").map((line) => line.split(","));
-
-              void createCompanyHolidayCalendars(
-                lines.slice(1).map((row) => ({
+              const requestCompanyHolidayCalendars = lines
+                .slice(1)
+                .map((row) => ({
+                  holidayDate: dayjs(row[0]).format("YYYY-MM-DD"),
                   name: String(row[1]),
-                  holiday_date: dayjs(row[0]).format("YYYY-MM-DD"),
-                }))
+                }));
+
+              const result = window.confirm(
+                `以下の${requestCompanyHolidayCalendars.length}件のデータを登録しますか？`
               );
+              if (!result) return;
+
+              onSubmit(requestCompanyHolidayCalendars);
             };
           }}
         />
@@ -126,16 +148,40 @@ function ExcelFilePicker({ loginStaff }: { loginStaff: LoginStaff }) {
   );
 }
 
-function AdminHolidayCalendar() {
-  const { route, user } = useAuthenticator();
-  const { loginStaff } = useLoginStaff(user?.attributes?.sub);
+export default function AdminHolidayCalendar() {
+  const dispatch = useAppDispatchV2();
+  const { route } = useAuthenticator();
   const navigate = useNavigate();
+  const {
+    holidayCalendars,
+    loading: holidayCalendarLoading,
+    error: holidayCalendarError,
+    bulkCreateHolidayCalendar,
+  } = useHolidayCalendar();
+  const {
+    companyHolidayCalendars,
+    loading: companyHolidayCalendarLoading,
+    error: companyHolidayCalendarError,
+    createCompanyHolidayCalendar,
+    updateCompanyHolidayCalendar,
+    deleteCompanyHolidayCalendar,
+    bulkCreateCompanyHolidayCalendar,
+  } = useCompanyHolidayCalendars();
 
   useEffect(() => {
     if (route !== "idle" && route !== "authenticated") {
       navigate("/login");
     }
   }, [route]);
+
+  if (holidayCalendarLoading || companyHolidayCalendarLoading) {
+    return <LinearProgress />;
+  }
+
+  if (holidayCalendarError || companyHolidayCalendarError) {
+    alert("データ取得中に問題が発生しました。管理者にお問い合わせください。");
+    return null;
+  }
 
   return (
     <Stack spacing={2}>
@@ -148,14 +194,26 @@ function AdminHolidayCalendar() {
           <TableRow>
             <TableCell>法定休日</TableCell>
             <TableCell>
-              <CSVFilePicker loginStaff={loginStaff} />
+              <CSVFilePicker
+                onSubmit={(data) => {
+                  bulkCreateHolidayCalendar(data)
+                    .then(() => dispatch(setSnackbarSuccess(S07001)))
+                    .catch(() => dispatch(setSnackbarError(E07001)));
+                }}
+              />
             </TableCell>
             <TableCell />
           </TableRow>
           <TableRow>
             <TableCell>所定休日</TableCell>
             <TableCell>
-              <ExcelFilePicker loginStaff={loginStaff} />
+              <ExcelFilePicker
+                onSubmit={(data) => {
+                  bulkCreateCompanyHolidayCalendar(data)
+                    .then(() => dispatch(setSnackbarSuccess(S08001)))
+                    .catch(() => dispatch(setSnackbarError(E08001)));
+                }}
+              />
             </TableCell>
             <TableCell>
               <Button
@@ -174,10 +232,14 @@ function AdminHolidayCalendar() {
         </TableBody>
       </Table>
       <Box>
-        <HolidayCalendarListGroup />
+        <HolidayCalendarListGroup
+          holidayCalendars={holidayCalendars}
+          companyHolidayCalendars={companyHolidayCalendars}
+          createCompanyHolidayCalendar={createCompanyHolidayCalendar}
+          updateCompanyHolidayCalendar={updateCompanyHolidayCalendar}
+          deleteCompanyHolidayCalendar={deleteCompanyHolidayCalendar}
+        />
       </Box>
     </Stack>
   );
 }
-
-export default AdminHolidayCalendar;

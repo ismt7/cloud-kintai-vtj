@@ -6,10 +6,7 @@ import { useEffect, useState } from "react";
 import { store } from "../../../../app/store";
 import Footer from "../../../../components/footer/Footer";
 import Header from "../../../../components/header/Header";
-import StaffForm from "../../../../components/staff_form/StaffForm";
-import StaffList, {
-  LoginStaff,
-} from "../../../../components/staff_list/StaffList";
+import { LoginStaff } from "../../../../components/staff_list/StaffList";
 import fetchLoginStaff from "./fetchLoginStaff";
 
 const AdminStaff = () => {
@@ -36,10 +33,10 @@ const AdminStaff = () => {
         <Box sx={{ height: 1 }}>
           <Stack direction="row" sx={{ height: 1 }}>
             <Box sx={{ width: "350px", height: 1 }}>
-              <StaffList loginStaff={loginStaff} />
+              {/* <StaffList staffs={[]} /> */}
             </Box>
             <Box sx={{ p: 5, flexGrow: 2 }}>
-              <StaffForm loginStaff={loginStaff} />
+              {/* <StaffForm loginStaff={loginStaff} /> */}
             </Box>
           </Stack>
         </Box>

@@ -1,11 +1,63 @@
 {
+  "api": {
+    "garakufrontend": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "garakufrontendbfa3456a"
+        }
+      ],
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+              "userPoolConfig": {
+                "userPoolId": "authgarakufrontendbfa3456a"
+              }
+            }
+          ],
+          "defaultAuthentication": {
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 7
+            },
+            "authenticationType": "API_KEY"
+          }
+        }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "AppSync"
+    }
+  },
   "auth": {
-    "garakufrontend556668f9": {
+    "garakufrontendbfa3456a": {
       "customAuth": false,
       "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
       "providerPlugin": "awscloudformation",
-      "service": "Cognito",
-      "serviceType": "imported"
+      "service": "Cognito"
     }
   },
   "hosting": {
@@ -15,94 +67,6 @@
     }
   },
   "parameters": {
-    "AMPLIFY_auth_garakufrontend556668f9_allowUnauthenticatedIdentities": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "garakufrontend556668f9"
-        }
-      ]
-    },
-    "AMPLIFY_auth_garakufrontend556668f9_authRoleArn": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "garakufrontend556668f9"
-        }
-      ]
-    },
-    "AMPLIFY_auth_garakufrontend556668f9_authRoleName": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "garakufrontend556668f9"
-        }
-      ]
-    },
-    "AMPLIFY_auth_garakufrontend556668f9_identityPoolId": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "garakufrontend556668f9"
-        }
-      ]
-    },
-    "AMPLIFY_auth_garakufrontend556668f9_identityPoolName": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "garakufrontend556668f9"
-        }
-      ]
-    },
-    "AMPLIFY_auth_garakufrontend556668f9_nativeClientId": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "garakufrontend556668f9"
-        }
-      ]
-    },
-    "AMPLIFY_auth_garakufrontend556668f9_unauthRoleArn": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "garakufrontend556668f9"
-        }
-      ]
-    },
-    "AMPLIFY_auth_garakufrontend556668f9_unauthRoleName": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "garakufrontend556668f9"
-        }
-      ]
-    },
-    "AMPLIFY_auth_garakufrontend556668f9_userPoolId": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "garakufrontend556668f9"
-        }
-      ]
-    },
-    "AMPLIFY_auth_garakufrontend556668f9_userPoolName": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "garakufrontend556668f9"
-        }
-      ]
-    },
-    "AMPLIFY_auth_garakufrontend556668f9_webClientId": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "garakufrontend556668f9"
-        }
-      ]
-    },
     "AMPLIFY_hosting_amplifyhosting_appId": {
       "usedBy": [
         {

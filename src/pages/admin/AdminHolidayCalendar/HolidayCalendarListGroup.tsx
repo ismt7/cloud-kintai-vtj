@@ -2,6 +2,13 @@ import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import { useState } from "react";
+import {
+  CompanyHolidayCalendar,
+  CreateCompanyHolidayCalendarInput,
+  DeleteCompanyHolidayCalendarInput,
+  HolidayCalendar,
+  UpdateCompanyHolidayCalendarInput,
+} from "../../../API";
 import CompanyHolidayCalendarList from "./CompanyHolidayCalendarList";
 import HolidayCalendarList from "./HolidayCalendarList";
 
@@ -34,7 +41,25 @@ function a11yProps(index: number) {
   };
 }
 
-export default function HolidayCalendarListGroup() {
+export default function HolidayCalendarListGroup({
+  holidayCalendars,
+  companyHolidayCalendars,
+  createCompanyHolidayCalendar,
+  deleteCompanyHolidayCalendar,
+  updateCompanyHolidayCalendar,
+}: {
+  holidayCalendars: HolidayCalendar[];
+  companyHolidayCalendars: CompanyHolidayCalendar[];
+  createCompanyHolidayCalendar: (
+    input: CreateCompanyHolidayCalendarInput
+  ) => Promise<CompanyHolidayCalendar>;
+  deleteCompanyHolidayCalendar: (
+    input: DeleteCompanyHolidayCalendarInput
+  ) => Promise<CompanyHolidayCalendar>;
+  updateCompanyHolidayCalendar: (
+    input: UpdateCompanyHolidayCalendarInput
+  ) => Promise<CompanyHolidayCalendar>;
+}) {
   const [value, setValue] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -54,10 +79,15 @@ export default function HolidayCalendarListGroup() {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <HolidayCalendarList />
+        <HolidayCalendarList holidayCalendars={holidayCalendars} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <CompanyHolidayCalendarList />
+        <CompanyHolidayCalendarList
+          companyHolidayCalendars={companyHolidayCalendars}
+          createCompanyHolidayCalendar={createCompanyHolidayCalendar}
+          updateCompanyHolidayCalendar={updateCompanyHolidayCalendar}
+          deleteCompanyHolidayCalendar={deleteCompanyHolidayCalendar}
+        />
       </CustomTabPanel>
     </Box>
   );
