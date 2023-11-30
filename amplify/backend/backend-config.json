@@ -1,5 +1,27 @@
 {
   "api": {
+    "AdminQueries": {
+      "authorizationType": "AMAZON_COGNITO_USER_POOLS",
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "garakufrontendbfa3456a"
+        },
+        {
+          "attributes": [
+            "Arn",
+            "Name"
+          ],
+          "category": "function",
+          "resourceName": "AdminQueriesf7a7d2e5"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "garakufrontend": {
       "dependsOn": [
         {
@@ -60,6 +82,22 @@
       "service": "Cognito"
     }
   },
+  "function": {
+    "AdminQueriesf7a7d2e5": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "garakufrontendbfa3456a"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
   "hosting": {
     "amplifyhosting": {
       "service": "amplifyhosting",
@@ -67,6 +105,22 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_AdminQueriesf7a7d2e5_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AdminQueriesf7a7d2e5"
+        }
+      ]
+    },
+    "AMPLIFY_function_AdminQueriesf7a7d2e5_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AdminQueriesf7a7d2e5"
+        }
+      ]
+    },
     "AMPLIFY_hosting_amplifyhosting_appId": {
       "usedBy": [
         {

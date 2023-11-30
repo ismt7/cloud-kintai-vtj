@@ -10,8 +10,7 @@ import {
   TextField,
 } from "@mui/material";
 import { UseFormRegister } from "react-hook-form";
-// eslint-disable-next-line import/no-cycle
-import { AdminStaffInputs } from "./AdminStaff";
+import { Staff } from "../../../hooks/useStaffs/common";
 
 export default function AdminStaffEditDialog({
   open,
@@ -21,7 +20,7 @@ export default function AdminStaffEditDialog({
 }: {
   open: boolean;
   selectedStaffId: number | null;
-  register: UseFormRegister<AdminStaffInputs>;
+  register: UseFormRegister<Staff>;
   onClose: () => void;
 }) {
   if (!selectedStaffId) {
@@ -42,7 +41,7 @@ export default function AdminStaffEditDialog({
               label="名前(姓)"
               inputProps={{ maxLength: 10, "data-testid": "last-name" }}
               required={true}
-              {...register(`staffs.${selectedStaffId}.lastName`)}
+              // {...register(`staffs.${selectedStaffId}.lastName`)}
             />
           </Box>
         </Stack>
