@@ -3,7 +3,7 @@ import { Box, LinearProgress, Stack, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { Attendance } from "../../client";
-import useAttendance from "../../hooks/useAttendance/useAttendance";
+import useAttendanceOld from "../../hooks/useAttendance/useAttendanceOld";
 import useLoginStaff from "../attendance_editor/hooks/useLoginStaff";
 import Title from "../Title/Title";
 import GetColumns from "./Column";
@@ -18,18 +18,18 @@ export default function AttendanceTable() {
     error: loginStaffError,
   } = useLoginStaff(user?.attributes?.sub);
   const {
-    attendances,
-    loading: attendanceLoading,
-    error: attendanceError,
-  } = useAttendance(loginStaff);
+    attendances: attendancesOld,
+    loading: attendanceOldLoading,
+    error: attendanceOldError,
+  } = useAttendanceOld(loginStaff);
   const { holidayCalendars, loading: holidayCalendarLoading } =
     useHolidayCalendar();
 
-  if (loginStaffLoading || attendanceLoading || holidayCalendarLoading) {
+  if (loginStaffLoading || attendanceOldLoading || holidayCalendarLoading) {
     return <LinearProgress />;
   }
 
-  if (loginStaffError || attendanceError) {
+  if (loginStaffError || attendanceOldError) {
     return <div>データ取得中に何らかの問題が発生しました</div>;
   }
 
@@ -45,7 +45,7 @@ export default function AttendanceTable() {
       </Box>
       <Box sx={{ px: 5, pb: 5 }}>
         <DataGrid
-          rows={attendances ?? []}
+          rows={attendancesOld ?? []}
           columns={GetColumns(holidayCalendars)}
           autoHeight
           hideFooter={true}

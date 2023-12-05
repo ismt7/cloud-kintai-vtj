@@ -108,3 +108,55 @@ export const listCloseDates = /* GraphQL */ `
     }
   }
 `;
+export const getAttendance = /* GraphQL */ `
+  query GetAttendance($id: ID!) {
+    getAttendance(id: $id) {
+      id
+      staffId
+      workDate
+      startTime
+      endTime
+      goDirectlyFlag
+      returnDirectlyFlag
+      rests {
+        startTime
+        endTime
+        __typename
+      }
+      remarks
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listAttendances = /* GraphQL */ `
+  query ListAttendances(
+    $filter: ModelAttendanceFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listAttendances(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        staffId
+        workDate
+        startTime
+        endTime
+        goDirectlyFlag
+        returnDirectlyFlag
+        rests {
+          startTime
+          endTime
+          __typename
+        }
+        remarks
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;

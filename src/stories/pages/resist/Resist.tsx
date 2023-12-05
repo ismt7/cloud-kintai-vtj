@@ -25,7 +25,7 @@ function Resist() {
         <Box
           sx={{ height: 1, py: 10, justifyContent: "center", display: "flex" }}
         >
-          <TimeRecorder cognitoUserId={cognitoUserId} />
+          <TimeRecorder />
         </Box>
         <Box>
           <Footer />

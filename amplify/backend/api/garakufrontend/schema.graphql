@@ -21,3 +21,20 @@ type CloseDate @model @auth(rules: [{ allow: private }]) {
   startDate: String!
   endDate: String!
 }
+
+type Attendance @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  staffId: String!
+  workDate: String!
+  startTime: String
+  endTime: String
+  goDirectlyFlag: Boolean
+  returnDirectlyFlag: Boolean
+  rests: [Rest]
+  remarks: String
+}
+
+type Rest {
+  startTime: String
+  endTime: String
+}

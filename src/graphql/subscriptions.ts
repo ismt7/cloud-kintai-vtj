@@ -131,3 +131,75 @@ export const onDeleteCloseDate = /* GraphQL */ `
     }
   }
 `;
+export const onCreateAttendance = /* GraphQL */ `
+  subscription OnCreateAttendance(
+    $filter: ModelSubscriptionAttendanceFilterInput
+  ) {
+    onCreateAttendance(filter: $filter) {
+      id
+      staffId
+      workDate
+      startTime
+      endTime
+      goDirectlyFlag
+      returnDirectlyFlag
+      rests {
+        startTime
+        endTime
+        __typename
+      }
+      remarks
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateAttendance = /* GraphQL */ `
+  subscription OnUpdateAttendance(
+    $filter: ModelSubscriptionAttendanceFilterInput
+  ) {
+    onUpdateAttendance(filter: $filter) {
+      id
+      staffId
+      workDate
+      startTime
+      endTime
+      goDirectlyFlag
+      returnDirectlyFlag
+      rests {
+        startTime
+        endTime
+        __typename
+      }
+      remarks
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteAttendance = /* GraphQL */ `
+  subscription OnDeleteAttendance(
+    $filter: ModelSubscriptionAttendanceFilterInput
+  ) {
+    onDeleteAttendance(filter: $filter) {
+      id
+      staffId
+      workDate
+      startTime
+      endTime
+      goDirectlyFlag
+      returnDirectlyFlag
+      rests {
+        startTime
+        endTime
+        __typename
+      }
+      remarks
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;

@@ -140,3 +140,78 @@ export const deleteCloseDate = /* GraphQL */ `
     }
   }
 `;
+export const createAttendance = /* GraphQL */ `
+  mutation CreateAttendance(
+    $input: CreateAttendanceInput!
+    $condition: ModelAttendanceConditionInput
+  ) {
+    createAttendance(input: $input, condition: $condition) {
+      id
+      staffId
+      workDate
+      startTime
+      endTime
+      goDirectlyFlag
+      returnDirectlyFlag
+      rests {
+        startTime
+        endTime
+        __typename
+      }
+      remarks
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateAttendance = /* GraphQL */ `
+  mutation UpdateAttendance(
+    $input: UpdateAttendanceInput!
+    $condition: ModelAttendanceConditionInput
+  ) {
+    updateAttendance(input: $input, condition: $condition) {
+      id
+      staffId
+      workDate
+      startTime
+      endTime
+      goDirectlyFlag
+      returnDirectlyFlag
+      rests {
+        startTime
+        endTime
+        __typename
+      }
+      remarks
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteAttendance = /* GraphQL */ `
+  mutation DeleteAttendance(
+    $input: DeleteAttendanceInput!
+    $condition: ModelAttendanceConditionInput
+  ) {
+    deleteAttendance(input: $input, condition: $condition) {
+      id
+      staffId
+      workDate
+      startTime
+      endTime
+      goDirectlyFlag
+      returnDirectlyFlag
+      rests {
+        startTime
+        endTime
+        __typename
+      }
+      remarks
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;

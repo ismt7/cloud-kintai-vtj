@@ -5,7 +5,7 @@ import { LoginStaff } from "../../staff_list/StaffList";
 import createAttendanceData from "../createAttendance";
 import fetchAttendance from "../fetchAttendance";
 
-export default function useAttendance(loginStaff: LoginStaff) {
+export default function useLegacyAttendance(loginStaff: LoginStaff) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [attendance, setAttendance] = useState<Attendance | null>(null);

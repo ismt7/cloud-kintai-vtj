@@ -1,0 +1,397 @@
+/***************************************************************************
+ * The contents of this file were generated with Amplify Studio.           *
+ * Please refrain from making any modifications to this file.              *
+ * Any changes to this file will be overwritten when running amplify pull. *
+ **************************************************************************/
+
+/* eslint-disable */
+import * as React from "react";
+import {
+  Button,
+  Flex,
+  Grid,
+  SwitchField,
+  TextField,
+} from "@aws-amplify/ui-react";
+import { fetchByPath, getOverrideProps, validateField } from "./utils";
+import { generateClient } from "aws-amplify/api";
+import { createAttendance } from "../graphql/mutations";
+const client = generateClient();
+export default function AttendanceCreateForm(props) {
+  const {
+    clearOnSuccess = true,
+    onSuccess,
+    onError,
+    onSubmit,
+    onValidate,
+    onChange,
+    overrides,
+    ...rest
+  } = props;
+  const initialValues = {
+    staffId: "",
+    workDate: "",
+    startTime: "",
+    endTime: "",
+    goDirectlyFlag: false,
+    returnDirectlyFlag: false,
+    remarks: "",
+  };
+  const [staffId, setStaffId] = React.useState(initialValues.staffId);
+  const [workDate, setWorkDate] = React.useState(initialValues.workDate);
+  const [startTime, setStartTime] = React.useState(initialValues.startTime);
+  const [endTime, setEndTime] = React.useState(initialValues.endTime);
+  const [goDirectlyFlag, setGoDirectlyFlag] = React.useState(
+    initialValues.goDirectlyFlag
+  );
+  const [returnDirectlyFlag, setReturnDirectlyFlag] = React.useState(
+    initialValues.returnDirectlyFlag
+  );
+  const [remarks, setRemarks] = React.useState(initialValues.remarks);
+  const [errors, setErrors] = React.useState({});
+  const resetStateValues = () => {
+    setStaffId(initialValues.staffId);
+    setWorkDate(initialValues.workDate);
+    setStartTime(initialValues.startTime);
+    setEndTime(initialValues.endTime);
+    setGoDirectlyFlag(initialValues.goDirectlyFlag);
+    setReturnDirectlyFlag(initialValues.returnDirectlyFlag);
+    setRemarks(initialValues.remarks);
+    setErrors({});
+  };
+  const validations = {
+    staffId: [{ type: "Required" }],
+    workDate: [{ type: "Required" }],
+    startTime: [],
+    endTime: [],
+    goDirectlyFlag: [],
+    returnDirectlyFlag: [],
+    remarks: [],
+  };
+  const runValidationTasks = async (
+    fieldName,
+    currentValue,
+    getDisplayValue
+  ) => {
+    const value =
+      currentValue && getDisplayValue
+        ? getDisplayValue(currentValue)
+        : currentValue;
+    let validationResponse = validateField(value, validations[fieldName]);
+    const customValidator = fetchByPath(onValidate, fieldName);
+    if (customValidator) {
+      validationResponse = await customValidator(value, validationResponse);
+    }
+    setErrors((errors) => ({ ...errors, [fieldName]: validationResponse }));
+    return validationResponse;
+  };
+  return (
+    <Grid
+      as="form"
+      rowGap="15px"
+      columnGap="15px"
+      padding="20px"
+      onSubmit={async (event) => {
+        event.preventDefault();
+        let modelFields = {
+          staffId,
+          workDate,
+          startTime,
+          endTime,
+          goDirectlyFlag,
+          returnDirectlyFlag,
+          remarks,
+        };
+        const validationResponses = await Promise.all(
+          Object.keys(validations).reduce((promises, fieldName) => {
+            if (Array.isArray(modelFields[fieldName])) {
+              promises.push(
+                ...modelFields[fieldName].map((item) =>
+                  runValidationTasks(fieldName, item)
+                )
+              );
+              return promises;
+            }
+            promises.push(
+              runValidationTasks(fieldName, modelFields[fieldName])
+            );
+            return promises;
+          }, [])
+        );
+        if (validationResponses.some((r) => r.hasError)) {
+          return;
+        }
+        if (onSubmit) {
+          modelFields = onSubmit(modelFields);
+        }
+        try {
+          Object.entries(modelFields).forEach(([key, value]) => {
+            if (typeof value === "string" && value === "") {
+              modelFields[key] = null;
+            }
+          });
+          await client.graphql({
+            query: createAttendance.replaceAll("__typename", ""),
+            variables: {
+              input: {
+                ...modelFields,
+              },
+            },
+          });
+          if (onSuccess) {
+            onSuccess(modelFields);
+          }
+          if (clearOnSuccess) {
+            resetStateValues();
+          }
+        } catch (err) {
+          if (onError) {
+            const messages = err.errors.map((e) => e.message).join("\n");
+            onError(modelFields, messages);
+          }
+        }
+      }}
+      {...getOverrideProps(overrides, "AttendanceCreateForm")}
+      {...rest}
+    >
+      <TextField
+        label="Staff id"
+        isRequired={true}
+        isReadOnly={false}
+        value={staffId}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              staffId: value,
+              workDate,
+              startTime,
+              endTime,
+              goDirectlyFlag,
+              returnDirectlyFlag,
+              remarks,
+            };
+            const result = onChange(modelFields);
+            value = result?.staffId ?? value;
+          }
+          if (errors.staffId?.hasError) {
+            runValidationTasks("staffId", value);
+          }
+          setStaffId(value);
+        }}
+        onBlur={() => runValidationTasks("staffId", staffId)}
+        errorMessage={errors.staffId?.errorMessage}
+        hasError={errors.staffId?.hasError}
+        {...getOverrideProps(overrides, "staffId")}
+      ></TextField>
+      <TextField
+        label="Work date"
+        isRequired={true}
+        isReadOnly={false}
+        value={workDate}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              staffId,
+              workDate: value,
+              startTime,
+              endTime,
+              goDirectlyFlag,
+              returnDirectlyFlag,
+              remarks,
+            };
+            const result = onChange(modelFields);
+            value = result?.workDate ?? value;
+          }
+          if (errors.workDate?.hasError) {
+            runValidationTasks("workDate", value);
+          }
+          setWorkDate(value);
+        }}
+        onBlur={() => runValidationTasks("workDate", workDate)}
+        errorMessage={errors.workDate?.errorMessage}
+        hasError={errors.workDate?.hasError}
+        {...getOverrideProps(overrides, "workDate")}
+      ></TextField>
+      <TextField
+        label="Start time"
+        isRequired={false}
+        isReadOnly={false}
+        value={startTime}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              staffId,
+              workDate,
+              startTime: value,
+              endTime,
+              goDirectlyFlag,
+              returnDirectlyFlag,
+              remarks,
+            };
+            const result = onChange(modelFields);
+            value = result?.startTime ?? value;
+          }
+          if (errors.startTime?.hasError) {
+            runValidationTasks("startTime", value);
+          }
+          setStartTime(value);
+        }}
+        onBlur={() => runValidationTasks("startTime", startTime)}
+        errorMessage={errors.startTime?.errorMessage}
+        hasError={errors.startTime?.hasError}
+        {...getOverrideProps(overrides, "startTime")}
+      ></TextField>
+      <TextField
+        label="End time"
+        isRequired={false}
+        isReadOnly={false}
+        value={endTime}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              staffId,
+              workDate,
+              startTime,
+              endTime: value,
+              goDirectlyFlag,
+              returnDirectlyFlag,
+              remarks,
+            };
+            const result = onChange(modelFields);
+            value = result?.endTime ?? value;
+          }
+          if (errors.endTime?.hasError) {
+            runValidationTasks("endTime", value);
+          }
+          setEndTime(value);
+        }}
+        onBlur={() => runValidationTasks("endTime", endTime)}
+        errorMessage={errors.endTime?.errorMessage}
+        hasError={errors.endTime?.hasError}
+        {...getOverrideProps(overrides, "endTime")}
+      ></TextField>
+      <SwitchField
+        label="Go directly flag"
+        defaultChecked={false}
+        isDisabled={false}
+        isChecked={goDirectlyFlag}
+        onChange={(e) => {
+          let value = e.target.checked;
+          if (onChange) {
+            const modelFields = {
+              staffId,
+              workDate,
+              startTime,
+              endTime,
+              goDirectlyFlag: value,
+              returnDirectlyFlag,
+              remarks,
+            };
+            const result = onChange(modelFields);
+            value = result?.goDirectlyFlag ?? value;
+          }
+          if (errors.goDirectlyFlag?.hasError) {
+            runValidationTasks("goDirectlyFlag", value);
+          }
+          setGoDirectlyFlag(value);
+        }}
+        onBlur={() => runValidationTasks("goDirectlyFlag", goDirectlyFlag)}
+        errorMessage={errors.goDirectlyFlag?.errorMessage}
+        hasError={errors.goDirectlyFlag?.hasError}
+        {...getOverrideProps(overrides, "goDirectlyFlag")}
+      ></SwitchField>
+      <SwitchField
+        label="Return directly flag"
+        defaultChecked={false}
+        isDisabled={false}
+        isChecked={returnDirectlyFlag}
+        onChange={(e) => {
+          let value = e.target.checked;
+          if (onChange) {
+            const modelFields = {
+              staffId,
+              workDate,
+              startTime,
+              endTime,
+              goDirectlyFlag,
+              returnDirectlyFlag: value,
+              remarks,
+            };
+            const result = onChange(modelFields);
+            value = result?.returnDirectlyFlag ?? value;
+          }
+          if (errors.returnDirectlyFlag?.hasError) {
+            runValidationTasks("returnDirectlyFlag", value);
+          }
+          setReturnDirectlyFlag(value);
+        }}
+        onBlur={() =>
+          runValidationTasks("returnDirectlyFlag", returnDirectlyFlag)
+        }
+        errorMessage={errors.returnDirectlyFlag?.errorMessage}
+        hasError={errors.returnDirectlyFlag?.hasError}
+        {...getOverrideProps(overrides, "returnDirectlyFlag")}
+      ></SwitchField>
+      <TextField
+        label="Remarks"
+        isRequired={false}
+        isReadOnly={false}
+        value={remarks}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              staffId,
+              workDate,
+              startTime,
+              endTime,
+              goDirectlyFlag,
+              returnDirectlyFlag,
+              remarks: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.remarks ?? value;
+          }
+          if (errors.remarks?.hasError) {
+            runValidationTasks("remarks", value);
+          }
+          setRemarks(value);
+        }}
+        onBlur={() => runValidationTasks("remarks", remarks)}
+        errorMessage={errors.remarks?.errorMessage}
+        hasError={errors.remarks?.hasError}
+        {...getOverrideProps(overrides, "remarks")}
+      ></TextField>
+      <Flex
+        justifyContent="space-between"
+        {...getOverrideProps(overrides, "CTAFlex")}
+      >
+        <Button
+          children="Clear"
+          type="reset"
+          onClick={(event) => {
+            event.preventDefault();
+            resetStateValues();
+          }}
+          {...getOverrideProps(overrides, "ClearButton")}
+        ></Button>
+        <Flex
+          gap="15px"
+          {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
+        >
+          <Button
+            children="Submit"
+            type="submit"
+            variation="primary"
+            isDisabled={Object.values(errors).some((e) => e?.hasError)}
+            {...getOverrideProps(overrides, "SubmitButton")}
+          ></Button>
+        </Flex>
+      </Flex>
+    </Grid>
+  );
+}

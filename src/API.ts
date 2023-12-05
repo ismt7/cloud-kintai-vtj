@@ -145,6 +145,80 @@ export type DeleteCloseDateInput = {
   id: string,
 };
 
+export type CreateAttendanceInput = {
+  id?: string | null,
+  staffId: string,
+  workDate: string,
+  startTime?: string | null,
+  endTime?: string | null,
+  goDirectlyFlag?: boolean | null,
+  returnDirectlyFlag?: boolean | null,
+  rests?: Array< RestInput | null > | null,
+  remarks?: string | null,
+};
+
+export type RestInput = {
+  startTime?: string | null,
+  endTime?: string | null,
+};
+
+export type ModelAttendanceConditionInput = {
+  staffId?: ModelStringInput | null,
+  workDate?: ModelStringInput | null,
+  startTime?: ModelStringInput | null,
+  endTime?: ModelStringInput | null,
+  goDirectlyFlag?: ModelBooleanInput | null,
+  returnDirectlyFlag?: ModelBooleanInput | null,
+  remarks?: ModelStringInput | null,
+  and?: Array< ModelAttendanceConditionInput | null > | null,
+  or?: Array< ModelAttendanceConditionInput | null > | null,
+  not?: ModelAttendanceConditionInput | null,
+};
+
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type Attendance = {
+  __typename: "Attendance",
+  id: string,
+  staffId: string,
+  workDate: string,
+  startTime?: string | null,
+  endTime?: string | null,
+  goDirectlyFlag?: boolean | null,
+  returnDirectlyFlag?: boolean | null,
+  rests?:  Array<Rest | null > | null,
+  remarks?: string | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type Rest = {
+  __typename: "Rest",
+  startTime?: string | null,
+  endTime?: string | null,
+};
+
+export type UpdateAttendanceInput = {
+  id: string,
+  staffId?: string | null,
+  workDate?: string | null,
+  startTime?: string | null,
+  endTime?: string | null,
+  goDirectlyFlag?: boolean | null,
+  returnDirectlyFlag?: boolean | null,
+  rests?: Array< RestInput | null > | null,
+  remarks?: string | null,
+};
+
+export type DeleteAttendanceInput = {
+  id: string,
+};
+
 export type ModelHolidayCalendarFilterInput = {
   id?: ModelIDInput | null,
   holidayDate?: ModelStringInput | null,
@@ -207,6 +281,26 @@ export type ModelCloseDateConnection = {
   nextToken?: string | null,
 };
 
+export type ModelAttendanceFilterInput = {
+  id?: ModelIDInput | null,
+  staffId?: ModelStringInput | null,
+  workDate?: ModelStringInput | null,
+  startTime?: ModelStringInput | null,
+  endTime?: ModelStringInput | null,
+  goDirectlyFlag?: ModelBooleanInput | null,
+  returnDirectlyFlag?: ModelBooleanInput | null,
+  remarks?: ModelStringInput | null,
+  and?: Array< ModelAttendanceFilterInput | null > | null,
+  or?: Array< ModelAttendanceFilterInput | null > | null,
+  not?: ModelAttendanceFilterInput | null,
+};
+
+export type ModelAttendanceConnection = {
+  __typename: "ModelAttendanceConnection",
+  items:  Array<Attendance | null >,
+  nextToken?: string | null,
+};
+
 export type ModelSubscriptionHolidayCalendarFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   holidayDate?: ModelSubscriptionStringInput | null,
@@ -260,6 +354,24 @@ export type ModelSubscriptionCloseDateFilterInput = {
   endDate?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionCloseDateFilterInput | null > | null,
   or?: Array< ModelSubscriptionCloseDateFilterInput | null > | null,
+};
+
+export type ModelSubscriptionAttendanceFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  staffId?: ModelSubscriptionStringInput | null,
+  workDate?: ModelSubscriptionStringInput | null,
+  startTime?: ModelSubscriptionStringInput | null,
+  endTime?: ModelSubscriptionStringInput | null,
+  goDirectlyFlag?: ModelSubscriptionBooleanInput | null,
+  returnDirectlyFlag?: ModelSubscriptionBooleanInput | null,
+  remarks?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionAttendanceFilterInput | null > | null,
+  or?: Array< ModelSubscriptionAttendanceFilterInput | null > | null,
+};
+
+export type ModelSubscriptionBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
 };
 
 export type CreateHolidayCalendarMutationVariables = {
@@ -409,6 +521,84 @@ export type DeleteCloseDateMutation = {
   } | null,
 };
 
+export type CreateAttendanceMutationVariables = {
+  input: CreateAttendanceInput,
+  condition?: ModelAttendanceConditionInput | null,
+};
+
+export type CreateAttendanceMutation = {
+  createAttendance?:  {
+    __typename: "Attendance",
+    id: string,
+    staffId: string,
+    workDate: string,
+    startTime?: string | null,
+    endTime?: string | null,
+    goDirectlyFlag?: boolean | null,
+    returnDirectlyFlag?: boolean | null,
+    rests?:  Array< {
+      __typename: "Rest",
+      startTime?: string | null,
+      endTime?: string | null,
+    } | null > | null,
+    remarks?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateAttendanceMutationVariables = {
+  input: UpdateAttendanceInput,
+  condition?: ModelAttendanceConditionInput | null,
+};
+
+export type UpdateAttendanceMutation = {
+  updateAttendance?:  {
+    __typename: "Attendance",
+    id: string,
+    staffId: string,
+    workDate: string,
+    startTime?: string | null,
+    endTime?: string | null,
+    goDirectlyFlag?: boolean | null,
+    returnDirectlyFlag?: boolean | null,
+    rests?:  Array< {
+      __typename: "Rest",
+      startTime?: string | null,
+      endTime?: string | null,
+    } | null > | null,
+    remarks?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteAttendanceMutationVariables = {
+  input: DeleteAttendanceInput,
+  condition?: ModelAttendanceConditionInput | null,
+};
+
+export type DeleteAttendanceMutation = {
+  deleteAttendance?:  {
+    __typename: "Attendance",
+    id: string,
+    staffId: string,
+    workDate: string,
+    startTime?: string | null,
+    endTime?: string | null,
+    goDirectlyFlag?: boolean | null,
+    returnDirectlyFlag?: boolean | null,
+    rests?:  Array< {
+      __typename: "Rest",
+      startTime?: string | null,
+      endTime?: string | null,
+    } | null > | null,
+    remarks?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
 export type GetHolidayCalendarQueryVariables = {
   id: string,
 };
@@ -512,6 +702,62 @@ export type ListCloseDatesQuery = {
       closeDate: string,
       startDate: string,
       endDate: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type GetAttendanceQueryVariables = {
+  id: string,
+};
+
+export type GetAttendanceQuery = {
+  getAttendance?:  {
+    __typename: "Attendance",
+    id: string,
+    staffId: string,
+    workDate: string,
+    startTime?: string | null,
+    endTime?: string | null,
+    goDirectlyFlag?: boolean | null,
+    returnDirectlyFlag?: boolean | null,
+    rests?:  Array< {
+      __typename: "Rest",
+      startTime?: string | null,
+      endTime?: string | null,
+    } | null > | null,
+    remarks?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListAttendancesQueryVariables = {
+  filter?: ModelAttendanceFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListAttendancesQuery = {
+  listAttendances?:  {
+    __typename: "ModelAttendanceConnection",
+    items:  Array< {
+      __typename: "Attendance",
+      id: string,
+      staffId: string,
+      workDate: string,
+      startTime?: string | null,
+      endTime?: string | null,
+      goDirectlyFlag?: boolean | null,
+      returnDirectlyFlag?: boolean | null,
+      rests?:  Array< {
+        __typename: "Rest",
+        startTime?: string | null,
+        endTime?: string | null,
+      } | null > | null,
+      remarks?: string | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -652,6 +898,81 @@ export type OnDeleteCloseDateSubscription = {
     closeDate: string,
     startDate: string,
     endDate: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnCreateAttendanceSubscriptionVariables = {
+  filter?: ModelSubscriptionAttendanceFilterInput | null,
+};
+
+export type OnCreateAttendanceSubscription = {
+  onCreateAttendance?:  {
+    __typename: "Attendance",
+    id: string,
+    staffId: string,
+    workDate: string,
+    startTime?: string | null,
+    endTime?: string | null,
+    goDirectlyFlag?: boolean | null,
+    returnDirectlyFlag?: boolean | null,
+    rests?:  Array< {
+      __typename: "Rest",
+      startTime?: string | null,
+      endTime?: string | null,
+    } | null > | null,
+    remarks?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateAttendanceSubscriptionVariables = {
+  filter?: ModelSubscriptionAttendanceFilterInput | null,
+};
+
+export type OnUpdateAttendanceSubscription = {
+  onUpdateAttendance?:  {
+    __typename: "Attendance",
+    id: string,
+    staffId: string,
+    workDate: string,
+    startTime?: string | null,
+    endTime?: string | null,
+    goDirectlyFlag?: boolean | null,
+    returnDirectlyFlag?: boolean | null,
+    rests?:  Array< {
+      __typename: "Rest",
+      startTime?: string | null,
+      endTime?: string | null,
+    } | null > | null,
+    remarks?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteAttendanceSubscriptionVariables = {
+  filter?: ModelSubscriptionAttendanceFilterInput | null,
+};
+
+export type OnDeleteAttendanceSubscription = {
+  onDeleteAttendance?:  {
+    __typename: "Attendance",
+    id: string,
+    staffId: string,
+    workDate: string,
+    startTime?: string | null,
+    endTime?: string | null,
+    goDirectlyFlag?: boolean | null,
+    returnDirectlyFlag?: boolean | null,
+    rests?:  Array< {
+      __typename: "Rest",
+      startTime?: string | null,
+      endTime?: string | null,
+    } | null > | null,
+    remarks?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,

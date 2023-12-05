@@ -14,7 +14,7 @@ import getDayOfWeek, {
   DayOfWeek,
 } from "../../../components/attendance_list/getDayOfWeek";
 import useHolidayCalendar from "../../../components/attendance_list/hooks/useHolidayCalendar";
-import useAttendance from "../../../hooks/useAttendance/useAttendance";
+import useAttendanceOld from "../../../hooks/useAttendance/useAttendanceOld";
 import getColumns from "./getColumns";
 import useStaff from "./hooks/useStaff";
 
@@ -29,7 +29,7 @@ export default function AdminStaffAttendanceList() {
     attendances,
     loading: attendanceLoading,
     deleteAttendance,
-  } = useAttendance(staff);
+  } = useAttendanceOld(staff);
   const { holidayCalendars, loading: holidayCalendarLoading } =
     useHolidayCalendar();
 

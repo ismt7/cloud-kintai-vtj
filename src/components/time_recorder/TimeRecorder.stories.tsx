@@ -13,8 +13,6 @@ import {
 } from "./mocks/ApiMocks";
 import TimeRecorder from "./TimeRecorder";
 
-const COGNITO_USER_ID = "99999999-9999-9999-9999-999999999999";
-
 const meta: Meta<typeof TimeRecorder> = {
   component: TimeRecorder,
   parameters: {
@@ -31,7 +29,7 @@ const meta: Meta<typeof TimeRecorder> = {
       ],
     },
   },
-  render: () => <TimeRecorder cognitoUserId={COGNITO_USER_ID} />,
+  render: () => <TimeRecorder />,
 };
 
 export default meta;
