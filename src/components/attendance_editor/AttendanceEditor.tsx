@@ -16,30 +16,20 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import { Attendance, Rest } from "../../API";
 import { useAppDispatchV2 } from "../../app/hooks";
-import {
-  E00001,
-  E02003,
-  E03002,
-  E03003,
-  E03004,
-  E04001,
-  S04001,
-} from "../../errors";
+import { E04001, S04001 } from "../../errors";
+import useAttendance from "../../hooks/useAttendance/useAttendance";
+import { Staff } from "../../hooks/useStaffs/common";
+import useStaffs from "../../hooks/useStaffs/useStaffs";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
-import useAttendance from "./hooks/useAttendance";
-import useLoginStaff from "./hooks/useLoginStaff";
-import useRests from "./hooks/useRests";
-import useStaff from "./hooks/useStaff";
 import ProductionTimeItem from "./items/ProductionTimeItem";
 import SeparatorItem from "./items/SeparatorItem";
 import StaffNameItem from "./items/StaffNameItem";
 import WorkDateItem from "./items/WorkDateItem";
-
-// TODO: あとで修正
 // eslint-disable-next-line import/no-cycle
 import RemarksItem from "./items/RemarksItem";
 // eslint-disable-next-line import/no-cycle
@@ -47,24 +37,23 @@ import { calcTotalRestTime, RestTimeItem } from "./items/RestTimeItem";
 // eslint-disable-next-line import/no-cycle
 import { calcTotalWorkTime, WorkTimeItem } from "./items/WorkTimeItem";
 
-type RestInputs = {
-  restId: number | null | undefined;
-  startTime: string | null | undefined;
-  endTime: string | null | undefined;
+export type RestInputs = {
+  startTime: Rest["startTime"] | null;
+  endTime: Rest["endTime"] | null;
 };
 
 export type AttendanceEditorInputs = {
-  workDate: string;
-  goDirectlyFlag: boolean;
-  returnDirectlyFlag: boolean;
-  startTime: string | null | undefined;
-  endTime: string | null | undefined;
-  remarks: string;
+  workDate: Attendance["workDate"] | null;
+  goDirectlyFlag: Attendance["goDirectlyFlag"];
+  returnDirectlyFlag: Attendance["returnDirectlyFlag"];
+  startTime: Attendance["startTime"];
+  endTime: Attendance["endTime"];
+  remarks: Attendance["remarks"];
   rests: RestInputs[];
 };
 
 const defaultValues: AttendanceEditorInputs = {
-  workDate: "",
+  workDate: null,
   goDirectlyFlag: false,
   returnDirectlyFlag: false,
   startTime: null,
@@ -73,30 +62,15 @@ const defaultValues: AttendanceEditorInputs = {
   rests: [],
 };
 
-export default function AttendanceEditor({
-  cognitoUserId,
-}: {
-  cognitoUserId: string | undefined;
-}) {
+export default function AttendanceEditor() {
   const dispatch = useAppDispatchV2();
   const navigate = useNavigate();
 
   const { targetWorkDate, staffId: targetStaffId } = useParams();
-  const { loginStaff, loading: loginStaffLoading } =
-    useLoginStaff(cognitoUserId);
-  const { staff, loading: staffLoading } = useStaff(loginStaff, targetStaffId);
-  const {
-    attendance,
-    loading: attendanceLoading,
-    updateAttendance,
-  } = useAttendance(staff, targetWorkDate);
-  const {
-    rests,
-    loading: restLoading,
-    createRest,
-    updateRest,
-    deleteRest,
-  } = useRests(staff, targetWorkDate);
+  const { staffs, loading: staffsLoading, error: staffSError } = useStaffs();
+  const { attendance, getAttendance, updateAttendance, createAttendance } =
+    useAttendance();
+  const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
 
   const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
 
@@ -124,6 +98,23 @@ export default function AttendanceEditor({
   });
 
   useEffect(() => {
+    if (!targetStaffId) return;
+    const matchStaff = staffs.find((s) => s.sub === targetStaffId);
+    setStaff(matchStaff || null);
+  }, [staffs, targetStaffId]);
+
+  useEffect(() => {
+    if (!staff || !targetStaffId || !targetWorkDate) return;
+
+    getAttendance(staff.sub, dayjs(targetWorkDate).format("YYYY-MM-DD")).catch(
+      (e: Error) => {
+        logger.error(e);
+        console.log(e);
+      }
+    );
+  }, [staff, targetStaffId, targetWorkDate]);
+
+  useEffect(() => {
     watch((data) => {
       const totalWorkTime = calcTotalWorkTime(data.startTime, data.endTime);
 
@@ -141,82 +132,44 @@ export default function AttendanceEditor({
   }, [watch]);
 
   const onSubmit = async (data: AttendanceEditorInputs) => {
-    if (!staff || !attendance) {
-      dispatch(setSnackbarError(E00001));
-      return;
+    if (attendance) {
+      updateAttendance({
+        id: attendance.id,
+        staffId: attendance.staffId,
+        workDate: data.workDate,
+        startTime: data.startTime,
+        endTime: data.endTime || null,
+        goDirectlyFlag: data.goDirectlyFlag,
+        returnDirectlyFlag: data.returnDirectlyFlag,
+        remarks: data.remarks,
+        rests: data.rests,
+      })
+        .then(() => {
+          dispatch(setSnackbarSuccess(S04001));
+        })
+        .catch((e: Error) => {
+          logger.error(e);
+          dispatch(setSnackbarError(E04001));
+        });
     }
 
-    const workDate = dayjs(targetWorkDate).format("YYYY-MM-DD");
-    await Promise.all([
-      // 勤怠情報
-      updateAttendance({
-        ...attendance,
-        start_time: data.startTime,
-        end_time: data.endTime || null,
-        go_directly_flag: data.goDirectlyFlag,
-        return_directly_flag: data.returnDirectlyFlag,
-        remarks: data.remarks,
-      }).catch((e) => {
-        logger.debug(e);
-        throw new Error(E02003);
-      }),
+    if (!targetStaffId || !targetWorkDate) return;
 
-      // 休憩情報(新規)
-      data.rests
-        .filter((rest) => !rest.restId)
-        .forEach((rest) => {
-          createRest({
-            staff_id: staff.id,
-            work_date: workDate,
-            start_time: rest.startTime,
-            end_time: rest.endTime,
-          }).catch((e) => {
-            logger.debug(e);
-            throw new Error(E03002);
-          });
-        }),
-
-      // 休憩情報(更新)
-      data.rests
-        .filter((rest) => rest.restId)
-        .forEach((rest) => {
-          if (!rest.restId) {
-            throw new Error("restId is null");
-          }
-
-          const targetRest = rests?.find((r) => r.id === rest.restId);
-          if (!targetRest) {
-            throw new Error("targetRest is null");
-          }
-
-          updateRest({
-            ...targetRest,
-            id: rest.restId,
-            start_time: rest.startTime,
-            end_time: rest.endTime,
-          }).catch((e) => {
-            logger.debug(e);
-            throw new Error(E03003);
-          });
-        }),
-
-      // 休憩情報(削除)
-      rests
-        ?.filter(
-          (rest) =>
-            !data.rests.some((restInput) => rest.id === restInput.restId)
-        )
-        .forEach((rest) => {
-          deleteRest(rest).catch((e) => {
-            logger.debug(e);
-            throw new Error(E03004);
-          });
-        }),
-    ])
+    createAttendance({
+      staffId: targetStaffId,
+      workDate: dayjs(targetWorkDate).format("YYYY-MM-DD"),
+      startTime: data.startTime,
+      endTime: data.endTime,
+      goDirectlyFlag: data.goDirectlyFlag,
+      returnDirectlyFlag: data.returnDirectlyFlag,
+      remarks: data.remarks,
+      rests: data.rests,
+    })
       .then(() => {
         dispatch(setSnackbarSuccess(S04001));
       })
-      .catch(() => {
+      .catch((e: Error) => {
+        logger.error(e);
         dispatch(setSnackbarError(E04001));
       });
   };
@@ -224,29 +177,35 @@ export default function AttendanceEditor({
   useEffect(() => {
     if (!attendance) return;
 
-    setValue("workDate", attendance.work_date);
-    setValue("startTime", attendance.start_time);
-    setValue("endTime", attendance.end_time);
+    setValue("workDate", attendance.workDate);
+    setValue("startTime", attendance.startTime);
+    setValue("endTime", attendance.endTime);
     setValue("remarks", attendance.remarks || "");
-    setValue("goDirectlyFlag", attendance.go_directly_flag || false);
-    setValue("returnDirectlyFlag", attendance.return_directly_flag || false);
+    setValue("goDirectlyFlag", attendance.goDirectlyFlag || false);
+    setValue("returnDirectlyFlag", attendance.returnDirectlyFlag || false);
+
+    if (attendance.rests) {
+      const rests = attendance.rests
+        .filter((item): item is NonNullable<typeof item> => item !== null)
+        .map((item) => ({
+          startTime: item.startTime,
+          endTime: item.endTime,
+        }));
+      setValue("rests", rests);
+    }
   }, [attendance]);
 
-  useEffect(() => {
-    if (!rests) return;
-
-    setValue(
-      "rests",
-      rests.map((rest) => ({
-        restId: rest.id,
-        startTime: rest.start_time,
-        endTime: rest.end_time,
-      }))
-    );
-  }, [rests]);
-
-  if (loginStaffLoading || staffLoading || attendanceLoading || restLoading) {
+  if (staffsLoading) {
     return <LinearProgress />;
+  }
+
+  if (staffSError) {
+    return (
+      <Alert severity="error">
+        <AlertTitle>エラー</AlertTitle>
+        <Typography variant="body2">{staffSError.message}</Typography>
+      </Alert>
+    );
   }
 
   return (
@@ -259,11 +218,23 @@ export default function AttendanceEditor({
           </Alert>
         </Box>
       )}
+      {!attendance && (
+        <Box>
+          <Alert severity="info">
+            <AlertTitle>お知らせ</AlertTitle>
+            指定された日付に勤怠情報の登録がありませんでした。保存時に新規作成されます。
+          </Alert>
+        </Box>
+      )}
       <Box>
         <StaffNameItem staff={staff} />
       </Box>
       <Box>
-        <WorkDateItem workDate={getValues().workDate} />
+        <WorkDateItem
+          workDate={
+            getValues().workDate || dayjs(targetWorkDate).format("YYYY/MM/DD")
+          }
+        />
       </Box>
       <Stack direction="row" alignItems={"center"}>
         <Box sx={{ fontWeight: "bold", width: "150px" }}>直行</Box>
@@ -305,7 +276,6 @@ export default function AttendanceEditor({
               aria-label="staff-search"
               onClick={() =>
                 append({
-                  restId: null,
                   startTime: null,
                   endTime: null,
                 })

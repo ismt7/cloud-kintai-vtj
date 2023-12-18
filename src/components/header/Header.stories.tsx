@@ -4,7 +4,6 @@ import Header from "./Header";
 import { GetCognitoUserId, GetStaffRole, Role } from "./mocks/ApiMock";
 
 const COGNITO_USER_ID = "99999999-9999-9999-9999-999999999999";
-const MAIL_ADDRESS = "example@example.com";
 
 const meta: Meta<typeof Header> = {
   component: Header,
@@ -24,7 +23,6 @@ export const Default: Story = {
     <MemoryRouter>
       <Header
         cognitoUserId={COGNITO_USER_ID}
-        mailAddress={MAIL_ADDRESS}
         signOut={() => {
           /* 処理なし */
         }}
@@ -41,7 +39,6 @@ export const LoggedIn: Story = {
     <MemoryRouter>
       <Header
         cognitoUserId={undefined}
-        mailAddress={undefined}
         signOut={() => {
           /* 処理なし */
         }}
@@ -62,7 +59,6 @@ export const StaffAdmin: Story = {
     <MemoryRouter>
       <Header
         cognitoUserId={COGNITO_USER_ID}
-        mailAddress={MAIL_ADDRESS}
         signOut={() => {
           /* 処理なし */
         }}
@@ -83,7 +79,6 @@ export const Admin: Story = {
     <MemoryRouter>
       <Header
         cognitoUserId={COGNITO_USER_ID}
-        mailAddress={MAIL_ADDRESS}
         signOut={() => {
           /* 処理なし */
         }}

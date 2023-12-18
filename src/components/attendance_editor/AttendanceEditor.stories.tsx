@@ -9,8 +9,6 @@ import {
   GetStaffByCognitoUserId200,
 } from "./mocks/ApiMock";
 
-const COGNITO_USER_ID = "99999999-9999-9999-9999-999999999999";
-
 const now = dayjs();
 const targetWorkDate = now.format("YYYYMMDD");
 
@@ -33,7 +31,7 @@ const meta: Meta<typeof AttendanceEditor> = {
       <Routes>
         <Route
           path="/admin/attendances/edit/:targetWorkDate/:targetStaffId"
-          element={<AttendanceEditor cognitoUserId={COGNITO_USER_ID} />}
+          element={<AttendanceEditor />}
         />
       </Routes>
     </MemoryRouter>

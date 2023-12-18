@@ -6,7 +6,8 @@ import {
 
 import EditIcon from "@mui/icons-material/Edit";
 import dayjs from "dayjs";
-import { Attendance, HolidayCalendar, Rest } from "../../client";
+import { HolidayCalendar } from "../../API";
+import { Attendance, Rest } from "../../client";
 import getDayOfWeek from "./getDayOfWeek";
 
 export function statusValueGetter(
@@ -18,7 +19,7 @@ export function statusValueGetter(
   const today = dayjs().format("YYYY-MM-DD");
   const dayOfWeek = getDayOfWeek(workDate);
   const isHoliday = holidayCalendars?.find(
-    (holiday) => holiday.holiday_date === workDate
+    (holiday) => holiday.holidayDate === workDate
   );
 
   if (isHoliday) return "";
@@ -83,7 +84,7 @@ export default function GetColumns(
         if (!workDate) return "";
         const date = dayjs(workDate);
         const isHoliday = holidayCalendars?.find(
-          ({ holiday_date }) => holiday_date === params.row.workDate
+          ({ holidayDate }) => holidayDate === params.row.workDate
         );
         const dayOfWeek = isHoliday ? "祝" : getDayOfWeek(params.row.workDate);
         return `${date.format("M/D")}(${dayOfWeek})`;
@@ -192,7 +193,7 @@ export default function GetColumns(
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
         const { workDate } = params.row;
         const isHoliday = holidayCalendars?.find(
-          ({ holiday_date }) => holiday_date === workDate
+          ({ holidayDate }) => holidayDate === workDate
         );
 
         const summaryMessage = [];

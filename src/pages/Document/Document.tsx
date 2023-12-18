@@ -55,7 +55,7 @@ export default function Document() {
                 <ListItemButton onClick={() => navigate("/docs/work-start")}>
                   <ListItemText primary="通常打刻" sx={{ pl: 2 }} />
                 </ListItemButton>
-                <ListItemButton>
+                <ListItemButton onClick={() => navigate("/docs/go-direct")}>
                   <ListItemText primary="直行打刻" sx={{ pl: 2 }} />
                 </ListItemButton>
               </List>

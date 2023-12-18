@@ -18,11 +18,12 @@ import AdminAttendanceEditor from "./pages/admin/AdminAttendanceEditor";
 import AdminAttendancePrint from "./pages/admin/AdminAttendancePrint";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminHolidayCalendar from "./pages/admin/AdminHolidayCalendar/AdminHolidayCalendar";
-import AdminStaff from "./pages/admin/AdminStaff";
+import AdminStaff from "./pages/admin/AdminStaff/AdminStaff";
 import AdminStaffAttendanceList from "./pages/admin/AdminStaffAttendanceList/AdminStaffAttendanceList";
 import JobTerm from "./pages/admin/JobTerm/JobTerm";
 import AttendanceRemarksDocument from "./pages/Document/AttendanceRemarksDocument";
 import Document from "./pages/Document/Document";
+import GoDirectDocument from "./pages/Document/GoDirectDocument";
 import RestEndDocument from "./pages/Document/RestEndDocument";
 import RestStartDocument from "./pages/Document/RestStartDocument";
 import StartDocument from "./pages/Document/StartDocument";
@@ -32,7 +33,6 @@ import Hoge from "./pages/Hoge";
 import List from "./pages/List";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Top from "./pages/Top";
 import reportWebVitals from "./reportWebVitals";
 import AdminMasterLayout from "./stories/pages/admin/master/AdminMasterLayout";
 
@@ -44,8 +44,8 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "/",
-        element: <Top />,
+        index: true,
+        element: <Register />,
       },
       {
         path: "/register",
@@ -90,6 +90,10 @@ const router = createBrowserRouter([
           {
             path: "attendance-remarks",
             element: <AttendanceRemarksDocument />,
+          },
+          {
+            path: "go-direct",
+            element: <GoDirectDocument />,
           },
         ],
       },

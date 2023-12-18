@@ -7,35 +7,49 @@ import {
 } from "@mui/material";
 import { DataGrid, GridRowModesModel } from "@mui/x-data-grid";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Attendance } from "../../../client";
 import getDayOfWeek, {
   DayOfWeek,
 } from "../../../components/attendance_list/getDayOfWeek";
-import useHolidayCalendar from "../../../components/attendance_list/hooks/useHolidayCalendar";
-import useAttendance from "../../../hooks/useAttendance/useAttendance";
+import useAttendances from "../../../hooks/useAttendances/useAttendances";
+import useHolidayCalendars from "../../../hooks/useHolidayCalendars/useHolidayCalendars";
+import { Staff } from "../../../hooks/useStaffs/common";
+import useStaffs from "../../../hooks/useStaffs/useStaffs";
 import getColumns from "./getColumns";
-import useStaff from "./hooks/useStaff";
 
 export default function AdminStaffAttendanceList() {
   const { staffId } = useParams();
   const navigate = useNavigate();
 
-  const { staff, loading: staffLoading } = useStaff(
-    staffId ? Number(staffId) : undefined
-  );
+  const { attendances, getAttendances } = useAttendances();
+  const { staffs, loading: staffLoading, error: staffError } = useStaffs();
+  const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
+
+  useEffect(() => {
+    if (!staffId || staffLoading) return;
+
+    const matchStaff = staffs.find((item) => item.sub === staffId);
+    setStaff(matchStaff);
+  }, [staffId, staffLoading]);
+
+  useEffect(() => {
+    if (!staffId) return;
+    getAttendances(staffId).catch((error) => {
+      console.log(error);
+    });
+  }, [staffId]);
+
   const {
-    attendances,
-    loading: attendanceLoading,
-    deleteAttendance,
-  } = useAttendance(staff);
-  const { holidayCalendars, loading: holidayCalendarLoading } =
-    useHolidayCalendar();
+    holidayCalendars,
+    loading: holidayCalendarLoading,
+    error: holidayCalendarError,
+  } = useHolidayCalendars();
 
   const [rowModelsModel, setRowModelsModel] = useState<GridRowModesModel>({});
 
-  if (staffLoading || attendanceLoading || holidayCalendarLoading) {
+  if (staffLoading || holidayCalendarLoading) {
     return (
       <Container maxWidth="xl" sx={{ pt: 2 }}>
         <LinearProgress />
@@ -43,7 +57,7 @@ export default function AdminStaffAttendanceList() {
     );
   }
 
-  if (!staff) {
+  if (holidayCalendarError) {
     return (
       <Container maxWidth="xl" sx={{ pt: 2 }}>
         <Typography>データ取得中に何らかの問題が発生しました</Typography>
@@ -51,13 +65,27 @@ export default function AdminStaffAttendanceList() {
     );
   }
 
+  if (staff === null || staffError) {
+    return (
+      <Container maxWidth="xl" sx={{ pt: 2 }}>
+        <Typography>データ取得中に何らかの問題が発生しました</Typography>
+      </Container>
+    );
+  }
+
+  const deleteAttendance = async (attendanceId: number) => {
+    console.log(attendanceId);
+  };
+
   return (
     <Container maxWidth="xl">
       <Stack spacing={1}>
-        <Typography variant="h4">{staff.last_name} さんの勤怠</Typography>
+        <Typography variant="h4">
+          {staff?.familyName || "(不明)"} さんの勤怠
+        </Typography>
         <Box sx={{ px: 3, pb: 5 }}>
           <DataGrid
-            rows={attendances || []}
+            rows={attendances}
             columns={getColumns(
               deleteAttendance,
               rowModelsModel,
@@ -80,7 +108,7 @@ export default function AdminStaffAttendanceList() {
 
               const isHoliday = holidayCalendars?.find(
                 (holidayCalendar) =>
-                  holidayCalendar.holiday_date === params.row.workDate
+                  holidayCalendar.holidayDate === params.row.workDate
               );
 
               if (isHoliday) {

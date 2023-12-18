@@ -1,0 +1,36 @@
+{
+  "MUI Stack": {
+    "prefix": "MUI Stack",
+    "body": ["<Stack spacing={2}>", "  $0", "</Stack>"],
+    "description": ""
+  },
+  "MUI Box": {
+    "prefix": "MUI Box",
+    "body": ["<Box>", "  $0", "</Box>"],
+    "description": ""
+  },
+  "MUI Typography": {
+    "prefix": "MUI Typography",
+    "body": ["<Typography variant=\"body1\">", "  $0", "</Typography>"],
+    "description": ""
+  },
+  "MUI Card": {
+    "prefix": "MUI Card",
+    "body": ["<Card>", "  $0", "</Card>"],
+    "description": ""
+  },
+  "MUI DataGrid": {
+    "prefix": "MUI DataGrid",
+    "body": ["<DataGrid rows={[]} columns={[]} autoHeight />"],
+    "description": ""
+  },
+  "MUI Button": {
+    "prefix": "MUI Button",
+    "body": [
+      "<Button variant=\"${1|text,outlined,contained|}\" size=\"${2:|small,medium,large|}\">",
+      "  $0",
+      "</Button>"
+    ],
+    "description": ""
+  }
+}

@@ -1,9 +1,7 @@
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
-import { CircularProgress } from "@mui/material";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -13,20 +11,14 @@ import {
 } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { HolidayCalendar } from "../../../client";
-import useHolidayCalendars from "./hooks/useHolidayCalendar";
-import useLoginStaff from "./hooks/useLoginStaff";
+import { HolidayCalendar } from "../../../API";
 
-export default function HolidayCalendarList() {
-  const { user } = useAuthenticator();
-  const { loginStaff } = useLoginStaff(user?.attributes?.sub);
-  const { holidayCalendars, loading: holidayCalendarLoading } =
-    useHolidayCalendars(loginStaff);
+export default function HolidayCalendarList({
+  holidayCalendars,
+}: {
+  holidayCalendars: HolidayCalendar[];
+}) {
   const [rowModelsModel, setRowModelsModel] = useState<GridRowModesModel>({});
-
-  if (holidayCalendarLoading) {
-    return <CircularProgress />;
-  }
 
   return (
     <DataGrid
@@ -35,22 +27,22 @@ export default function HolidayCalendarList() {
       onRowModesModelChange={(model) => setRowModelsModel(model)}
       columns={[
         {
-          field: "holiday_date",
+          field: "holidayDate",
           headerName: "日付",
           width: 200,
           editable: true,
           valueGetter: (params) => {
-            const date = dayjs(params.row.holiday_date);
+            const date = dayjs(params.row.holidayDate);
             return date.format("YYYY/MM/DD");
           },
         },
         { field: "name", headerName: "名前", width: 200, editable: true },
         {
-          field: "created_at",
+          field: "createdAt",
           headerName: "作成日",
           width: 200,
           valueGetter: (params) => {
-            const date = dayjs(params.row.created_at);
+            const date = dayjs(params.row.createdAt);
             return date.format("YYYY/MM/DD");
           },
         },
