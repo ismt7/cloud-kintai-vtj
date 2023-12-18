@@ -10,17 +10,12 @@ import TimeRecorder from "../../../components/time_recorder/TimeRecorder";
 function Resist() {
   const { user, signOut } = useAuthenticator();
   const cognitoUserId = user?.attributes?.sub;
-  const mailAddress = user?.attributes?.email;
 
   return (
     <Provider store={store}>
       <Stack sx={{ height: "100vh" }}>
         <Box>
-          <Header
-            cognitoUserId={cognitoUserId}
-            mailAddress={mailAddress}
-            signOut={signOut}
-          />
+          <Header cognitoUserId={cognitoUserId} signOut={signOut} />
         </Box>
         <Box
           sx={{ height: 1, py: 10, justifyContent: "center", display: "flex" }}

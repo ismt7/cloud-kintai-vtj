@@ -5,8 +5,8 @@ import {
   RestInput,
   UpdateAttendanceInput,
 } from "../../API";
+import fetchAttendance from "../common/fetchAttendance";
 import createAttendanceData from "./createAttendanceData";
-import fetchAttendance from "./fetchAttendance";
 import updateAttendanceData from "./updateAttendanceData";
 
 export enum GoDirectlyFlag {
@@ -20,7 +20,9 @@ export enum ReturnDirectlyFlag {
 }
 
 export default function useAttendance() {
-  const [attendance, setAttendance] = useState<Attendance | null>(null);
+  const [attendance, setAttendance] = useState<Attendance | undefined | null>(
+    undefined
+  );
 
   const getAttendance = async (staffId: string, workDate: string) =>
     fetchAttendance(staffId, workDate)

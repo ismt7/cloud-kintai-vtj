@@ -17,23 +17,16 @@ import Link from "../link/Link";
 
 export default function Header({
   cognitoUserId,
-  mailAddress,
   signOut,
 }: {
   cognitoUserId: string | undefined;
-  mailAddress: string | undefined;
   signOut: () => void;
 }) {
-  // TODO: あとで削除
-  console.log("mailAddress", mailAddress);
-
   const {
     cognitoUser,
     isCognitoUserRole,
     loading: cognitoUserLoading,
   } = useCognitoUser();
-
-  console.log("cognitoUser", cognitoUser);
 
   const navigate = useNavigate();
 

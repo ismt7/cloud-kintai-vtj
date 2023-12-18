@@ -1,28 +1,20 @@
-import { Autocomplete, Box, Button, Stack, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  CircularProgress,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import { Service, Staff } from "../../client";
-import { LoginStaff } from "../staff_list/StaffList";
+import { useState } from "react";
+import useStaffs from "../../hooks/useStaffs/useStaffs";
 
 interface FormState {
   startDate: dayjs.Dayjs | null;
   endDate: dayjs.Dayjs | null;
   aggregateMonth: number;
-}
-
-async function fetchStaffs(
-  loginStaff: LoginStaff,
-  callback: (value: Staff[]) => void
-) {
-  if (!loginStaff) return;
-
-  const staffs = await Service.getStaffs(loginStaff.id).catch((error) => {
-    console.log(error);
-    return [] as Staff[];
-  });
-
-  callback(staffs);
 }
 
 interface AggregateMonth {
@@ -36,9 +28,10 @@ const initialState: FormState = {
   aggregateMonth: dayjs().month(),
 };
 
-const DownloadForm = ({ loginStaff }: { loginStaff: LoginStaff }) => {
+export default function DownloadForm() {
+  const { staffs, loading: staffLoading, error: staffError } = useStaffs();
+
   const [formState, setFormState] = useState<FormState>(initialState);
-  const [staffs, setStaffs] = useState<Staff[]>([]);
 
   const aggregateMonthList = [...Array<number>(12)].map(
     (_, i) =>
@@ -47,12 +40,6 @@ const DownloadForm = ({ loginStaff }: { loginStaff: LoginStaff }) => {
         date: dayjs().month(i),
       } as AggregateMonth)
   );
-
-  useEffect(() => {
-    if (!loginStaff) return;
-
-    void fetchStaffs(loginStaff, (value) => setStaffs(value));
-  }, [loginStaff]);
 
   function changeHandler<T>(key: string, value: T) {
     setFormState((prevState) => ({
@@ -64,6 +51,14 @@ const DownloadForm = ({ loginStaff }: { loginStaff: LoginStaff }) => {
   const handleBulkDownload = () => {
     // 処理なし
   };
+
+  if (staffLoading) {
+    return <CircularProgress />;
+  }
+
+  if (staffError) {
+    return <div>エラーが発生しました</div>;
+  }
 
   return (
     <Stack
@@ -143,7 +138,7 @@ const DownloadForm = ({ loginStaff }: { loginStaff: LoginStaff }) => {
               id="multiple-limit-tags"
               options={staffs}
               getOptionLabel={(option) =>
-                `${option?.last_name || ""} ${option?.first_name || ""}`
+                `${option?.familyName || ""} ${option?.givenName || ""}`
               }
               defaultValue={[]}
               renderInput={(params) => (
@@ -163,5 +158,4 @@ const DownloadForm = ({ loginStaff }: { loginStaff: LoginStaff }) => {
       </Box>
     </Stack>
   );
-};
-export default DownloadForm;
+}

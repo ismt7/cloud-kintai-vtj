@@ -10,17 +10,12 @@ import Menu from "../../../../components/menu/Menu";
 function Dashboard() {
   const { user, signOut } = useAuthenticator();
   const cognitoUserId = user?.attributes?.sub;
-  const mailAddress = user?.attributes?.email;
 
   return (
     <Provider store={store}>
       <Stack sx={{ height: "100vh" }}>
         <Box>
-          <Header
-            cognitoUserId={cognitoUserId}
-            mailAddress={mailAddress}
-            signOut={signOut}
-          />
+          <Header cognitoUserId={cognitoUserId} signOut={signOut} />
         </Box>
         <Box sx={{ height: 1, px: 5 }}>
           <Stack>

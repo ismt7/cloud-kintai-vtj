@@ -2,7 +2,6 @@ import { Meta, StoryObj } from "@storybook/react";
 
 import dayjs from "dayjs";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { LoginStaff } from "../staff_list/StaffList";
 import AttendanceDailyList from "./AttendanceDailyList";
 import {
   getAttendancesHandler200,
@@ -12,19 +11,6 @@ import {
 
 const now = dayjs();
 const targetWorkDate = now.format("YYYYMMDD");
-
-const loginStaff: LoginStaff = {
-  last_name: "ダミー",
-  first_name: "太郎",
-  mail_address: "example@example.com",
-  icon_path: "",
-  id: 1,
-  cognito_user_id: "DUMMY_COGNITO_USER_ID",
-  created_at: "2023-01-01T00:00:00Z",
-  updated_at: null,
-  created_by: 1,
-  updated_by: null,
-};
 
 const meta: Meta<typeof AttendanceDailyList> = {
   component: AttendanceDailyList,
@@ -46,7 +32,7 @@ const meta: Meta<typeof AttendanceDailyList> = {
       <Routes>
         <Route
           path="/admin/attendances/edit/:targetWorkDate/:targetStaffId"
-          element={<AttendanceDailyList loginStaff={loginStaff} />}
+          element={<AttendanceDailyList />}
         />
       </Routes>
     </MemoryRouter>

@@ -9,21 +9,7 @@ import {
 } from "../../lib/reducers/loginStaffReducer";
 import { getStaffList200 } from "../time_recorder/mocks/ApiMocks";
 
-import { LoginStaff } from "../staff_list/StaffList";
 import DownloadForm from "./DownloadForm";
-
-const loginStaff: LoginStaff = {
-  last_name: "ダミー",
-  first_name: "太郎",
-  mail_address: "example@example.com",
-  icon_path: "",
-  id: 1,
-  cognito_user_id: "DUMMY_COGNITO_USER_ID",
-  created_at: "2023-01-01T00:00:00Z",
-  updated_at: null,
-  created_by: 1,
-  updated_by: null,
-};
 
 const mockStore = configureStore({
   reducer: {
@@ -49,7 +35,7 @@ const meta: Meta<typeof DownloadForm> = {
   component: DownloadForm,
   render: () => (
     <Provider store={mockStore}>
-      <DownloadForm loginStaff={loginStaff} />
+      <DownloadForm />
     </Provider>
   ),
   parameters: {

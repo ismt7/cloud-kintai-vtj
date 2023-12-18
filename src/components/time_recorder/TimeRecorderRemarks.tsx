@@ -7,14 +7,14 @@ import { Box, IconButton, Stack, TextField } from "@mui/material";
 import { Attendance } from "../../API";
 
 export interface TimeRecorderRemarksProps {
-  attendance: Attendance | null;
+  attendance: Attendance | undefined | null;
   onSave: (remarks: Attendance["remarks"]) => void;
 }
 
-const TimeRecorderRemarks = ({
+export default function TimeRecorderRemarks({
   attendance,
   onSave,
-}: TimeRecorderRemarksProps) => {
+}: TimeRecorderRemarksProps) {
   const [formState, setFormState] = useState<Attendance["remarks"]>(undefined);
   const [isChanged, setIsChanged] = useState(false);
 
@@ -68,6 +68,4 @@ const TimeRecorderRemarks = ({
       </Box>
     </Stack>
   );
-};
-
-export default TimeRecorderRemarks;
+}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
+import fetchStaffs from "../common/fetchStaffs";
 import { Staff } from "./common";
-import fetchStaffs from "./fetchStaffs";
 
 export default function useStaffs() {
   const [loading, setLoading] = useState(false);

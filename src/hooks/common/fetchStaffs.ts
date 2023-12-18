@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { API, Auth } from "aws-amplify";
-import { Staff } from "./common";
+import { Staff } from "../useStaffs/common";
 
 export default async function fetchStaffs(): Promise<Staff[]> {
   const params = {

@@ -37,7 +37,7 @@ function isLeaveWork(attendance: Attendance) {
   return !(!attendance.startTime || !attendance.endTime);
 }
 
-export function getWorkStatus(attendance: Attendance | null) {
+export function getWorkStatus(attendance: Attendance | undefined | null) {
   if (attendance) {
     // 退勤済み
     if (isLeaveWork(attendance)) {

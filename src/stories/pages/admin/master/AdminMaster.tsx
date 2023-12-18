@@ -9,17 +9,12 @@ import JobTerm from "../../../../pages/admin/JobTerm/JobTerm";
 export default function AdminMasterPage() {
   const { user, signOut } = useAuthenticator();
   const cognitoUserId = user?.attributes?.sub;
-  const mailAddress = user?.attributes?.email;
 
   return (
     <Provider store={store}>
       <Stack sx={{ height: "100vh" }}>
         <Box>
-          <Header
-            cognitoUserId={cognitoUserId}
-            mailAddress={mailAddress}
-            signOut={signOut}
-          />
+          <Header cognitoUserId={cognitoUserId} signOut={signOut} />
         </Box>
         <Box sx={{ flexGrow: 2 }}>
           <JobTerm />
