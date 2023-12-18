@@ -14,7 +14,6 @@ import dayjs from "dayjs";
 import { NavigateFunction } from "react-router-dom";
 import { Attendance, HolidayCalendar } from "../../../API";
 import getDayOfWeek from "../../../components/attendance_list/getDayOfWeek";
-import { AttendanceOrigin } from "../../../hooks/useAttendance/fetchAttendanceList";
 
 export default function getColumns(
   deleteAttendance: (attendanceId: number) => Promise<void>,
@@ -168,7 +167,7 @@ export default function getColumns(
     {
       field: "actions",
       type: "actions",
-      getActions: (params: GridRowParams<AttendanceOrigin>) => {
+      getActions: (params: GridRowParams<Attendance>) => {
         const isEditMode =
           rowModelsModel[params.id]?.mode === GridRowModes.Edit;
         if (isEditMode) {
@@ -205,7 +204,9 @@ export default function getColumns(
               const confirm = window.confirm("本当に削除しますか？");
               if (!confirm) return;
 
-              void deleteAttendance(params.row.id);
+              console.log(params.row.id);
+              // TODO 後で修正
+              // void deleteAttendance("");
             }}
             label="削除"
           />,

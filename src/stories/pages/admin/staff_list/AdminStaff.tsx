@@ -6,7 +6,7 @@ import { store } from "../../../../app/store";
 import Footer from "../../../../components/footer/Footer";
 import Header from "../../../../components/header/Header";
 
-const AdminStaff = () => {
+export default function AdminStaff() {
   const { user, signOut } = useAuthenticator();
 
   const cognitoUserId = user?.attributes?.sub;
@@ -33,5 +33,4 @@ const AdminStaff = () => {
       </Stack>
     </Provider>
   );
-};
-export default AdminStaff;
+}
