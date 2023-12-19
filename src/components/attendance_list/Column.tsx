@@ -6,16 +6,19 @@ import {
 
 import EditIcon from "@mui/icons-material/Edit";
 import dayjs from "dayjs";
-import { HolidayCalendar } from "../../API";
-import { Attendance, Rest } from "../../client";
+import { Attendance, HolidayCalendar } from "../../API";
+import { Rest } from "../../client";
 import getDayOfWeek from "./getDayOfWeek";
 
 export function statusValueGetter(
-  workDate: Attendance["work_date"],
-  startTime: Attendance["start_time"],
-  endTime: Attendance["end_time"],
-  holidayCalendars: HolidayCalendar[]
+  workDate: Attendance["workDate"],
+  startTime: Attendance["startTime"],
+  endTime: Attendance["endTime"],
+  holidayCalendars: HolidayCalendar[],
+  paidHolidayFlag: Attendance["paidHolidayFlag"]
 ) {
+  if (paidHolidayFlag) return "OK";
+
   const today = dayjs().format("YYYY-MM-DD");
   const dayOfWeek = getDayOfWeek(workDate);
   const isHoliday = holidayCalendars?.find(
@@ -48,10 +51,11 @@ export function statusValueGetter(
 
 export interface DataGridProps {
   id: Attendance["id"];
-  workDate: Attendance["work_date"];
-  startTime: Attendance["start_time"];
-  endTime: Attendance["end_time"];
+  workDate: Attendance["workDate"];
+  startTime: Attendance["startTime"];
+  endTime: Attendance["endTime"];
   remarks: Attendance["remarks"];
+  paidHolidayFlag: Attendance["paidHolidayFlag"];
   rests: Rest[];
 }
 
@@ -64,12 +68,13 @@ export default function GetColumns(
       headerName: "ステータス",
       align: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
-        const { workDate, startTime, endTime } = params.row;
+        const { workDate, startTime, endTime, paidHolidayFlag } = params.row;
         return statusValueGetter(
           workDate,
           startTime,
           endTime,
-          holidayCalendars
+          holidayCalendars,
+          paidHolidayFlag
         );
       },
     },
