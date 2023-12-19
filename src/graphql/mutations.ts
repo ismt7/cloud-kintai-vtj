@@ -159,6 +159,7 @@ export const createAttendance = /* GraphQL */ `
         __typename
       }
       remarks
+      paidHolidayFlag
       createdAt
       updatedAt
       __typename
@@ -184,6 +185,7 @@ export const updateAttendance = /* GraphQL */ `
         __typename
       }
       remarks
+      paidHolidayFlag
       createdAt
       updatedAt
       __typename
@@ -209,6 +211,7 @@ export const deleteAttendance = /* GraphQL */ `
         __typename
       }
       remarks
+      paidHolidayFlag
       createdAt
       updatedAt
       __typename

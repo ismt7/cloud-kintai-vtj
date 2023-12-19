@@ -148,19 +148,17 @@ export default function getColumns(
       width: 300,
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<Attendance>) => {
-        const { workDate } = params.row;
+        const { workDate, paidHolidayFlag } = params.row;
         const isHoliday = holidayCalendars?.find(
           ({ holidayDate }) => holidayDate === workDate
         );
 
         const summaryMessage = [];
-        if (isHoliday) {
-          summaryMessage.push(isHoliday.name);
-        }
+        console.log(paidHolidayFlag);
+        if (paidHolidayFlag) summaryMessage.push("有給休暇");
+        if (isHoliday) summaryMessage.push(isHoliday.name);
+        if (params.row.remarks) summaryMessage.push(params.row.remarks);
 
-        if (params.row.remarks) {
-          summaryMessage.push(params.row.remarks);
-        }
         return summaryMessage.join(" ");
       },
     },

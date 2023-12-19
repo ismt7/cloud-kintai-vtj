@@ -32,6 +32,7 @@ type Attendance @model @auth(rules: [{ allow: private }]) {
   returnDirectlyFlag: Boolean
   rests: [Rest]
   remarks: String
+  paidHolidayFlag: Boolean
 }
 
 type Rest {
