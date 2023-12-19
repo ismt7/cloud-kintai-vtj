@@ -49,6 +49,7 @@ export default async function fetchAttendances(staffId: string) {
       returnDirectlyFlag: matchAttendance?.returnDirectlyFlag ?? false,
       rests: matchAttendance?.rests ?? [],
       remarks: matchAttendance?.remarks ?? "",
+      paidHolidayFlag: matchAttendance?.paidHolidayFlag ?? false,
       createdAt: matchAttendance?.createdAt ?? "",
       updatedAt: matchAttendance?.updatedAt ?? "",
     };

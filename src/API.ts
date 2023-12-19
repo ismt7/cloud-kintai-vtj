@@ -155,6 +155,7 @@ export type CreateAttendanceInput = {
   returnDirectlyFlag?: boolean | null,
   rests?: Array< RestInput | null > | null,
   remarks?: string | null,
+  paidHolidayFlag?: boolean | null,
 };
 
 export type RestInput = {
@@ -170,6 +171,7 @@ export type ModelAttendanceConditionInput = {
   goDirectlyFlag?: ModelBooleanInput | null,
   returnDirectlyFlag?: ModelBooleanInput | null,
   remarks?: ModelStringInput | null,
+  paidHolidayFlag?: ModelBooleanInput | null,
   and?: Array< ModelAttendanceConditionInput | null > | null,
   or?: Array< ModelAttendanceConditionInput | null > | null,
   not?: ModelAttendanceConditionInput | null,
@@ -193,6 +195,7 @@ export type Attendance = {
   returnDirectlyFlag?: boolean | null,
   rests?:  Array<Rest | null > | null,
   remarks?: string | null,
+  paidHolidayFlag?: boolean | null,
   createdAt: string,
   updatedAt: string,
 };
@@ -213,6 +216,7 @@ export type UpdateAttendanceInput = {
   returnDirectlyFlag?: boolean | null,
   rests?: Array< RestInput | null > | null,
   remarks?: string | null,
+  paidHolidayFlag?: boolean | null,
 };
 
 export type DeleteAttendanceInput = {
@@ -290,6 +294,7 @@ export type ModelAttendanceFilterInput = {
   goDirectlyFlag?: ModelBooleanInput | null,
   returnDirectlyFlag?: ModelBooleanInput | null,
   remarks?: ModelStringInput | null,
+  paidHolidayFlag?: ModelBooleanInput | null,
   and?: Array< ModelAttendanceFilterInput | null > | null,
   or?: Array< ModelAttendanceFilterInput | null > | null,
   not?: ModelAttendanceFilterInput | null,
@@ -365,6 +370,7 @@ export type ModelSubscriptionAttendanceFilterInput = {
   goDirectlyFlag?: ModelSubscriptionBooleanInput | null,
   returnDirectlyFlag?: ModelSubscriptionBooleanInput | null,
   remarks?: ModelSubscriptionStringInput | null,
+  paidHolidayFlag?: ModelSubscriptionBooleanInput | null,
   and?: Array< ModelSubscriptionAttendanceFilterInput | null > | null,
   or?: Array< ModelSubscriptionAttendanceFilterInput | null > | null,
 };
@@ -542,6 +548,7 @@ export type CreateAttendanceMutation = {
       endTime?: string | null,
     } | null > | null,
     remarks?: string | null,
+    paidHolidayFlag?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -568,6 +575,7 @@ export type UpdateAttendanceMutation = {
       endTime?: string | null,
     } | null > | null,
     remarks?: string | null,
+    paidHolidayFlag?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -594,6 +602,7 @@ export type DeleteAttendanceMutation = {
       endTime?: string | null,
     } | null > | null,
     remarks?: string | null,
+    paidHolidayFlag?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -729,6 +738,7 @@ export type GetAttendanceQuery = {
       endTime?: string | null,
     } | null > | null,
     remarks?: string | null,
+    paidHolidayFlag?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -758,6 +768,7 @@ export type ListAttendancesQuery = {
         endTime?: string | null,
       } | null > | null,
       remarks?: string | null,
+      paidHolidayFlag?: boolean | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -923,6 +934,7 @@ export type OnCreateAttendanceSubscription = {
       endTime?: string | null,
     } | null > | null,
     remarks?: string | null,
+    paidHolidayFlag?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -948,6 +960,7 @@ export type OnUpdateAttendanceSubscription = {
       endTime?: string | null,
     } | null > | null,
     remarks?: string | null,
+    paidHolidayFlag?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -973,6 +986,7 @@ export type OnDeleteAttendanceSubscription = {
       endTime?: string | null,
     } | null > | null,
     remarks?: string | null,
+    paidHolidayFlag?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,

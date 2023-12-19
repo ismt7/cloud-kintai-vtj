@@ -10,7 +10,6 @@ import { updateAttendance } from "../../graphql/mutations";
 export default async function updateAttendanceData(
   input: UpdateAttendanceInput
 ) {
-  console.log("updateAttendanceData", input);
   const response = (await API.graphql({
     query: updateAttendance,
     variables: { input },

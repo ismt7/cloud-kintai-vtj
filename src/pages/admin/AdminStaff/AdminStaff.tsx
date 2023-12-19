@@ -119,6 +119,12 @@ export default function AdminStaff() {
                 valueGetter(params: GridValueGetterParams<Staff>) {
                   const { givenName, familyName } = params.row;
 
+                  if (!givenName && !familyName) return "(未設定)";
+
+                  if (!givenName || !familyName) {
+                    return givenName || familyName;
+                  }
+
                   return `${familyName} ${givenName}`;
                 },
               },

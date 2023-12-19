@@ -14,7 +14,7 @@ import AddAlarmIcon from "@mui/icons-material/AddAlarm";
 import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { Attendance, Rest } from "../../API";
 import { useAppDispatchV2 } from "../../app/hooks";
@@ -49,6 +49,7 @@ export type AttendanceEditorInputs = {
   startTime: Attendance["startTime"];
   endTime: Attendance["endTime"];
   remarks: Attendance["remarks"];
+  paidHolidayFlag: Attendance["paidHolidayFlag"];
   rests: RestInputs[];
 };
 
@@ -59,6 +60,7 @@ const defaultValues: AttendanceEditorInputs = {
   startTime: null,
   endTime: null,
   remarks: "",
+  paidHolidayFlag: false,
   rests: [],
 };
 
@@ -133,7 +135,7 @@ export default function AttendanceEditor() {
 
   const onSubmit = async (data: AttendanceEditorInputs) => {
     if (attendance) {
-      updateAttendance({
+      await updateAttendance({
         id: attendance.id,
         staffId: attendance.staffId,
         workDate: data.workDate,
@@ -143,6 +145,7 @@ export default function AttendanceEditor() {
         returnDirectlyFlag: data.returnDirectlyFlag,
         remarks: data.remarks,
         rests: data.rests,
+        paidHolidayFlag: data.paidHolidayFlag,
       })
         .then(() => {
           dispatch(setSnackbarSuccess(S04001));
@@ -151,6 +154,8 @@ export default function AttendanceEditor() {
           logger.error(e);
           dispatch(setSnackbarError(E04001));
         });
+
+      return;
     }
 
     if (!targetStaffId || !targetWorkDate) return;
@@ -164,6 +169,7 @@ export default function AttendanceEditor() {
       returnDirectlyFlag: data.returnDirectlyFlag,
       remarks: data.remarks,
       rests: data.rests,
+      paidHolidayFlag: data.paidHolidayFlag,
     })
       .then(() => {
         dispatch(setSnackbarSuccess(S04001));
@@ -183,6 +189,7 @@ export default function AttendanceEditor() {
     setValue("remarks", attendance.remarks || "");
     setValue("goDirectlyFlag", attendance.goDirectlyFlag || false);
     setValue("returnDirectlyFlag", attendance.returnDirectlyFlag || false);
+    setValue("paidHolidayFlag", attendance.paidHolidayFlag || false);
 
     if (attendance.rests) {
       const rests = attendance.rests
@@ -195,7 +202,7 @@ export default function AttendanceEditor() {
     }
   }, [attendance]);
 
-  if (staffsLoading) {
+  if (staffsLoading || attendance === undefined) {
     return <LinearProgress />;
   }
 
@@ -236,16 +243,42 @@ export default function AttendanceEditor() {
           }
         />
       </Box>
+      <Box>
+        <Stack direction="row" alignItems={"center"}>
+          <Box sx={{ fontWeight: "bold", width: "150px" }}>有給休暇</Box>
+          <Box>
+            <Controller
+              name="paidHolidayFlag"
+              control={control}
+              render={({ field }) => (
+                <Checkbox checked={field.value || false} {...field} />
+              )}
+            />
+          </Box>
+        </Stack>
+      </Box>
       <Stack direction="row" alignItems={"center"}>
         <Box sx={{ fontWeight: "bold", width: "150px" }}>直行</Box>
         <Box>
-          <Checkbox {...register("goDirectlyFlag")} />
+          <Controller
+            name="goDirectlyFlag"
+            control={control}
+            render={({ field }) => (
+              <Checkbox checked={field.value || false} {...field} />
+            )}
+          />
         </Box>
       </Stack>
       <Stack direction="row" alignItems={"center"}>
         <Box sx={{ fontWeight: "bold", width: "150px" }}>直帰</Box>
         <Box>
-          <Checkbox {...register("returnDirectlyFlag")} />
+          <Controller
+            name="returnDirectlyFlag"
+            control={control}
+            render={({ field }) => (
+              <Checkbox checked={field.value || false} {...field} />
+            )}
+          />
         </Box>
       </Stack>
       <WorkTimeItem

@@ -36,6 +36,7 @@ export default function AttendanceCreateForm(props) {
     goDirectlyFlag: false,
     returnDirectlyFlag: false,
     remarks: "",
+    paidHolidayFlag: false,
   };
   const [staffId, setStaffId] = React.useState(initialValues.staffId);
   const [workDate, setWorkDate] = React.useState(initialValues.workDate);
@@ -48,6 +49,9 @@ export default function AttendanceCreateForm(props) {
     initialValues.returnDirectlyFlag
   );
   const [remarks, setRemarks] = React.useState(initialValues.remarks);
+  const [paidHolidayFlag, setPaidHolidayFlag] = React.useState(
+    initialValues.paidHolidayFlag
+  );
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setStaffId(initialValues.staffId);
@@ -57,6 +61,7 @@ export default function AttendanceCreateForm(props) {
     setGoDirectlyFlag(initialValues.goDirectlyFlag);
     setReturnDirectlyFlag(initialValues.returnDirectlyFlag);
     setRemarks(initialValues.remarks);
+    setPaidHolidayFlag(initialValues.paidHolidayFlag);
     setErrors({});
   };
   const validations = {
@@ -67,6 +72,7 @@ export default function AttendanceCreateForm(props) {
     goDirectlyFlag: [],
     returnDirectlyFlag: [],
     remarks: [],
+    paidHolidayFlag: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -101,6 +107,7 @@ export default function AttendanceCreateForm(props) {
           goDirectlyFlag,
           returnDirectlyFlag,
           remarks,
+          paidHolidayFlag,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -170,6 +177,7 @@ export default function AttendanceCreateForm(props) {
               goDirectlyFlag,
               returnDirectlyFlag,
               remarks,
+              paidHolidayFlag,
             };
             const result = onChange(modelFields);
             value = result?.staffId ?? value;
@@ -200,6 +208,7 @@ export default function AttendanceCreateForm(props) {
               goDirectlyFlag,
               returnDirectlyFlag,
               remarks,
+              paidHolidayFlag,
             };
             const result = onChange(modelFields);
             value = result?.workDate ?? value;
@@ -230,6 +239,7 @@ export default function AttendanceCreateForm(props) {
               goDirectlyFlag,
               returnDirectlyFlag,
               remarks,
+              paidHolidayFlag,
             };
             const result = onChange(modelFields);
             value = result?.startTime ?? value;
@@ -260,6 +270,7 @@ export default function AttendanceCreateForm(props) {
               goDirectlyFlag,
               returnDirectlyFlag,
               remarks,
+              paidHolidayFlag,
             };
             const result = onChange(modelFields);
             value = result?.endTime ?? value;
@@ -290,6 +301,7 @@ export default function AttendanceCreateForm(props) {
               goDirectlyFlag: value,
               returnDirectlyFlag,
               remarks,
+              paidHolidayFlag,
             };
             const result = onChange(modelFields);
             value = result?.goDirectlyFlag ?? value;
@@ -320,6 +332,7 @@ export default function AttendanceCreateForm(props) {
               goDirectlyFlag,
               returnDirectlyFlag: value,
               remarks,
+              paidHolidayFlag,
             };
             const result = onChange(modelFields);
             value = result?.returnDirectlyFlag ?? value;
@@ -352,6 +365,7 @@ export default function AttendanceCreateForm(props) {
               goDirectlyFlag,
               returnDirectlyFlag,
               remarks: value,
+              paidHolidayFlag,
             };
             const result = onChange(modelFields);
             value = result?.remarks ?? value;
@@ -366,6 +380,37 @@ export default function AttendanceCreateForm(props) {
         hasError={errors.remarks?.hasError}
         {...getOverrideProps(overrides, "remarks")}
       ></TextField>
+      <SwitchField
+        label="Paid holiday flag"
+        defaultChecked={false}
+        isDisabled={false}
+        isChecked={paidHolidayFlag}
+        onChange={(e) => {
+          let value = e.target.checked;
+          if (onChange) {
+            const modelFields = {
+              staffId,
+              workDate,
+              startTime,
+              endTime,
+              goDirectlyFlag,
+              returnDirectlyFlag,
+              remarks,
+              paidHolidayFlag: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.paidHolidayFlag ?? value;
+          }
+          if (errors.paidHolidayFlag?.hasError) {
+            runValidationTasks("paidHolidayFlag", value);
+          }
+          setPaidHolidayFlag(value);
+        }}
+        onBlur={() => runValidationTasks("paidHolidayFlag", paidHolidayFlag)}
+        errorMessage={errors.paidHolidayFlag?.errorMessage}
+        hasError={errors.paidHolidayFlag?.hasError}
+        {...getOverrideProps(overrides, "paidHolidayFlag")}
+      ></SwitchField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}

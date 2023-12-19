@@ -124,6 +124,7 @@ export const getAttendance = /* GraphQL */ `
         __typename
       }
       remarks
+      paidHolidayFlag
       createdAt
       updatedAt
       __typename
@@ -151,6 +152,7 @@ export const listAttendances = /* GraphQL */ `
           __typename
         }
         remarks
+        paidHolidayFlag
         createdAt
         updatedAt
         __typename

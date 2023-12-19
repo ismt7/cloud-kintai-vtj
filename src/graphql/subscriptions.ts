@@ -149,6 +149,7 @@ export const onCreateAttendance = /* GraphQL */ `
         __typename
       }
       remarks
+      paidHolidayFlag
       createdAt
       updatedAt
       __typename
@@ -173,6 +174,7 @@ export const onUpdateAttendance = /* GraphQL */ `
         __typename
       }
       remarks
+      paidHolidayFlag
       createdAt
       updatedAt
       __typename
@@ -197,6 +199,7 @@ export const onDeleteAttendance = /* GraphQL */ `
         __typename
       }
       remarks
+      paidHolidayFlag
       createdAt
       updatedAt
       __typename
