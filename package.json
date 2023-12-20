@@ -6,7 +6,7 @@
   "dependencies": {
     "@aws-amplify/api": "^6.0.5",
     "@aws-amplify/auth": "^5.6.5",
-    "@aws-amplify/ui-react": "^6.0.7",
+    "@aws-amplify/ui-react": "^5.0.4",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^3.3.2",
@@ -37,7 +37,7 @@
     "@types/react-test-renderer": "^18.0.3",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.60.1",
-    "aws-amplify": "^6.0.8",
+    "aws-amplify": "^5.3.3",
     "dayjs": "^1.11.9",
     "eslint": "^8.44.0",
     "eslint-config-airbnb-base": "^15.0.0",
