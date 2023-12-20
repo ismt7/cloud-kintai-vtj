@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { Box, LinearProgress, Stack, Typography } from "@mui/material";
 
-import { Logger } from "aws-amplify";
+import { Cache, Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useAppDispatchV2 } from "../../app/hooks";
 import {
@@ -60,6 +60,19 @@ export default function TimeRecorder() {
     "TimeRecorder",
     process.env.NODE_ENV === "development" ? "DEBUG" : "ERROR"
   );
+
+  useEffect(() => {
+    if (Cache.getItem("reloadTimer")) {
+      return;
+    }
+
+    Cache.setItem("reloadTimer", true, { expires: 60 * 10 * 1000 });
+
+    window.setTimeout(() => {
+      alert("操作されないまま10分が経過しました。リロードしてください。");
+      Cache.removeItem("reloadTimer");
+    }, 60 * 10 * 1000);
+  }, []);
 
   useEffect(() => {
     if (!cognitoUser) {
