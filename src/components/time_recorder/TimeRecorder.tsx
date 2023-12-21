@@ -39,7 +39,7 @@ import RestEndItem from "./items/RestEndItem";
 import RestStartItem from "./items/RestStartItem";
 import ReturnDirectly from "./items/ReturnDirectlyItem";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
-import { WorkStatus } from "./WorkStatusCodes";
+import { WorkStatus } from "./common";
 
 export default function TimeRecorder() {
   const dispatch = useAppDispatchV2();
@@ -68,10 +68,13 @@ export default function TimeRecorder() {
 
     Cache.setItem("reloadTimer", true, { expires: 60 * 10 * 1000 });
 
-    window.setTimeout(() => {
-      alert("操作されないまま10分が経過しました。リロードしてください。");
-      Cache.removeItem("reloadTimer");
-    }, 60 * 10 * 1000);
+    window.setTimeout(
+      () => {
+        alert("操作されないまま10分が経過しました。リロードしてください。");
+        Cache.removeItem("reloadTimer");
+      },
+      60 * 10 * 1000
+    );
   }, []);
 
   useEffect(() => {

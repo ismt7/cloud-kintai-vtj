@@ -8,19 +8,18 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
-import { Attendance, Staff } from "../../client";
 import { AttendanceDaily } from "../../hooks/useAttendanceDaily/useAttendanceDaily";
 
-export interface SummaryAttendance {
-  id: Staff["id"];
-  lastName: Staff["last_name"];
-  firstName: Staff["first_name"];
-  workStatus: string;
-  startTime: Attendance["start_time"];
-  endTime: Attendance["end_time"];
-  totalWorkHoursPerMonth: number;
-  totalWorkDaysPerMonth: number;
-}
+// export interface SummaryAttendance {
+//   id: Staff["id"];
+//   lastName: Staff["last_name"];
+//   firstName: Staff["first_name"];
+//   workStatus: string;
+//   startTime: Attendance["endTime"];
+//   endTime: Attendance["endTime"];
+//   totalWorkHoursPerMonth: number;
+//   totalWorkDaysPerMonth: number;
+// }
 
 export default function GetColumns(): GridColDef[] {
   const navigate = useNavigate();

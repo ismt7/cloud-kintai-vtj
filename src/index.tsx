@@ -10,7 +10,6 @@ import { Provider } from "react-redux";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { store } from "./app/store";
-import { OpenAPI } from "./client";
 import Layout from "./Layout";
 import { theme } from "./lib/theme";
 import AdminAttendance from "./pages/admin/AdminAttendance";
@@ -35,8 +34,6 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import reportWebVitals from "./reportWebVitals";
 import AdminMasterLayout from "./stories/pages/admin/master/AdminMasterLayout";
-
-OpenAPI.BASE = process.env.REACT_APP_BASE_PATH || "";
 
 const router = createBrowserRouter([
   {

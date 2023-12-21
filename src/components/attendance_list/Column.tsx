@@ -6,8 +6,8 @@ import {
 
 import EditIcon from "@mui/icons-material/Edit";
 import dayjs from "dayjs";
-import { Attendance, HolidayCalendar } from "../../API";
-import { Rest } from "../../client";
+import { Attendance, HolidayCalendar, Rest } from "../../API";
+
 import getDayOfWeek from "./getDayOfWeek";
 
 export function statusValueGetter(
@@ -135,7 +135,7 @@ export default function GetColumns(
         if (rests.length === 0) return "00:00";
 
         const restTimeTotal = rests.reduce((acc, cur) => {
-          const { start_time: restStartTime, end_time: restEndTime } = cur;
+          const { startTime: restStartTime, endTime: restEndTime } = cur;
           if (!restStartTime || !restEndTime) return acc;
 
           const start = dayjs(restStartTime);
@@ -171,7 +171,7 @@ export default function GetColumns(
         const end = dayjs(endTime);
         const workTime = end.diff(start, "minute");
         const restTimeTotal = rests.reduce((acc, cur) => {
-          const { start_time: restStartTime, end_time: restEndTime } = cur;
+          const { startTime: restStartTime, endTime: restEndTime } = cur;
           if (!restStartTime || !restEndTime) return acc;
 
           const restStart = dayjs(restStartTime);

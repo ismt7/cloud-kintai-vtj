@@ -9,7 +9,6 @@ import { DataGrid, GridRowModesModel } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Attendance } from "../../../client";
 import getDayOfWeek, {
   DayOfWeek,
 } from "../../../components/attendance_list/getDayOfWeek";
@@ -18,6 +17,7 @@ import useHolidayCalendars from "../../../hooks/useHolidayCalendars/useHolidayCa
 import { Staff } from "../../../hooks/useStaffs/common";
 import useStaffs from "../../../hooks/useStaffs/useStaffs";
 import getColumns from "./getColumns";
+import { Attendance } from "../../../API";
 
 export default function AdminStaffAttendanceList() {
   const { staffId } = useParams();
@@ -99,7 +99,7 @@ export default function AdminStaffAttendanceList() {
             autoHeight
             hideFooter={true}
             getRowClassName={(params: {
-              row: { workDate: Attendance["work_date"] };
+              row: { workDate: Attendance["workDate"] };
             }) => {
               const today = dayjs().format("YYYY-MM-DD");
               if (params.row.workDate === today) {
