@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "http://localhost:8000",
   "dependencies": {
+    "@aws-amplify/api": "^5.4.7",
     "@aws-amplify/ui-react": "^5.3.3",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
