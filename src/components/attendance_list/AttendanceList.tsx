@@ -4,7 +4,6 @@ import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useEffect } from "react";
 import { useAppDispatchV2 } from "../../app/hooks";
-import { Attendance } from "../../client";
 import { E02001 } from "../../errors";
 import useAttendances from "../../hooks/useAttendances/useAttendances";
 import useCognitoUser from "../../hooks/useCognitoUser";
@@ -13,6 +12,7 @@ import { setSnackbarError } from "../../lib/reducers/snackbarReducer";
 import Title from "../Title/Title";
 import GetColumns from "./Column";
 import getDayOfWeek, { DayOfWeek } from "./getDayOfWeek";
+import { Attendance } from "../../API";
 
 export default function AttendanceTable() {
   const dispatch = useAppDispatchV2();
@@ -64,7 +64,7 @@ export default function AttendanceTable() {
           hideFooter={true}
           getRowId={(row) => row.workDate}
           getRowClassName={(params: {
-            row: { workDate: Attendance["work_date"] };
+            row: { workDate: Attendance["workDate"] };
           }) => {
             const today = dayjs().format("YYYY-MM-DD");
             if (params.row.workDate === today) {

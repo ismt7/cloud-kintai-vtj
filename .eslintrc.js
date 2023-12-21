@@ -11,7 +11,6 @@ module.exports = {
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "airbnb-base",
     "airbnb-typescript",
-    "plugin:storybook/recommended",
   ],
   overrides: [],
   parser: "@typescript-eslint/parser",

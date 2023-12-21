@@ -18,7 +18,7 @@ export default async function createCloseDateData(input: CreateCloseDateInput) {
     throw new Error(response.errors[0].message);
   }
 
-  if (!response.data.createCloseDate) {
+  if (!response.data?.createCloseDate) {
     throw new Error("No data returned");
   }
 

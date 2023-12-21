@@ -20,7 +20,7 @@ export default async function createHolidayCalendarData(
     throw new Error(response.errors[0].message);
   }
 
-  if (!response.data.createHolidayCalendar) {
+  if (!response.data?.createHolidayCalendar) {
     throw new Error("Failed to create holiday calendar");
   }
 

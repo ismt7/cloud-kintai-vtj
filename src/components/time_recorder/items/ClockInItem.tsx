@@ -1,5 +1,5 @@
 import Button from "../../button/Button";
-import { WorkStatus, WorkStatusCodes } from "../WorkStatusCodes";
+import { WorkStatus, WorkStatusCodes } from "../common";
 
 export default function ClockInItem({
   workStatus,

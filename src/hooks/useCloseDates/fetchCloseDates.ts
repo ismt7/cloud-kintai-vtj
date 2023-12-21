@@ -13,7 +13,7 @@ export default async function fetchCloseDates() {
     throw new Error(response.errors[0].message);
   }
 
-  if (!response.data.listCloseDates) {
+  if (!response.data?.listCloseDates) {
     throw new Error("No data returned");
   }
 

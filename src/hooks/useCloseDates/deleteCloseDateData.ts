@@ -18,7 +18,7 @@ export default async function deleteCloseDateData(input: DeleteCloseDateInput) {
     throw new Error(response.errors[0].message);
   }
 
-  if (!response.data.deleteCloseDate) {
+  if (!response.data?.deleteCloseDate) {
     throw new Error("No data returned");
   }
 

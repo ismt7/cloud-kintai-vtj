@@ -20,7 +20,7 @@ export default async function deleteCompanyHolidayCalendarData(
     throw new Error(response.errors[0].message);
   }
 
-  if (!response.data.deleteCompanyHolidayCalendar) {
+  if (!response.data?.deleteCompanyHolidayCalendar) {
     throw new Error("Failed to delete company holiday calendar");
   }
 
