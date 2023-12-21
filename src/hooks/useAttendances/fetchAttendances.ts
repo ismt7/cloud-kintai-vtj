@@ -26,7 +26,7 @@ export default async function fetchAttendances(staffId: string) {
     throw new Error(response.errors[0].message);
   }
 
-  if (!response.data.listAttendances) {
+  if (!response.data?.listAttendances) {
     throw new Error("Failed to fetch attendance");
   }
 

@@ -18,7 +18,7 @@ export default async function updateCloseDateData(input: UpdateCloseDateInput) {
     throw new Error(response.errors[0].message);
   }
 
-  if (!response.data.updateCloseDate) {
+  if (!response.data?.updateCloseDate) {
     throw new Error("No data returned");
   }
 

@@ -20,7 +20,7 @@ export default async function createAttendanceData(
     throw new Error(response.errors[0].message);
   }
 
-  if (!response.data.createAttendance) {
+  if (!response.data?.createAttendance) {
     throw new Error("Failed to create attendance");
   }
 

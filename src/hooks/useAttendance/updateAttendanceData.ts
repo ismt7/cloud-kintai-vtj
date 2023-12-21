@@ -20,7 +20,7 @@ export default async function updateAttendanceData(
     throw new Error(response.errors[0].message);
   }
 
-  if (!response.data.updateAttendance) {
+  if (!response.data?.updateAttendance) {
     throw new Error("Failed to update attendance");
   }
 

@@ -28,7 +28,6 @@ import RestStartDocument from "./pages/Document/RestStartDocument";
 import StartDocument from "./pages/Document/StartDocument";
 import WorkEndDocument from "./pages/Document/WorkEndDocument";
 import WorkStartDocument from "./pages/Document/WorkStartDocument";
-import Hoge from "./pages/Hoge";
 import List from "./pages/List";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -93,10 +92,6 @@ const router = createBrowserRouter([
             element: <GoDirectDocument />,
           },
         ],
-      },
-      {
-        path: "hoge",
-        element: <Hoge />,
       },
       {
         path: "*",

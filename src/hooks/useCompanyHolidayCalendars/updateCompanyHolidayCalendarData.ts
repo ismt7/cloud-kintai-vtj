@@ -20,7 +20,7 @@ export default async function updateCompanyHolidayCalendarData(
     throw new Error(response.errors[0].message);
   }
 
-  if (!response.data.updateCompanyHolidayCalendar) {
+  if (!response.data?.updateCompanyHolidayCalendar) {
     throw new Error("Company holiday calendar not updated");
   }
 
