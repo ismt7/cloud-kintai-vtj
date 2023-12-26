@@ -2,6 +2,7 @@ import {
   Alert,
   AlertTitle,
   Box,
+  Breadcrumbs,
   Button,
   Checkbox,
   IconButton,
@@ -15,7 +16,7 @@ import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Attendance, Rest } from "../../API";
 import { useAppDispatchV2 } from "../../app/hooks";
 import { E04001, S04001 } from "../../errors";
@@ -36,6 +37,7 @@ import RemarksItem from "./items/RemarksItem";
 import { calcTotalRestTime, RestTimeItem } from "./items/RestTimeItem";
 // eslint-disable-next-line import/no-cycle
 import { calcTotalWorkTime, WorkTimeItem } from "./items/WorkTimeItem";
+import Title from "../Title/Title";
 
 export type RestInputs = {
   startTime: Rest["startTime"] | null;
@@ -66,7 +68,6 @@ const defaultValues: AttendanceEditorInputs = {
 
 export default function AttendanceEditor() {
   const dispatch = useAppDispatchV2();
-  const navigate = useNavigate();
 
   const { targetWorkDate, staffId: targetStaffId } = useParams();
   const { staffs, loading: staffsLoading, error: staffSError } = useStaffs();
@@ -215,40 +216,88 @@ export default function AttendanceEditor() {
     );
   }
 
+  if (!targetStaffId) {
+    return (
+      <Alert severity="error">
+        <AlertTitle>エラー</AlertTitle>
+        <Typography variant="body2">スタッフが指定されていません。</Typography>
+      </Alert>
+    );
+  }
+
   return (
     <Stack spacing={2}>
-      {errors.startTime && (
-        <Box>
-          <Alert severity="error">
-            <AlertTitle>入力内容に誤りがあります。</AlertTitle>
-            <Typography variant="body2">{errors.startTime.message}</Typography>
-          </Alert>
-        </Box>
-      )}
-      {!attendance && (
-        <Box>
-          <Alert severity="info">
-            <AlertTitle>お知らせ</AlertTitle>
-            指定された日付に勤怠情報の登録がありませんでした。保存時に新規作成されます。
-          </Alert>
-        </Box>
-      )}
       <Box>
-        <StaffNameItem staff={staff} />
+        <Breadcrumbs>
+          <Link to="/" color="inherit">
+            TOP
+          </Link>
+          <Link to="/admin/attendances" color="inherit">
+            勤怠管理
+          </Link>
+          <Link to={`/admin/staff/${targetStaffId}/attendance`} color="inherit">
+            勤怠一覧
+          </Link>
+          <Typography color="text.primary">
+            {dayjs(targetWorkDate).format("YYYY-MM-DD")}
+          </Typography>
+        </Breadcrumbs>
       </Box>
       <Box>
-        <WorkDateItem
-          workDate={
-            getValues().workDate || dayjs(targetWorkDate).format("YYYY/MM/DD")
-          }
-        />
+        <Title text="勤怠編集" />
       </Box>
-      <Box>
+      <Stack spacing={2} sx={{ px: 30 }}>
+        {/* TODO: #182 勤怠編集画面で前後の日付に移動できるようにする */}
+        {/* TODO: #183 勤怠編集画面で指定日付に移動できるようにする */}
+        <Box>
+          {errors.startTime && (
+            <Box>
+              <Alert severity="error">
+                <AlertTitle>入力内容に誤りがあります。</AlertTitle>
+                <Typography variant="body2">
+                  {errors.startTime.message}
+                </Typography>
+              </Alert>
+            </Box>
+          )}
+          {!attendance && (
+            <Box>
+              <Alert severity="info">
+                <AlertTitle>お知らせ</AlertTitle>
+                指定された日付に勤怠情報の登録がありませんでした。保存時に新規作成されます。
+              </Alert>
+            </Box>
+          )}
+        </Box>
+        <Box>
+          <StaffNameItem staff={staff} />
+        </Box>
+        <Box>
+          <WorkDateItem
+            workDate={
+              getValues().workDate || dayjs(targetWorkDate).format("YYYY/MM/DD")
+            }
+          />
+        </Box>
+        <Box>
+          <Stack direction="row" alignItems={"center"}>
+            <Box sx={{ fontWeight: "bold", width: "150px" }}>有給休暇</Box>
+            <Box>
+              <Controller
+                name="paidHolidayFlag"
+                control={control}
+                render={({ field }) => (
+                  <Checkbox checked={field.value || false} {...field} />
+                )}
+              />
+            </Box>
+          </Stack>
+        </Box>
         <Stack direction="row" alignItems={"center"}>
-          <Box sx={{ fontWeight: "bold", width: "150px" }}>有給休暇</Box>
+          <Box sx={{ fontWeight: "bold", width: "150px" }}>直行</Box>
           <Box>
             <Controller
-              name="paidHolidayFlag"
+              name="goDirectlyFlag"
               control={control}
               render={({ field }) => (
                 <Checkbox checked={field.value || false} {...field} />
@@ -256,117 +305,93 @@ export default function AttendanceEditor() {
             />
           </Box>
         </Stack>
-      </Box>
-      <Stack direction="row" alignItems={"center"}>
-        <Box sx={{ fontWeight: "bold", width: "150px" }}>直行</Box>
-        <Box>
-          <Controller
-            name="goDirectlyFlag"
-            control={control}
-            render={({ field }) => (
-              <Checkbox checked={field.value || false} {...field} />
-            )}
-          />
-        </Box>
-      </Stack>
-      <Stack direction="row" alignItems={"center"}>
-        <Box sx={{ fontWeight: "bold", width: "150px" }}>直帰</Box>
-        <Box>
-          <Controller
-            name="returnDirectlyFlag"
-            control={control}
-            render={({ field }) => (
-              <Checkbox checked={field.value || false} {...field} />
-            )}
-          />
-        </Box>
-      </Stack>
-      <WorkTimeItem
-        targetWorkDate={dayjs(targetWorkDate)}
-        control={control}
-        watch={watch}
-      />
-      <Stack direction="row">
-        <Box sx={{ fontWeight: "bold", width: "150px" }}>休憩時間</Box>
-        <Stack spacing={1} sx={{ flexGrow: 2 }}>
-          {fields.length === 0 && (
-            <Box>
-              <Typography variant="body1">休憩時間はありません。</Typography>
-            </Box>
-          )}
-          {fields.map((field, index) => (
-            <RestTimeItem
-              key={index}
-              targetWorkDate={dayjs(targetWorkDate)}
-              index={index}
-              watch={watch}
-              remove={remove}
-              control={control}
-            />
-          ))}
+        <Stack direction="row" alignItems={"center"}>
+          <Box sx={{ fontWeight: "bold", width: "150px" }}>直帰</Box>
           <Box>
-            <IconButton
-              aria-label="staff-search"
-              onClick={() =>
-                append({
-                  startTime: null,
-                  endTime: null,
-                })
-              }
-            >
-              <AddAlarmIcon />
-            </IconButton>
+            <Controller
+              name="returnDirectlyFlag"
+              control={control}
+              render={({ field }) => (
+                <Checkbox checked={field.value || false} {...field} />
+              )}
+            />
           </Box>
         </Stack>
-      </Stack>
-      <Box>
-        <SeparatorItem />
-      </Box>
-      <Box>
-        <ProductionTimeItem time={totalProductionTime} />
-      </Box>
-      <Box>
-        <RemarksItem register={register} />
-      </Box>
-      {/* <Box>
+        <WorkTimeItem
+          targetWorkDate={dayjs(targetWorkDate)}
+          control={control}
+          watch={watch}
+        />
+        <Stack direction="row">
+          <Box sx={{ fontWeight: "bold", width: "150px" }}>休憩時間</Box>
+          <Stack spacing={1} sx={{ flexGrow: 2 }}>
+            {fields.length === 0 && (
+              <Box>
+                <Typography variant="body1">休憩時間はありません。</Typography>
+              </Box>
+            )}
+            {fields.map((field, index) => (
+              <RestTimeItem
+                key={index}
+                targetWorkDate={dayjs(targetWorkDate)}
+                index={index}
+                watch={watch}
+                remove={remove}
+                control={control}
+              />
+            ))}
+            <Box>
+              <IconButton
+                aria-label="staff-search"
+                onClick={() =>
+                  append({
+                    startTime: null,
+                    endTime: null,
+                  })
+                }
+              >
+                <AddAlarmIcon />
+              </IconButton>
+            </Box>
+          </Stack>
+        </Stack>
+        <Box>
+          <SeparatorItem />
+        </Box>
+        <Box>
+          <ProductionTimeItem time={totalProductionTime} />
+        </Box>
+        <Box>
+          <RemarksItem register={register} />
+        </Box>
+        {/* <Box>
           <hr />
         </Box> */}
-      {/* <Box>
+        {/* <Box>
           <ReasonRevisionItem />
         </Box> */}
-      {/* <Box>
+        {/* <Box>
           <ReasonRemarksItem />
         </Box> */}
-      <Box>
-        <Stack
-          direction="row"
-          alignItems={"center"}
-          justifyContent={"center"}
-          spacing={3}
-        >
-          <Box>
-            <Button
-              color="cancel"
-              variant="text"
-              sx={{ width: "150px" }}
-              onClick={() => {
-                navigate("/admin/attendances");
-              }}
-            >
-              キャンセル
-            </Button>
-          </Box>
-          <Box>
-            <Button
-              variant="contained"
-              sx={{ width: "150px" }}
-              onClick={handleSubmit(onSubmit)}
-            >
-              保存
-            </Button>
-          </Box>
-        </Stack>
-      </Box>
+        <Box>
+          <Stack
+            direction="row"
+            alignItems={"center"}
+            justifyContent={"center"}
+            spacing={3}
+          >
+            <Box>
+              <Button
+                variant="contained"
+                sx={{ width: "150px" }}
+                onClick={handleSubmit(onSubmit)}
+              >
+                保存
+              </Button>
+            </Box>
+          </Stack>
+        </Box>
+      </Stack>
     </Stack>
   );
 }

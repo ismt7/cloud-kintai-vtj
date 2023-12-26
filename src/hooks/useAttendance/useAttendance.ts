@@ -1,4 +1,5 @@
 import { useState } from "react";
+import dayjs from "dayjs";
 import {
   Attendance,
   CreateAttendanceInput,
@@ -99,10 +100,70 @@ export default function useAttendance() {
     returnDirectlyFlag = ReturnDirectlyFlag.NO
   ) => {
     if (attendance) {
+      const startTime = dayjs(attendance.startTime);
+      // eslint-disable-next-line newline-per-chained-call
+      const noon = dayjs().hour(12).minute(0).second(0).millisecond(0);
+      const isBeforeNoon = startTime.isBefore(noon);
+
+      const rests = (() => {
+        if (!isBeforeNoon) {
+          return [];
+        }
+
+        const prevRests = attendance.rests
+          ? attendance.rests
+              .filter((item): item is NonNullable<typeof item> => item !== null)
+              .map(
+                (item): RestInput => ({
+                  startTime: item.startTime,
+                  endTime: item.endTime,
+                })
+              )
+          : [];
+
+        const lunchBreakStart = dayjs()
+          .hour(12)
+          .minute(0)
+          .second(0)
+          .millisecond(0);
+        const lunchBreakEnd = dayjs()
+          .hour(13)
+          .minute(0)
+          .second(0)
+          .millisecond(0);
+
+        const isAlreadyExist =
+          prevRests.length === 0 ||
+          prevRests.filter((rest) => {
+            if (!rest.startTime || !rest.endTime) {
+              return false;
+            }
+
+            const restStart = dayjs(rest.startTime);
+            const restEnd = dayjs(rest.endTime);
+
+            return (
+              restStart.isSame(lunchBreakStart) && restEnd.isSame(lunchBreakEnd)
+            );
+          });
+
+        if (isAlreadyExist) {
+          return prevRests;
+        }
+
+        prevRests.push({
+          startTime: lunchBreakStart.toISOString(),
+          endTime: lunchBreakEnd.toISOString(),
+        });
+
+        return prevRests;
+      })();
+
       return updateAttendance({
         id: attendance.id,
         endTime,
         returnDirectlyFlag: returnDirectlyFlag === ReturnDirectlyFlag.YES,
+        rests,
       }).catch((e: Error) => {
         throw e;
       });

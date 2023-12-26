@@ -1,4 +1,6 @@
 import {
+  Box,
+  Breadcrumbs,
   Button,
   Container,
   LinearProgress,
@@ -14,7 +16,7 @@ import {
   GridValueGetterParams,
 } from "@mui/x-data-grid";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Title from "../../../components/Title/Title";
 import { Staff } from "../../../hooks/useStaffs/common";
 import useStaffs from "../../../hooks/useStaffs/useStaffs";
@@ -103,6 +105,14 @@ export default function AdminStaff() {
     <>
       <Container maxWidth="xl" sx={{ height: 1, pt: 2 }}>
         <Stack spacing={2}>
+          <Box>
+            <Breadcrumbs>
+              <Link to="/" color="inherit">
+                TOP
+              </Link>
+              <Typography color="text.primary">スタッフ一覧</Typography>
+            </Breadcrumbs>
+          </Box>
           <Title text="スタッフ一覧" />
           <DataGrid
             rows={staffs}

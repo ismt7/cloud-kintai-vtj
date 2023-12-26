@@ -1,5 +1,6 @@
 import {
   Box,
+  Breadcrumbs,
   Container,
   LinearProgress,
   Stack,
@@ -8,7 +9,7 @@ import {
 import { DataGrid, GridRowModesModel } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import getDayOfWeek, {
   DayOfWeek,
 } from "../../../components/attendance_list/getDayOfWeek";
@@ -65,7 +66,7 @@ export default function AdminStaffAttendanceList() {
     );
   }
 
-  if (staff === null || staffError) {
+  if (staff === null || staffError || !staffId) {
     return (
       <Container maxWidth="xl" sx={{ pt: 2 }}>
         <Typography>データ取得中に何らかの問題が発生しました</Typography>
@@ -79,11 +80,22 @@ export default function AdminStaffAttendanceList() {
 
   return (
     <Container maxWidth="xl">
-      <Stack spacing={1}>
+      <Stack spacing={1} sx={{ pt: 1 }}>
+        <Box>
+          <Breadcrumbs>
+            <Link to="/" color="inherit">
+              TOP
+            </Link>
+            <Link to="/admin/attendances" color="inherit">
+              勤怠管理
+            </Link>
+            <Typography color="text.primary">勤怠一覧</Typography>
+          </Breadcrumbs>
+        </Box>
         <Typography variant="h4">
           {staff?.familyName || "(不明)"} さんの勤怠
         </Typography>
-        <Box sx={{ px: 3, pb: 5 }}>
+        <Box sx={{ pb: 5 }}>
           <DataGrid
             rows={attendances}
             columns={getColumns(

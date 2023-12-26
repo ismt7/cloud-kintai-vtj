@@ -1,8 +1,15 @@
-import { Box, LinearProgress, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Breadcrumbs,
+  LinearProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useAppDispatchV2 } from "../../app/hooks";
 import { E02001 } from "../../errors";
 import useAttendances from "../../hooks/useAttendances/useAttendances";
@@ -48,6 +55,14 @@ export default function AttendanceTable() {
 
   return (
     <Stack spacing={2}>
+      <Box>
+        <Breadcrumbs>
+          <Link to="/" color="inherit">
+            TOP
+          </Link>
+          <Typography color="text.primary">勤怠一覧</Typography>
+        </Breadcrumbs>
+      </Box>
       <Box>
         <Title text="勤怠一覧" />
       </Box>
