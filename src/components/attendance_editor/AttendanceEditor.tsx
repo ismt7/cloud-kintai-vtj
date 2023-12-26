@@ -16,7 +16,7 @@ import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Attendance, Rest } from "../../API";
 import { useAppDispatchV2 } from "../../app/hooks";
 import { E04001, S04001 } from "../../errors";
@@ -68,7 +68,6 @@ const defaultValues: AttendanceEditorInputs = {
 
 export default function AttendanceEditor() {
   const dispatch = useAppDispatchV2();
-  const navigate = useNavigate();
 
   const { targetWorkDate, staffId: targetStaffId } = useParams();
   const { staffs, loading: staffsLoading, error: staffSError } = useStaffs();
@@ -381,18 +380,6 @@ export default function AttendanceEditor() {
             justifyContent={"center"}
             spacing={3}
           >
-            <Box>
-              <Button
-                color="cancel"
-                variant="text"
-                sx={{ width: "150px" }}
-                onClick={() => {
-                  navigate("/admin/attendances");
-                }}
-              >
-                キャンセル
-              </Button>
-            </Box>
             <Box>
               <Button
                 variant="contained"
