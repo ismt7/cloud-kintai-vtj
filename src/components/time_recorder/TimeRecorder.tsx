@@ -68,13 +68,10 @@ export default function TimeRecorder() {
 
     Cache.setItem("reloadTimer", true, { expires: 60 * 10 * 1000 });
 
-    window.setTimeout(
-      () => {
-        alert("操作されないまま10分が経過しました。リロードしてください。");
-        Cache.removeItem("reloadTimer");
-      },
-      60 * 10 * 1000
-    );
+    window.setTimeout(() => {
+      alert("操作されないまま10分が経過しました。リロードしてください。");
+      Cache.removeItem("reloadTimer");
+    }, 60 * 10 * 1000);
   }, []);
 
   useEffect(() => {
