@@ -15,7 +15,7 @@ export default function AdminAttendanceEditor() {
   }, [route]);
 
   return (
-    <Container maxWidth="md" sx={{ pt: 5 }}>
+    <Container maxWidth="xl" sx={{ pt: 1 }}>
       <AttendanceEditor />
     </Container>
   );

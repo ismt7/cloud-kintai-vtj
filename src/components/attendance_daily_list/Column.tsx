@@ -121,6 +121,8 @@ export default function GetColumns(): GridColDef[] {
     //   headerAlign: "center",
     // },
     {
+      // TODO: #180 勤怠管理画面のアクション列名に「操作」と表示
+      // TODO: #181 一覧表示のアクションを追加
       field: "actions",
       type: "actions",
       sortable: false,

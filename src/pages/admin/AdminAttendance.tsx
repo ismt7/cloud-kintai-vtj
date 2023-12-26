@@ -1,8 +1,8 @@
-import { Box, Container, Stack } from "@mui/material";
+import { Box, Breadcrumbs, Container, Stack, Typography } from "@mui/material";
 
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AttendanceDailyList from "../../components/attendance_daily_list/AttendanceDailyList";
 import DownloadForm from "../../components/download_form/DownloadForm";
 
@@ -18,13 +18,23 @@ export default function AdminAttendance() {
 
   return (
     <Container maxWidth="xl">
-      <Stack direction="column" sx={{ height: 1, pt: 2, display: "flex" }}>
+      <Stack spacing={2} sx={{ pt: 1 }}>
         <Box>
-          <DownloadForm />
+          <Breadcrumbs>
+            <Link to="/" color="inherit">
+              TOP
+            </Link>
+            <Typography color="text.primary">勤怠管理</Typography>
+          </Breadcrumbs>
         </Box>
-        <Box sx={{ flexGrow: 2, py: 2 }}>
-          <AttendanceDailyList />
-        </Box>
+        <Stack spacing={1}>
+          <Box>
+            <DownloadForm />
+          </Box>
+          <Box sx={{ flexGrow: 2, py: 2 }}>
+            <AttendanceDailyList />
+          </Box>
+        </Stack>
       </Stack>
     </Container>
   );

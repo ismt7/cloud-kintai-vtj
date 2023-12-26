@@ -93,7 +93,7 @@ export default function JobTerm() {
 
   return (
     <>
-      <Stack spacing={2} sx={{ px: 5, pt: 2 }}>
+      <Stack spacing={2}>
         <Title />
         <Typography>月ごとに勤怠を締める日付を指定します。</Typography>
         <Box>
