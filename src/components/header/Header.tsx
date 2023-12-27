@@ -10,6 +10,7 @@ import {
   Stack,
 } from "@mui/material";
 
+import { useEffect, useState } from "react";
 import useCognitoUser, { UserRole } from "../../hooks/useCognitoUser";
 import LogImage from "../../images/logo.png";
 import Button from "../button/Button";
@@ -29,6 +30,14 @@ export default function Header({
   } = useCognitoUser();
 
   const navigate = useNavigate();
+
+  const [pathName, setPathName] = useState("/register");
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const name = url.pathname === "/" ? "/register" : url.pathname;
+    setPathName(name);
+  }, []);
 
   const signIn = () => {
     navigate("/login");
@@ -96,6 +105,9 @@ export default function Header({
                 height: 1,
                 lineHeight: "32px",
                 px: 1,
+                color: pathName === menu.href ? "#0FA85E" : "white",
+                backgroundColor: pathName === menu.href ? "white" : "inherit",
+                textDecoration: "none",
               }}
             />
           </Box>
