@@ -1,9 +1,9 @@
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+// import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import {
   Avatar,
-  Badge,
+  // Badge,
   Box,
   Container,
   IconButton,
@@ -156,7 +156,7 @@ export default function Header({
                   width="110px"
                 />
               </Box>
-              <Box>
+              {/* <Box>
                 <IconButton aria-label="notification">
                   <Badge badgeContent={100} color="secondary">
                     <NotificationsNoneIcon
@@ -165,7 +165,7 @@ export default function Header({
                     />
                   </Badge>
                 </IconButton>
-              </Box>
+              </Box> */}
               <Box>
                 {/* <StaffIcon name={staff?.last_name} /> */}
                 <StaffIcon name={cognitoUser?.familyName} />
