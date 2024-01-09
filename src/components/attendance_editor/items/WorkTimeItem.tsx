@@ -1,8 +1,15 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { Control, Controller, UseFormWatch } from "react-hook-form";
+import {
+  Control,
+  Controller,
+  UseFormSetValue,
+  UseFormWatch,
+} from "react-hook-form";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import ClearIcon from "@mui/icons-material/Clear";
 
 // TODO: あとで修正
 // eslint-disable-next-line import/no-cycle
@@ -24,12 +31,15 @@ export function WorkTimeItem({
   targetWorkDate,
   control,
   watch,
+  setValue,
 }: {
   targetWorkDate: dayjs.Dayjs;
   control: Control<AttendanceEditorInputs, any>;
   watch: UseFormWatch<AttendanceEditorInputs>;
+  setValue: UseFormSetValue<AttendanceEditorInputs>;
 }) {
   const [totalWorkTime, setTotalWorkTime] = useState<number>(0);
+  const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
 
   useEffect(() => {
     watch((data) => {
@@ -47,6 +57,7 @@ export function WorkTimeItem({
       <Box sx={{ fontWeight: "bold", width: "150px" }}>勤務時間</Box>
       <Box sx={{ flexGrow: 1 }}>
         <Stack direction="row" spacing={2} alignItems={"center"}>
+          <Box sx={{ width: 33, height: 40 }} />
           <Box>
             <Stack direction="row" spacing={1} alignItems={"center"}>
               <Box>
@@ -78,31 +89,55 @@ export function WorkTimeItem({
               </Box>
               <Box>～</Box>
               <Box>
-                <Controller
-                  name="endTime"
-                  control={control}
-                  render={({ field }) => (
-                    <TimePicker
-                      value={dayjs(field.value)}
-                      ampm={false}
-                      viewRenderers={{
-                        hours: renderTimeViewClock,
-                        minutes: renderTimeViewClock,
-                      }}
-                      onChange={(value) => {
-                        field.onChange(
-                          value && value.isValid()
-                            ? value
-                                .year(targetWorkDate.year())
-                                .month(targetWorkDate.month())
-                                .date(targetWorkDate.date())
-                                .toISOString()
-                            : null
-                        );
-                      }}
+                {enableEndTime ? (
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Controller
+                      name="endTime"
+                      control={control}
+                      render={({ field }) => (
+                        <TimePicker
+                          value={dayjs(field.value)}
+                          ampm={false}
+                          viewRenderers={{
+                            hours: renderTimeViewClock,
+                            minutes: renderTimeViewClock,
+                          }}
+                          onChange={(value) => {
+                            field.onChange(
+                              value && value.isValid()
+                                ? value
+                                    .year(targetWorkDate.year())
+                                    .month(targetWorkDate.month())
+                                    .date(targetWorkDate.date())
+                                    .toISOString()
+                                : null
+                            );
+                          }}
+                        />
+                      )}
                     />
-                  )}
-                />
+                    <Box>
+                      <IconButton
+                        onClick={() => {
+                          setValue("endTime", null);
+                          setEnableEndTime(false);
+                        }}
+                      >
+                        <ClearIcon />
+                      </IconButton>
+                    </Box>
+                  </Stack>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    startIcon={<AddCircleOutlineIcon />}
+                    onClick={() => {
+                      setEnableEndTime(true);
+                    }}
+                  >
+                    終了時間を追加
+                  </Button>
+                )}
               </Box>
             </Stack>
           </Box>

@@ -321,6 +321,7 @@ export default function AttendanceEditor() {
           targetWorkDate={dayjs(targetWorkDate)}
           control={control}
           watch={watch}
+          setValue={setValue}
         />
         <Stack direction="row">
           <Box sx={{ fontWeight: "bold", width: "150px" }}>休憩時間</Box>
@@ -338,6 +339,7 @@ export default function AttendanceEditor() {
                 watch={watch}
                 remove={remove}
                 control={control}
+                setValue={setValue}
               />
             ))}
             <Box>
