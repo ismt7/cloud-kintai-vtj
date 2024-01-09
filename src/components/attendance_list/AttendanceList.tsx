@@ -20,6 +20,7 @@ import Title from "../Title/Title";
 import GetColumns from "./Column";
 import getDayOfWeek, { DayOfWeek } from "./getDayOfWeek";
 import { Attendance } from "../../API";
+import useCompanyHolidayCalendars from "../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 
 export default function AttendanceTable() {
   const dispatch = useAppDispatchV2();
@@ -30,6 +31,11 @@ export default function AttendanceTable() {
     loading: holidayCalendarLoading,
     error: holidayCalendarError,
   } = useHolidayCalendars();
+  const {
+    companyHolidayCalendars,
+    loading: companyHolidayCalendarLoading,
+    error: companyHolidayCalendarError,
+  } = useCompanyHolidayCalendars();
 
   const logger = new Logger(
     "AttendanceList",
@@ -45,11 +51,15 @@ export default function AttendanceTable() {
     });
   }, [cognitoUser]);
 
-  if (holidayCalendarLoading || cognitoUserLoading) {
+  if (
+    holidayCalendarLoading ||
+    cognitoUserLoading ||
+    companyHolidayCalendarLoading
+  ) {
     return <LinearProgress />;
   }
 
-  if (holidayCalendarError) {
+  if (holidayCalendarError || companyHolidayCalendarError) {
     return <div>データ取得中に何らかの問題が発生しました</div>;
   }
 
@@ -74,7 +84,7 @@ export default function AttendanceTable() {
       <Box sx={{ px: 5, pb: 5 }}>
         <DataGrid
           rows={attendances ?? []}
-          columns={GetColumns(holidayCalendars)}
+          columns={GetColumns(holidayCalendars, companyHolidayCalendars)}
           autoHeight
           hideFooter={true}
           getRowId={(row) => row.workDate}
@@ -91,7 +101,12 @@ export default function AttendanceTable() {
                 holidayCalendar.holidayDate === params.row.workDate
             );
 
-            if (isHoliday) {
+            const isCompanyHoliday = companyHolidayCalendars?.find(
+              (companyHolidayCalendar) =>
+                companyHolidayCalendar.holidayDate === params.row.workDate
+            );
+
+            if (isHoliday || isCompanyHoliday) {
               return "super-app-theme--sunday";
             }
 
