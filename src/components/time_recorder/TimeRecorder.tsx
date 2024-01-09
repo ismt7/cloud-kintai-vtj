@@ -71,7 +71,6 @@ export default function TimeRecorder() {
     window.setTimeout(() => {
       alert("ページの有効期限が切れました。リロードしてください。");
       Cache.removeItem("reloadTimer");
-      x;
     }, 60 * 10 * 1000);
   }, []);
 
