@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  Chip,
   CircularProgress,
   Stack,
   TextField,
@@ -10,16 +11,12 @@ import { DesktopDatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useState } from "react";
 import useStaffs from "../../hooks/useStaffs/useStaffs";
+import useCloseDates from "../../hooks/useCloseDates/useCloseDates";
 
 interface FormState {
   startDate: dayjs.Dayjs | null;
   endDate: dayjs.Dayjs | null;
   aggregateMonth: number;
-}
-
-interface AggregateMonth {
-  id: number;
-  date: dayjs.Dayjs;
 }
 
 const initialState: FormState = {
@@ -30,16 +27,13 @@ const initialState: FormState = {
 
 export default function DownloadForm() {
   const { staffs, loading: staffLoading, error: staffError } = useStaffs();
+  const {
+    closeDates,
+    loading: closeDateLoading,
+    error: closeDateError,
+  } = useCloseDates();
 
   const [formState, setFormState] = useState<FormState>(initialState);
-
-  const aggregateMonthList = [...Array<number>(12)].map(
-    (_, i) =>
-      ({
-        id: i,
-        date: dayjs().month(i),
-      } as AggregateMonth)
-  );
 
   function changeHandler<T>(key: string, value: T) {
     setFormState((prevState) => ({
@@ -52,11 +46,11 @@ export default function DownloadForm() {
     // 処理なし
   };
 
-  if (staffLoading) {
+  if (staffLoading || closeDateLoading) {
     return <CircularProgress />;
   }
 
-  if (staffError) {
+  if (staffError || closeDateError) {
     return <div>エラーが発生しました</div>;
   }
 
@@ -90,45 +84,51 @@ export default function DownloadForm() {
           sx={{ display: "inline-block", boxSizing: "border-box" }}
         >
           <Box>
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Box>
-                <DesktopDatePicker
-                  label="開始日"
-                  format="YYYY/MM/DD"
-                  value={formState.startDate}
-                  onChange={(event) => changeHandler("startDate", event)}
-                  slotProps={{ textField: { variant: "outlined" } }}
-                />
-              </Box>
-              <Box>〜</Box>
-              <Box>
-                <DesktopDatePicker
-                  label="終了日"
-                  format="YYYY/MM/DD"
-                  value={formState.endDate}
-                  onChange={(event) => changeHandler("endDate", event)}
-                  slotProps={{ textField: { variant: "outlined" } }}
-                />
-              </Box>
-            </Stack>
-          </Box>
-          <Box>
-            <Autocomplete
-              multiple
-              limitTags={2}
-              id="multiple-limit-tags"
-              options={aggregateMonthList}
-              getOptionLabel={(option) => `${option.date.format("YYYY年MM月")}`}
-              defaultValue={[]}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="集計対象月"
-                  placeholder="集計対象月を選択..."
-                />
+            <Stack spacing={1}>
+              <Stack direction="row" spacing={1} alignItems="center">
+                <Box>
+                  <DesktopDatePicker
+                    label="開始日"
+                    format="YYYY/MM/DD"
+                    value={formState.startDate}
+                    onChange={(event) => changeHandler("startDate", event)}
+                    slotProps={{ textField: { variant: "outlined" } }}
+                  />
+                </Box>
+                <Box>〜</Box>
+                <Box>
+                  <DesktopDatePicker
+                    label="終了日"
+                    format="YYYY/MM/DD"
+                    value={formState.endDate}
+                    onChange={(event) => changeHandler("endDate", event)}
+                    slotProps={{ textField: { variant: "outlined" } }}
+                  />
+                </Box>
+              </Stack>
+              {closeDates.length > 0 && (
+                <Stack spacing={2} sx={{ maxWidth: 500, overflowX: "auto" }}>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Box sx={{ whiteSpace: "nowrap" }}>集計対象月から:</Box>
+                    {closeDates.map((closeDate, index) => (
+                      <Chip
+                        key={index}
+                        label={dayjs(closeDate.closeDate).format("YYYY/MM")}
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => {
+                          changeHandler(
+                            "startDate",
+                            dayjs(closeDate.startDate)
+                          );
+                          changeHandler("endDate", dayjs(closeDate.endDate));
+                        }}
+                      />
+                    ))}
+                  </Stack>
+                </Stack>
               )}
-              sx={{ width: "500px" }}
-            />
+            </Stack>
           </Box>
           <Box>
             <Autocomplete

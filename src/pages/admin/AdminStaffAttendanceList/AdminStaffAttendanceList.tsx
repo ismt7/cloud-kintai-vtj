@@ -19,6 +19,7 @@ import { Staff } from "../../../hooks/useStaffs/common";
 import useStaffs from "../../../hooks/useStaffs/useStaffs";
 import getColumns from "./getColumns";
 import { Attendance } from "../../../API";
+import useCompanyHolidayCalendars from "../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 
 export default function AdminStaffAttendanceList() {
   const { staffId } = useParams();
@@ -26,6 +27,12 @@ export default function AdminStaffAttendanceList() {
 
   const { attendances, getAttendances } = useAttendances();
   const { staffs, loading: staffLoading, error: staffError } = useStaffs();
+  const {
+    companyHolidayCalendars,
+    loading: companyHolidayCalendarLoading,
+    error: companyHolidayCalendarError,
+  } = useCompanyHolidayCalendars();
+
   const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
 
   useEffect(() => {
@@ -50,7 +57,7 @@ export default function AdminStaffAttendanceList() {
 
   const [rowModelsModel, setRowModelsModel] = useState<GridRowModesModel>({});
 
-  if (staffLoading || holidayCalendarLoading) {
+  if (staffLoading || holidayCalendarLoading || companyHolidayCalendarLoading) {
     return (
       <Container maxWidth="xl" sx={{ pt: 2 }}>
         <LinearProgress />
@@ -58,7 +65,7 @@ export default function AdminStaffAttendanceList() {
     );
   }
 
-  if (holidayCalendarError) {
+  if (holidayCalendarError || companyHolidayCalendarError) {
     return (
       <Container maxWidth="xl" sx={{ pt: 2 }}>
         <Typography>データ取得中に何らかの問題が発生しました</Typography>
@@ -103,7 +110,8 @@ export default function AdminStaffAttendanceList() {
               rowModelsModel,
               staffId,
               navigate,
-              holidayCalendars
+              holidayCalendars,
+              companyHolidayCalendars
             )}
             getRowId={(row) => row.workDate}
             rowModesModel={rowModelsModel}
@@ -123,7 +131,12 @@ export default function AdminStaffAttendanceList() {
                   holidayCalendar.holidayDate === params.row.workDate
               );
 
-              if (isHoliday) {
+              const isCompanyHoliday = companyHolidayCalendars?.find(
+                (companyHolidayCalendar) =>
+                  companyHolidayCalendar.holidayDate === params.row.workDate
+              );
+
+              if (isHoliday || isCompanyHoliday) {
                 return "super-app-theme--sunday";
               }
 

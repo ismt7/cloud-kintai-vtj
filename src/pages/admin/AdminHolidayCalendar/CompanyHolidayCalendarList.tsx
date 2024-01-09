@@ -196,7 +196,7 @@ export default function CompanyHolidayCalendarList({
 
           updateCompanyHolidayCalendar({
             id: data.id,
-            holidayDate: data.holidayDate.toISOString(),
+            holidayDate: data.holidayDate.format("YYYY-MM-DD"),
             name: data.name,
           })
             .then(() => {
