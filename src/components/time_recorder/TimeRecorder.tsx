@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { Box, LinearProgress, Stack, Typography } from "@mui/material";
 
-import { Cache, Logger } from "aws-amplify";
+import { API, Cache, Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useAppDispatchV2 } from "../../app/hooks";
 import {
@@ -40,6 +40,7 @@ import RestStartItem from "./items/RestStartItem";
 import ReturnDirectly from "./items/ReturnDirectlyItem";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
 import { WorkStatus } from "./common";
+import { sendMail } from "../../graphql/queries";
 
 export default function TimeRecorder() {
   const dispatch = useAppDispatchV2();
@@ -115,7 +116,34 @@ export default function TimeRecorder() {
 
               const now = dayjs().toISOString();
               clockIn(cognitoUser.id, today, now)
-                .then(() => dispatch(setSnackbarSuccess(S01001)))
+                .then((res) => {
+                  dispatch(setSnackbarSuccess(S01001));
+                  void API.graphql({
+                    query: sendMail,
+                    variables: {
+                      data: {
+                        to: [cognitoUser.mailAddress],
+                        subject: `[出勤]勤怠連絡 - ${dayjs(res.workDate).format(
+                          "YYYY/MM/DD"
+                        )}`,
+                        body: [
+                          `${cognitoUser.familyName} ${cognitoUser.givenName} さん`,
+                          "",
+                          "おはようございます。出勤処理が完了しました。",
+                          "-----",
+                          `勤務日：${dayjs(res.workDate).format("YYYY/MM/DD")}`,
+                          `出勤時刻：${
+                            res.startTime
+                              ? dayjs(res.startTime).format("HH:mm")
+                              : ""
+                          }`,
+                          "-----",
+                          "本日もよろしくお願いいたします。",
+                        ].join("\n"),
+                      },
+                    },
+                  });
+                })
                 .catch((e) => {
                   logger.debug(e);
                   dispatch(setSnackbarError(E01001));
@@ -129,7 +157,36 @@ export default function TimeRecorder() {
 
               const now = dayjs().toISOString();
               clockOut(cognitoUser.id, today, now)
-                .then(() => dispatch(setSnackbarSuccess(S01002)))
+                .then((res) => {
+                  dispatch(setSnackbarSuccess(S01002));
+                  void API.graphql({
+                    query: sendMail,
+                    variables: {
+                      data: {
+                        to: [cognitoUser.mailAddress],
+                        subject: `[退勤]勤怠連絡 - ${dayjs(res.workDate).format(
+                          "YYYY/MM/DD"
+                        )}`,
+                        body: [
+                          `${cognitoUser.familyName} ${cognitoUser.givenName} さん`,
+                          "",
+                          "退勤処理が完了しました。",
+                          "",
+                          "-----",
+                          `勤務日：${dayjs(res.workDate).format("YYYY/MM/DD")}`,
+                          `退勤時刻：${
+                            res.endTime
+                              ? dayjs(res.endTime).format("HH:mm")
+                              : ""
+                          }`,
+                          "-----",
+                          "",
+                          "1日お疲れ様でした。気をつけて帰ってくださいね。",
+                        ].join("\n"),
+                      },
+                    },
+                  });
+                })
                 .catch((e) => {
                   logger.debug(e);
                   dispatch(setSnackbarError(E01002));

@@ -39,3 +39,19 @@ type Rest {
   startTime: String
   endTime: String
 }
+
+type EmailResult {
+  statusCode: Int
+  body: String
+}
+
+input EmailData {
+  to: [String]
+  subject: String!
+  body: String!
+}
+
+type Query {
+  sendMail(data: EmailData!): EmailResult
+    @function(name: "garakuSendMail-${env}")
+}

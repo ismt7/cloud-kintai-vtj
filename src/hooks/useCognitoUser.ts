@@ -5,6 +5,7 @@ interface CognitoUser {
   id: string;
   givenName: string;
   familyName: string;
+  mailAddress: string;
   roles: UserRole[];
 }
 
@@ -46,6 +47,7 @@ export default function useCognitoUser() {
         id,
         givenName: user.attributes.given_name,
         familyName: user.attributes.family_name,
+        mailAddress: user.attributes.email,
         roles: (() =>
           userGroups.map((group) => {
             switch (group) {
