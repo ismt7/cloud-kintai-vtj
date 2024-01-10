@@ -322,6 +322,7 @@ export default function AttendanceEditor() {
           control={control}
           watch={watch}
           setValue={setValue}
+          getValues={getValues}
         />
         <Stack direction="row">
           <Box sx={{ fontWeight: "bold", width: "150px" }}>休憩時間</Box>
@@ -340,6 +341,7 @@ export default function AttendanceEditor() {
                 remove={remove}
                 control={control}
                 setValue={setValue}
+                getValues={getValues}
               />
             ))}
             <Box>
