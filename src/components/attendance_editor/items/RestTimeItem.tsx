@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import {
   Control,
   Controller,
+  UseFormGetValues,
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
@@ -33,6 +34,7 @@ export function RestTimeItem({
   remove,
   control,
   setValue,
+  getValues,
 }: {
   targetWorkDate: dayjs.Dayjs;
   index: number;
@@ -40,11 +42,17 @@ export function RestTimeItem({
   remove: (index?: number | number[] | undefined) => void;
   control: Control<AttendanceEditorInputs, any>;
   setValue: UseFormSetValue<AttendanceEditorInputs>;
+  getValues: UseFormGetValues<AttendanceEditorInputs>;
 }) {
   const [totalRestTime, setTotalRestTime] = useState<number>(0);
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
 
   useEffect(() => {
+    const endTime = getValues(`rests.${index}.endTime`);
+    if (endTime) {
+      setEnableEndTime(true);
+    }
+
     watch((data) => {
       if (!data.rests) return;
 

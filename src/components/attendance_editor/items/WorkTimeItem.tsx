@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import {
   Control,
   Controller,
+  UseFormGetValues,
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
@@ -32,16 +33,23 @@ export function WorkTimeItem({
   control,
   watch,
   setValue,
+  getValues,
 }: {
   targetWorkDate: dayjs.Dayjs;
   control: Control<AttendanceEditorInputs, any>;
   watch: UseFormWatch<AttendanceEditorInputs>;
   setValue: UseFormSetValue<AttendanceEditorInputs>;
+  getValues: UseFormGetValues<AttendanceEditorInputs>;
 }) {
   const [totalWorkTime, setTotalWorkTime] = useState<number>(0);
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
 
   useEffect(() => {
+    const endTime = getValues("endTime");
+    if (endTime) {
+      setEnableEndTime(true);
+    }
+
     watch((data) => {
       const diff = calcTotalWorkTime(data.startTime, data.endTime);
       setTotalWorkTime(diff);
