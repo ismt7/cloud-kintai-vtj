@@ -223,6 +223,18 @@ export type DeleteAttendanceInput = {
   id: string,
 };
 
+export type EmailData = {
+  to?: Array< string | null > | null,
+  subject: string,
+  body: string,
+};
+
+export type EmailResult = {
+  __typename: "EmailResult",
+  statusCode?: number | null,
+  body?: string | null,
+};
+
 export type ModelHolidayCalendarFilterInput = {
   id?: ModelIDInput | null,
   holidayDate?: ModelStringInput | null,
@@ -605,6 +617,18 @@ export type DeleteAttendanceMutation = {
     paidHolidayFlag?: boolean | null,
     createdAt: string,
     updatedAt: string,
+  } | null,
+};
+
+export type SendMailQueryVariables = {
+  data: EmailData,
+};
+
+export type SendMailQuery = {
+  sendMail?:  {
+    __typename: "EmailResult",
+    statusCode?: number | null,
+    body?: string | null,
   } | null,
 };
 

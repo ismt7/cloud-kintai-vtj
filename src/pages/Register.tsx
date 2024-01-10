@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import TimeRecorder from "../components/time_recorder/TimeRecorder";
 
-function Register() {
+export default function Register() {
   const { route } = useAuthenticator();
   const navigate = useNavigate();
 
@@ -25,5 +25,3 @@ function Register() {
     </Box>
   );
 }
-
-export default Register;

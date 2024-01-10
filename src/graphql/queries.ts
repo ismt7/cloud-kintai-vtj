@@ -2,6 +2,15 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const sendMail = /* GraphQL */ `
+  query SendMail($data: EmailData!) {
+    sendMail(data: $data) {
+      statusCode
+      body
+      __typename
+    }
+  }
+`;
 export const getHolidayCalendar = /* GraphQL */ `
   query GetHolidayCalendar($id: ID!) {
     getHolidayCalendar(id: $id) {

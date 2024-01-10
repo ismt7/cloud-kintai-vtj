@@ -96,6 +96,12 @@
       ],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "garakuSendMail": {
+      "build": true,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "hosting": {
@@ -118,6 +124,22 @@
         {
           "category": "function",
           "resourceName": "AdminQueriesf7a7d2e5"
+        }
+      ]
+    },
+    "AMPLIFY_function_garakuSendMail_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "garakuSendMail"
+        }
+      ]
+    },
+    "AMPLIFY_function_garakuSendMail_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "garakuSendMail"
         }
       ]
     },
