@@ -76,10 +76,14 @@ function Row({ history }: { history: AttendanceHistory }) {
                   {rests.map((rest, index) => (
                     <TableRow key={index}>
                       <TableCell>
-                        {dayjs(rest.startTime).format("HH:mm")}
+                        {rest.startTime
+                          ? dayjs(rest.startTime).format("HH:mm")
+                          : "(なし)"}
                       </TableCell>
                       <TableCell>
-                        {dayjs(rest.endTime).format("HH:mm")}
+                        {rest.endTime
+                          ? dayjs(rest.endTime).format("HH:mm")
+                          : "(なし)"}
                       </TableCell>
                     </TableRow>
                   ))}

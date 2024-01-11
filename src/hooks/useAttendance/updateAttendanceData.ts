@@ -30,7 +30,16 @@ export default async function updateAttendanceData(
   const currentAttendance: Attendance =
     currentAttendanceResponse.data.getAttendance;
 
-  console.log("currentAttendance", currentAttendance);
+  const currentRevision = currentAttendance.revision
+    ? currentAttendance.revision
+    : 1;
+
+  const inputRevision = input.revision ? input.revision : 1;
+  if (currentRevision !== inputRevision) {
+    throw new Error("Revision mismatch");
+  }
+
+  input.revision = inputRevision + 1;
 
   const history: AttendanceHistoryInput = {
     staffId: currentAttendance.staffId,
@@ -52,13 +61,35 @@ export default async function updateAttendanceData(
     createdAt: currentAttendance.updatedAt,
   };
 
+  input.histories = currentAttendance.histories
+    ? currentAttendance.histories
+        .filter((item): item is NonNullable<typeof item> => !!item)
+        .map((h) => ({
+          staffId: h.staffId,
+          workDate: h.workDate,
+          startTime: h.startTime,
+          endTime: h.endTime,
+          goDirectlyFlag: h.goDirectlyFlag,
+          returnDirectlyFlag: h.returnDirectlyFlag,
+          rests: h.rests
+            ? h.rests
+                .filter((item): item is NonNullable<typeof item> => !!item)
+                .map((rest) => ({
+                  startTime: rest.startTime,
+                  endTime: rest.endTime,
+                }))
+            : [],
+          remarks: h.remarks,
+          paidHolidayFlag: h.paidHolidayFlag,
+          createdAt: h.createdAt,
+        }))
+    : [];
+
   if (input.histories && input.histories.length > 0) {
     input.histories.push(history);
   } else {
     input.histories = [history];
   }
-
-  console.log("input", input);
 
   const response = (await API.graphql({
     query: updateAttendance,

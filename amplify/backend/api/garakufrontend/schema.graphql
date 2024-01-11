@@ -34,6 +34,7 @@ type Attendance @model @auth(rules: [{ allow: private }]) {
   remarks: String
   paidHolidayFlag: Boolean
   histories: [AttendanceHistory]
+  revision: Int
 }
 
 type Rest {

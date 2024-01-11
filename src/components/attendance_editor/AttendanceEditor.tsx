@@ -56,6 +56,7 @@ export type AttendanceEditorInputs = {
   paidHolidayFlag: Attendance["paidHolidayFlag"];
   rests: RestInputs[];
   histories: AttendanceHistory[];
+  revision: Attendance["revision"];
 };
 
 const defaultValues: AttendanceEditorInputs = {
@@ -68,6 +69,7 @@ const defaultValues: AttendanceEditorInputs = {
   paidHolidayFlag: false,
   rests: [],
   histories: [],
+  revision: 0,
 };
 
 export default function AttendanceEditor() {
@@ -151,18 +153,7 @@ export default function AttendanceEditor() {
         remarks: data.remarks,
         rests: data.rests,
         paidHolidayFlag: data.paidHolidayFlag,
-        histories: data.histories.map((history) => ({
-          staffId: history.staffId,
-          workDate: history.workDate,
-          startTime: history.startTime,
-          endTime: history.endTime,
-          goDirectlyFlag: history.goDirectlyFlag,
-          returnDirectlyFlag: history.returnDirectlyFlag,
-          rests: history.rests,
-          remarks: history.remarks,
-          paidHolidayFlag: history.paidHolidayFlag,
-          createdAt: history.createdAt,
-        })),
+        revision: data.revision,
       })
         .then(() => {
           dispatch(setSnackbarSuccess(S04001));
@@ -207,6 +198,7 @@ export default function AttendanceEditor() {
     setValue("goDirectlyFlag", attendance.goDirectlyFlag || false);
     setValue("returnDirectlyFlag", attendance.returnDirectlyFlag || false);
     setValue("paidHolidayFlag", attendance.paidHolidayFlag || false);
+    setValue("revision", attendance.revision);
 
     if (attendance.rests) {
       const rests = attendance.rests

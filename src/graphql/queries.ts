@@ -151,6 +151,7 @@ export const getAttendance = /* GraphQL */ `
         createdAt
         __typename
       }
+      revision
       createdAt
       updatedAt
       __typename
@@ -196,6 +197,7 @@ export const listAttendances = /* GraphQL */ `
           createdAt
           __typename
         }
+        revision
         createdAt
         updatedAt
         __typename

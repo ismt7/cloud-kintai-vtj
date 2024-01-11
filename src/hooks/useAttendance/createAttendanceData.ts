@@ -10,6 +10,8 @@ import { createAttendance } from "../../graphql/mutations";
 export default async function createAttendanceData(
   input: CreateAttendanceInput
 ) {
+  input.revision = 1;
+
   const response = (await API.graphql({
     query: createAttendance,
     variables: { input },

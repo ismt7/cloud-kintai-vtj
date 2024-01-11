@@ -167,6 +167,7 @@ export const onCreateAttendance = /* GraphQL */ `
         createdAt
         __typename
       }
+      revision
       createdAt
       updatedAt
       __typename
@@ -209,6 +210,7 @@ export const onUpdateAttendance = /* GraphQL */ `
         createdAt
         __typename
       }
+      revision
       createdAt
       updatedAt
       __typename
@@ -251,6 +253,7 @@ export const onDeleteAttendance = /* GraphQL */ `
         createdAt
         __typename
       }
+      revision
       createdAt
       updatedAt
       __typename
