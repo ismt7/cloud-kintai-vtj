@@ -17,7 +17,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
-import { Attendance, Rest } from "../../API";
+import { Attendance, AttendanceHistory, Rest } from "../../API";
 import { useAppDispatchV2 } from "../../app/hooks";
 import { E04001, S04001 } from "../../errors";
 import useAttendance from "../../hooks/useAttendance/useAttendance";
@@ -38,6 +38,8 @@ import { calcTotalRestTime, RestTimeItem } from "./items/RestTimeItem";
 // eslint-disable-next-line import/no-cycle
 import { calcTotalWorkTime, WorkTimeItem } from "./items/WorkTimeItem";
 import Title from "../Title/Title";
+// eslint-disable-next-line import/no-cycle
+import EditAttendanceHistoryList from "./EditAttendanceHistoryList";
 
 export type RestInputs = {
   startTime: Rest["startTime"] | null;
@@ -53,6 +55,7 @@ export type AttendanceEditorInputs = {
   remarks: Attendance["remarks"];
   paidHolidayFlag: Attendance["paidHolidayFlag"];
   rests: RestInputs[];
+  histories: AttendanceHistory[];
 };
 
 const defaultValues: AttendanceEditorInputs = {
@@ -64,6 +67,7 @@ const defaultValues: AttendanceEditorInputs = {
   remarks: "",
   paidHolidayFlag: false,
   rests: [],
+  histories: [],
 };
 
 export default function AttendanceEditor() {
@@ -147,6 +151,18 @@ export default function AttendanceEditor() {
         remarks: data.remarks,
         rests: data.rests,
         paidHolidayFlag: data.paidHolidayFlag,
+        histories: data.histories.map((history) => ({
+          staffId: history.staffId,
+          workDate: history.workDate,
+          startTime: history.startTime,
+          endTime: history.endTime,
+          goDirectlyFlag: history.goDirectlyFlag,
+          returnDirectlyFlag: history.returnDirectlyFlag,
+          rests: history.rests,
+          remarks: history.remarks,
+          paidHolidayFlag: history.paidHolidayFlag,
+          createdAt: history.createdAt,
+        })),
       })
         .then(() => {
           dispatch(setSnackbarSuccess(S04001));
@@ -200,6 +216,13 @@ export default function AttendanceEditor() {
           endTime: item.endTime,
         }));
       setValue("rests", rests);
+    }
+
+    if (attendance.histories) {
+      const histories = attendance.histories.filter(
+        (item): item is NonNullable<typeof item> => item !== null
+      );
+      setValue("histories", histories);
     }
   }, [attendance]);
 
@@ -269,6 +292,7 @@ export default function AttendanceEditor() {
             </Box>
           )}
         </Box>
+        <EditAttendanceHistoryList getValues={getValues} />
         <Box>
           <StaffNameItem staff={staff} />
         </Box>
@@ -329,7 +353,7 @@ export default function AttendanceEditor() {
           <Stack spacing={1} sx={{ flexGrow: 2 }}>
             {fields.length === 0 && (
               <Box>
-                <Typography variant="body1">休憩時間はありません。</Typography>
+                <Typography variant="body1">休憩時間はありません</Typography>
               </Box>
             )}
             {fields.map((field, index) => (
