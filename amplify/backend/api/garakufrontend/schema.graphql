@@ -33,11 +33,26 @@ type Attendance @model @auth(rules: [{ allow: private }]) {
   rests: [Rest]
   remarks: String
   paidHolidayFlag: Boolean
+  histories: [AttendanceHistory]
+  revision: Int
 }
 
 type Rest {
   startTime: String
   endTime: String
+}
+
+type AttendanceHistory {
+  staffId: String!
+  workDate: String!
+  startTime: String
+  endTime: String
+  goDirectlyFlag: Boolean
+  returnDirectlyFlag: Boolean
+  rests: [Rest]
+  remarks: String
+  paidHolidayFlag: Boolean
+  createdAt: String!
 }
 
 type EmailResult {

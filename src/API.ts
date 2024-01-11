@@ -156,11 +156,26 @@ export type CreateAttendanceInput = {
   rests?: Array< RestInput | null > | null,
   remarks?: string | null,
   paidHolidayFlag?: boolean | null,
+  histories?: Array< AttendanceHistoryInput | null > | null,
+  revision?: number | null,
 };
 
 export type RestInput = {
   startTime?: string | null,
   endTime?: string | null,
+};
+
+export type AttendanceHistoryInput = {
+  staffId: string,
+  workDate: string,
+  startTime?: string | null,
+  endTime?: string | null,
+  goDirectlyFlag?: boolean | null,
+  returnDirectlyFlag?: boolean | null,
+  rests?: Array< RestInput | null > | null,
+  remarks?: string | null,
+  paidHolidayFlag?: boolean | null,
+  createdAt: string,
 };
 
 export type ModelAttendanceConditionInput = {
@@ -172,6 +187,7 @@ export type ModelAttendanceConditionInput = {
   returnDirectlyFlag?: ModelBooleanInput | null,
   remarks?: ModelStringInput | null,
   paidHolidayFlag?: ModelBooleanInput | null,
+  revision?: ModelIntInput | null,
   and?: Array< ModelAttendanceConditionInput | null > | null,
   or?: Array< ModelAttendanceConditionInput | null > | null,
   not?: ModelAttendanceConditionInput | null,
@@ -180,6 +196,18 @@ export type ModelAttendanceConditionInput = {
 export type ModelBooleanInput = {
   ne?: boolean | null,
   eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type ModelIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
 };
@@ -196,6 +224,8 @@ export type Attendance = {
   rests?:  Array<Rest | null > | null,
   remarks?: string | null,
   paidHolidayFlag?: boolean | null,
+  histories?:  Array<AttendanceHistory | null > | null,
+  revision?: number | null,
   createdAt: string,
   updatedAt: string,
 };
@@ -204,6 +234,20 @@ export type Rest = {
   __typename: "Rest",
   startTime?: string | null,
   endTime?: string | null,
+};
+
+export type AttendanceHistory = {
+  __typename: "AttendanceHistory",
+  staffId: string,
+  workDate: string,
+  startTime?: string | null,
+  endTime?: string | null,
+  goDirectlyFlag?: boolean | null,
+  returnDirectlyFlag?: boolean | null,
+  rests?:  Array<Rest | null > | null,
+  remarks?: string | null,
+  paidHolidayFlag?: boolean | null,
+  createdAt: string,
 };
 
 export type UpdateAttendanceInput = {
@@ -217,6 +261,8 @@ export type UpdateAttendanceInput = {
   rests?: Array< RestInput | null > | null,
   remarks?: string | null,
   paidHolidayFlag?: boolean | null,
+  histories?: Array< AttendanceHistoryInput | null > | null,
+  revision?: number | null,
 };
 
 export type DeleteAttendanceInput = {
@@ -307,6 +353,7 @@ export type ModelAttendanceFilterInput = {
   returnDirectlyFlag?: ModelBooleanInput | null,
   remarks?: ModelStringInput | null,
   paidHolidayFlag?: ModelBooleanInput | null,
+  revision?: ModelIntInput | null,
   and?: Array< ModelAttendanceFilterInput | null > | null,
   or?: Array< ModelAttendanceFilterInput | null > | null,
   not?: ModelAttendanceFilterInput | null,
@@ -383,6 +430,7 @@ export type ModelSubscriptionAttendanceFilterInput = {
   returnDirectlyFlag?: ModelSubscriptionBooleanInput | null,
   remarks?: ModelSubscriptionStringInput | null,
   paidHolidayFlag?: ModelSubscriptionBooleanInput | null,
+  revision?: ModelSubscriptionIntInput | null,
   and?: Array< ModelSubscriptionAttendanceFilterInput | null > | null,
   or?: Array< ModelSubscriptionAttendanceFilterInput | null > | null,
 };
@@ -390,6 +438,18 @@ export type ModelSubscriptionAttendanceFilterInput = {
 export type ModelSubscriptionBooleanInput = {
   ne?: boolean | null,
   eq?: boolean | null,
+};
+
+export type ModelSubscriptionIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  in?: Array< number | null > | null,
+  notIn?: Array< number | null > | null,
 };
 
 export type CreateHolidayCalendarMutationVariables = {
@@ -561,6 +621,24 @@ export type CreateAttendanceMutation = {
     } | null > | null,
     remarks?: string | null,
     paidHolidayFlag?: boolean | null,
+    histories?:  Array< {
+      __typename: "AttendanceHistory",
+      staffId: string,
+      workDate: string,
+      startTime?: string | null,
+      endTime?: string | null,
+      goDirectlyFlag?: boolean | null,
+      returnDirectlyFlag?: boolean | null,
+      rests?:  Array< {
+        __typename: "Rest",
+        startTime?: string | null,
+        endTime?: string | null,
+      } | null > | null,
+      remarks?: string | null,
+      paidHolidayFlag?: boolean | null,
+      createdAt: string,
+    } | null > | null,
+    revision?: number | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -588,6 +666,24 @@ export type UpdateAttendanceMutation = {
     } | null > | null,
     remarks?: string | null,
     paidHolidayFlag?: boolean | null,
+    histories?:  Array< {
+      __typename: "AttendanceHistory",
+      staffId: string,
+      workDate: string,
+      startTime?: string | null,
+      endTime?: string | null,
+      goDirectlyFlag?: boolean | null,
+      returnDirectlyFlag?: boolean | null,
+      rests?:  Array< {
+        __typename: "Rest",
+        startTime?: string | null,
+        endTime?: string | null,
+      } | null > | null,
+      remarks?: string | null,
+      paidHolidayFlag?: boolean | null,
+      createdAt: string,
+    } | null > | null,
+    revision?: number | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -615,6 +711,24 @@ export type DeleteAttendanceMutation = {
     } | null > | null,
     remarks?: string | null,
     paidHolidayFlag?: boolean | null,
+    histories?:  Array< {
+      __typename: "AttendanceHistory",
+      staffId: string,
+      workDate: string,
+      startTime?: string | null,
+      endTime?: string | null,
+      goDirectlyFlag?: boolean | null,
+      returnDirectlyFlag?: boolean | null,
+      rests?:  Array< {
+        __typename: "Rest",
+        startTime?: string | null,
+        endTime?: string | null,
+      } | null > | null,
+      remarks?: string | null,
+      paidHolidayFlag?: boolean | null,
+      createdAt: string,
+    } | null > | null,
+    revision?: number | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -763,6 +877,24 @@ export type GetAttendanceQuery = {
     } | null > | null,
     remarks?: string | null,
     paidHolidayFlag?: boolean | null,
+    histories?:  Array< {
+      __typename: "AttendanceHistory",
+      staffId: string,
+      workDate: string,
+      startTime?: string | null,
+      endTime?: string | null,
+      goDirectlyFlag?: boolean | null,
+      returnDirectlyFlag?: boolean | null,
+      rests?:  Array< {
+        __typename: "Rest",
+        startTime?: string | null,
+        endTime?: string | null,
+      } | null > | null,
+      remarks?: string | null,
+      paidHolidayFlag?: boolean | null,
+      createdAt: string,
+    } | null > | null,
+    revision?: number | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -793,6 +925,24 @@ export type ListAttendancesQuery = {
       } | null > | null,
       remarks?: string | null,
       paidHolidayFlag?: boolean | null,
+      histories?:  Array< {
+        __typename: "AttendanceHistory",
+        staffId: string,
+        workDate: string,
+        startTime?: string | null,
+        endTime?: string | null,
+        goDirectlyFlag?: boolean | null,
+        returnDirectlyFlag?: boolean | null,
+        rests?:  Array< {
+          __typename: "Rest",
+          startTime?: string | null,
+          endTime?: string | null,
+        } | null > | null,
+        remarks?: string | null,
+        paidHolidayFlag?: boolean | null,
+        createdAt: string,
+      } | null > | null,
+      revision?: number | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -959,6 +1109,24 @@ export type OnCreateAttendanceSubscription = {
     } | null > | null,
     remarks?: string | null,
     paidHolidayFlag?: boolean | null,
+    histories?:  Array< {
+      __typename: "AttendanceHistory",
+      staffId: string,
+      workDate: string,
+      startTime?: string | null,
+      endTime?: string | null,
+      goDirectlyFlag?: boolean | null,
+      returnDirectlyFlag?: boolean | null,
+      rests?:  Array< {
+        __typename: "Rest",
+        startTime?: string | null,
+        endTime?: string | null,
+      } | null > | null,
+      remarks?: string | null,
+      paidHolidayFlag?: boolean | null,
+      createdAt: string,
+    } | null > | null,
+    revision?: number | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -985,6 +1153,24 @@ export type OnUpdateAttendanceSubscription = {
     } | null > | null,
     remarks?: string | null,
     paidHolidayFlag?: boolean | null,
+    histories?:  Array< {
+      __typename: "AttendanceHistory",
+      staffId: string,
+      workDate: string,
+      startTime?: string | null,
+      endTime?: string | null,
+      goDirectlyFlag?: boolean | null,
+      returnDirectlyFlag?: boolean | null,
+      rests?:  Array< {
+        __typename: "Rest",
+        startTime?: string | null,
+        endTime?: string | null,
+      } | null > | null,
+      remarks?: string | null,
+      paidHolidayFlag?: boolean | null,
+      createdAt: string,
+    } | null > | null,
+    revision?: number | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1011,6 +1197,24 @@ export type OnDeleteAttendanceSubscription = {
     } | null > | null,
     remarks?: string | null,
     paidHolidayFlag?: boolean | null,
+    histories?:  Array< {
+      __typename: "AttendanceHistory",
+      staffId: string,
+      workDate: string,
+      startTime?: string | null,
+      endTime?: string | null,
+      goDirectlyFlag?: boolean | null,
+      returnDirectlyFlag?: boolean | null,
+      rests?:  Array< {
+        __typename: "Rest",
+        startTime?: string | null,
+        endTime?: string | null,
+      } | null > | null,
+      remarks?: string | null,
+      paidHolidayFlag?: boolean | null,
+      createdAt: string,
+    } | null > | null,
+    revision?: number | null,
     createdAt: string,
     updatedAt: string,
   } | null,

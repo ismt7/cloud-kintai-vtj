@@ -31,6 +31,7 @@ export declare type AttendanceUpdateFormInputValues = {
     returnDirectlyFlag?: boolean;
     remarks?: string;
     paidHolidayFlag?: boolean;
+    revision?: number;
 };
 export declare type AttendanceUpdateFormValidationValues = {
     staffId?: ValidationFunction<string>;
@@ -41,6 +42,7 @@ export declare type AttendanceUpdateFormValidationValues = {
     returnDirectlyFlag?: ValidationFunction<boolean>;
     remarks?: ValidationFunction<string>;
     paidHolidayFlag?: ValidationFunction<boolean>;
+    revision?: ValidationFunction<number>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type AttendanceUpdateFormOverridesProps = {
@@ -53,6 +55,7 @@ export declare type AttendanceUpdateFormOverridesProps = {
     returnDirectlyFlag?: PrimitiveOverrideProps<SwitchFieldProps>;
     remarks?: PrimitiveOverrideProps<TextFieldProps>;
     paidHolidayFlag?: PrimitiveOverrideProps<SwitchFieldProps>;
+    revision?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type AttendanceUpdateFormProps = React.PropsWithChildren<{
     overrides?: AttendanceUpdateFormOverridesProps | undefined | null;

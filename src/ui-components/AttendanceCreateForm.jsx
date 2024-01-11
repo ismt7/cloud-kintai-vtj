@@ -37,6 +37,7 @@ export default function AttendanceCreateForm(props) {
     returnDirectlyFlag: false,
     remarks: "",
     paidHolidayFlag: false,
+    revision: "",
   };
   const [staffId, setStaffId] = React.useState(initialValues.staffId);
   const [workDate, setWorkDate] = React.useState(initialValues.workDate);
@@ -52,6 +53,7 @@ export default function AttendanceCreateForm(props) {
   const [paidHolidayFlag, setPaidHolidayFlag] = React.useState(
     initialValues.paidHolidayFlag
   );
+  const [revision, setRevision] = React.useState(initialValues.revision);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setStaffId(initialValues.staffId);
@@ -62,6 +64,7 @@ export default function AttendanceCreateForm(props) {
     setReturnDirectlyFlag(initialValues.returnDirectlyFlag);
     setRemarks(initialValues.remarks);
     setPaidHolidayFlag(initialValues.paidHolidayFlag);
+    setRevision(initialValues.revision);
     setErrors({});
   };
   const validations = {
@@ -73,6 +76,7 @@ export default function AttendanceCreateForm(props) {
     returnDirectlyFlag: [],
     remarks: [],
     paidHolidayFlag: [],
+    revision: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -108,6 +112,7 @@ export default function AttendanceCreateForm(props) {
           returnDirectlyFlag,
           remarks,
           paidHolidayFlag,
+          revision,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -178,6 +183,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
+              revision,
             };
             const result = onChange(modelFields);
             value = result?.staffId ?? value;
@@ -209,6 +215,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
+              revision,
             };
             const result = onChange(modelFields);
             value = result?.workDate ?? value;
@@ -240,6 +247,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
+              revision,
             };
             const result = onChange(modelFields);
             value = result?.startTime ?? value;
@@ -271,6 +279,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
+              revision,
             };
             const result = onChange(modelFields);
             value = result?.endTime ?? value;
@@ -302,6 +311,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
+              revision,
             };
             const result = onChange(modelFields);
             value = result?.goDirectlyFlag ?? value;
@@ -333,6 +343,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag: value,
               remarks,
               paidHolidayFlag,
+              revision,
             };
             const result = onChange(modelFields);
             value = result?.returnDirectlyFlag ?? value;
@@ -366,6 +377,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag,
               remarks: value,
               paidHolidayFlag,
+              revision,
             };
             const result = onChange(modelFields);
             value = result?.remarks ?? value;
@@ -397,6 +409,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag: value,
+              revision,
             };
             const result = onChange(modelFields);
             value = result?.paidHolidayFlag ?? value;
@@ -411,6 +424,42 @@ export default function AttendanceCreateForm(props) {
         hasError={errors.paidHolidayFlag?.hasError}
         {...getOverrideProps(overrides, "paidHolidayFlag")}
       ></SwitchField>
+      <TextField
+        label="Revision"
+        isRequired={false}
+        isReadOnly={false}
+        type="number"
+        step="any"
+        value={revision}
+        onChange={(e) => {
+          let value = isNaN(parseInt(e.target.value))
+            ? e.target.value
+            : parseInt(e.target.value);
+          if (onChange) {
+            const modelFields = {
+              staffId,
+              workDate,
+              startTime,
+              endTime,
+              goDirectlyFlag,
+              returnDirectlyFlag,
+              remarks,
+              paidHolidayFlag,
+              revision: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.revision ?? value;
+          }
+          if (errors.revision?.hasError) {
+            runValidationTasks("revision", value);
+          }
+          setRevision(value);
+        }}
+        onBlur={() => runValidationTasks("revision", revision)}
+        errorMessage={errors.revision?.errorMessage}
+        hasError={errors.revision?.hasError}
+        {...getOverrideProps(overrides, "revision")}
+      ></TextField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}

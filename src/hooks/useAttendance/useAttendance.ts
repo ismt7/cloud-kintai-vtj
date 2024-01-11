@@ -28,6 +28,7 @@ export default function useAttendance() {
   const getAttendance = async (staffId: string, workDate: string) =>
     fetchAttendance(staffId, workDate)
       .then((res) => {
+        console.log("res", res);
         setAttendance(res);
         return res;
       })
@@ -78,6 +79,7 @@ export default function useAttendance() {
         id: attendance.id,
         startTime,
         goDirectlyFlag: goDirectlyFlag === GoDirectlyFlag.YES,
+        revision: attendance.revision,
       }).catch((e: Error) => {
         throw e;
       });
@@ -164,6 +166,7 @@ export default function useAttendance() {
         endTime,
         returnDirectlyFlag: returnDirectlyFlag === ReturnDirectlyFlag.YES,
         rests,
+        revision: attendance.revision,
       }).catch((e: Error) => {
         throw e;
       });
@@ -200,22 +203,18 @@ export default function useAttendance() {
             )
         : [];
 
-      if (rests.length === 0) {
-        rests.push({ startTime });
-      } else {
-        const isMismatch =
-          rests.filter((rest) => !rest.startTime || !rest.endTime).length > 0;
-
-        if (isMismatch) {
-          throw new Error("There is a problem with the rest time");
-        }
-
-        rests[rests.length - 1].startTime = startTime;
+      const isMismatch =
+        rests.filter((rest) => !rest.startTime || !rest.endTime).length > 0;
+      if (isMismatch) {
+        throw new Error("There is a problem with the rest time");
       }
+
+      rests.push({ startTime });
 
       return updateAttendance({
         id: attendance.id,
         rests,
+        revision: attendance.revision,
       }).catch((e: Error) => {
         throw e;
       });
@@ -277,6 +276,7 @@ export default function useAttendance() {
       return updateAttendance({
         id: attendance.id,
         rests,
+        revision: attendance.revision,
       }).catch((e: Error) => {
         throw e;
       });
@@ -304,6 +304,7 @@ export default function useAttendance() {
       return updateAttendance({
         id: attendance.id,
         remarks,
+        revision: attendance.revision,
       }).catch((e: Error) => {
         throw e;
       });

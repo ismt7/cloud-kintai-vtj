@@ -160,6 +160,24 @@ export const createAttendance = /* GraphQL */ `
       }
       remarks
       paidHolidayFlag
+      histories {
+        staffId
+        workDate
+        startTime
+        endTime
+        goDirectlyFlag
+        returnDirectlyFlag
+        rests {
+          startTime
+          endTime
+          __typename
+        }
+        remarks
+        paidHolidayFlag
+        createdAt
+        __typename
+      }
+      revision
       createdAt
       updatedAt
       __typename
@@ -186,6 +204,24 @@ export const updateAttendance = /* GraphQL */ `
       }
       remarks
       paidHolidayFlag
+      histories {
+        staffId
+        workDate
+        startTime
+        endTime
+        goDirectlyFlag
+        returnDirectlyFlag
+        rests {
+          startTime
+          endTime
+          __typename
+        }
+        remarks
+        paidHolidayFlag
+        createdAt
+        __typename
+      }
+      revision
       createdAt
       updatedAt
       __typename
@@ -212,6 +248,24 @@ export const deleteAttendance = /* GraphQL */ `
       }
       remarks
       paidHolidayFlag
+      histories {
+        staffId
+        workDate
+        startTime
+        endTime
+        goDirectlyFlag
+        returnDirectlyFlag
+        rests {
+          startTime
+          endTime
+          __typename
+        }
+        remarks
+        paidHolidayFlag
+        createdAt
+        __typename
+      }
+      revision
       createdAt
       updatedAt
       __typename
