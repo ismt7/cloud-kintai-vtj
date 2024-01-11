@@ -57,9 +57,10 @@ function Row({ history }: { history: AttendanceHistory }) {
         <TableCell>
           {history.endTime ? dayjs(history.endTime).format("HH:mm") : "(なし)"}
         </TableCell>
+        <TableCell>{history.remarks ? history.remarks : "(なし)"}</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
           <Collapse in={open} timeout="auto" unmountOnExit sx={{ py: 1 }}>
             <Typography variant="h6">休憩</Typography>
             {rests.length === 0 ? (
@@ -68,8 +69,9 @@ function Row({ history }: { history: AttendanceHistory }) {
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell>開始</TableCell>
-                    <TableCell>終了</TableCell>
+                    <TableCell sx={{ width: 100 }}>開始</TableCell>
+                    <TableCell sx={{ width: 100 }}>終了</TableCell>
+                    <TableCell />
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -85,6 +87,7 @@ function Row({ history }: { history: AttendanceHistory }) {
                           ? dayjs(rest.endTime).format("HH:mm")
                           : "(なし)"}
                       </TableCell>
+                      <TableCell />
                     </TableRow>
                   ))}
                 </TableBody>
@@ -133,18 +136,19 @@ export default function EditAttendanceHistoryList({
         <DialogTitle id="alert-dialog-title">{"変更履歴"}</DialogTitle>
         <DialogContent>
           <TableContainer>
-            <Table size="small">
+            <Table size="small" sx={{ width: 1500, overflowY: "auto" }}>
               <TableHead>
                 <TableRow>
                   <TableCell />
-                  <TableCell>作成日時</TableCell>
-                  <TableCell>スタッフID</TableCell>
-                  <TableCell>勤務日</TableCell>
-                  <TableCell>有給休暇</TableCell>
-                  <TableCell>直行</TableCell>
-                  <TableCell>直帰</TableCell>
-                  <TableCell>勤務開始</TableCell>
-                  <TableCell>勤務終了</TableCell>
+                  <TableCell sx={{ width: 150 }}>作成日時</TableCell>
+                  <TableCell sx={{ width: 300 }}>スタッフID</TableCell>
+                  <TableCell sx={{ width: 100 }}>勤務日</TableCell>
+                  <TableCell sx={{ width: 100 }}>有給休暇</TableCell>
+                  <TableCell sx={{ width: 100 }}>直行</TableCell>
+                  <TableCell sx={{ width: 100 }}>直帰</TableCell>
+                  <TableCell sx={{ width: 100 }}>勤務開始</TableCell>
+                  <TableCell sx={{ width: 100 }}>勤務終了</TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>備考</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
