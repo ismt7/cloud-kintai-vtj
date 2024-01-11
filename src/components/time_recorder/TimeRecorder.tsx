@@ -127,9 +127,29 @@ export default function TimeRecorder() {
                           "YYYY/MM/DD"
                         )}`,
                         body: [
-                          `${cognitoUser.familyName} ${cognitoUser.givenName} さん`,
+                          (() => {
+                            if (
+                              !cognitoUser.familyName &&
+                              !cognitoUser.givenName
+                            ) {
+                              return "おはようございます。";
+                            }
+
+                            if (
+                              cognitoUser.familyName &&
+                              cognitoUser.givenName
+                            ) {
+                              return `おはようございます、${cognitoUser.familyName} ${cognitoUser.givenName} さん`;
+                            }
+
+                            return `おはようございます、${
+                              cognitoUser.familyName
+                                ? cognitoUser.familyName
+                                : cognitoUser.givenName
+                            } さん`;
+                          })(),
                           "",
-                          "おはようございます。出勤処理が完了しました。",
+                          "出勤処理が完了しました。",
                           "-----",
                           `勤務日：${dayjs(res.workDate).format("YYYY/MM/DD")}`,
                           `出勤時刻：${
@@ -137,8 +157,11 @@ export default function TimeRecorder() {
                               ? dayjs(res.startTime).format("HH:mm")
                               : ""
                           }`,
+                          `出退勤区分：${
+                            res.goDirectlyFlag ? "直行" : "通常出勤"
+                          }}`,
                           "-----",
-                          "本日もよろしくお願いいたします。",
+                          "本日も1日よろしくお願いします。",
                         ].join("\n"),
                       },
                     },
@@ -168,7 +191,27 @@ export default function TimeRecorder() {
                           "YYYY/MM/DD"
                         )}`,
                         body: [
-                          `${cognitoUser.familyName} ${cognitoUser.givenName} さん`,
+                          (() => {
+                            if (
+                              !cognitoUser.familyName &&
+                              !cognitoUser.givenName
+                            ) {
+                              return "こんにちは。";
+                            }
+
+                            if (
+                              cognitoUser.familyName &&
+                              cognitoUser.givenName
+                            ) {
+                              return `こんにちは、${cognitoUser.familyName} ${cognitoUser.givenName} さん`;
+                            }
+
+                            return `こんにちは、${
+                              cognitoUser.familyName
+                                ? cognitoUser.familyName
+                                : cognitoUser.givenName
+                            } さん`;
+                          })(),
                           "",
                           "退勤処理が完了しました。",
                           "",
@@ -179,6 +222,9 @@ export default function TimeRecorder() {
                               ? dayjs(res.endTime).format("HH:mm")
                               : ""
                           }`,
+                          `出退勤区分：${
+                            res.returnDirectlyFlag ? "直帰" : "通常退勤"
+                          }}`,
                           "-----",
                           "",
                           "1日お疲れ様でした。気をつけて帰ってくださいね。",
@@ -208,7 +254,61 @@ export default function TimeRecorder() {
 
                 const now = dayjs().toISOString();
                 clockIn(cognitoUser.id, today, now, GoDirectlyFlag.YES)
-                  .then(() => dispatch(setSnackbarSuccess(S01003)))
+                  .then((res) => {
+                    dispatch(setSnackbarSuccess(S01003));
+                    void API.graphql({
+                      query: sendMail,
+                      variables: {
+                        data: {
+                          to: [cognitoUser.mailAddress],
+                          subject: `[出勤]勤怠連絡 - ${dayjs(
+                            res.workDate
+                          ).format("YYYY/MM/DD")}`,
+                          body: [
+                            (() => {
+                              if (
+                                !cognitoUser.familyName &&
+                                !cognitoUser.givenName
+                              ) {
+                                return "おはようございます。";
+                              }
+
+                              if (
+                                cognitoUser.familyName &&
+                                cognitoUser.givenName
+                              ) {
+                                return `おはようございます、${cognitoUser.familyName} ${cognitoUser.givenName} さん`;
+                              }
+
+                              return `おはようございます、${
+                                cognitoUser.familyName
+                                  ? cognitoUser.familyName
+                                  : cognitoUser.givenName
+                              } さん`;
+                            })(),
+                            "",
+                            "出勤処理が完了しました。",
+                            "",
+                            "-----",
+                            `勤務日：${dayjs(res.workDate).format(
+                              "YYYY/MM/DD"
+                            )}`,
+                            `退勤時刻：${
+                              res.endTime
+                                ? dayjs(res.endTime).format("HH:mm")
+                                : ""
+                            }`,
+                            `出退勤区分：${
+                              res.goDirectlyFlag ? "直行" : "通常出勤"
+                            }}`,
+                            "-----",
+                            "",
+                            "本日も1日よろしくお願いします。",
+                          ].join("\n"),
+                        },
+                      },
+                    });
+                  })
                   .catch((e) => {
                     logger.debug(e);
                     dispatch(setSnackbarError(E01005));
@@ -222,7 +322,61 @@ export default function TimeRecorder() {
 
                 const now = dayjs().toISOString();
                 clockOut(cognitoUser.id, today, now, ReturnDirectlyFlag.YES)
-                  .then(() => dispatch(setSnackbarSuccess(S01004)))
+                  .then((res) => {
+                    dispatch(setSnackbarSuccess(S01004));
+                    void API.graphql({
+                      query: sendMail,
+                      variables: {
+                        data: {
+                          to: [cognitoUser.mailAddress],
+                          subject: `[退勤]勤怠連絡 - ${dayjs(
+                            res.workDate
+                          ).format("YYYY/MM/DD")}`,
+                          body: [
+                            (() => {
+                              if (
+                                !cognitoUser.familyName &&
+                                !cognitoUser.givenName
+                              ) {
+                                return "こんにちは。";
+                              }
+
+                              if (
+                                cognitoUser.familyName &&
+                                cognitoUser.givenName
+                              ) {
+                                return `こんにちは、${cognitoUser.familyName} ${cognitoUser.givenName} さん`;
+                              }
+
+                              return `こんにちは、${
+                                cognitoUser.familyName
+                                  ? cognitoUser.familyName
+                                  : cognitoUser.givenName
+                              } さん`;
+                            })(),
+                            "",
+                            "退勤処理が完了しました。",
+                            "",
+                            "-----",
+                            `勤務日：${dayjs(res.workDate).format(
+                              "YYYY/MM/DD"
+                            )}`,
+                            `退勤時刻：${
+                              res.endTime
+                                ? dayjs(res.endTime).format("HH:mm")
+                                : ""
+                            }`,
+                            `出退勤区分：${
+                              res.returnDirectlyFlag ? "直帰" : "通常退勤"
+                            }}`,
+                            "-----",
+                            "",
+                            "本日も1日よろしくお願いします。",
+                          ].join("\n"),
+                        },
+                      },
+                    });
+                  })
                   .catch((e) => {
                     logger.debug(e);
                     dispatch(setSnackbarError(E01006));
