@@ -28,7 +28,6 @@ export default function useAttendance() {
   const getAttendance = async (staffId: string, workDate: string) =>
     fetchAttendance(staffId, workDate)
       .then((res) => {
-        console.log("res", res);
         setAttendance(res);
         return res;
       })
