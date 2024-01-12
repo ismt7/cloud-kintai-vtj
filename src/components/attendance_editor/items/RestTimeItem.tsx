@@ -90,6 +90,8 @@ export function RestTimeItem({
                         .year(targetWorkDate.year())
                         .month(targetWorkDate.month())
                         .date(targetWorkDate.date())
+                        .second(0)
+                        .millisecond(0)
                         .toISOString()
                     : null
                 );
@@ -118,6 +120,8 @@ export function RestTimeItem({
                             .year(targetWorkDate.year())
                             .month(targetWorkDate.month())
                             .date(targetWorkDate.date())
+                            .second(0)
+                            .millisecond(0)
                             .toISOString()
                         : null
                     );

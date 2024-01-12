@@ -79,8 +79,6 @@ export default function HolidayCalendarList({
                 onClick={() => {
                   const confirm = window.confirm("本当に削除しますか？");
                   if (!confirm) return;
-
-                  console.log("削除");
                 }}
                 label="削除"
               />,
