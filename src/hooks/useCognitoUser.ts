@@ -1,7 +1,7 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useEffect, useState } from "react";
 
-interface CognitoUser {
+export interface CognitoUser {
   id: string;
   givenName: string;
   familyName: string;
