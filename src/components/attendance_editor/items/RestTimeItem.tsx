@@ -15,6 +15,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 // TODO: あとで修正
 // eslint-disable-next-line import/no-cycle
 import { AttendanceEditorInputs } from "../AttendanceEditor";
+import { RestInput } from "../../../API";
 
 export function calcTotalRestTime(
   startTime: string | null | undefined,
@@ -46,9 +47,17 @@ export function RestTimeItem({
 }) {
   const [totalRestTime, setTotalRestTime] = useState<number>(0);
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
+  const [restStartTime, setRestStartTime] =
+    useState<RestInput["startTime"]>(undefined);
+  const [restEndTime, setRestEndTime] =
+    useState<RestInput["endTime"]>(undefined);
 
   useEffect(() => {
+    const startTime = getValues(`rests.${index}.startTime`);
+    setRestStartTime(startTime);
     const endTime = getValues(`rests.${index}.endTime`);
+    setRestEndTime(endTime);
+
     if (endTime) {
       setEnableEndTime(true);
     }
@@ -58,6 +67,9 @@ export function RestTimeItem({
 
       const rest = data.rests[index];
       if (!rest) return;
+
+      setRestStartTime(rest.startTime);
+      setRestEndTime(rest.endTime);
 
       const diff = calcTotalRestTime(rest.startTime, rest.endTime);
       setTotalRestTime(diff);
@@ -77,24 +89,24 @@ export function RestTimeItem({
           control={control}
           render={({ field }) => (
             <TimePicker
-              value={dayjs(field.value)}
+              value={dayjs(restStartTime)}
               ampm={false}
               viewRenderers={{
                 hours: renderTimeViewClock,
                 minutes: renderTimeViewClock,
               }}
               onChange={(newStartTime) => {
-                field.onChange(
-                  newStartTime
-                    ? newStartTime
-                        .year(targetWorkDate.year())
-                        .month(targetWorkDate.month())
-                        .date(targetWorkDate.date())
-                        .second(0)
-                        .millisecond(0)
-                        .toISOString()
-                    : null
-                );
+                const formattedStartTime = newStartTime
+                  ? newStartTime
+                      .year(targetWorkDate.year())
+                      .month(targetWorkDate.month())
+                      .date(targetWorkDate.date())
+                      .second(0)
+                      .millisecond(0)
+                      .toISOString()
+                  : null;
+                setRestStartTime(formattedStartTime);
+                field.onChange(formattedStartTime);
               }}
             />
           )}
@@ -107,24 +119,24 @@ export function RestTimeItem({
               control={control}
               render={({ field }) => (
                 <TimePicker
-                  value={dayjs(field.value)}
+                  value={dayjs(restEndTime)}
                   ampm={false}
                   viewRenderers={{
                     hours: renderTimeViewClock,
                     minutes: renderTimeViewClock,
                   }}
                   onChange={(newEndTime) => {
-                    field.onChange(
-                      newEndTime
-                        ? newEndTime
-                            .year(targetWorkDate.year())
-                            .month(targetWorkDate.month())
-                            .date(targetWorkDate.date())
-                            .second(0)
-                            .millisecond(0)
-                            .toISOString()
-                        : null
-                    );
+                    const formattedEndTime = newEndTime
+                      ? newEndTime
+                          .year(targetWorkDate.year())
+                          .month(targetWorkDate.month())
+                          .date(targetWorkDate.date())
+                          .second(0)
+                          .millisecond(0)
+                          .toISOString()
+                      : null;
+                    setRestEndTime(formattedEndTime);
+                    field.onChange(formattedEndTime);
                   }}
                 />
               )}

@@ -41,6 +41,7 @@ import Title from "../Title/Title";
 // eslint-disable-next-line import/no-cycle
 import EditAttendanceHistoryList from "./EditAttendanceHistoryList";
 import { sendMail } from "../../graphql/queries";
+import getAttendanceMailBody from "./attendanceMailTemplate";
 
 export type RestInputs = {
   startTime: Rest["startTime"] | null;
@@ -176,144 +177,9 @@ export default function AttendanceEditor() {
                 subject: `勤怠情報変更のお知らせ - ${dayjs(res.workDate).format(
                   "YYYY/MM/DD"
                 )}`,
-                body: [
-                  (() => {
-                    if (!staff.familyName && !staff.givenName) {
-                      return "こんにちは。";
-                    }
-
-                    if (staff.familyName && staff.givenName) {
-                      return `こんにちは、${staff.familyName} ${staff.givenName} さん`;
-                    }
-
-                    return `こんにちは、${
-                      staff.familyName ? staff.familyName : staff.givenName
-                    } さん`;
-                  })(),
-                  "",
-                  "管理者より勤怠情報の更新がありました。",
-                  "",
-                  "-----",
-                  `勤務日：${dayjs(res.workDate).format("YYYY/MM/DD")}`,
-                  `有給休暇：${(() => {
-                    if (res.paidHolidayFlag === latestHistory.paidHolidayFlag) {
-                      return "変更なし";
-                    }
-
-                    return `${res.paidHolidayFlag ? "有" : "無"} → ${
-                      latestHistory.paidHolidayFlag ? "有" : "無"
-                    }`;
-                  })()}`,
-                  `直行：${(() => {
-                    if (res.goDirectlyFlag === latestHistory.goDirectlyFlag) {
-                      return "変更なし";
-                    }
-
-                    return `${res.goDirectlyFlag ? "有" : "無"} → ${
-                      latestHistory.goDirectlyFlag ? "有" : "無"
-                    }`;
-                  })()}`,
-                  `直帰：${(() => {
-                    if (
-                      res.returnDirectlyFlag ===
-                      latestHistory.returnDirectlyFlag
-                    ) {
-                      return "変更なし";
-                    }
-
-                    return `${res.returnDirectlyFlag ? "有" : "無"} → ${
-                      latestHistory.returnDirectlyFlag ? "有" : "無"
-                    }`;
-                  })()}`,
-                  `勤務時間：${(() => {
-                    if (
-                      res.startTime === latestHistory.startTime &&
-                      res.endTime === latestHistory.endTime
-                    ) {
-                      return "変更なし";
-                    }
-
-                    return `${dayjs(res.startTime).format("HH:mm")} → ${dayjs(
-                      latestHistory.startTime
-                    ).format("HH:mm")} ~ ${dayjs(latestHistory.endTime).format(
-                      "HH:mm"
-                    )}`;
-                  })()}`,
-                  "休憩時間：",
-                  `  ${(() => {
-                    const afterRests = res.rests
-                      ? res.rests.filter(
-                          (item): item is NonNullable<typeof item> =>
-                            item !== null
-                        )
-                      : [];
-
-                    const beforeRests = latestHistory.rests
-                      ? latestHistory.rests.filter(
-                          (item): item is NonNullable<typeof item> =>
-                            item !== null
-                        )
-                      : [];
-
-                    const afterRestsLength = afterRests.length;
-                    const beforeRestsLength = beforeRests.length;
-
-                    const result: string[] = [];
-                    for (
-                      let i = 0;
-                      i < Math.max(afterRestsLength, beforeRestsLength);
-                      i += 1
-                    ) {
-                      const afterRest = afterRests[i];
-                      const beforeRest = beforeRests[i];
-
-                      if (!afterRest) {
-                        result.push(
-                          `  ${dayjs(beforeRest?.startTime).format(
-                            "HH:mm"
-                          )} ~ ${dayjs(beforeRest?.endTime).format(
-                            "HH:mm"
-                          )} → --:-- ~ --:--`
-                        );
-                        continue;
-                      }
-
-                      if (!beforeRest) {
-                        result.push(
-                          `  --:-- ~ --:-- → ${dayjs(
-                            afterRest.startTime
-                          ).format("HH:mm")} ~ ${dayjs(
-                            afterRest.endTime
-                          ).format("HH:mm")}`
-                        );
-                        continue;
-                      }
-
-                      result.push(
-                        `  ${dayjs(beforeRest.startTime).format(
-                          "HH:mm"
-                        )} ~ ${dayjs(beforeRest.endTime).format(
-                          "HH:mm"
-                        )} → ${dayjs(afterRest.startTime).format(
-                          "HH:mm"
-                        )} ~ ${dayjs(afterRest.endTime).format("HH:mm")}`
-                      );
-                    }
-
-                    return result.join("\n");
-                  })()}`,
-                  `備考：${(() => {
-                    if (res.remarks === latestHistory.remarks) {
-                      return "変更なし";
-                    }
-                    return `${res?.remarks || ""} → ${
-                      latestHistory?.remarks || ""
-                    }`;
-                  })()}`,
-                  "-----",
-                  "",
-                  "不明な点がある場合は、管理者にお問い合わせください。",
-                ].join("\n"),
+                body: getAttendanceMailBody(staff, res, latestHistory).join(
+                  "\n"
+                ),
               },
             },
           });
@@ -508,7 +374,7 @@ export default function AttendanceEditor() {
                 <Typography variant="body1">休憩時間はありません</Typography>
               </Box>
             )}
-            {fields.map((field, index) => (
+            {fields.map((_, index) => (
               <RestTimeItem
                 key={index}
                 targetWorkDate={dayjs(targetWorkDate)}
