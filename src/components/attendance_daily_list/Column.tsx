@@ -5,9 +5,9 @@ import {
   GridValueGetterParams,
 } from "@mui/x-data-grid";
 
-import EditIcon from "@mui/icons-material/Edit";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { AttendanceDaily } from "../../hooks/useAttendanceDaily/useAttendanceDaily";
 
 // export interface SummaryAttendance {
@@ -26,13 +26,29 @@ export default function GetColumns(): GridColDef[] {
 
   return [
     {
+      field: "actions",
+      type: "actions",
+      sortable: false,
+      getActions: (params: GridRowParams<AttendanceDaily>) => [
+        <GridActionsCellItem
+          key={params.id}
+          icon={<CalendarMonthIcon />}
+          onClick={() => {
+            const { sub: staffId } = params.row;
+            navigate(`/admin/staff/${staffId}/attendance`);
+          }}
+          label="一覧"
+        />,
+      ],
+    },
+    {
       field: "fullName",
       type: "string",
       headerName: "氏名",
       align: "left",
       sortable: false,
       headerAlign: "center",
-      width: 150,
+      width: 100,
       valueGetter: (params: GridValueGetterParams<AttendanceDaily>) => {
         const { familyName, givenName } = params.row;
         if (!familyName && !givenName) return "(未設定)";
@@ -120,24 +136,5 @@ export default function GetColumns(): GridColDef[] {
     //   sortable: false,
     //   headerAlign: "center",
     // },
-    {
-      // TODO: #181 一覧表示のアクションを追加
-      field: "actions",
-      type: "actions",
-      headerName: "操作",
-      sortable: false,
-      getActions: (params: GridRowParams) => [
-        <GridActionsCellItem
-          key={params.id}
-          icon={<EditIcon />}
-          onClick={() => {
-            const now = dayjs();
-            const targetWorkDate = now.format("YYYYMMDD");
-            navigate(`/admin/attendances/edit/${targetWorkDate}/${params.id}`);
-          }}
-          label="編集"
-        />,
-      ],
-    },
   ];
 }

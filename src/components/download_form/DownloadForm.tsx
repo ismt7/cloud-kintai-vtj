@@ -9,23 +9,30 @@ import {
 } from "@mui/material";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import useStaffs from "../../hooks/useStaffs/useStaffs";
 import useCloseDates from "../../hooks/useCloseDates/useCloseDates";
+import { Staff } from "../../hooks/useStaffs/common";
+import downloadAttendances from "./downloadAttendances";
 
-interface FormState {
-  startDate: dayjs.Dayjs | null;
-  endDate: dayjs.Dayjs | null;
-  aggregateMonth: number;
-}
+type Inputs = {
+  startDate: dayjs.Dayjs | undefined;
+  endDate: dayjs.Dayjs | undefined;
+  staffs: Staff[];
+};
 
-const initialState: FormState = {
-  startDate: null,
-  endDate: null,
-  aggregateMonth: dayjs().month(),
+const defaultValues: Inputs = {
+  startDate: undefined,
+  endDate: undefined,
+  staffs: [],
 };
 
 export default function DownloadForm() {
+  const navigate = useNavigate();
+  const [selectedStaff, setSelectedStaff] = useState<Staff[]>([]);
   const { staffs, loading: staffLoading, error: staffError } = useStaffs();
   const {
     closeDates,
@@ -33,17 +40,91 @@ export default function DownloadForm() {
     error: closeDateError,
   } = useCloseDates();
 
-  const [formState, setFormState] = useState<FormState>(initialState);
+  const { control, handleSubmit, setValue } = useForm<Inputs>({
+    mode: "onChange",
+    defaultValues,
+  });
 
-  function changeHandler<T>(key: string, value: T) {
-    setFormState((prevState) => ({
-      ...prevState,
-      [key]: value,
-    }));
-  }
+  const onSubmit = async (data: Inputs) => {
+    const startDate = data.startDate ? data.startDate : dayjs();
+    const endDate = data.endDate ? data.endDate : dayjs();
 
-  const handleBulkDownload = () => {
-    // 処理なし
+    const workDates: string[] = [];
+    let date = startDate;
+    while (date.isBefore(endDate) || date.isSame(endDate)) {
+      workDates.push(date.format("YYYY-MM-DD"));
+      date = date.add(1, "day");
+    }
+
+    await downloadAttendances(
+      workDates.map((workDate) => ({
+        workDate: {
+          eq: workDate,
+        },
+      }))
+    ).then((res) => {
+      const exportData = [
+        "営業日,従業員コード,名前,休憩時間,出勤打刻,退勤打刻,直行,直帰",
+        ...selectedStaff.map((staff) => {
+          const attendances = res.filter(
+            (attendance) => attendance.staffId === staff.sub
+          );
+
+          return [
+            ...workDates.map((workDate) => {
+              const matchAttendance = attendances.find(
+                (attendance) => attendance.workDate === workDate
+              );
+
+              if (matchAttendance) {
+                const {
+                  staffId,
+                  startTime,
+                  endTime,
+                  goDirectlyFlag,
+                  returnDirectlyFlag,
+                } = matchAttendance;
+
+                return [
+                  dayjs(workDate).format("YYYY/MM/DD"),
+                  staffId,
+                  `${staff.familyName} ${staff.givenName}`,
+                  startTime ? dayjs(startTime).format("HH:mm") : "",
+                  endTime ? dayjs(endTime).format("HH:mm") : "",
+                  "",
+                  goDirectlyFlag ? 1 : 0,
+                  returnDirectlyFlag ? 1 : 0,
+                ].join(",");
+              }
+
+              return [
+                dayjs(workDate).format("YYYY/MM/DD"),
+                staff.sub,
+                `${staff.familyName} ${staff.givenName}`,
+                "",
+                "",
+                " ",
+                "",
+                "",
+              ].join(",");
+            }),
+          ].join("\n");
+        }),
+      ].join("\n");
+
+      // CSVファイルを作成してダウンロード
+      const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+      const blob = new Blob([bom, exportData], {
+        type: "text/csv",
+      });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.download = `attendances_${dayjs().format("YYYYMMDD")}.csv`;
+      a.href = url;
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    });
   };
 
   if (staffLoading || closeDateLoading) {
@@ -87,22 +168,32 @@ export default function DownloadForm() {
             <Stack spacing={1}>
               <Stack direction="row" spacing={1} alignItems="center">
                 <Box>
-                  <DesktopDatePicker
-                    label="開始日"
-                    format="YYYY/MM/DD"
-                    value={formState.startDate}
-                    onChange={(event) => changeHandler("startDate", event)}
-                    slotProps={{ textField: { variant: "outlined" } }}
+                  <Controller
+                    name="startDate"
+                    control={control}
+                    render={({ field }) => (
+                      <DesktopDatePicker
+                        {...field}
+                        label="開始日"
+                        format="YYYY/MM/DD"
+                        slotProps={{ textField: { variant: "outlined" } }}
+                      />
+                    )}
                   />
                 </Box>
                 <Box>〜</Box>
                 <Box>
-                  <DesktopDatePicker
-                    label="終了日"
-                    format="YYYY/MM/DD"
-                    value={formState.endDate}
-                    onChange={(event) => changeHandler("endDate", event)}
-                    slotProps={{ textField: { variant: "outlined" } }}
+                  <Controller
+                    name="endDate"
+                    control={control}
+                    render={({ field }) => (
+                      <DesktopDatePicker
+                        {...field}
+                        label="終了日"
+                        format="YYYY/MM/DD"
+                        slotProps={{ textField: { variant: "outlined" } }}
+                      />
+                    )}
                   />
                 </Box>
               </Stack>
@@ -110,6 +201,15 @@ export default function DownloadForm() {
                 <Stack spacing={2} sx={{ maxWidth: 500, overflowX: "auto" }}>
                   <Stack direction="row" spacing={1} alignItems="center">
                     <Box sx={{ whiteSpace: "nowrap" }}>集計対象月から:</Box>
+                    <Chip
+                      icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
+                      label="新規"
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => {
+                        navigate("/admin/master/job_term");
+                      }}
+                    />
                     {closeDates.map((closeDate, index) => (
                       <Chip
                         key={index}
@@ -117,11 +217,8 @@ export default function DownloadForm() {
                         variant="outlined"
                         color="primary"
                         onClick={() => {
-                          changeHandler(
-                            "startDate",
-                            dayjs(closeDate.startDate)
-                          );
-                          changeHandler("endDate", dayjs(closeDate.endDate));
+                          setValue("startDate", dayjs(closeDate.startDate));
+                          setValue("endDate", dayjs(closeDate.endDate));
                         }}
                       />
                     ))}
@@ -131,30 +228,42 @@ export default function DownloadForm() {
             </Stack>
           </Box>
           <Box>
-            <Autocomplete
-              data-testid="autocomplete"
-              multiple
-              limitTags={2}
-              id="multiple-limit-tags"
-              options={staffs}
-              getOptionLabel={(option) =>
-                `${option?.familyName || ""} ${option?.givenName || ""}`
-              }
-              defaultValue={[]}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="対象者"
-                  placeholder="対象者を入力..."
+            <Controller
+              name="staffs"
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  {...field}
+                  value={selectedStaff}
+                  multiple
+                  limitTags={2}
+                  id="multiple-limit-tags"
+                  options={staffs}
+                  filterSelectedOptions
+                  getOptionLabel={(option) =>
+                    `${option?.familyName || ""} ${option?.givenName || ""}`
+                  }
+                  defaultValue={[]}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="対象者"
+                      placeholder="対象者を入力..."
+                    />
+                  )}
+                  sx={{ width: "500px" }}
+                  onChange={(_, value) => {
+                    setSelectedStaff(value);
+                    setValue("staffs", value);
+                  }}
                 />
               )}
-              sx={{ width: "500px" }}
             />
           </Box>
         </Stack>
       </Box>
       <Box>
-        <Button onClick={handleBulkDownload}>一括ダウンロード</Button>
+        <Button onClick={handleSubmit(onSubmit)}>一括ダウンロード</Button>
       </Box>
     </Stack>
   );

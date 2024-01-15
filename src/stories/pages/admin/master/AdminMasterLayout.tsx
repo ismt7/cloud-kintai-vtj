@@ -13,7 +13,7 @@ export default function Layout() {
 
   const menuList = [
     {
-      name: "締日",
+      name: "集計対象月",
       path: "/admin/master/job_term",
     },
     {
