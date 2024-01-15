@@ -81,10 +81,10 @@ export default function EditJobTermInputDialog({
   return (
     <>
       <Dialog open={open} onClose={onClose}>
-        <DialogTitle>締日を変更</DialogTitle>
+        <DialogTitle>集計対象月を変更</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            変更する締日の情報を入力してください。
+            変更する集計対象月の情報を入力してください。
           </DialogContentText>
           <Stack spacing={2}>
             <Box>
@@ -102,7 +102,7 @@ export default function EditJobTermInputDialog({
                       onChange(v);
                     }}
                     renderInput={(params) => (
-                      <TextField {...params} label="締日" />
+                      <TextField {...params} label="集計対象月" />
                     )}
                   />
                 )}

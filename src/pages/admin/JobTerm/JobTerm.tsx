@@ -31,7 +31,7 @@ function Title() {
       variant="h4"
       sx={{ pl: 1, borderBottom: "solid 5px #0FA85E", color: "#0FA85E" }}
     >
-      締日管理
+      集計対象月
     </Typography>
   );
 }
@@ -113,7 +113,7 @@ export default function JobTerm() {
                       onChange(v);
                     }}
                     renderInput={(params) => (
-                      <TextField {...params} label="締日" />
+                      <TextField {...params} label="集計対象月" />
                     )}
                   />
                 )}
@@ -175,7 +175,7 @@ export default function JobTerm() {
           columns={[
             {
               field: "closeDate",
-              headerName: "締日",
+              headerName: "集計対象月",
               width: 150,
               valueGetter: (params) => {
                 const date = dayjs(params.row.closeDate);
