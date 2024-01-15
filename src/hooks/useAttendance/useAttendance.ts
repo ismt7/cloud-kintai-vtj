@@ -133,22 +133,20 @@ export default function useAttendance() {
           .second(0)
           .millisecond(0);
 
-        const isAlreadyExist =
-          prevRests.length === 0 ||
-          prevRests.filter((rest) => {
-            if (!rest.startTime || !rest.endTime) {
-              return false;
-            }
+        const isAlreadyExist = prevRests.filter((rest) => {
+          if (!rest.startTime || !rest.endTime) {
+            return false;
+          }
 
-            const restStart = dayjs(rest.startTime);
-            const restEnd = dayjs(rest.endTime);
+          const restStart = dayjs(rest.startTime);
+          const restEnd = dayjs(rest.endTime);
 
-            return (
-              restStart.isSame(lunchBreakStart) && restEnd.isSame(lunchBreakEnd)
-            );
-          });
+          return (
+            restStart.isSame(lunchBreakStart) && restEnd.isSame(lunchBreakEnd)
+          );
+        });
 
-        if (isAlreadyExist) {
+        if (isAlreadyExist.length > 0) {
           return prevRests;
         }
 
