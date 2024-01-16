@@ -173,7 +173,9 @@
                 "cognito-idp:AdminGetUser",
                 "cognito-idp:AdminConfirmSignUp",
                 "cognito-idp:ListUsers",
-                "cognito-idp:ListGroups"
+                "cognito-idp:ListGroups",
+                "cognito-idp:AdminCreateUser",
+                "cognito-idp:AdminUpdateUserAttributes"
               ],
               "Resource": {
                 "Fn::Join": [

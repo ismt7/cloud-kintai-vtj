@@ -4,7 +4,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { API, Auth } from "aws-amplify";
-import { Staff } from "../useStaffs/common";
+import dayjs from "dayjs";
+import { Staff, StaffRole } from "../useStaffs/common";
 
 export default async function fetchStaffs(): Promise<Staff[]> {
   const params = {
@@ -18,13 +19,53 @@ export default async function fetchStaffs(): Promise<Staff[]> {
 
   const response = await API.get("AdminQueries", "/listUsers", params);
 
-  return response.Users.map((user: any) => ({
-    sub: user.Attributes.find((attr: any) => attr.Name === "sub")?.Value,
-    givenName: user.Attributes.find((attr: any) => attr.Name === "given_name")
-      ?.Value,
-    familyName: user.Attributes.find((attr: any) => attr.Name === "family_name")
-      ?.Value,
-    mailAddress: user.Attributes.find((attr: any) => attr.Name === "email")
-      ?.Value,
-  }));
+  console.log(response);
+
+  return Promise.all(
+    response.Users.map(async (user: any) => {
+      const sub = user.Attributes.find(
+        (attr: any) => attr.Name === "sub"
+      )?.Value;
+      const adminResponse = await API.get(
+        "AdminQueries",
+        "/listGroupsForUser",
+        {
+          ...params,
+          queryStringParameters: {
+            username: sub,
+          },
+        }
+      );
+
+      return {
+        sub,
+        enabled: user.Enabled,
+        status: user.UserStatus,
+        givenName: user.Attributes.find(
+          (attr: any) => attr.Name === "given_name"
+        )?.Value,
+        familyName: user.Attributes.find(
+          (attr: any) => attr.Name === "family_name"
+        )?.Value,
+        mailAddress: user.Attributes.find((attr: any) => attr.Name === "email")
+          ?.Value,
+        roles: adminResponse.Groups.map((group: any) => {
+          switch (group.GroupName as string) {
+            case "Admin":
+              return StaffRole.ADMIN;
+            case "StaffAdmin":
+              return StaffRole.STAFF_ADMIN;
+            case "Staff":
+              return StaffRole.STAFF;
+            case "Guest":
+              return StaffRole.GUEST;
+            default:
+              return StaffRole.NONE;
+          }
+        }),
+        createdAt: dayjs(user.UserCreateDate as string),
+        updatedAt: dayjs(user.UserLastModifiedDate as string),
+      };
+    })
+  );
 }
