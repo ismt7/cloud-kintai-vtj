@@ -82,6 +82,7 @@ export default function AttendanceEditor() {
   const { attendance, getAttendance, updateAttendance, createAttendance } =
     useAttendance();
   const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
+  const [workDate, setWorkDate] = useState<dayjs.Dayjs | null>(null);
 
   const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
 
@@ -116,6 +117,8 @@ export default function AttendanceEditor() {
 
   useEffect(() => {
     if (!staff || !targetStaffId || !targetWorkDate) return;
+
+    setWorkDate(dayjs(targetWorkDate));
 
     getAttendance(staff.sub, dayjs(targetWorkDate).format("YYYY-MM-DD")).catch(
       (e: Error) => {
@@ -217,6 +220,8 @@ export default function AttendanceEditor() {
   useEffect(() => {
     if (!attendance) return;
 
+    setWorkDate(dayjs(attendance.workDate));
+
     setValue("workDate", attendance.workDate);
     setValue("startTime", attendance.startTime);
     setValue("endTime", attendance.endTime);
@@ -279,9 +284,11 @@ export default function AttendanceEditor() {
           <Link to={`/admin/staff/${targetStaffId}/attendance`} color="inherit">
             勤怠一覧
           </Link>
-          <Typography color="text.primary">
-            {dayjs(targetWorkDate).format("YYYY-MM-DD")}
-          </Typography>
+          {workDate && (
+            <Typography color="text.primary">
+              {workDate.format("YYYY/MM/DD")}
+            </Typography>
+          )}
         </Breadcrumbs>
       </Box>
       <Box>
@@ -312,14 +319,10 @@ export default function AttendanceEditor() {
         </Box>
         <EditAttendanceHistoryList getValues={getValues} />
         <Box>
-          <StaffNameItem staff={staff} />
+          <WorkDateItem staffId={targetStaffId} workDate={workDate} />
         </Box>
         <Box>
-          <WorkDateItem
-            workDate={
-              getValues().workDate || dayjs(targetWorkDate).format("YYYY/MM/DD")
-            }
-          />
+          <StaffNameItem staff={staff} />
         </Box>
         <Box>
           <Stack direction="row" alignItems={"center"}>
@@ -360,7 +363,7 @@ export default function AttendanceEditor() {
           </Box>
         </Stack>
         <WorkTimeItem
-          targetWorkDate={dayjs(targetWorkDate)}
+          targetWorkDate={workDate}
           control={control}
           watch={watch}
           setValue={setValue}
@@ -377,7 +380,7 @@ export default function AttendanceEditor() {
             {fields.map((_, index) => (
               <RestTimeItem
                 key={index}
-                targetWorkDate={dayjs(targetWorkDate)}
+                targetWorkDate={workDate}
                 index={index}
                 watch={watch}
                 remove={remove}
