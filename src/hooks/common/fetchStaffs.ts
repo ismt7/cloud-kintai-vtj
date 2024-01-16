@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { API, Auth } from "aws-amplify";
-import { Staff } from "../useStaffs/common";
+import { Staff, StaffRole } from "../useStaffs/common";
 
 export default async function fetchStaffs(): Promise<Staff[]> {
   const params = {
@@ -18,13 +18,45 @@ export default async function fetchStaffs(): Promise<Staff[]> {
 
   const response = await API.get("AdminQueries", "/listUsers", params);
 
-  return response.Users.map((user: any) => ({
-    sub: user.Attributes.find((attr: any) => attr.Name === "sub")?.Value,
-    givenName: user.Attributes.find((attr: any) => attr.Name === "given_name")
-      ?.Value,
-    familyName: user.Attributes.find((attr: any) => attr.Name === "family_name")
-      ?.Value,
-    mailAddress: user.Attributes.find((attr: any) => attr.Name === "email")
-      ?.Value,
-  }));
+  return Promise.all(
+    response.Users.map(async (user: any) => {
+      const sub = user.Attributes.find(
+        (attr: any) => attr.Name === "sub"
+      )?.Value;
+      const adminResponse = await API.get(
+        "AdminQueries",
+        "/listGroupsForUser",
+        {
+          ...params,
+          queryStringParameters: {
+            username: sub,
+          },
+        }
+      );
+
+      return {
+        sub,
+        givenName: user.Attributes.find(
+          (attr: any) => attr.Name === "given_name"
+        )?.Value,
+        familyName: user.Attributes.find(
+          (attr: any) => attr.Name === "family_name"
+        )?.Value,
+        mailAddress: user.Attributes.find((attr: any) => attr.Name === "email")
+          ?.Value,
+        role: adminResponse.Groups.map((group: any) => {
+          switch (group.GroupName) {
+            case "Admin":
+              return StaffRole.ADMIN;
+            case "Staff":
+              return StaffRole.STAFF;
+            case "Guest":
+              return StaffRole.GUEST;
+            default:
+              throw new Error(`Unknown role: ${String(group.GroupName)}`);
+          }
+        }),
+      };
+    })
+  );
 }

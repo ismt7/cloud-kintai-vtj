@@ -143,6 +143,11 @@ export default function AdminStaff() {
                 headerName: "メールアドレス",
                 width: 200,
               },
+              {
+                field: "role",
+                headerName: "権限",
+                width: 200,
+              },
               // {
               //   field: "actions",
               //   headerName: "操作",
