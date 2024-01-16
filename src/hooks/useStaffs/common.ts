@@ -1,14 +1,21 @@
+import dayjs from "dayjs";
+
 export enum StaffRole {
-  ADMIN = "管理者",
-  STAFF_ADMIN = "スタッフ管理者",
-  STAFF = "スタッフ",
-  GUEST = "ゲスト",
+  ADMIN = "Admin",
+  STAFF_ADMIN = "StaffAdmin",
+  STAFF = "Staff",
+  GUEST = "Guest",
+  NONE = "None",
 }
 
 export interface Staff {
   sub: string;
+  enabled: boolean;
+  status: string;
   givenName: string;
   familyName: string;
   mailAddress: string;
-  role: StaffRole[];
+  roles: StaffRole[];
+  createdAt: dayjs.Dayjs;
+  updatedAt: dayjs.Dayjs;
 }

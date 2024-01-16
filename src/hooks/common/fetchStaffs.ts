@@ -4,6 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { API, Auth } from "aws-amplify";
+import dayjs from "dayjs";
 import { Staff, StaffRole } from "../useStaffs/common";
 
 export default async function fetchStaffs(): Promise<Staff[]> {
@@ -17,6 +18,8 @@ export default async function fetchStaffs(): Promise<Staff[]> {
   };
 
   const response = await API.get("AdminQueries", "/listUsers", params);
+
+  console.log(response);
 
   return Promise.all(
     response.Users.map(async (user: any) => {
@@ -36,6 +39,8 @@ export default async function fetchStaffs(): Promise<Staff[]> {
 
       return {
         sub,
+        enabled: user.Enabled,
+        status: user.UserStatus,
         givenName: user.Attributes.find(
           (attr: any) => attr.Name === "given_name"
         )?.Value,
@@ -44,18 +49,22 @@ export default async function fetchStaffs(): Promise<Staff[]> {
         )?.Value,
         mailAddress: user.Attributes.find((attr: any) => attr.Name === "email")
           ?.Value,
-        role: adminResponse.Groups.map((group: any) => {
-          switch (group.GroupName) {
+        roles: adminResponse.Groups.map((group: any) => {
+          switch (group.GroupName as string) {
             case "Admin":
               return StaffRole.ADMIN;
+            case "StaffAdmin":
+              return StaffRole.STAFF_ADMIN;
             case "Staff":
               return StaffRole.STAFF;
             case "Guest":
               return StaffRole.GUEST;
             default:
-              throw new Error(`Unknown role: ${String(group.GroupName)}`);
+              return StaffRole.NONE;
           }
         }),
+        createdAt: dayjs(user.UserCreateDate as string),
+        updatedAt: dayjs(user.UserLastModifiedDate as string),
       };
     })
   );

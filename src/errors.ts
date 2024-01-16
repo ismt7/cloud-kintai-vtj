@@ -69,3 +69,8 @@ export const E09004 =
 
 export const S09003 = "集計対象月情報を更新しました";
 export const S09004 = "集計対象月情報を削除しました";
+
+// スタッフ
+export const E10002 = "スタッフの作成に失敗しました(エラーコード: E10002)";
+
+export const S10002 = "スタッフを作成しました";

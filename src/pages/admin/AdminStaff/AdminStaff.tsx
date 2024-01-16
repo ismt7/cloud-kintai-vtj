@@ -1,7 +1,6 @@
 import {
   Box,
   Breadcrumbs,
-  Button,
   Container,
   LinearProgress,
   Stack,
@@ -9,7 +8,6 @@ import {
 } from "@mui/material";
 
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   DataGrid,
   GridToolbarContainer,
@@ -17,16 +15,11 @@ import {
 } from "@mui/x-data-grid";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 import Title from "../../../components/Title/Title";
-import { Staff } from "../../../hooks/useStaffs/common";
+import { Staff, StaffRole } from "../../../hooks/useStaffs/common";
 import useStaffs from "../../../hooks/useStaffs/useStaffs";
-
-// const defaultValues: Staff = {
-//   sub: "",
-//   givenName: "",
-//   familyName: "",
-//   email: "",
-// };
+import CreateStaffDialog from "./CreateStaffDialog";
 
 export default function AdminStaff() {
   const { route } = useAuthenticator();
@@ -77,15 +70,7 @@ export default function AdminStaff() {
 
   const customToolbar = () => (
     <GridToolbarContainer>
-      <Button
-        variant="text"
-        size="small"
-        disabled={true}
-        startIcon={<AddCircleIcon />}
-        onClick={() => {}}
-      >
-        スタッフ登録
-      </Button>
+      <CreateStaffDialog />
     </GridToolbarContainer>
   );
 
@@ -118,6 +103,37 @@ export default function AdminStaff() {
             rows={staffs}
             columns={[
               {
+                field: "enabled",
+                headerName: "アカウント状態",
+                width: 150,
+                valueGetter(params: GridValueGetterParams<Staff>) {
+                  const { enabled } = params.row;
+
+                  if (enabled) return "有効";
+
+                  return "無効";
+                },
+              },
+              {
+                field: "status",
+                headerName: "ステータス",
+                width: 200,
+                valueGetter(params: GridValueGetterParams<Staff>) {
+                  const { status } = params.row;
+
+                  if (!status) return "(未設定)";
+
+                  switch (status) {
+                    case "CONFIRMED":
+                      return "確認済み";
+                    case "FORCE_CHANGE_PASSWORD":
+                      return "パスワード変更必要";
+                    default:
+                      return status;
+                  }
+                },
+              },
+              {
                 field: "sub",
                 headerName: "スタッフID",
                 width: 300,
@@ -141,12 +157,54 @@ export default function AdminStaff() {
               {
                 field: "mailAddress",
                 headerName: "メールアドレス",
-                width: 200,
+                width: 300,
               },
               {
                 field: "role",
                 headerName: "権限",
                 width: 200,
+                valueGetter(params: GridValueGetterParams<Staff>) {
+                  const { roles } = params.row;
+
+                  if (!roles || roles.length === 0) return "(未設定)";
+
+                  return roles.map((role) => {
+                    switch (role) {
+                      case StaffRole.ADMIN:
+                        return "管理者";
+                      case StaffRole.STAFF_ADMIN:
+                        return "スタッフ管理者";
+                      case StaffRole.STAFF:
+                        return "スタッフ";
+                      default:
+                        return "(未設定)";
+                    }
+                  });
+                },
+              },
+              {
+                field: "createdAt",
+                headerName: "作成日時",
+                width: 200,
+                valueGetter(params: GridValueGetterParams<Staff>) {
+                  const { createdAt } = params.row;
+
+                  if (!createdAt) return "(未設定)";
+
+                  return dayjs(createdAt).format("YYYY/MM/DD HH:mm:ss");
+                },
+              },
+              {
+                field: "updatedAt",
+                headerName: "更新日時",
+                width: 200,
+                valueGetter(params: GridValueGetterParams<Staff>) {
+                  const { updatedAt } = params.row;
+
+                  if (!updatedAt) return "(未設定)";
+
+                  return dayjs(updatedAt).format("YYYY/MM/DD HH:mm:ss");
+                },
               },
               // {
               //   field: "actions",
