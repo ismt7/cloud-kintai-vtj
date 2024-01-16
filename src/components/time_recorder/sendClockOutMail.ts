@@ -34,7 +34,7 @@ export default function sendClockOutMail(
           "-----",
           `勤務日：${dayjs(workDate).format("YYYY/MM/DD")}`,
           `退勤時刻：${endTime ? dayjs(endTime).format("HH:mm") : ""}`,
-          `出退勤区分：${returnDirectlyFlag ? "直帰" : "通常退勤"}}`,
+          `出退勤区分：${returnDirectlyFlag ? "直帰" : "通常退勤"}`,
           "-----",
           "",
           "1日お疲れ様でした。気をつけて帰ってくださいね。",
