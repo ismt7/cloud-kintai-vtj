@@ -35,7 +35,7 @@ export function WorkTimeItem({
   setValue,
   getValues,
 }: {
-  targetWorkDate: dayjs.Dayjs;
+  targetWorkDate: dayjs.Dayjs | null;
   control: Control<AttendanceEditorInputs, any>;
   watch: UseFormWatch<AttendanceEditorInputs>;
   setValue: UseFormSetValue<AttendanceEditorInputs>;
@@ -55,6 +55,10 @@ export function WorkTimeItem({
       setTotalWorkTime(diff);
     });
   }, [watch]);
+
+  if (!targetWorkDate) {
+    return null;
+  }
 
   return (
     <Stack

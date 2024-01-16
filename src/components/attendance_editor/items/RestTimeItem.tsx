@@ -37,7 +37,7 @@ export function RestTimeItem({
   setValue,
   getValues,
 }: {
-  targetWorkDate: dayjs.Dayjs;
+  targetWorkDate: dayjs.Dayjs | null;
   index: number;
   watch: UseFormWatch<AttendanceEditorInputs>;
   remove: (index?: number | number[] | undefined) => void;
@@ -75,6 +75,10 @@ export function RestTimeItem({
       setTotalRestTime(diff);
     });
   }, [watch]);
+
+  if (!targetWorkDate) {
+    return null;
+  }
 
   return (
     <Box>
