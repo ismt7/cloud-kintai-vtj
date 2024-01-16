@@ -5,11 +5,9 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import TimeRecorder from "../components/time_recorder/TimeRecorder";
 
-function Register() {
-  const { route, user } = useAuthenticator();
+export default function Register() {
+  const { route } = useAuthenticator();
   const navigate = useNavigate();
-
-  const cognitoUserId = user?.attributes?.sub;
 
   useEffect(() => {
     if (route !== "idle" && route !== "authenticated") {
@@ -23,9 +21,7 @@ function Register() {
 
   return (
     <Box sx={{ height: 1, py: 10, justifyContent: "center", display: "flex" }}>
-      <TimeRecorder cognitoUserId={cognitoUserId} />
+      <TimeRecorder />
     </Box>
   );
 }
-
-export default Register;

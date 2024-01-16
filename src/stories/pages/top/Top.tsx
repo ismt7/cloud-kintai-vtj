@@ -9,17 +9,12 @@ import Header from "../../../components/header/Header";
 function Top() {
   const { user, signOut } = useAuthenticator();
   const cognitoUserId = user?.attributes?.sub;
-  const mailAddress = user?.attributes?.email;
 
   return (
     <Provider store={store}>
       <Stack sx={{ height: "100vmax" }}>
         <Box>
-          <Header
-            cognitoUserId={cognitoUserId}
-            mailAddress={mailAddress}
-            signOut={signOut}
-          />
+          <Header cognitoUserId={cognitoUserId} signOut={signOut} />
         </Box>
         <Box sx={{ height: 1, py: { lg: 5, xl: 10 }, px: { lg: 5, xl: 50 } }}>
           <Typography variant="h2">ようこそ</Typography>

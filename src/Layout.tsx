@@ -10,17 +10,12 @@ import Header from "./components/header/Header";
 function Layout() {
   const { user, signOut } = useAuthenticator();
   const cognitoUserId = user?.attributes?.sub;
-  const mailAddress = user?.attributes?.email;
 
   return (
     <>
       <Stack sx={{ height: "100vh" }}>
         <Box>
-          <Header
-            cognitoUserId={cognitoUserId}
-            mailAddress={mailAddress}
-            signOut={signOut}
-          />
+          <Header cognitoUserId={cognitoUserId} signOut={signOut} />
         </Box>
         <Box sx={{ flexGrow: 2 }}>
           <Outlet />

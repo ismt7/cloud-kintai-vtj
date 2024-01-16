@@ -1,0 +1,46 @@
+import { GraphQLResult } from "@aws-amplify/api";
+import { API } from "aws-amplify";
+import { Attendance, ListAttendancesQuery } from "../../API";
+import { listAttendances } from "../../graphql/queries";
+
+export default async function fetchAttendance(
+  staffId: string,
+  workDate: string
+) {
+  const response = (await API.graphql({
+    query: listAttendances,
+    variables: {
+      filter: {
+        staffId: {
+          eq: staffId,
+        },
+        workDate: {
+          eq: workDate,
+        },
+      },
+    },
+    authMode: "AMAZON_COGNITO_USER_POOLS",
+  })) as GraphQLResult<ListAttendancesQuery>;
+
+  if (response.errors) {
+    throw new Error(response.errors[0].message);
+  }
+
+  if (!response.data?.listAttendances) {
+    throw new Error("Failed to fetch attendance");
+  }
+
+  const attendances: Attendance[] = response.data.listAttendances.items.filter(
+    (item): item is NonNullable<typeof item> => item !== null
+  );
+
+  if (attendances.length === 0) {
+    return null;
+  }
+
+  if (attendances.length > 1) {
+    throw new Error("Failed to fetch attendance");
+  }
+
+  return attendances[0];
+}

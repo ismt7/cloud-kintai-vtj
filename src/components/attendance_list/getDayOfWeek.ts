@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { Attendance } from "../../client";
+import { Attendance } from "../../API";
 
 export enum DayOfWeek {
   Sun = "日",
@@ -11,7 +11,7 @@ export enum DayOfWeek {
   Sat = "土",
 }
 
-function getDayOfWeek(workDate: Attendance["work_date"]) {
+export default function getDayOfWeek(workDate: Attendance["workDate"]) {
   if (!workDate) {
     return "";
   }
@@ -21,5 +21,3 @@ function getDayOfWeek(workDate: Attendance["work_date"]) {
   const dayOfWeek = dayjs(workDate).day();
   return weekList[dayOfWeek];
 }
-
-export default getDayOfWeek;

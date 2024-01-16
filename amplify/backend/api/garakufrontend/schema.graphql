@@ -1,0 +1,72 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY {
+  globalAuthRule: AuthRule = { allow: public }
+} # FOR TESTING ONLY!
+type HolidayCalendar @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  holidayDate: String!
+  name: String!
+}
+
+type CompanyHolidayCalendar @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  holidayDate: String!
+  name: String!
+}
+
+type CloseDate @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  closeDate: String!
+  startDate: String!
+  endDate: String!
+}
+
+type Attendance @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  staffId: String!
+  workDate: String!
+  startTime: String
+  endTime: String
+  goDirectlyFlag: Boolean
+  returnDirectlyFlag: Boolean
+  rests: [Rest]
+  remarks: String
+  paidHolidayFlag: Boolean
+  histories: [AttendanceHistory]
+  revision: Int
+}
+
+type Rest {
+  startTime: String
+  endTime: String
+}
+
+type AttendanceHistory {
+  staffId: String!
+  workDate: String!
+  startTime: String
+  endTime: String
+  goDirectlyFlag: Boolean
+  returnDirectlyFlag: Boolean
+  rests: [Rest]
+  remarks: String
+  paidHolidayFlag: Boolean
+  createdAt: String!
+}
+
+type EmailResult {
+  statusCode: Int
+  body: String
+}
+
+input EmailData {
+  to: [String]
+  subject: String!
+  body: String!
+}
+
+type Query {
+  sendMail(data: EmailData!): EmailResult
+    @function(name: "garakuSendMail-${env}")
+}

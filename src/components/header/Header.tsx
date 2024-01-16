@@ -1,9 +1,9 @@
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+// import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import {
   Avatar,
-  Badge,
+  // Badge,
   Box,
   Container,
   IconButton,
@@ -11,39 +11,33 @@ import {
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
-import { Staff, StaffRole } from "../../client";
+import useCognitoUser, { UserRole } from "../../hooks/useCognitoUser";
 import LogImage from "../../images/logo.png";
 import Button from "../button/Button";
 import Link from "../link/Link";
-import fetchLoginStaff from "./fetchLoginStaff";
 
-const Header = ({
+export default function Header({
   cognitoUserId,
-  mailAddress,
   signOut,
 }: {
   cognitoUserId: string | undefined;
-  mailAddress: string | undefined;
   signOut: () => void;
-}) => {
-  const [staff, setStaff] = useState<Staff | null>(null);
-  const [staffRole, setStaffRole] = useState<StaffRole | null>(null);
+}) {
+  const {
+    cognitoUser,
+    isCognitoUserRole,
+    loading: cognitoUserLoading,
+  } = useCognitoUser();
+
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!cognitoUserId || !mailAddress) {
-      return;
-    }
+  const [pathName, setPathName] = useState("/register");
 
-    void fetchLoginStaff(
-      cognitoUserId,
-      mailAddress,
-      (createdStaff, createdStaffRole) => {
-        setStaff(createdStaff);
-        setStaffRole(createdStaffRole);
-      }
-    );
-  }, [cognitoUserId, mailAddress]);
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const name = url.pathname === "/" ? "/register" : url.pathname;
+    setPathName(name);
+  }, []);
 
   const signIn = () => {
     navigate("/login");
@@ -67,7 +61,7 @@ const Header = ({
     </Box>
   );
 
-  const MenuItem = ({ roleId }: { roleId?: number }) => {
+  const MenuItem = () => {
     const viewableList = [];
     const menuList = [
       { label: "勤怠打刻", href: "/register" },
@@ -81,20 +75,23 @@ const Header = ({
       { label: "マスタ管理", href: "/admin/master" },
     ];
 
-    switch (roleId) {
-      case 1: // システム管理者
-      case 2: // スタッフ管理者
-        viewableList.push(...menuList, ...adminMenuList);
-        break;
-
-      case 3: // スタッフ
-        viewableList.push(...menuList);
-        break;
-
-      default: // ゲスト
-        // 処理なし
-        break;
+    // システム管理者
+    if (isCognitoUserRole(UserRole.Admin)) {
+      viewableList.push(...menuList, ...adminMenuList);
     }
+
+    // スタッフ管理者
+    if (isCognitoUserRole(UserRole.StaffAdmin)) {
+      viewableList.push(...menuList, ...adminMenuList);
+    }
+
+    // スタッフ
+    if (isCognitoUserRole(UserRole.Staff)) {
+      viewableList.push(...menuList);
+    }
+
+    // ゲスト
+    // 処理なし
 
     return (
       <Stack direction="row" spacing={0} sx={{ width: "auto", height: 1 }}>
@@ -108,6 +105,9 @@ const Header = ({
                 height: 1,
                 lineHeight: "32px",
                 px: 1,
+                color: pathName === menu.href ? "#0FA85E" : "white",
+                backgroundColor: pathName === menu.href ? "white" : "inherit",
+                textDecoration: "none",
               }}
             />
           </Box>
@@ -116,11 +116,15 @@ const Header = ({
     );
   };
 
-  const StaffIcon = ({ name }: { name: Staff["last_name"] }) => (
+  const StaffIcon = ({ name }: { name: string | undefined }) => (
     <IconButton aria-label="account">
-      <Avatar>{name?.slice(0, 1)}</Avatar>
+      <Avatar>{name ? name.slice(0, 1) : ""}</Avatar>
     </IconButton>
   );
+
+  if (cognitoUserLoading) {
+    return null;
+  }
 
   return (
     <header
@@ -138,7 +142,7 @@ const Header = ({
         >
           <Logo />
           <Box sx={{ width: 1, height: 1 }}>
-            <MenuItem roleId={staffRole?.role_id} />
+            <MenuItem />
           </Box>
           <Box>
             <Stack direction="row" alignItems={"center"} spacing={1}>
@@ -152,7 +156,7 @@ const Header = ({
                   width="110px"
                 />
               </Box>
-              <Box>
+              {/* <Box>
                 <IconButton aria-label="notification">
                   <Badge badgeContent={100} color="secondary">
                     <NotificationsNoneIcon
@@ -161,9 +165,10 @@ const Header = ({
                     />
                   </Badge>
                 </IconButton>
-              </Box>
+              </Box> */}
               <Box>
-                <StaffIcon name={staff?.last_name} />
+                {/* <StaffIcon name={staff?.last_name} /> */}
+                <StaffIcon name={cognitoUser?.familyName} />
               </Box>
             </Stack>
           </Box>
@@ -171,6 +176,4 @@ const Header = ({
       </Container>
     </header>
   );
-};
-
-export default Header;
+}

@@ -19,13 +19,13 @@
   "workbench.panel.defaultLocation": "right",
   "git.branchPrefix": "feature/",
   "git.autoStash": true,
-  "git.branchProtection": ["main"],
+  "git.branchProtection": ["main", "develop"],
   "[javascript]": {
     "editor.tabSize": 2,
     "editor.insertSpaces": true,
     "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true,
-      "source.organizeImports": true
+      "source.fixAll.eslint": "explicit",
+      "source.organizeImports": "explicit"
     },
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },

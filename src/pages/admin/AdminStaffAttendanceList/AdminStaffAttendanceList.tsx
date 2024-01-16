@@ -1,5 +1,6 @@
 import {
   Box,
+  Breadcrumbs,
   Container,
   LinearProgress,
   Stack,
@@ -7,35 +8,56 @@ import {
 } from "@mui/material";
 import { DataGrid, GridRowModesModel } from "@mui/x-data-grid";
 import dayjs from "dayjs";
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Attendance } from "../../../client";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import getDayOfWeek, {
   DayOfWeek,
 } from "../../../components/attendance_list/getDayOfWeek";
-import useHolidayCalendar from "../../../components/attendance_list/hooks/useHolidayCalendar";
-import useAttendance from "../../../hooks/useAttendance/useAttendance";
+import useAttendances from "../../../hooks/useAttendances/useAttendances";
+import useHolidayCalendars from "../../../hooks/useHolidayCalendars/useHolidayCalendars";
+import { Staff } from "../../../hooks/useStaffs/common";
+import useStaffs from "../../../hooks/useStaffs/useStaffs";
 import getColumns from "./getColumns";
-import useStaff from "./hooks/useStaff";
+import { Attendance } from "../../../API";
+import useCompanyHolidayCalendars from "../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 
 export default function AdminStaffAttendanceList() {
   const { staffId } = useParams();
   const navigate = useNavigate();
 
-  const { staff, loading: staffLoading } = useStaff(
-    staffId ? Number(staffId) : undefined
-  );
+  const { attendances, getAttendances } = useAttendances();
+  const { staffs, loading: staffLoading, error: staffError } = useStaffs();
   const {
-    attendances,
-    loading: attendanceLoading,
-    deleteAttendance,
-  } = useAttendance(staff);
-  const { holidayCalendars, loading: holidayCalendarLoading } =
-    useHolidayCalendar();
+    companyHolidayCalendars,
+    loading: companyHolidayCalendarLoading,
+    error: companyHolidayCalendarError,
+  } = useCompanyHolidayCalendars();
+
+  const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
+
+  useEffect(() => {
+    if (!staffId || staffLoading) return;
+
+    const matchStaff = staffs.find((item) => item.sub === staffId);
+    setStaff(matchStaff);
+  }, [staffId, staffLoading]);
+
+  useEffect(() => {
+    if (!staffId) return;
+    getAttendances(staffId).catch((error) => {
+      console.log(error);
+    });
+  }, [staffId]);
+
+  const {
+    holidayCalendars,
+    loading: holidayCalendarLoading,
+    error: holidayCalendarError,
+  } = useHolidayCalendars();
 
   const [rowModelsModel, setRowModelsModel] = useState<GridRowModesModel>({});
 
-  if (staffLoading || attendanceLoading || holidayCalendarLoading) {
+  if (staffLoading || holidayCalendarLoading || companyHolidayCalendarLoading) {
     return (
       <Container maxWidth="xl" sx={{ pt: 2 }}>
         <LinearProgress />
@@ -43,7 +65,7 @@ export default function AdminStaffAttendanceList() {
     );
   }
 
-  if (!staff) {
+  if (holidayCalendarError || companyHolidayCalendarError) {
     return (
       <Container maxWidth="xl" sx={{ pt: 2 }}>
         <Typography>データ取得中に何らかの問題が発生しました</Typography>
@@ -51,19 +73,45 @@ export default function AdminStaffAttendanceList() {
     );
   }
 
+  if (staff === null || staffError || !staffId) {
+    return (
+      <Container maxWidth="xl" sx={{ pt: 2 }}>
+        <Typography>データ取得中に何らかの問題が発生しました</Typography>
+      </Container>
+    );
+  }
+
+  const deleteAttendance = async (attendanceId: number) => {
+    console.log(attendanceId);
+  };
+
   return (
     <Container maxWidth="xl">
-      <Stack spacing={1}>
-        <Typography variant="h4">{staff.last_name} さんの勤怠</Typography>
-        <Box sx={{ px: 3, pb: 5 }}>
+      <Stack spacing={1} sx={{ pt: 1 }}>
+        <Box>
+          <Breadcrumbs>
+            <Link to="/" color="inherit">
+              TOP
+            </Link>
+            <Link to="/admin/attendances" color="inherit">
+              勤怠管理
+            </Link>
+            <Typography color="text.primary">勤怠一覧</Typography>
+          </Breadcrumbs>
+        </Box>
+        <Typography variant="h4">
+          {staff?.familyName || "(不明)"} さんの勤怠
+        </Typography>
+        <Box sx={{ pb: 5 }}>
           <DataGrid
-            rows={attendances || []}
+            rows={attendances}
             columns={getColumns(
               deleteAttendance,
               rowModelsModel,
               staffId,
               navigate,
-              holidayCalendars
+              holidayCalendars,
+              companyHolidayCalendars
             )}
             getRowId={(row) => row.workDate}
             rowModesModel={rowModelsModel}
@@ -71,7 +119,7 @@ export default function AdminStaffAttendanceList() {
             autoHeight
             hideFooter={true}
             getRowClassName={(params: {
-              row: { workDate: Attendance["work_date"] };
+              row: { workDate: Attendance["workDate"] };
             }) => {
               const today = dayjs().format("YYYY-MM-DD");
               if (params.row.workDate === today) {
@@ -80,10 +128,15 @@ export default function AdminStaffAttendanceList() {
 
               const isHoliday = holidayCalendars?.find(
                 (holidayCalendar) =>
-                  holidayCalendar.holiday_date === params.row.workDate
+                  holidayCalendar.holidayDate === params.row.workDate
               );
 
-              if (isHoliday) {
+              const isCompanyHoliday = companyHolidayCalendars?.find(
+                (companyHolidayCalendar) =>
+                  companyHolidayCalendar.holidayDate === params.row.workDate
+              );
+
+              if (isHoliday || isCompanyHoliday) {
                 return "super-app-theme--sunday";
               }
 

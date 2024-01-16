@@ -1,15 +1,17 @@
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import {
   Box,
+  Breadcrumbs,
   Collapse,
   Container,
   List,
   ListItemButton,
   ListItemText,
   Stack,
+  Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 interface DocumentOpen {
   workStart: boolean;
@@ -55,7 +57,7 @@ export default function Document() {
                 <ListItemButton onClick={() => navigate("/docs/work-start")}>
                   <ListItemText primary="通常打刻" sx={{ pl: 2 }} />
                 </ListItemButton>
-                <ListItemButton>
+                <ListItemButton onClick={() => navigate("/docs/go-direct")}>
                   <ListItemText primary="直行打刻" sx={{ pl: 2 }} />
                 </ListItemButton>
               </List>
@@ -96,7 +98,19 @@ export default function Document() {
           </List>
         </Box>
         <Box sx={{ width: 1, p: 2 }}>
-          <Outlet />
+          <Stack spacing={2}>
+            <Box>
+              <Breadcrumbs>
+                <Link to="/" color="inherit">
+                  TOP
+                </Link>
+                <Typography color="text.primary">ドキュメント</Typography>
+              </Breadcrumbs>
+            </Box>
+            <Box>
+              <Outlet />
+            </Box>
+          </Stack>
         </Box>
       </Stack>
     </Container>

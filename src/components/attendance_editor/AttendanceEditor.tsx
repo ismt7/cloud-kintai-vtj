@@ -2,6 +2,7 @@ import {
   Alert,
   AlertTitle,
   Box,
+  Breadcrumbs,
   Button,
   Checkbox,
   IconButton,
@@ -11,92 +12,76 @@ import {
 } from "@mui/material";
 
 import AddAlarmIcon from "@mui/icons-material/AddAlarm";
-import { Logger } from "aws-amplify";
+import { API, Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Link, useParams } from "react-router-dom";
+import { Attendance, AttendanceHistory, Rest } from "../../API";
 import { useAppDispatchV2 } from "../../app/hooks";
-import {
-  E00001,
-  E02003,
-  E03002,
-  E03003,
-  E03004,
-  E04001,
-  S04001,
-} from "../../errors";
+import { E04001, S04001 } from "../../errors";
+import useAttendance from "../../hooks/useAttendance/useAttendance";
+import { Staff } from "../../hooks/useStaffs/common";
+import useStaffs from "../../hooks/useStaffs/useStaffs";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
-import useAttendance from "./hooks/useAttendance";
-import useLoginStaff from "./hooks/useLoginStaff";
-import useRests from "./hooks/useRests";
-import useStaff from "./hooks/useStaff";
 import ProductionTimeItem from "./items/ProductionTimeItem";
 import SeparatorItem from "./items/SeparatorItem";
 import StaffNameItem from "./items/StaffNameItem";
 import WorkDateItem from "./items/WorkDateItem";
-
-// TODO: あとで修正
 // eslint-disable-next-line import/no-cycle
 import RemarksItem from "./items/RemarksItem";
 // eslint-disable-next-line import/no-cycle
 import { calcTotalRestTime, RestTimeItem } from "./items/RestTimeItem";
 // eslint-disable-next-line import/no-cycle
 import { calcTotalWorkTime, WorkTimeItem } from "./items/WorkTimeItem";
+import Title from "../Title/Title";
+// eslint-disable-next-line import/no-cycle
+import EditAttendanceHistoryList from "./EditAttendanceHistoryList";
+import { sendMail } from "../../graphql/queries";
+import getAttendanceMailBody from "./attendanceMailTemplate";
 
-type RestInputs = {
-  restId: number | null | undefined;
-  startTime: string | null | undefined;
-  endTime: string | null | undefined;
+export type RestInputs = {
+  startTime: Rest["startTime"] | null;
+  endTime: Rest["endTime"] | null;
 };
 
 export type AttendanceEditorInputs = {
-  workDate: string;
-  goDirectlyFlag: boolean;
-  returnDirectlyFlag: boolean;
-  startTime: string | null | undefined;
-  endTime: string | null | undefined;
-  remarks: string;
+  workDate: Attendance["workDate"] | null;
+  goDirectlyFlag: Attendance["goDirectlyFlag"];
+  returnDirectlyFlag: Attendance["returnDirectlyFlag"];
+  startTime: Attendance["startTime"];
+  endTime: Attendance["endTime"];
+  remarks: Attendance["remarks"];
+  paidHolidayFlag: Attendance["paidHolidayFlag"];
   rests: RestInputs[];
+  histories: AttendanceHistory[];
+  revision: Attendance["revision"];
 };
 
 const defaultValues: AttendanceEditorInputs = {
-  workDate: "",
+  workDate: null,
   goDirectlyFlag: false,
   returnDirectlyFlag: false,
   startTime: null,
   endTime: null,
   remarks: "",
+  paidHolidayFlag: false,
   rests: [],
+  histories: [],
+  revision: 0,
 };
 
-export default function AttendanceEditor({
-  cognitoUserId,
-}: {
-  cognitoUserId: string | undefined;
-}) {
+export default function AttendanceEditor() {
   const dispatch = useAppDispatchV2();
-  const navigate = useNavigate();
 
   const { targetWorkDate, staffId: targetStaffId } = useParams();
-  const { loginStaff, loading: loginStaffLoading } =
-    useLoginStaff(cognitoUserId);
-  const { staff, loading: staffLoading } = useStaff(loginStaff, targetStaffId);
-  const {
-    attendance,
-    loading: attendanceLoading,
-    updateAttendance,
-  } = useAttendance(staff, targetWorkDate);
-  const {
-    rests,
-    loading: restLoading,
-    createRest,
-    updateRest,
-    deleteRest,
-  } = useRests(staff, targetWorkDate);
+  const { staffs, loading: staffsLoading, error: staffSError } = useStaffs();
+  const { attendance, getAttendance, updateAttendance, createAttendance } =
+    useAttendance();
+  const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
 
   const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
 
@@ -124,6 +109,23 @@ export default function AttendanceEditor({
   });
 
   useEffect(() => {
+    if (!targetStaffId) return;
+    const matchStaff = staffs.find((s) => s.sub === targetStaffId);
+    setStaff(matchStaff || null);
+  }, [staffs, targetStaffId]);
+
+  useEffect(() => {
+    if (!staff || !targetStaffId || !targetWorkDate) return;
+
+    getAttendance(staff.sub, dayjs(targetWorkDate).format("YYYY-MM-DD")).catch(
+      (e: Error) => {
+        logger.error(e);
+        console.log(e);
+      }
+    );
+  }, [staff, targetStaffId, targetWorkDate]);
+
+  useEffect(() => {
     watch((data) => {
       const totalWorkTime = calcTotalWorkTime(data.startTime, data.endTime);
 
@@ -141,82 +143,73 @@ export default function AttendanceEditor({
   }, [watch]);
 
   const onSubmit = async (data: AttendanceEditorInputs) => {
-    if (!staff || !attendance) {
-      dispatch(setSnackbarError(E00001));
+    if (attendance) {
+      await updateAttendance({
+        id: attendance.id,
+        staffId: attendance.staffId,
+        workDate: data.workDate,
+        startTime: data.startTime,
+        endTime: data.endTime || null,
+        goDirectlyFlag: data.goDirectlyFlag,
+        returnDirectlyFlag: data.returnDirectlyFlag,
+        remarks: data.remarks,
+        rests: data.rests,
+        paidHolidayFlag: data.paidHolidayFlag,
+        revision: data.revision,
+      })
+        .then((res) => {
+          dispatch(setSnackbarSuccess(S04001));
+
+          if (!staff || !res.histories) return;
+
+          const latestHistory = res.histories
+            .filter((item): item is NonNullable<typeof item> => item !== null)
+            .sort((a, b) => {
+              if (a.createdAt === b.createdAt) return 0;
+              return a.createdAt < b.createdAt ? 1 : -1;
+            })[0];
+
+          void API.graphql({
+            query: sendMail,
+            variables: {
+              data: {
+                to: [staff.mailAddress],
+                subject: `勤怠情報変更のお知らせ - ${dayjs(res.workDate).format(
+                  "YYYY/MM/DD"
+                )}`,
+                body: getAttendanceMailBody(staff, res, latestHistory).join(
+                  "\n"
+                ),
+              },
+            },
+          });
+        })
+        .catch((e: Error) => {
+          logger.error(e);
+          dispatch(setSnackbarError(E04001));
+        });
+
       return;
     }
 
-    const workDate = dayjs(targetWorkDate).format("YYYY-MM-DD");
-    await Promise.all([
-      // 勤怠情報
-      updateAttendance({
-        ...attendance,
-        start_time: data.startTime,
-        end_time: data.endTime || null,
-        go_directly_flag: data.goDirectlyFlag,
-        return_directly_flag: data.returnDirectlyFlag,
-        remarks: data.remarks,
-      }).catch((e) => {
-        logger.debug(e);
-        throw new Error(E02003);
-      }),
+    if (!targetStaffId || !targetWorkDate) return;
 
-      // 休憩情報(新規)
-      data.rests
-        .filter((rest) => !rest.restId)
-        .forEach((rest) => {
-          createRest({
-            staff_id: staff.id,
-            work_date: workDate,
-            start_time: rest.startTime,
-            end_time: rest.endTime,
-          }).catch((e) => {
-            logger.debug(e);
-            throw new Error(E03002);
-          });
-        }),
-
-      // 休憩情報(更新)
-      data.rests
-        .filter((rest) => rest.restId)
-        .forEach((rest) => {
-          if (!rest.restId) {
-            throw new Error("restId is null");
-          }
-
-          const targetRest = rests?.find((r) => r.id === rest.restId);
-          if (!targetRest) {
-            throw new Error("targetRest is null");
-          }
-
-          updateRest({
-            ...targetRest,
-            id: rest.restId,
-            start_time: rest.startTime,
-            end_time: rest.endTime,
-          }).catch((e) => {
-            logger.debug(e);
-            throw new Error(E03003);
-          });
-        }),
-
-      // 休憩情報(削除)
-      rests
-        ?.filter(
-          (rest) =>
-            !data.rests.some((restInput) => rest.id === restInput.restId)
-        )
-        .forEach((rest) => {
-          deleteRest(rest).catch((e) => {
-            logger.debug(e);
-            throw new Error(E03004);
-          });
-        }),
-    ])
+    createAttendance({
+      staffId: targetStaffId,
+      workDate: dayjs(targetWorkDate).format("YYYY-MM-DD"),
+      startTime: data.startTime,
+      endTime: data.endTime,
+      goDirectlyFlag: data.goDirectlyFlag,
+      returnDirectlyFlag: data.returnDirectlyFlag,
+      remarks: data.remarks,
+      rests: data.rests,
+      paidHolidayFlag: data.paidHolidayFlag,
+    })
       .then(() => {
         dispatch(setSnackbarSuccess(S04001));
       })
-      .catch(() => {
+      .catch((e: Error) => {
+        logger.error(e);
         dispatch(setSnackbarError(E04001));
       });
   };
@@ -224,146 +217,227 @@ export default function AttendanceEditor({
   useEffect(() => {
     if (!attendance) return;
 
-    setValue("workDate", attendance.work_date);
-    setValue("startTime", attendance.start_time);
-    setValue("endTime", attendance.end_time);
+    setValue("workDate", attendance.workDate);
+    setValue("startTime", attendance.startTime);
+    setValue("endTime", attendance.endTime);
     setValue("remarks", attendance.remarks || "");
-    setValue("goDirectlyFlag", attendance.go_directly_flag || false);
-    setValue("returnDirectlyFlag", attendance.return_directly_flag || false);
+    setValue("goDirectlyFlag", attendance.goDirectlyFlag || false);
+    setValue("returnDirectlyFlag", attendance.returnDirectlyFlag || false);
+    setValue("paidHolidayFlag", attendance.paidHolidayFlag || false);
+    setValue("revision", attendance.revision);
+
+    if (attendance.rests) {
+      const rests = attendance.rests
+        .filter((item): item is NonNullable<typeof item> => item !== null)
+        .map((item) => ({
+          startTime: item.startTime,
+          endTime: item.endTime,
+        }));
+      setValue("rests", rests);
+    }
+
+    if (attendance.histories) {
+      const histories = attendance.histories.filter(
+        (item): item is NonNullable<typeof item> => item !== null
+      );
+      setValue("histories", histories);
+    }
   }, [attendance]);
 
-  useEffect(() => {
-    if (!rests) return;
-
-    setValue(
-      "rests",
-      rests.map((rest) => ({
-        restId: rest.id,
-        startTime: rest.start_time,
-        endTime: rest.end_time,
-      }))
-    );
-  }, [rests]);
-
-  if (loginStaffLoading || staffLoading || attendanceLoading || restLoading) {
+  if (staffsLoading || attendance === undefined) {
     return <LinearProgress />;
+  }
+
+  if (staffSError) {
+    return (
+      <Alert severity="error">
+        <AlertTitle>エラー</AlertTitle>
+        <Typography variant="body2">{staffSError.message}</Typography>
+      </Alert>
+    );
+  }
+
+  if (!targetStaffId) {
+    return (
+      <Alert severity="error">
+        <AlertTitle>エラー</AlertTitle>
+        <Typography variant="body2">スタッフが指定されていません。</Typography>
+      </Alert>
+    );
   }
 
   return (
     <Stack spacing={2}>
-      {errors.startTime && (
-        <Box>
-          <Alert severity="error">
-            <AlertTitle>入力内容に誤りがあります。</AlertTitle>
-            <Typography variant="body2">{errors.startTime.message}</Typography>
-          </Alert>
-        </Box>
-      )}
       <Box>
-        <StaffNameItem staff={staff} />
+        <Breadcrumbs>
+          <Link to="/" color="inherit">
+            TOP
+          </Link>
+          <Link to="/admin/attendances" color="inherit">
+            勤怠管理
+          </Link>
+          <Link to={`/admin/staff/${targetStaffId}/attendance`} color="inherit">
+            勤怠一覧
+          </Link>
+          <Typography color="text.primary">
+            {dayjs(targetWorkDate).format("YYYY-MM-DD")}
+          </Typography>
+        </Breadcrumbs>
       </Box>
       <Box>
-        <WorkDateItem workDate={getValues().workDate} />
+        <Title text="勤怠編集" />
       </Box>
-      <Stack direction="row" alignItems={"center"}>
-        <Box sx={{ fontWeight: "bold", width: "150px" }}>直行</Box>
+      <Stack spacing={2} sx={{ px: 30 }}>
+        {/* TODO: #182 勤怠編集画面で前後の日付に移動できるようにする */}
+        {/* TODO: #183 勤怠編集画面で指定日付に移動できるようにする */}
         <Box>
-          <Checkbox {...register("goDirectlyFlag")} />
-        </Box>
-      </Stack>
-      <Stack direction="row" alignItems={"center"}>
-        <Box sx={{ fontWeight: "bold", width: "150px" }}>直帰</Box>
-        <Box>
-          <Checkbox {...register("returnDirectlyFlag")} />
-        </Box>
-      </Stack>
-      <WorkTimeItem
-        targetWorkDate={dayjs(targetWorkDate)}
-        control={control}
-        watch={watch}
-      />
-      <Stack direction="row">
-        <Box sx={{ fontWeight: "bold", width: "150px" }}>休憩時間</Box>
-        <Stack spacing={1} sx={{ flexGrow: 2 }}>
-          {fields.length === 0 && (
+          {errors.startTime && (
             <Box>
-              <Typography variant="body1">休憩時間はありません。</Typography>
+              <Alert severity="error">
+                <AlertTitle>入力内容に誤りがあります。</AlertTitle>
+                <Typography variant="body2">
+                  {errors.startTime.message}
+                </Typography>
+              </Alert>
             </Box>
           )}
-          {fields.map((field, index) => (
-            <RestTimeItem
-              key={index}
-              targetWorkDate={dayjs(targetWorkDate)}
-              index={index}
-              watch={watch}
-              remove={remove}
-              control={control}
-            />
-          ))}
+          {!attendance && (
+            <Box>
+              <Alert severity="info">
+                <AlertTitle>お知らせ</AlertTitle>
+                指定された日付に勤怠情報の登録がありませんでした。保存時に新規作成されます。
+              </Alert>
+            </Box>
+          )}
+        </Box>
+        <EditAttendanceHistoryList getValues={getValues} />
+        <Box>
+          <StaffNameItem staff={staff} />
+        </Box>
+        <Box>
+          <WorkDateItem
+            workDate={
+              getValues().workDate || dayjs(targetWorkDate).format("YYYY/MM/DD")
+            }
+          />
+        </Box>
+        <Box>
+          <Stack direction="row" alignItems={"center"}>
+            <Box sx={{ fontWeight: "bold", width: "150px" }}>有給休暇</Box>
+            <Box>
+              <Controller
+                name="paidHolidayFlag"
+                control={control}
+                render={({ field }) => (
+                  <Checkbox checked={field.value || false} {...field} />
+                )}
+              />
+            </Box>
+          </Stack>
+        </Box>
+        <Stack direction="row" alignItems={"center"}>
+          <Box sx={{ fontWeight: "bold", width: "150px" }}>直行</Box>
           <Box>
-            <IconButton
-              aria-label="staff-search"
-              onClick={() =>
-                append({
-                  restId: null,
-                  startTime: null,
-                  endTime: null,
-                })
-              }
-            >
-              <AddAlarmIcon />
-            </IconButton>
+            <Controller
+              name="goDirectlyFlag"
+              control={control}
+              render={({ field }) => (
+                <Checkbox checked={field.value || false} {...field} />
+              )}
+            />
           </Box>
         </Stack>
-      </Stack>
-      <Box>
-        <SeparatorItem />
-      </Box>
-      <Box>
-        <ProductionTimeItem time={totalProductionTime} />
-      </Box>
-      <Box>
-        <RemarksItem register={register} />
-      </Box>
-      {/* <Box>
+        <Stack direction="row" alignItems={"center"}>
+          <Box sx={{ fontWeight: "bold", width: "150px" }}>直帰</Box>
+          <Box>
+            <Controller
+              name="returnDirectlyFlag"
+              control={control}
+              render={({ field }) => (
+                <Checkbox checked={field.value || false} {...field} />
+              )}
+            />
+          </Box>
+        </Stack>
+        <WorkTimeItem
+          targetWorkDate={dayjs(targetWorkDate)}
+          control={control}
+          watch={watch}
+          setValue={setValue}
+          getValues={getValues}
+        />
+        <Stack direction="row">
+          <Box sx={{ fontWeight: "bold", width: "150px" }}>休憩時間</Box>
+          <Stack spacing={1} sx={{ flexGrow: 2 }}>
+            {fields.length === 0 && (
+              <Box>
+                <Typography variant="body1">休憩時間はありません</Typography>
+              </Box>
+            )}
+            {fields.map((_, index) => (
+              <RestTimeItem
+                key={index}
+                targetWorkDate={dayjs(targetWorkDate)}
+                index={index}
+                watch={watch}
+                remove={remove}
+                control={control}
+                setValue={setValue}
+                getValues={getValues}
+              />
+            ))}
+            <Box>
+              <IconButton
+                aria-label="staff-search"
+                onClick={() =>
+                  append({
+                    startTime: null,
+                    endTime: null,
+                  })
+                }
+              >
+                <AddAlarmIcon />
+              </IconButton>
+            </Box>
+          </Stack>
+        </Stack>
+        <Box>
+          <SeparatorItem />
+        </Box>
+        <Box>
+          <ProductionTimeItem time={totalProductionTime} />
+        </Box>
+        <Box>
+          <RemarksItem register={register} />
+        </Box>
+        {/* <Box>
           <hr />
         </Box> */}
-      {/* <Box>
+        {/* <Box>
           <ReasonRevisionItem />
         </Box> */}
-      {/* <Box>
+        {/* <Box>
           <ReasonRemarksItem />
         </Box> */}
-      <Box>
-        <Stack
-          direction="row"
-          alignItems={"center"}
-          justifyContent={"center"}
-          spacing={3}
-        >
-          <Box>
-            <Button
-              color="cancel"
-              variant="text"
-              sx={{ width: "150px" }}
-              onClick={() => {
-                navigate("/admin/attendances");
-              }}
-            >
-              キャンセル
-            </Button>
-          </Box>
-          <Box>
-            <Button
-              variant="contained"
-              sx={{ width: "150px" }}
-              onClick={handleSubmit(onSubmit)}
-            >
-              保存
-            </Button>
-          </Box>
-        </Stack>
-      </Box>
+        <Box>
+          <Stack
+            direction="row"
+            alignItems={"center"}
+            justifyContent={"center"}
+            spacing={3}
+          >
+            <Box>
+              <Button
+                variant="contained"
+                sx={{ width: "150px" }}
+                onClick={handleSubmit(onSubmit)}
+              >
+                保存
+              </Button>
+            </Box>
+          </Stack>
+        </Box>
+      </Stack>
     </Stack>
   );
 }

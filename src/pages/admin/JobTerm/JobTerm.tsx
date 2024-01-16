@@ -1,111 +1,29 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import SaveIcon from "@mui/icons-material/Save";
-import { Box, Button, LinearProgress, Stack, Typography } from "@mui/material";
 import {
-  DataGrid,
-  DataGridProps,
-  GridActionsCellItem,
-  GridColDef,
-  GridRowModes,
-  GridRowModesModel,
-  GridRowParams,
-} from "@mui/x-data-grid";
+  Autocomplete,
+  Box,
+  Button,
+  LinearProgress,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { DataGrid, GridActionsCellItem, GridRowParams } from "@mui/x-data-grid";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
-import { AttendanceClosingDate } from "../../../client";
-import useClosingDates from "./hooks/useClosingDates";
-
-type Inputs = {
-  closingDate: dayjs.Dayjs | null;
-};
-
-const variationSchema = z.object({
-  closingDate: z
-    .custom<dayjs.Dayjs>()
-    .refine((value) => !!value, {
-      message: "締日を選択してください。",
-    })
-    .refine(
-      (value) => {
-        if (!value) return false;
-        const now = dayjs();
-        const closingDate = dayjs(value);
-        const isBefore = closingDate.isBefore(now);
-        return !isBefore;
-      },
-      {
-        message: "締日は過去の日付を選択できません。",
-      }
-    ),
-});
-
-function getColumns(
-  rowModelsModel: GridRowModesModel
-): GridColDef<AttendanceClosingDate>[] {
-  return [
-    {
-      field: "closing_date",
-      headerName: "締日",
-      width: 150,
-      editable: true,
-      valueGetter: (params) => {
-        const date = dayjs(params.row.closing_date);
-        return date.format("YYYY/MM/DD");
-      },
-    },
-    {
-      field: "created_at",
-      headerName: "作成日",
-      width: 150,
-      valueGetter: (params) => {
-        const date = dayjs(params.row.created_at);
-        return date.format("YYYY/MM/DD");
-      },
-    },
-    {
-      field: "actions",
-      type: "actions",
-      headerName: "操作",
-      getActions: (params: GridRowParams<AttendanceClosingDate>) => {
-        const isEditMode =
-          rowModelsModel[params.id]?.mode === GridRowModes.Edit;
-        if (isEditMode) {
-          return [
-            <GridActionsCellItem
-              key={params.row.id}
-              icon={<SaveIcon />}
-              label="保存"
-            />,
-            <GridActionsCellItem
-              key={params.row.id}
-              icon={<CloseIcon />}
-              label="キャンセル"
-            />,
-          ];
-        }
-
-        return [
-          <GridActionsCellItem
-            key={params.row.id}
-            icon={<EditIcon />}
-            label="編集"
-          />,
-          <GridActionsCellItem
-            key={params.row.id}
-            icon={<DeleteIcon />}
-            label="削除"
-          />,
-        ];
-      },
-    },
-  ];
-}
+import { CloseDate } from "../../../API";
+import { useAppDispatchV2 } from "../../../app/hooks";
+import { E09004, S09004 } from "../../../errors";
+import useCloseDates from "../../../hooks/useCloseDates/useCloseDates";
+import {
+  setSnackbarError,
+  setSnackbarSuccess,
+} from "../../../lib/reducers/snackbarReducer";
+import { defaultValues, Inputs } from "./common";
+import EditJobTermInputDialog from "./EditJobTermInputDialog";
 
 function Title() {
   return (
@@ -113,99 +31,220 @@ function Title() {
       variant="h4"
       sx={{ pl: 1, borderBottom: "solid 5px #0FA85E", color: "#0FA85E" }}
     >
-      締日管理
+      集計対象月
     </Typography>
   );
 }
 
 export default function JobTerm() {
-  const { closingDates, loading, createClosingDate } = useClosingDates();
+  const dispatch = useAppDispatchV2();
+  const candidateCloseDates = Array.from(Array(12).keys()).map((i) => {
+    const date = dayjs().add(i, "month").date(1);
+    return date;
+  });
 
-  const [rowModelsModel, setRowModelsModel] = useState<GridRowModesModel>({});
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editRow, setEditRow] = useState<CloseDate | null>(null);
+
+  const {
+    closeDates,
+    loading: closeDateLoading,
+    error: closeDateError,
+    createCloseDate,
+    updateCloseDate,
+    deleteCloseDate,
+  } = useCloseDates();
 
   const {
     control,
     handleSubmit,
-    formState: { errors, isDirty, isValid, isSubmitting },
+    formState: { isDirty, isValid, isSubmitting },
     reset,
-    setValue,
   } = useForm<Inputs>({
     mode: "onChange",
-    resolver: zodResolver(variationSchema),
+    defaultValues,
   });
 
   const onSubmit = (data: Inputs) => {
-    if (!data.closingDate) {
-      throw new Error("closingDate is null.");
+    if (!data.closeDate || !data.startDate || !data.endDate) {
+      throw new Error("Please fill in all fields.");
     }
 
-    void createClosingDate(data.closingDate).then(() => {
-      reset();
-      setValue("closingDate", null);
+    void createCloseDate({
+      closeDate: data.closeDate.toISOString(),
+      startDate: data.startDate?.toISOString(),
+      endDate: data.endDate?.toISOString(),
+    }).then(() => {
+      reset(defaultValues);
     });
   };
 
-  const processRowUpdate: DataGridProps<AttendanceClosingDate>["processRowUpdate"] =
-    (newRow) => {
-      console.log(newRow);
-      return newRow;
-    };
+  if (closeDateLoading) {
+    return <LinearProgress />;
+  }
 
-  if (loading) return <LinearProgress />;
+  if (closeDateError) {
+    return (
+      <Typography variant="body1">
+        データ取得中に問題が発生しました。管理者に連絡してください。
+      </Typography>
+    );
+  }
 
   return (
-    <Stack spacing={2} sx={{ px: 5, pt: 2 }}>
-      <Title />
-      <Typography>月ごとに勤怠を締める日付を指定します。</Typography>
-      <Box>
-        <Stack spacing={2}>
-          <Box>
-            <Controller
-              name="closingDate"
-              control={control}
-              render={({ field: { value, onChange } }) => (
-                <DatePicker
-                  value={value}
-                  format="YYYY/MM/DD"
-                  slotProps={{
-                    textField: {
-                      helperText: errors.closingDate?.message,
-                    },
+    <>
+      <Stack spacing={2}>
+        <Title />
+        <Typography>月ごとに勤怠を締める日付を指定します。</Typography>
+        <Box>
+          <Stack spacing={2}>
+            <Box>
+              <Controller
+                name="closeDate"
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange } }) => (
+                  <Autocomplete
+                    options={candidateCloseDates}
+                    value={value}
+                    getOptionLabel={(option) => option.format("YYYY/MM")}
+                    onChange={(e, v) => {
+                      if (!v) return;
+                      onChange(v);
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="集計対象月" />
+                    )}
+                  />
+                )}
+              />
+            </Box>
+            <Box>
+              <Stack spacing={2} direction="row" alignItems="center">
+                <Box>
+                  <Controller
+                    name="startDate"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <DatePicker
+                        label="開始日"
+                        format="YYYY/MM/DD"
+                        {...field}
+                      />
+                    )}
+                  />
+                </Box>
+                <Box>〜</Box>
+                <Box>
+                  <Controller
+                    name="endDate"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <DatePicker
+                        label="終了日"
+                        format="YYYY/MM/DD"
+                        {...field}
+                      />
+                    )}
+                  />
+                </Box>
+              </Stack>
+            </Box>
+            <Box>
+              <Button
+                variant="contained"
+                disabled={!isDirty || !isValid || isSubmitting}
+                onClick={handleSubmit(onSubmit)}
+              >
+                追加
+              </Button>
+            </Box>
+          </Stack>
+        </Box>
+        <DataGrid
+          rows={closeDates}
+          sortModel={[
+            {
+              field: "closeDate",
+              sort: "desc",
+            },
+          ]}
+          autoHeight
+          columns={[
+            {
+              field: "closeDate",
+              headerName: "集計対象月",
+              width: 150,
+              valueGetter: (params) => {
+                const date = dayjs(params.row.closeDate);
+                return date.format("YYYY年M月");
+              },
+            },
+            {
+              field: "expirationDate",
+              headerName: "有効期間",
+              width: 300,
+              valueGetter: (params) => {
+                const startDate = dayjs(params.row.startDate);
+                const endDate = dayjs(params.row.endDate);
+                return `${startDate.format("YYYY/MM/DD")} 〜 ${endDate.format(
+                  "YYYY/MM/DD"
+                )}`;
+              },
+            },
+            {
+              field: "createdAt",
+              headerName: "作成日",
+              width: 150,
+              valueGetter: (params) => {
+                const date = dayjs(params.row.createdAt);
+                return date.format("YYYY/MM/DD");
+              },
+            },
+            {
+              field: "actions",
+              type: "actions",
+              headerName: "操作",
+              getActions: (params: GridRowParams<CloseDate>) => [
+                <GridActionsCellItem
+                  key={params.row.id}
+                  icon={<EditIcon />}
+                  label="編集"
+                  onClick={() => {
+                    setEditRow(params.row);
+                    setEditDialogOpen(true);
                   }}
-                  onChange={(date) => {
-                    if (!date) return;
-                    onChange(date);
+                />,
+                <GridActionsCellItem
+                  key={params.row.id}
+                  icon={<DeleteIcon />}
+                  label="削除"
+                  onClick={() => {
+                    // eslint-disable-next-line no-alert
+                    const result = window.confirm(
+                      "本当に削除しますか？この操作は取り消せません。"
+                    );
+                    if (!result) return;
+
+                    deleteCloseDate({ id: params.row.id })
+                      .then(() => dispatch(setSnackbarSuccess(S09004)))
+                      .catch(() => dispatch(setSnackbarError(E09004)));
                   }}
-                />
-              )}
-            />
-          </Box>
-          <Box>
-            <Button
-              variant="contained"
-              disabled={!isDirty || !isValid || isSubmitting}
-              onClick={handleSubmit(onSubmit)}
-            >
-              追加
-            </Button>
-          </Box>
-        </Stack>
-      </Box>
-      <DataGrid
-        rows={closingDates}
-        editMode="row"
-        rowModesModel={rowModelsModel}
-        onRowModesModelChange={(model) => setRowModelsModel(model)}
-        processRowUpdate={processRowUpdate}
-        sortModel={[
-          {
-            field: "closing_date",
-            sort: "desc",
-          },
-        ]}
-        autoHeight
-        columns={getColumns(rowModelsModel)}
+                />,
+              ],
+            },
+          ]}
+        />
+      </Stack>
+      <EditJobTermInputDialog
+        targetData={editRow}
+        open={editDialogOpen}
+        onClose={() => setEditDialogOpen(false)}
+        candidateCloseDates={candidateCloseDates}
+        updateCloseDate={updateCloseDate}
       />
-    </Stack>
+    </>
   );
 }

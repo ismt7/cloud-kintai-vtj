@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 
 import { Box, LinearProgress, Stack, Typography } from "@mui/material";
 
-import { Logger } from "aws-amplify";
+import { Cache, Logger } from "aws-amplify";
+import dayjs from "dayjs";
 import { useAppDispatchV2 } from "../../app/hooks";
 import {
   E01001,
@@ -11,21 +12,26 @@ import {
   E01004,
   E01005,
   E01006,
+  E02003,
   S01001,
   S01002,
   S01003,
   S01004,
   S01005,
   S01006,
+  S02003,
 } from "../../errors";
+import useAttendance, {
+  GoDirectlyFlag,
+  ReturnDirectlyFlag,
+} from "../../hooks/useAttendance/useAttendance";
+import { getWorkStatus } from "../../hooks/useAttendance/WorkStatus";
+import useCognitoUser from "../../hooks/useCognitoUser";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
-import useLoginStaff from "../attendance_editor/hooks/useLoginStaff";
 import Clock from "../clock/Clock";
-import useAttendance from "./hooks/useAttendance";
-import useRest from "./hooks/useRest";
 import ClockInItem from "./items/ClockInItem";
 import ClockOutItem from "./items/ClockOutItem";
 import GoDirectlyItem from "./items/GoDirectlyItem";
@@ -33,43 +39,59 @@ import RestEndItem from "./items/RestEndItem";
 import RestStartItem from "./items/RestStartItem";
 import ReturnDirectly from "./items/ReturnDirectlyItem";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
-import { getCurrentWorkStatusV2, WorkStatus } from "./WorkStatusCodes";
+import { WorkStatus } from "./common";
+import sendClockInMail from "./sendClockInMail";
+import sendClockOutMail from "./sendClockOutMail";
 
-export default function TimeRecorder({
-  cognitoUserId,
-}: {
-  cognitoUserId: string | undefined;
-}) {
+export default function TimeRecorder() {
   const dispatch = useAppDispatchV2();
-  const { loginStaff, loading: loginStaffLoading } =
-    useLoginStaff(cognitoUserId);
+  const { cognitoUser, loading: cognitoUserLoading } = useCognitoUser();
   const {
     attendance,
+    getAttendance,
     clockIn,
     clockOut,
-    goDirectly,
-    returnDirectly,
-    updateRemarks,
-    loading: attendanceLoading,
-  } = useAttendance(loginStaff);
-  const {
-    rest,
     restStart,
     restEnd,
-    loading: restLoading,
-  } = useRest(loginStaff);
+    updateRemarks,
+  } = useAttendance();
   const [workStatus, setWorkStatus] = useState<WorkStatus | null>(null);
 
+  const today = dayjs().format("YYYY-MM-DD");
   const logger = new Logger(
     "TimeRecorder",
     process.env.NODE_ENV === "development" ? "DEBUG" : "ERROR"
   );
 
   useEffect(() => {
-    setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
-  }, [attendance, rest]);
+    if (Cache.getItem("reloadTimer")) {
+      return;
+    }
 
-  if (loginStaffLoading || attendanceLoading || restLoading || !loginStaff) {
+    Cache.setItem("reloadTimer", true, { expires: 60 * 10 * 1000 });
+
+    window.setTimeout(() => {
+      alert("ページの有効期限が切れました。リロードしてください。");
+      Cache.removeItem("reloadTimer");
+    }, 60 * 10 * 1000);
+  }, []);
+
+  useEffect(() => {
+    if (!cognitoUser) {
+      return;
+    }
+
+    getAttendance(cognitoUser.id, today).catch((e) => {
+      logger.debug(e);
+      dispatch(setSnackbarError(E01001));
+    });
+  }, [cognitoUser]);
+
+  useEffect(() => {
+    setWorkStatus(getWorkStatus(attendance));
+  }, [attendance]);
+
+  if (cognitoUserLoading) {
     return <LinearProgress />;
   }
 
@@ -91,8 +113,14 @@ export default function TimeRecorder({
           <ClockInItem
             workStatus={workStatus}
             onClick={() => {
-              void clockIn()
-                .then(() => dispatch(setSnackbarSuccess(S01001)))
+              if (!cognitoUser) return;
+
+              const now = dayjs().toISOString();
+              clockIn(cognitoUser.id, today, now)
+                .then((res) => {
+                  dispatch(setSnackbarSuccess(S01001));
+                  sendClockInMail(cognitoUser, res);
+                })
                 .catch((e) => {
                   logger.debug(e);
                   dispatch(setSnackbarError(E01001));
@@ -102,8 +130,14 @@ export default function TimeRecorder({
           <ClockOutItem
             workStatus={workStatus}
             onClick={() => {
-              void clockOut()
-                .then(() => dispatch(setSnackbarSuccess(S01002)))
+              if (!cognitoUser) return;
+
+              const now = dayjs().toISOString();
+              clockOut(cognitoUser.id, today, now)
+                .then((res) => {
+                  dispatch(setSnackbarSuccess(S01002));
+                  sendClockOutMail(cognitoUser, res);
+                })
                 .catch((e) => {
                   logger.debug(e);
                   dispatch(setSnackbarError(E01002));
@@ -121,8 +155,14 @@ export default function TimeRecorder({
             <GoDirectlyItem
               workStatus={workStatus}
               onClick={() => {
-                void goDirectly()
-                  .then(() => dispatch(setSnackbarSuccess(S01003)))
+                if (!cognitoUser) return;
+
+                const now = dayjs().toISOString();
+                clockIn(cognitoUser.id, today, now, GoDirectlyFlag.YES)
+                  .then((res) => {
+                    dispatch(setSnackbarSuccess(S01003));
+                    sendClockInMail(cognitoUser, res);
+                  })
                   .catch((e) => {
                     logger.debug(e);
                     dispatch(setSnackbarError(E01005));
@@ -132,8 +172,14 @@ export default function TimeRecorder({
             <ReturnDirectly
               workStatus={workStatus}
               onClick={() => {
-                void returnDirectly()
-                  .then(() => dispatch(setSnackbarSuccess(S01004)))
+                if (!cognitoUser) return;
+
+                const now = dayjs().toISOString();
+                clockOut(cognitoUser.id, today, now, ReturnDirectlyFlag.YES)
+                  .then((res) => {
+                    dispatch(setSnackbarSuccess(S01004));
+                    sendClockOutMail(cognitoUser, res);
+                  })
                   .catch((e) => {
                     logger.debug(e);
                     dispatch(setSnackbarError(E01006));
@@ -145,7 +191,10 @@ export default function TimeRecorder({
             <RestStartItem
               workStatus={workStatus}
               onClick={() => {
-                void restStart()
+                if (!cognitoUser) return;
+
+                const now = dayjs().toISOString();
+                restStart(cognitoUser.id, today, now)
                   .then(() => dispatch(setSnackbarSuccess(S01005)))
                   .catch((e) => {
                     logger.debug(e);
@@ -156,7 +205,10 @@ export default function TimeRecorder({
             <RestEndItem
               workStatus={workStatus}
               onClick={() => {
-                void restEnd()
+                if (!cognitoUser) return;
+
+                const now = dayjs().toISOString();
+                restEnd(cognitoUser.id, today, now)
                   .then(() => dispatch(setSnackbarSuccess(S01006)))
                   .catch((e) => {
                     logger.debug(e);
@@ -169,9 +221,16 @@ export default function TimeRecorder({
         <TimeRecorderRemarks
           attendance={attendance}
           onSave={(remarks) => {
-            void updateRemarks(remarks || "").then(() => {
-              setWorkStatus(getCurrentWorkStatusV2(attendance, rest));
-            });
+            if (!cognitoUser) return;
+
+            updateRemarks(cognitoUser.id, today, remarks || "")
+              .then(() => {
+                dispatch(setSnackbarSuccess(S02003));
+              })
+              .catch((e) => {
+                logger.debug(e);
+                dispatch(setSnackbarError(E02003));
+              });
           }}
         />
       </Stack>

@@ -6,22 +6,35 @@ import {
 
 import EditIcon from "@mui/icons-material/Edit";
 import dayjs from "dayjs";
-import { Attendance, HolidayCalendar, Rest } from "../../client";
+import {
+  Attendance,
+  CompanyHolidayCalendar,
+  HolidayCalendar,
+  Rest,
+} from "../../API";
+
 import getDayOfWeek from "./getDayOfWeek";
 
 export function statusValueGetter(
-  workDate: Attendance["work_date"],
-  startTime: Attendance["start_time"],
-  endTime: Attendance["end_time"],
-  holidayCalendars: HolidayCalendar[]
+  workDate: Attendance["workDate"],
+  startTime: Attendance["startTime"],
+  endTime: Attendance["endTime"],
+  holidayCalendars: HolidayCalendar[],
+  companyHolidayCalendars: CompanyHolidayCalendar[],
+  paidHolidayFlag: Attendance["paidHolidayFlag"]
 ) {
+  if (paidHolidayFlag) return "OK";
+
   const today = dayjs().format("YYYY-MM-DD");
   const dayOfWeek = getDayOfWeek(workDate);
   const isHoliday = holidayCalendars?.find(
-    (holiday) => holiday.holiday_date === workDate
+    (holiday) => holiday.holidayDate === workDate
+  );
+  const isCompanyHoliday = companyHolidayCalendars?.find(
+    (companyHoliday) => companyHoliday.holidayDate === workDate
   );
 
-  if (isHoliday) return "";
+  if (isHoliday || isCompanyHoliday) return "";
 
   switch (dayOfWeek) {
     case "月":
@@ -47,15 +60,17 @@ export function statusValueGetter(
 
 export interface DataGridProps {
   id: Attendance["id"];
-  workDate: Attendance["work_date"];
-  startTime: Attendance["start_time"];
-  endTime: Attendance["end_time"];
+  workDate: Attendance["workDate"];
+  startTime: Attendance["startTime"];
+  endTime: Attendance["endTime"];
   remarks: Attendance["remarks"];
+  paidHolidayFlag: Attendance["paidHolidayFlag"];
   rests: Rest[];
 }
 
 export default function GetColumns(
-  holidayCalendars: HolidayCalendar[]
+  holidayCalendars: HolidayCalendar[],
+  companyHolidayCalendars: CompanyHolidayCalendar[]
 ): GridColDef[] {
   return [
     {
@@ -63,12 +78,14 @@ export default function GetColumns(
       headerName: "ステータス",
       align: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
-        const { workDate, startTime, endTime } = params.row;
+        const { workDate, startTime, endTime, paidHolidayFlag } = params.row;
         return statusValueGetter(
           workDate,
           startTime,
           endTime,
-          holidayCalendars
+          holidayCalendars,
+          companyHolidayCalendars,
+          paidHolidayFlag
         );
       },
     },
@@ -83,7 +100,7 @@ export default function GetColumns(
         if (!workDate) return "";
         const date = dayjs(workDate);
         const isHoliday = holidayCalendars?.find(
-          ({ holiday_date }) => holiday_date === params.row.workDate
+          ({ holidayDate }) => holidayDate === params.row.workDate
         );
         const dayOfWeek = isHoliday ? "祝" : getDayOfWeek(params.row.workDate);
         return `${date.format("M/D")}(${dayOfWeek})`;
@@ -96,7 +113,11 @@ export default function GetColumns(
       sortable: false,
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
-        const { startTime } = params.row;
+        const { startTime, paidHolidayFlag } = params.row;
+        if (paidHolidayFlag) {
+          return "09:00";
+        }
+
         if (!startTime) return "";
 
         const date = dayjs(startTime);
@@ -110,7 +131,11 @@ export default function GetColumns(
       sortable: false,
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
-        const { endTime } = params.row;
+        const { endTime, paidHolidayFlag } = params.row;
+        if (paidHolidayFlag) {
+          return "18:00";
+        }
+
         if (!endTime) return "";
 
         const date = dayjs(endTime);
@@ -124,12 +149,16 @@ export default function GetColumns(
       sortable: false,
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
-        const { startTime, endTime, rests } = params.row;
+        const { startTime, endTime, paidHolidayFlag, rests } = params.row;
+        if (paidHolidayFlag) {
+          return "01:00";
+        }
+
         if (!startTime && !endTime) return "";
         if (rests.length === 0) return "00:00";
 
         const restTimeTotal = rests.reduce((acc, cur) => {
-          const { start_time: restStartTime, end_time: restEndTime } = cur;
+          const { startTime: restStartTime, endTime: restEndTime } = cur;
           if (!restStartTime || !restEndTime) return acc;
 
           const start = dayjs(restStartTime);
@@ -153,7 +182,10 @@ export default function GetColumns(
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
         const today = dayjs().format("YYYY-MM-DD");
-        const { startTime, endTime, rests } = params.row;
+        const { startTime, endTime, paidHolidayFlag, rests } = params.row;
+        if (paidHolidayFlag) {
+          return "08:00";
+        }
 
         if (!startTime && !endTime) return "";
 
@@ -165,7 +197,7 @@ export default function GetColumns(
         const end = dayjs(endTime);
         const workTime = end.diff(start, "minute");
         const restTimeTotal = rests.reduce((acc, cur) => {
-          const { start_time: restStartTime, end_time: restEndTime } = cur;
+          const { startTime: restStartTime, endTime: restEndTime } = cur;
           if (!restStartTime || !restEndTime) return acc;
 
           const restStart = dayjs(restStartTime);
@@ -190,19 +222,20 @@ export default function GetColumns(
       width: 300,
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
-        const { workDate } = params.row;
+        const { workDate, paidHolidayFlag } = params.row;
         const isHoliday = holidayCalendars?.find(
-          ({ holiday_date }) => holiday_date === workDate
+          ({ holidayDate }) => holidayDate === workDate
+        );
+
+        const isCompanyHoliday = companyHolidayCalendars?.find(
+          ({ holidayDate }) => holidayDate === workDate
         );
 
         const summaryMessage = [];
-        if (isHoliday) {
-          summaryMessage.push(isHoliday.name);
-        }
-
-        if (params.row.remarks) {
-          summaryMessage.push(params.row.remarks);
-        }
+        if (paidHolidayFlag) summaryMessage.push("有給休暇");
+        if (isHoliday) summaryMessage.push(isHoliday.name);
+        if (isCompanyHoliday) summaryMessage.push(isCompanyHoliday.name);
+        if (params.row.remarks) summaryMessage.push(params.row.remarks);
         return summaryMessage.join(" ");
       },
     },

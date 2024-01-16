@@ -1,12 +1,19 @@
-import { Box, Container, ListItemButton, Stack } from "@mui/material";
-import { Outlet, useNavigate } from "react-router-dom";
+import {
+  Box,
+  Breadcrumbs,
+  Container,
+  ListItemButton,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 export default function Layout() {
   const navigate = useNavigate();
 
   const menuList = [
     {
-      name: "締日",
+      name: "集計対象月",
       path: "/admin/master/job_term",
     },
     {
@@ -39,7 +46,19 @@ export default function Layout() {
           <Stack sx={{ height: 1 }}>{menuBoxList}</Stack>
         </Box>
         <Box sx={{ flexGrow: 2 }}>
-          <Outlet />
+          <Stack spacing={1} sx={{ px: 5 }}>
+            <Box>
+              <Breadcrumbs>
+                <Link to="/" color="inherit">
+                  TOP
+                </Link>
+                <Typography color="text.primary">マスタ管理</Typography>
+              </Breadcrumbs>
+            </Box>
+            <Box>
+              <Outlet />
+            </Box>
+          </Stack>
         </Box>
       </Stack>
     </Container>
