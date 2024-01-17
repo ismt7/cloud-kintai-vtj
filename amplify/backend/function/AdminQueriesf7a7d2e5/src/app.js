@@ -24,6 +24,7 @@ const {
   createUser,
   getUser,
   updateUser,
+  deleteUser,
   listUsers,
   listGroups,
   listGroupsForUser,
@@ -205,6 +206,21 @@ app.post("/updateUser", async (req, res, next) => {
       req.body.username,
       req.body.userAttributes
     );
+    res.status(200).json(response);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post("/deleteUser", async (req, res, next) => {
+  if (!req.body.username) {
+    const err = new Error("username is required");
+    err.statusCode = 400;
+    return next(err);
+  }
+
+  try {
+    const response = await deleteUser(req.body.username);
     res.status(200).json(response);
   } catch (err) {
     next(err);
