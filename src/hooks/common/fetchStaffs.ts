@@ -19,8 +19,6 @@ export default async function fetchStaffs(): Promise<Staff[]> {
 
   const response = await API.get("AdminQueries", "/listUsers", params);
 
-  console.log(response);
-
   return Promise.all(
     response.Users.map(async (user: any) => {
       const sub = user.Attributes.find(

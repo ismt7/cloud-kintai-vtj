@@ -17,9 +17,8 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
-import { Attendance, AttendanceHistory, Rest } from "../../API";
 import { useAppDispatchV2 } from "../../app/hooks";
-import { E04001, S04001 } from "../../errors";
+import { E02001, E04001, S04001 } from "../../errors";
 import useAttendance from "../../hooks/useAttendance/useAttendance";
 import { Staff } from "../../hooks/useStaffs/common";
 import useStaffs from "../../hooks/useStaffs/useStaffs";
@@ -36,43 +35,16 @@ import RemarksItem from "./items/RemarksItem";
 // eslint-disable-next-line import/no-cycle
 import { calcTotalRestTime, RestTimeItem } from "./items/RestTimeItem";
 // eslint-disable-next-line import/no-cycle
-import { calcTotalWorkTime, WorkTimeItem } from "./items/WorkTimeItem";
+import {
+  calcTotalWorkTime,
+  WorkTimeItem,
+} from "./items/WorkTimeItem/WorkTimeItem";
 import Title from "../Title/Title";
 // eslint-disable-next-line import/no-cycle
 import EditAttendanceHistoryList from "./EditAttendanceHistoryList";
 import { sendMail } from "../../graphql/queries";
 import getAttendanceMailBody from "./attendanceMailTemplate";
-
-export type RestInputs = {
-  startTime: Rest["startTime"] | null;
-  endTime: Rest["endTime"] | null;
-};
-
-export type AttendanceEditorInputs = {
-  workDate: Attendance["workDate"] | null;
-  goDirectlyFlag: Attendance["goDirectlyFlag"];
-  returnDirectlyFlag: Attendance["returnDirectlyFlag"];
-  startTime: Attendance["startTime"];
-  endTime: Attendance["endTime"];
-  remarks: Attendance["remarks"];
-  paidHolidayFlag: Attendance["paidHolidayFlag"];
-  rests: RestInputs[];
-  histories: AttendanceHistory[];
-  revision: Attendance["revision"];
-};
-
-const defaultValues: AttendanceEditorInputs = {
-  workDate: null,
-  goDirectlyFlag: false,
-  returnDirectlyFlag: false,
-  startTime: null,
-  endTime: null,
-  remarks: "",
-  paidHolidayFlag: false,
-  rests: [],
-  histories: [],
-  revision: 0,
-};
+import { AttendanceEditorInputs, defaultValues } from "./common";
 
 export default function AttendanceEditor() {
   const dispatch = useAppDispatchV2();
@@ -122,8 +94,8 @@ export default function AttendanceEditor() {
 
     getAttendance(staff.sub, dayjs(targetWorkDate).format("YYYY-MM-DD")).catch(
       (e: Error) => {
-        logger.error(e);
-        console.log(e);
+        logger.debug(e);
+        dispatch(setSnackbarError(E02001));
       }
     );
   }, [staff, targetStaffId, targetWorkDate]);
