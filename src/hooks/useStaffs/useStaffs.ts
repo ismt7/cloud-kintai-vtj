@@ -22,9 +22,19 @@ export default function useStaffs() {
       });
   }, []);
 
+  const refreshStaff = () =>
+    fetchStaffs()
+      .then((res) => {
+        setStaffs(res);
+      })
+      .catch((e: Error) => {
+        throw e;
+      });
+
   return {
     loading,
     error,
     staffs,
+    refreshStaff,
   };
 }

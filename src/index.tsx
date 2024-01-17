@@ -33,6 +33,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import reportWebVitals from "./reportWebVitals";
 import AdminMasterLayout from "./stories/pages/admin/master/AdminMasterLayout";
+import AdminStaffEditor from "./pages/admin/AdminStaffEditor/AdminStaffEditor";
 
 const router = createBrowserRouter([
   {
@@ -124,6 +125,10 @@ const router = createBrowserRouter([
               {
                 path: "attendance",
                 element: <AdminStaffAttendanceList />,
+              },
+              {
+                path: "edit",
+                element: <AdminStaffEditor />,
               },
             ],
           },

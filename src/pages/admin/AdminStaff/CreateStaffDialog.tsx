@@ -1,4 +1,3 @@
-import * as React from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -9,6 +8,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Autocomplete, Box, Stack } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
+import { useState } from "react";
 import { StaffRole } from "../../../hooks/useStaffs/common";
 import createStaff from "../../../hooks/common/createStaff";
 import addUserToGroup from "../../../hooks/common/addUserToGroup";
@@ -17,7 +17,7 @@ import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../../lib/reducers/snackbarReducer";
-import { E10002, S10002 } from "../../../errors";
+import { E10001, E10002, S10002 } from "../../../errors";
 
 type Inputs = {
   familyName?: string;
@@ -39,9 +39,13 @@ const ROLE_OPTIONS = [
   { value: StaffRole.STAFF, label: "スタッフ" },
 ];
 
-export default function CreateStaffDialog() {
+export default function CreateStaffDialog({
+  refreshStaff,
+}: {
+  refreshStaff: () => Promise<void>;
+}) {
   const dispatch = useAppDispatchV2();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const {
     register,
@@ -76,6 +80,9 @@ export default function CreateStaffDialog() {
           .then(() => {
             dispatch(setSnackbarSuccess(S10002));
             handleClose();
+            refreshStaff().catch(() => {
+              dispatch(setSnackbarError(E10001));
+            });
           })
           .catch(() => {
             dispatch(setSnackbarError(E10002));

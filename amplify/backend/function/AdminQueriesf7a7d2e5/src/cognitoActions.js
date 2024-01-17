@@ -21,6 +21,7 @@ const {
   AdminCreateUserCommand,
   AdminGetUserCommand,
   AdminUpdateUserAttributesCommand,
+  AdminDeleteUserCommand,
   AdminListGroupsForUserCommand,
   AdminRemoveUserFromGroupCommand,
   AdminUserGlobalSignOutCommand,
@@ -204,6 +205,28 @@ async function updateUser(username, userAttributes) {
   }
 }
 
+async function deleteUser(username) {
+  const params = {
+    UserPoolId: userPoolId,
+    Username: username,
+  };
+
+  console.log(`Attempting to delete ${username}`);
+
+  try {
+    await cognitoIdentityProviderClient.send(
+      new AdminDeleteUserCommand(params)
+    );
+    console.log(`Deleted ${username}`);
+    return {
+      message: `Deleted ${username}`,
+    };
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
 async function listUsers(Limit, PaginationToken) {
   const params = {
     UserPoolId: userPoolId,
@@ -340,6 +363,7 @@ module.exports = {
   createUser,
   getUser,
   updateUser,
+  deleteUser,
   listUsers,
   listGroups,
   listGroupsForUser,
