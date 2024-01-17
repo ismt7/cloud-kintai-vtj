@@ -12,10 +12,8 @@ import {
 } from "react-hook-form";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ClearIcon from "@mui/icons-material/Clear";
-// TODO: あとで修正
-// eslint-disable-next-line import/no-cycle
-import { AttendanceEditorInputs } from "../AttendanceEditor";
 import { RestInput } from "../../../API";
+import { AttendanceEditorInputs } from "../common";
 
 export function calcTotalRestTime(
   startTime: string | null | undefined,
