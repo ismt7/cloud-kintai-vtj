@@ -42,9 +42,11 @@ import enableStaff from "../../../hooks/common/enableStaff";
 import deleteStaff from "../../../hooks/common/deleteStaff";
 
 export default function AdminStaff() {
-  const { route } = useAuthenticator();
+  const { route, user } = useAuthenticator();
   const navigate = useNavigate();
   const dispatch = useAppDispatchV2();
+
+  console.log(user);
 
   const {
     staffs,
