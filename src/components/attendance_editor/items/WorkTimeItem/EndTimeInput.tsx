@@ -4,6 +4,7 @@ import {
   Controller,
   UseFormGetValues,
   UseFormSetValue,
+  UseFormWatch,
 } from "react-hook-form";
 import { Box, Button, Chip, IconButton, Stack } from "@mui/material";
 import { TimePicker, renderTimeViewClock } from "@mui/x-date-pickers";
@@ -18,20 +19,24 @@ export default function EndTimeInput({
   control,
   setValue,
   getValues,
+  watch,
 }: {
   workDate: dayjs.Dayjs | null;
   control: Control<AttendanceEditorInputs, any>;
   setValue: UseFormSetValue<AttendanceEditorInputs>;
   getValues: UseFormGetValues<AttendanceEditorInputs>;
+  watch: UseFormWatch<AttendanceEditorInputs>;
 }) {
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
 
   useEffect(() => {
     const endTime = getValues("endTime");
-    if (endTime) {
-      setEnableEndTime(true);
-    }
-  }, []);
+    setEnableEndTime(!!endTime);
+
+    watch((data) => {
+      setEnableEndTime(!!data.endTime);
+    });
+  }, [watch]);
 
   if (!workDate) {
     return null;

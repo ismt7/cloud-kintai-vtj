@@ -79,6 +79,7 @@ export function WorkTimeItem({
                   control={control}
                   setValue={setValue}
                   getValues={getValues}
+                  watch={watch}
                 />
               </Box>
             </Stack>
