@@ -1,11 +1,13 @@
 import {
   GridActionsCellItem,
   GridColDef,
+  GridRowParams,
   GridValueGetterParams,
 } from "@mui/x-data-grid";
 
 import EditIcon from "@mui/icons-material/Edit";
 import dayjs from "dayjs";
+import { NavigateFunction } from "react-router-dom";
 import {
   Attendance,
   CompanyHolidayCalendar,
@@ -70,7 +72,8 @@ export interface DataGridProps {
 
 export default function GetColumns(
   holidayCalendars: HolidayCalendar[],
-  companyHolidayCalendars: CompanyHolidayCalendar[]
+  companyHolidayCalendars: CompanyHolidayCalendar[],
+  navigate: NavigateFunction
 ): GridColDef[] {
   return [
     {
@@ -244,13 +247,15 @@ export default function GetColumns(
       headerName: "操作",
       type: "actions",
       sortable: false,
-      getActions: () => [
+      getActions: (params: GridRowParams<DataGridProps>) => [
         <GridActionsCellItem
           key="edit"
           label="編集"
-          disabled={true}
           icon={<EditIcon />}
-          onClick={() => {}}
+          onClick={() => {
+            const workDate = dayjs(params.row.workDate).format("YYYYMMDD");
+            navigate(`/attendance/${workDate}/edit`);
+          }}
         />,
       ],
     },

@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { Staff } from "../../../hooks/useStaffs/common";
 
 export default function StaffNameItem({
@@ -10,12 +10,12 @@ export default function StaffNameItem({
 
   return (
     <Stack direction="row" alignItems={"center"}>
-      <Box sx={{ fontWeight: "bold", width: "150px" }}>スタッフ</Box>
-      <Box>
-        <Typography variant="body1">
-          {`${staff.familyName} ${staff.givenName}`}
-        </Typography>
-      </Box>
+      <Typography variant="body1" sx={{ fontWeight: "bold", width: "150px" }}>
+        スタッフ
+      </Typography>
+      <Typography variant="body1">
+        {`${staff.familyName} ${staff.givenName}`}
+      </Typography>
     </Stack>
   );
 }

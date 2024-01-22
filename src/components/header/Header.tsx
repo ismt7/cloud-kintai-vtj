@@ -65,7 +65,7 @@ export default function Header({
     const viewableList = [];
     const menuList = [
       { label: "勤怠打刻", href: "/register" },
-      { label: "勤怠一覧", href: "/list" },
+      { label: "勤怠一覧", href: "/attendance/list" },
       { label: "ドキュメント", href: "/docs" },
     ];
 

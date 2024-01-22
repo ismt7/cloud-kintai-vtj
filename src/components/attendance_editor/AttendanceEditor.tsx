@@ -45,6 +45,7 @@ import EditAttendanceHistoryList from "./EditAttendanceHistoryList";
 import { sendMail } from "../../graphql/queries";
 import getAttendanceMailBody from "./attendanceMailTemplate";
 import { AttendanceEditorInputs, defaultValues } from "./common";
+import ChangeRequestDialog from "./ChangeRequestDialog/ChangeRequestDialog";
 
 export default function AttendanceEditor() {
   const dispatch = useAppDispatchV2();
@@ -219,6 +220,13 @@ export default function AttendanceEditor() {
       );
       setValue("histories", histories);
     }
+
+    if (attendance.changeRequests) {
+      const changeRequests = attendance.changeRequests.filter(
+        (item): item is NonNullable<typeof item> => item !== null
+      );
+      setValue("changeRequests", changeRequests);
+    }
   }, [attendance]);
 
   if (staffsLoading || attendance === undefined) {
@@ -267,8 +275,6 @@ export default function AttendanceEditor() {
         <Title text="勤怠編集" />
       </Box>
       <Stack spacing={2} sx={{ px: 30 }}>
-        {/* TODO: #182 勤怠編集画面で前後の日付に移動できるようにする */}
-        {/* TODO: #183 勤怠編集画面で指定日付に移動できるようにする */}
         <Box>
           {errors.startTime && (
             <Box>
@@ -413,6 +419,10 @@ export default function AttendanceEditor() {
           </Stack>
         </Box>
       </Stack>
+      <ChangeRequestDialog
+        attendance={attendance}
+        updateAttendance={updateAttendance}
+      />
     </Stack>
   );
 }

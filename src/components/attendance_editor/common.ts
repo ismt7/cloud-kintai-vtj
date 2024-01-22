@@ -1,4 +1,9 @@
-import { Attendance, AttendanceHistory, Rest } from "../../API";
+import {
+  Attendance,
+  AttendanceChangeRequest,
+  AttendanceHistory,
+  Rest,
+} from "../../API";
 
 export type RestInputs = {
   startTime: Rest["startTime"] | null;
@@ -15,6 +20,7 @@ export type AttendanceEditorInputs = {
   paidHolidayFlag: Attendance["paidHolidayFlag"];
   rests: RestInputs[];
   histories: AttendanceHistory[];
+  changeRequests: AttendanceChangeRequest[];
   revision: Attendance["revision"];
 };
 
@@ -28,5 +34,6 @@ export const defaultValues: AttendanceEditorInputs = {
   paidHolidayFlag: false,
   rests: [],
   histories: [],
+  changeRequests: [],
   revision: 0,
 };
