@@ -1,7 +1,7 @@
 {
   "MUI Stack": {
     "prefix": "MUI Stack",
-    "body": ["<Stack spacing={2}>", "  $0", "</Stack>"],
+    "body": ["<Stack spacing={${1|1,2,3|}}>", "  $0", "</Stack>"],
     "description": ""
   },
   "MUI Box": {
@@ -35,6 +35,11 @@
       "  $0",
       "</Button>"
     ],
+    "description": ""
+  },
+  "MUI Chip": {
+    "prefix": "MUI Chip",
+    "body": ["<Chip label=\"$1\" variant=\"${2|filled,outlined|}\" icon={} />"],
     "description": ""
   }
 }

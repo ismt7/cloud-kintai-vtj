@@ -12,7 +12,7 @@ import dayjs from "dayjs";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ClearIcon from "@mui/icons-material/Clear";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import { AttendanceEditorInputs } from "../../common";
+import { AttendanceEditInputs } from "../common";
 
 export default function EndTimeInput({
   workDate,
@@ -22,10 +22,10 @@ export default function EndTimeInput({
   watch,
 }: {
   workDate: dayjs.Dayjs | null;
-  control: Control<AttendanceEditorInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditorInputs>;
-  getValues: UseFormGetValues<AttendanceEditorInputs>;
-  watch: UseFormWatch<AttendanceEditorInputs>;
+  control: Control<AttendanceEditInputs, any>;
+  setValue: UseFormSetValue<AttendanceEditInputs>;
+  getValues: UseFormGetValues<AttendanceEditInputs>;
+  watch: UseFormWatch<AttendanceEditInputs>;
 }) {
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
 

@@ -34,6 +34,7 @@ type Attendance @model @auth(rules: [{ allow: private }]) {
   remarks: String
   paidHolidayFlag: Boolean
   histories: [AttendanceHistory]
+  changeRequests: [AttendanceChangeRequest]
   revision: Int
 }
 
@@ -53,6 +54,17 @@ type AttendanceHistory {
   remarks: String
   paidHolidayFlag: Boolean
   createdAt: String!
+}
+
+type AttendanceChangeRequest {
+  startTime: String
+  endTime: String
+  goDirectlyFlag: Boolean
+  returnDirectlyFlag: Boolean
+  rests: [Rest]
+  remarks: String
+  paidHolidayFlag: Boolean
+  completed: Boolean
 }
 
 type EmailResult {

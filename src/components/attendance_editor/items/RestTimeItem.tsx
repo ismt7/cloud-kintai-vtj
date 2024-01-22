@@ -56,9 +56,7 @@ export function RestTimeItem({
     const endTime = getValues(`rests.${index}.endTime`);
     setRestEndTime(endTime);
 
-    if (endTime) {
-      setEnableEndTime(true);
-    }
+    setEnableEndTime(!!endTime);
 
     watch((data) => {
       if (!data.rests) return;
@@ -68,6 +66,8 @@ export function RestTimeItem({
 
       setRestStartTime(rest.startTime);
       setRestEndTime(rest.endTime);
+
+      setEnableEndTime(!!rest.endTime);
 
       const diff = calcTotalRestTime(rest.startTime, rest.endTime);
       setTotalRestTime(diff);

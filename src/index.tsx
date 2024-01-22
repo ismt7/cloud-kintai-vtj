@@ -34,6 +34,7 @@ import Register from "./pages/Register";
 import reportWebVitals from "./reportWebVitals";
 import AdminMasterLayout from "./stories/pages/admin/master/AdminMasterLayout";
 import AdminStaffEditor from "./pages/admin/AdminStaffEditor/AdminStaffEditor";
+import AttendanceEdit from "./pages/AttendanceEdit/AttendanceEdit";
 
 const router = createBrowserRouter([
   {
@@ -49,8 +50,21 @@ const router = createBrowserRouter([
         element: <Register />,
       },
       {
-        path: "/list",
-        element: <List />,
+        path: "attendance",
+        children: [
+          {
+            index: true,
+            element: <List />,
+          },
+          {
+            path: "list",
+            element: <List />,
+          },
+          {
+            path: ":targetWorkDate/edit",
+            element: <AttendanceEdit />,
+          },
+        ],
       },
       {
         path: "/login",

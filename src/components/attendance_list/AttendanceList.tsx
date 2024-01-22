@@ -9,7 +9,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatchV2 } from "../../app/hooks";
 import { E02001 } from "../../errors";
 import useAttendances from "../../hooks/useAttendances/useAttendances";
@@ -24,6 +24,8 @@ import useCompanyHolidayCalendars from "../../hooks/useCompanyHolidayCalendars/u
 
 export default function AttendanceTable() {
   const dispatch = useAppDispatchV2();
+  const navigate = useNavigate();
+
   const { cognitoUser, loading: cognitoUserLoading } = useCognitoUser();
   const { attendances, getAttendances } = useAttendances();
   const {
@@ -84,7 +86,11 @@ export default function AttendanceTable() {
       <Box sx={{ px: 5, pb: 5 }}>
         <DataGrid
           rows={attendances ?? []}
-          columns={GetColumns(holidayCalendars, companyHolidayCalendars)}
+          columns={GetColumns(
+            holidayCalendars,
+            companyHolidayCalendars,
+            navigate
+          )}
           autoHeight
           hideFooter={true}
           getRowId={(row) => row.workDate}

@@ -7,7 +7,7 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
-import { AttendanceEditorInputs } from "../../common";
+import { AttendanceEditInputs } from "../common";
 import StartTimeInput from "./StartTimeInput";
 import EndTimeInput from "./EndTimeInput";
 
@@ -23,7 +23,7 @@ export function calcTotalWorkTime(
   return diff;
 }
 
-export function WorkTimeItem({
+export function WorkTimeInput({
   targetWorkDate,
   control,
   watch,
@@ -31,10 +31,10 @@ export function WorkTimeItem({
   getValues,
 }: {
   targetWorkDate: dayjs.Dayjs | null;
-  control: Control<AttendanceEditorInputs, any>;
-  watch: UseFormWatch<AttendanceEditorInputs>;
-  setValue: UseFormSetValue<AttendanceEditorInputs>;
-  getValues: UseFormGetValues<AttendanceEditorInputs>;
+  control: Control<AttendanceEditInputs, any>;
+  watch: UseFormWatch<AttendanceEditInputs>;
+  setValue: UseFormSetValue<AttendanceEditInputs>;
+  getValues: UseFormGetValues<AttendanceEditInputs>;
 }) {
   const [totalWorkTime, setTotalWorkTime] = useState<number>(0);
 
