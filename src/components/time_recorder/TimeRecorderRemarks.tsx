@@ -34,7 +34,7 @@ export default function TimeRecorderRemarks({
           multiline
           minRows={2}
           fullWidth
-          value={formState}
+          value={formState ?? undefined}
           placeholder="備考欄：客先名やイベント名などを記載"
           onChange={(event) => {
             setFormState(event.target.value);

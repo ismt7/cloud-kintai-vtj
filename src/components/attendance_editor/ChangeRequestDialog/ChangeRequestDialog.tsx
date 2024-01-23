@@ -23,7 +23,8 @@ import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../../lib/reducers/snackbarReducer";
-import { E04006, S04006 } from "../../../errors";
+import { E04006, E04007, S04006, S04007 } from "../../../errors";
+import handleRejectChangeRequest from "./handleRejectChangeRequest";
 
 export default function ChangeRequestDialog({
   attendance,
@@ -83,7 +84,22 @@ export default function ChangeRequestDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>閉じる</Button>
-        <Button onClick={handleClose} variant="contained" color="error">
+        <Button
+          onClick={() => {
+            handleRejectChangeRequest(attendance, updateAttendance)
+              .then(() => {
+                dispatch(setSnackbarSuccess(S04007));
+                handleClose();
+              })
+              .catch((e: Error) => {
+                console.log(e);
+                dispatch(setSnackbarError(E04007));
+              });
+            handleClose();
+          }}
+          variant="contained"
+          color="error"
+        >
           却下
         </Button>
         <Button

@@ -26,7 +26,7 @@ export default function StartTimeInput({
         render={({ field }) => (
           <TimePicker
             ampm={false}
-            value={dayjs(field.value)}
+            value={field.value ? dayjs(field.value) : null}
             viewRenderers={{
               hours: renderTimeViewClock,
               minutes: renderTimeViewClock,

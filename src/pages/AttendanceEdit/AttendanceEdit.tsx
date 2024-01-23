@@ -1,5 +1,6 @@
 import {
   Alert,
+  AlertTitle,
   Box,
   Breadcrumbs,
   Button,
@@ -35,6 +36,7 @@ import { RestTimeItem } from "./RestTimeItem/RestTimeItem";
 import ProductionTimeItem from "../../components/attendance_editor/items/ProductionTimeItem";
 import { calcTotalWorkTime } from "../../components/attendance_editor/items/WorkTimeItem/WorkTimeItem";
 import { calcTotalRestTime } from "../../components/attendance_editor/items/RestTimeItem";
+import sendChangeRequestMail from "./sendChangeRequestMail";
 
 export default function AttendanceEdit() {
   const navigate = useNavigate();
@@ -46,7 +48,8 @@ export default function AttendanceEdit() {
 
   const { staffs, loading: staffsLoading, error: staffSError } = useStaffs();
   const { cognitoUser, loading: cognitoUserLoading } = useCognitoUser();
-  const { attendance, getAttendance, updateAttendance } = useAttendance();
+  const { attendance, getAttendance, updateAttendance, createAttendance } =
+    useAttendance();
 
   const { register, control, setValue, getValues, watch, handleSubmit } =
     useForm<AttendanceEditInputs>({
@@ -64,27 +67,62 @@ export default function AttendanceEdit() {
   });
 
   const onSubmit = async (data: AttendanceEditInputs) => {
-    if (!attendance) return;
-    await updateAttendance({
-      id: attendance.id,
-      changeRequests: [
-        {
-          startTime: data.startTime,
-          endTime: data.endTime,
-          goDirectlyFlag: data.goDirectlyFlag,
-          returnDirectlyFlag: data.returnDirectlyFlag,
-          rests: data.rests,
-          remarks: data.remarks,
-          paidHolidayFlag: data.paidHolidayFlag,
-        },
-      ],
-      revision: attendance.revision,
-    })
-      .then(() => {
-        dispatch(setSnackbarSuccess(S02005));
-        navigate("/attendance/list");
+    if (attendance) {
+      updateAttendance({
+        id: attendance.id,
+        changeRequests: [
+          {
+            startTime: data.startTime,
+            endTime: data.endTime,
+            goDirectlyFlag: data.goDirectlyFlag,
+            returnDirectlyFlag: data.returnDirectlyFlag,
+            rests: data.rests,
+            remarks: data.remarks,
+            paidHolidayFlag: data.paidHolidayFlag,
+          },
+        ],
+        revision: attendance.revision,
       })
-      .catch(() => dispatch(setSnackbarError(E02005)));
+        .then(() => {
+          dispatch(setSnackbarSuccess(S02005));
+
+          if (!cognitoUser) return;
+          sendChangeRequestMail(
+            cognitoUser,
+            dayjs(attendance.workDate),
+            staffs
+          );
+
+          navigate("/attendance/list");
+        })
+        .catch(() => dispatch(setSnackbarError(E02005)));
+    } else {
+      if (!staff || !targetWorkDate) return;
+
+      createAttendance({
+        staffId: staff.sub,
+        workDate: dayjs(targetWorkDate).format("YYYY-MM-DD"),
+        changeRequests: [
+          {
+            startTime: data.startTime,
+            endTime: data.endTime,
+            goDirectlyFlag: data.goDirectlyFlag,
+            returnDirectlyFlag: data.returnDirectlyFlag,
+            rests: data.rests,
+            remarks: data.remarks,
+            paidHolidayFlag: data.paidHolidayFlag,
+          },
+        ],
+      })
+        .then(() => {
+          dispatch(setSnackbarSuccess(S02005));
+
+          if (!cognitoUser) return;
+          sendChangeRequestMail(cognitoUser, dayjs(targetWorkDate), staffs);
+          navigate("/attendance/list");
+        })
+        .catch(() => dispatch(setSnackbarError(E02005)));
+    }
   };
 
   useEffect(() => {
@@ -103,9 +141,9 @@ export default function AttendanceEdit() {
 
         setValue("startTime", res.startTime);
         setValue("endTime", res.endTime);
-        setValue("paidHolidayFlag", res.paidHolidayFlag);
-        setValue("goDirectlyFlag", res.goDirectlyFlag);
-        setValue("returnDirectlyFlag", res.returnDirectlyFlag);
+        setValue("paidHolidayFlag", res.paidHolidayFlag || false);
+        setValue("goDirectlyFlag", res.goDirectlyFlag || false);
+        setValue("returnDirectlyFlag", res.returnDirectlyFlag || false);
         setValue("remarks", res.remarks);
         setValue(
           "rests",
@@ -192,6 +230,14 @@ export default function AttendanceEdit() {
 
         {changeRequests.length === 0 && (
           <Stack spacing={2} sx={{ px: 30 }}>
+            {!attendance && (
+              <Box>
+                <Alert severity="info">
+                  <AlertTitle>お知らせ</AlertTitle>
+                  指定された日付に勤怠情報の登録がありませんでした。保存時に新規作成されます。
+                </Alert>
+              </Box>
+            )}
             <WorkDateItem
               workDate={targetWorkDate ? dayjs(targetWorkDate) : null}
             />
