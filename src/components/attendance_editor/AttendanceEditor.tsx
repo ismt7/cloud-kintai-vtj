@@ -5,14 +5,16 @@ import {
   Breadcrumbs,
   Button,
   Checkbox,
+  FormControlLabel,
   IconButton,
   LinearProgress,
   Stack,
+  Switch,
   Typography,
 } from "@mui/material";
 
 import AddAlarmIcon from "@mui/icons-material/AddAlarm";
-import { API, Logger } from "aws-amplify";
+import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
@@ -33,7 +35,10 @@ import WorkDateItem from "./items/WorkDateItem";
 // eslint-disable-next-line import/no-cycle
 import RemarksItem from "./items/RemarksItem";
 // eslint-disable-next-line import/no-cycle
-import { calcTotalRestTime, RestTimeItem } from "./items/RestTimeItem";
+import {
+  calcTotalRestTime,
+  RestTimeItem,
+} from "./items/RestTimeItem/RestTimeItem";
 // eslint-disable-next-line import/no-cycle
 import {
   calcTotalWorkTime,
@@ -42,10 +47,9 @@ import {
 import Title from "../Title/Title";
 // eslint-disable-next-line import/no-cycle
 import EditAttendanceHistoryList from "./EditAttendanceHistoryList";
-import { sendMail } from "../../graphql/queries";
-import getAttendanceMailBody from "./attendanceMailTemplate";
 import { AttendanceEditorInputs, defaultValues } from "./common";
 import ChangeRequestDialog from "./ChangeRequestDialog/ChangeRequestDialog";
+import sendChangedAttendanceMail from "./sendChangedAttendanceMail";
 
 export default function AttendanceEditor() {
   const dispatch = useAppDispatchV2();
@@ -56,6 +60,7 @@ export default function AttendanceEditor() {
     useAttendance();
   const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
   const [workDate, setWorkDate] = useState<dayjs.Dayjs | null>(null);
+  const [enabledSendMail, setEnabledSendMail] = useState<boolean>(true);
 
   const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
 
@@ -145,20 +150,16 @@ export default function AttendanceEditor() {
               return a.createdAt < b.createdAt ? 1 : -1;
             })[0];
 
-          void API.graphql({
-            query: sendMail,
-            variables: {
-              data: {
-                to: [staff.mailAddress],
-                subject: `勤怠情報変更のお知らせ - ${dayjs(res.workDate).format(
-                  "YYYY/MM/DD"
-                )}`,
-                body: getAttendanceMailBody(staff, res, latestHistory).join(
-                  "\n"
-                ),
-              },
-            },
-          });
+          if (enabledSendMail) {
+            const toMailAddresses = [staff.mailAddress];
+            void sendChangedAttendanceMail(
+              toMailAddresses,
+              dayjs(res.workDate),
+              staff,
+              res,
+              latestHistory
+            );
+          }
         })
         .catch((e: Error) => {
           logger.error(e);
@@ -181,8 +182,28 @@ export default function AttendanceEditor() {
       rests: data.rests,
       paidHolidayFlag: data.paidHolidayFlag,
     })
-      .then(() => {
+      .then((res) => {
         dispatch(setSnackbarSuccess(S04001));
+
+        if (!staff || !res.histories) return;
+
+        const latestHistory = res.histories
+          .filter((item): item is NonNullable<typeof item> => item !== null)
+          .sort((a, b) => {
+            if (a.createdAt === b.createdAt) return 0;
+            return a.createdAt < b.createdAt ? 1 : -1;
+          })[0];
+
+        if (enabledSendMail) {
+          const toMailAddresses = [staff.mailAddress];
+          void sendChangedAttendanceMail(
+            toMailAddresses,
+            dayjs(res.workDate),
+            staff,
+            res,
+            latestHistory
+          );
+        }
       })
       .catch((e: Error) => {
         logger.error(e);
@@ -364,7 +385,6 @@ export default function AttendanceEditor() {
                 remove={remove}
                 control={control}
                 setValue={setValue}
-                getValues={getValues}
               />
             ))}
             <Box>
@@ -390,6 +410,22 @@ export default function AttendanceEditor() {
         </Box>
         <Box>
           <RemarksItem register={register} />
+        </Box>
+        <Box>
+          <Stack direction="row" alignItems={"center"}>
+            <Box sx={{ fontWeight: "bold", width: "150px" }}>メール設定</Box>
+            <Box>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={enabledSendMail}
+                    onChange={() => setEnabledSendMail(!enabledSendMail)}
+                  />
+                }
+                label="スタッフに変更通知メールを送信する"
+              />
+            </Box>
+          </Stack>
         </Box>
         {/* <Box>
           <hr />
