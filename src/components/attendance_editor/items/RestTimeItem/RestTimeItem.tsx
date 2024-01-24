@@ -3,8 +3,7 @@ import { Box, IconButton, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Control, UseFormSetValue, UseFormWatch } from "react-hook-form";
-
-import { AttendanceEditInputs } from "../common";
+import { AttendanceEditorInputs } from "../../common";
 import RestStartTimeInput from "./RestStartTimeInput";
 import RestEndTimeInput from "./RestEndTimeInput";
 
@@ -29,10 +28,10 @@ export function RestTimeItem({
 }: {
   targetWorkDate: dayjs.Dayjs | null;
   index: number;
-  watch: UseFormWatch<AttendanceEditInputs>;
+  watch: UseFormWatch<AttendanceEditorInputs>;
   remove: (index?: number | number[] | undefined) => void;
-  control: Control<AttendanceEditInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditInputs>;
+  control: Control<AttendanceEditorInputs, any>;
+  setValue: UseFormSetValue<AttendanceEditorInputs>;
 }) {
   const [totalRestTime, setTotalRestTime] = useState<number>(0);
 
@@ -61,8 +60,8 @@ export function RestTimeItem({
           </IconButton>
         </Box>
         <RestStartTimeInput
-          workDate={targetWorkDate}
           index={index}
+          workDate={dayjs(targetWorkDate)}
           control={control}
           setValue={setValue}
         />
@@ -72,8 +71,8 @@ export function RestTimeItem({
           </Typography>
         </Box>
         <RestEndTimeInput
-          workDate={targetWorkDate}
           index={index}
+          workDate={targetWorkDate}
           control={control}
           setValue={setValue}
         />

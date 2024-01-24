@@ -35,7 +35,7 @@ import { WorkTimeInput } from "./WorkTimeInput/WorkTimeInput";
 import { RestTimeItem } from "./RestTimeItem/RestTimeItem";
 import ProductionTimeItem from "../../components/attendance_editor/items/ProductionTimeItem";
 import { calcTotalWorkTime } from "../../components/attendance_editor/items/WorkTimeItem/WorkTimeItem";
-import { calcTotalRestTime } from "../../components/attendance_editor/items/RestTimeItem";
+import { calcTotalRestTime } from "../../components/attendance_editor/items/RestTimeItem/RestTimeItem";
 import sendChangeRequestMail from "./sendChangeRequestMail";
 
 export default function AttendanceEdit() {
