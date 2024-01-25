@@ -1,7 +1,11 @@
 {
   "MUI Stack": {
     "prefix": "MUI Stack",
-    "body": ["<Stack spacing={${1|1,2,3|}}>", "  $0", "</Stack>"],
+    "body": [
+      "<Stack direction=\"${1|column,row|}\" spacing={${2|1,2,3|}}>",
+      "  $0",
+      "</Stack>"
+    ],
     "description": ""
   },
   "MUI Box": {
@@ -40,6 +44,28 @@
   "MUI Chip": {
     "prefix": "MUI Chip",
     "body": ["<Chip label=\"$1\" variant=\"${2|filled,outlined|}\" icon={} />"],
+    "description": ""
+  },
+  "MUI Table": {
+    "prefix": "MUI Table",
+    "body": [
+      "<TableContainer>",
+      "  <Table>",
+      "    <TableHead>",
+      "      <TableRow>",
+      "        <TableCell></TableCell>",
+      "        <TableCell></TableCell>",
+      "      </TableRow>",
+      "    </TableHead>",
+      "    <TableBody>",
+      "      <TableRow>",
+      "        <TableCell></TableCell>",
+      "        <TableCell></TableCell>",
+      "      </TableRow>",
+      "    </TableBody>",
+      "  </Table>",
+      "</TableContainer>"
+    ],
     "description": ""
   }
 }

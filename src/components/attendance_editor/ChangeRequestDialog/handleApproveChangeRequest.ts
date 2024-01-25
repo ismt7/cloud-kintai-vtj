@@ -2,7 +2,8 @@ import { Attendance, UpdateAttendanceInput } from "../../../API";
 
 export default async function handleApproveChangeRequest(
   attendance: Attendance | null,
-  updateAttendance: (input: UpdateAttendanceInput) => Promise<Attendance>
+  updateAttendance: (input: UpdateAttendanceInput) => Promise<Attendance>,
+  comment: string | undefined
 ) {
   if (!attendance || !attendance.changeRequests) {
     throw new Error("attendance or attendance.changeRequests is null");
@@ -59,6 +60,7 @@ export default async function handleApproveChangeRequest(
       remarks: changeRequest.remarks,
       paidHolidayFlag: changeRequest.paidHolidayFlag,
       completed: true,
+      comment,
     })),
     revision: attendance.revision,
   }).catch((e: Error) => {

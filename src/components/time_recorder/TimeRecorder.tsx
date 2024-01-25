@@ -64,16 +64,20 @@ export default function TimeRecorder() {
   );
 
   useEffect(() => {
-    if (Cache.getItem("reloadTimer")) {
-      return;
+    if (!Cache.getItem("reloadTimer")) {
+      Cache.setItem("reloadTimer", true, {
+        expires: dayjs().add(10, "minute").toDate().getTime(),
+      });
     }
 
-    Cache.setItem("reloadTimer", true, { expires: 60 * 10 * 1000 });
-
-    window.setTimeout(() => {
-      alert("ページの有効期限が切れました。リロードしてください。");
-      Cache.removeItem("reloadTimer");
-    }, 60 * 10 * 1000);
+    setInterval(() => {
+      if (!Cache.getItem("reloadTimer")) {
+        alert("ページの有効期限が切れました。リロードしてください。");
+        Cache.setItem("reloadTimer", true, {
+          expires: dayjs().add(10, "minute").toDate().getTime(),
+        });
+      }
+    }, 10000);
   }, []);
 
   useEffect(() => {

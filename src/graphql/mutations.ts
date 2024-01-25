@@ -213,6 +213,7 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
       remarks
       paidHolidayFlag
       completed
+      comment
       __typename
     }
     revision
@@ -274,6 +275,7 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
       remarks
       paidHolidayFlag
       completed
+      comment
       __typename
     }
     revision
@@ -335,6 +337,7 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
       remarks
       paidHolidayFlag
       completed
+      comment
       __typename
     }
     revision

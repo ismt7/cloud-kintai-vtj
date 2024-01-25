@@ -188,6 +188,7 @@ export type AttendanceChangeRequestInput = {
   remarks?: string | null,
   paidHolidayFlag?: boolean | null,
   completed?: boolean | null,
+  comment?: string | null,
 };
 
 export type ModelAttendanceConditionInput = {
@@ -273,6 +274,7 @@ export type AttendanceChangeRequest = {
   remarks?: string | null,
   paidHolidayFlag?: boolean | null,
   completed?: boolean | null,
+  comment?: string | null,
 };
 
 export type UpdateAttendanceInput = {
@@ -678,6 +680,7 @@ export type CreateAttendanceMutation = {
       remarks?: string | null,
       paidHolidayFlag?: boolean | null,
       completed?: boolean | null,
+      comment?: string | null,
     } | null > | null,
     revision?: number | null,
     createdAt: string,
@@ -738,6 +741,7 @@ export type UpdateAttendanceMutation = {
       remarks?: string | null,
       paidHolidayFlag?: boolean | null,
       completed?: boolean | null,
+      comment?: string | null,
     } | null > | null,
     revision?: number | null,
     createdAt: string,
@@ -798,6 +802,7 @@ export type DeleteAttendanceMutation = {
       remarks?: string | null,
       paidHolidayFlag?: boolean | null,
       completed?: boolean | null,
+      comment?: string | null,
     } | null > | null,
     revision?: number | null,
     createdAt: string,
@@ -979,6 +984,7 @@ export type GetAttendanceQuery = {
       remarks?: string | null,
       paidHolidayFlag?: boolean | null,
       completed?: boolean | null,
+      comment?: string | null,
     } | null > | null,
     revision?: number | null,
     createdAt: string,
@@ -1042,6 +1048,7 @@ export type ListAttendancesQuery = {
         remarks?: string | null,
         paidHolidayFlag?: boolean | null,
         completed?: boolean | null,
+        comment?: string | null,
       } | null > | null,
       revision?: number | null,
       createdAt: string,
@@ -1241,6 +1248,7 @@ export type OnCreateAttendanceSubscription = {
       remarks?: string | null,
       paidHolidayFlag?: boolean | null,
       completed?: boolean | null,
+      comment?: string | null,
     } | null > | null,
     revision?: number | null,
     createdAt: string,
@@ -1300,6 +1308,7 @@ export type OnUpdateAttendanceSubscription = {
       remarks?: string | null,
       paidHolidayFlag?: boolean | null,
       completed?: boolean | null,
+      comment?: string | null,
     } | null > | null,
     revision?: number | null,
     createdAt: string,
@@ -1359,6 +1368,7 @@ export type OnDeleteAttendanceSubscription = {
       remarks?: string | null,
       paidHolidayFlag?: boolean | null,
       completed?: boolean | null,
+      comment?: string | null,
     } | null > | null,
     revision?: number | null,
     createdAt: string,
