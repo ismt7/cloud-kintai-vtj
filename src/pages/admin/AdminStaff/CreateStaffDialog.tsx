@@ -33,7 +33,7 @@ const defaultValues: Inputs = {
   role: StaffRole.STAFF,
 };
 
-const ROLE_OPTIONS = [
+export const ROLE_OPTIONS = [
   { value: StaffRole.ADMIN, label: "管理者" },
   { value: StaffRole.STAFF_ADMIN, label: "スタッフ管理者" },
   { value: StaffRole.STAFF, label: "スタッフ" },

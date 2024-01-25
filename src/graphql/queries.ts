@@ -176,6 +176,7 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
       remarks
       paidHolidayFlag
       completed
+      comment
       __typename
     }
     revision
@@ -239,6 +240,7 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
         remarks
         paidHolidayFlag
         completed
+        comment
         __typename
       }
       revision

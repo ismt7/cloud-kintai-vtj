@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogTitle,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -25,18 +26,24 @@ import {
 } from "../../../lib/reducers/snackbarReducer";
 import { E04006, E04007, S04006, S04007 } from "../../../errors";
 import handleRejectChangeRequest from "./handleRejectChangeRequest";
+import sendRejectedChangeRequestMail from "./sendRejectedChangeRequestMail";
+import { Staff } from "../../../hooks/useStaffs/common";
+import sendApprovedChangeRequest from "./sendApprovedChangeRequest";
 
 export default function ChangeRequestDialog({
   attendance,
   updateAttendance,
+  staff,
 }: {
   attendance: Attendance | null;
   updateAttendance: (input: UpdateAttendanceInput) => Promise<Attendance>;
+  staff: Staff | null | undefined;
 }) {
   const dispatch = useAppDispatchV2();
   const [open, setOpen] = useState(false);
   const [changeRequest, setChangeRequest] =
     useState<AttendanceChangeRequest | null>(null);
+  const [comment, setComment] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (!attendance?.changeRequests) {
@@ -65,20 +72,32 @@ export default function ChangeRequestDialog({
     <Dialog onClose={handleClose} open={open} fullWidth maxWidth="md">
       <DialogTitle>変更リクエスト</DialogTitle>
       <DialogContent>
-        <Typography variant="body1" sx={{ mb: 2 }}>
-          スタッフから勤怠情報の変更リクエストが届いています。
-          <br />
-          内容を確認して承認または却下してください。
-        </Typography>
-        <Stack direction="row" spacing={2} justifyContent="center">
+        <Stack spacing={2}>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            スタッフから勤怠情報の変更リクエストが届いています。
+            <br />
+            内容を確認して承認または却下してください。
+          </Typography>
+          <Stack direction="row" spacing={2} justifyContent="center">
+            <Box>
+              <BeforeCard attendance={attendance} />
+            </Box>
+            <Box sx={{ alignSelf: "center" }}>
+              <ArrowForwardIcon fontSize="large" />
+            </Box>
+            <Box>
+              <AfterCard changeRequest={changeRequest} />
+            </Box>
+          </Stack>
           <Box>
-            <BeforeCard attendance={attendance} />
-          </Box>
-          <Box sx={{ alignSelf: "center" }}>
-            <ArrowForwardIcon fontSize="large" />
-          </Box>
-          <Box>
-            <AfterCard changeRequest={changeRequest} />
+            <TextField
+              label="コメント"
+              fullWidth
+              multiline
+              minRows={3}
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            />
           </Box>
         </Stack>
       </DialogContent>
@@ -86,9 +105,10 @@ export default function ChangeRequestDialog({
         <Button onClick={handleClose}>閉じる</Button>
         <Button
           onClick={() => {
-            handleRejectChangeRequest(attendance, updateAttendance)
+            handleRejectChangeRequest(attendance, updateAttendance, comment)
               .then(() => {
                 dispatch(setSnackbarSuccess(S04007));
+                sendRejectedChangeRequestMail(staff, attendance, comment);
                 handleClose();
               })
               .catch((e: Error) => {
@@ -104,9 +124,10 @@ export default function ChangeRequestDialog({
         </Button>
         <Button
           onClick={() => {
-            handleApproveChangeRequest(attendance, updateAttendance)
+            handleApproveChangeRequest(attendance, updateAttendance, comment)
               .then(() => {
                 dispatch(setSnackbarSuccess(S04006));
+                sendApprovedChangeRequest(staff, attendance, comment);
                 handleClose();
               })
               .catch((e: Error) => {

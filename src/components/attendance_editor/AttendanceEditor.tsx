@@ -458,6 +458,7 @@ export default function AttendanceEditor() {
       <ChangeRequestDialog
         attendance={attendance}
         updateAttendance={updateAttendance}
+        staff={staff}
       />
     </Stack>
   );

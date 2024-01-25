@@ -197,6 +197,7 @@ export const onCreateAttendance = /* GraphQL */ `subscription OnCreateAttendance
       remarks
       paidHolidayFlag
       completed
+      comment
       __typename
     }
     revision
@@ -257,6 +258,7 @@ export const onUpdateAttendance = /* GraphQL */ `subscription OnUpdateAttendance
       remarks
       paidHolidayFlag
       completed
+      comment
       __typename
     }
     revision
@@ -317,6 +319,7 @@ export const onDeleteAttendance = /* GraphQL */ `subscription OnDeleteAttendance
       remarks
       paidHolidayFlag
       completed
+      comment
       __typename
     }
     revision

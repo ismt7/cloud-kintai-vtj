@@ -65,6 +65,7 @@ type AttendanceChangeRequest {
   remarks: String
   paidHolidayFlag: Boolean
   completed: Boolean
+  comment: String
 }
 
 type EmailResult {
