@@ -12,4 +12,6 @@ export { default as CompanyHolidayCalendarCreateForm } from "./CompanyHolidayCal
 export { default as CompanyHolidayCalendarUpdateForm } from "./CompanyHolidayCalendarUpdateForm";
 export { default as HolidayCalendarCreateForm } from "./HolidayCalendarCreateForm";
 export { default as HolidayCalendarUpdateForm } from "./HolidayCalendarUpdateForm";
+export { default as StaffCreateForm } from "./StaffCreateForm";
+export { default as StaffUpdateForm } from "./StaffUpdateForm";
 export { default as studioTheme } from "./studioTheme";

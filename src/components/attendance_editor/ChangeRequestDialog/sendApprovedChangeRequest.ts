@@ -2,10 +2,10 @@ import { API } from "aws-amplify";
 import dayjs from "dayjs";
 import { sendMail } from "../../../graphql/queries";
 import { Attendance } from "../../../API";
-import { Staff } from "../../../hooks/useStaffs/common";
+import { StaffType } from "../../../hooks/useStaffs/useStaffs";
 
 export default function sendApprovedChangeRequest(
-  staff: Staff | null | undefined,
+  staff: StaffType | null | undefined,
   attendance: Attendance | null,
   comment: string | undefined
 ) {

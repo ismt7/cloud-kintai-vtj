@@ -2,19 +2,19 @@ import { API } from "aws-amplify";
 import dayjs from "dayjs";
 import { sendMail } from "../../graphql/queries";
 import { CognitoUser } from "../../hooks/useCognitoUser";
-import { Staff, StaffRole } from "../../hooks/useStaffs/common";
+import { StaffRole } from "../../hooks/useStaffs/common";
+import { StaffType } from "../../hooks/useStaffs/useStaffs";
 
 export default function sendChangeRequestMail(
   cognitoUser: CognitoUser,
   workDate: dayjs.Dayjs,
-  staffs: Staff[]
+  staffs: StaffType[]
 ) {
   const { id, familyName, givenName } = cognitoUser;
 
   const adminStaffs = staffs.filter(
     (staff) =>
-      staff.roles.includes(StaffRole.STAFF_ADMIN) ||
-      staff.roles.includes(StaffRole.ADMIN)
+      staff.role === StaffRole.ADMIN || staff.role === StaffRole.STAFF_ADMIN
   );
 
   if (adminStaffs.length === 0) {

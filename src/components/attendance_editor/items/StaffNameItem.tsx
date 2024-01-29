@@ -1,15 +1,15 @@
 import { Stack, Typography } from "@mui/material";
-import { Staff } from "../../../hooks/useStaffs/common";
+import { StaffType } from "../../../hooks/useStaffs/useStaffs";
 
-export default function StaffNameItem({
-  staff,
-}: {
-  staff: Staff | undefined | null;
-}) {
+interface StaffNameItemProps {
+  staff: StaffType | undefined | null;
+}
+
+export default function StaffNameItem({ staff }: StaffNameItemProps) {
   if (!staff || (!staff.familyName && !staff.givenName)) return null;
 
   return (
-    <Stack direction="row" alignItems={"center"}>
+    <Stack direction="row" alignItems="center">
       <Typography variant="body1" sx={{ fontWeight: "bold", width: "150px" }}>
         スタッフ
       </Typography>

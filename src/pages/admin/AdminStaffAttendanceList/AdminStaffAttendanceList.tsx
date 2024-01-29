@@ -15,8 +15,7 @@ import getDayOfWeek, {
 } from "../../../components/attendance_list/getDayOfWeek";
 import useAttendances from "../../../hooks/useAttendances/useAttendances";
 import useHolidayCalendars from "../../../hooks/useHolidayCalendars/useHolidayCalendars";
-import { Staff } from "../../../hooks/useStaffs/common";
-import useStaffs from "../../../hooks/useStaffs/useStaffs";
+import useStaffs, { StaffType } from "../../../hooks/useStaffs/useStaffs";
 import getColumns from "./getColumns";
 import { Attendance } from "../../../API";
 import useCompanyHolidayCalendars from "../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
@@ -33,12 +32,12 @@ export default function AdminStaffAttendanceList() {
     error: companyHolidayCalendarError,
   } = useCompanyHolidayCalendars();
 
-  const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
+  const [staff, setStaff] = useState<StaffType | undefined | null>(undefined);
 
   useEffect(() => {
     if (!staffId || staffLoading) return;
 
-    const matchStaff = staffs.find((item) => item.sub === staffId);
+    const matchStaff = staffs.find((item) => item.cognitoUserId === staffId);
     setStaff(matchStaff);
   }, [staffId, staffLoading]);
 

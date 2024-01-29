@@ -5,7 +5,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { API, Auth } from "aws-amplify";
 
-export default async function deleteStaff(username: string) {
+export default async function updateCognitoUser(
+  username: string,
+  familyName: string,
+  givenName: string,
+  mailAddress: string
+) {
   const params = {
     headers: {
       "Content-Type": "application/json",
@@ -15,10 +20,15 @@ export default async function deleteStaff(username: string) {
     },
     body: {
       username,
+      userAttributes: [
+        { Name: "family_name", Value: familyName },
+        { Name: "given_name", Value: givenName },
+        { Name: "email", Value: mailAddress },
+      ],
     },
   };
 
-  return API.post("AdminQueries", "/deleteUser", params).catch((e) => {
+  await API.post("AdminQueries", "/updateUser", params).catch((e) => {
     throw e;
   });
 }

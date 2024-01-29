@@ -23,14 +23,13 @@ import PersonIcon from "@mui/icons-material/Person";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Title from "../../../components/Title/Title";
-import { Staff, StaffRole } from "../../../hooks/useStaffs/common";
-import useStaffs from "../../../hooks/useStaffs/useStaffs";
+import { StaffRole } from "../../../hooks/useStaffs/common";
+import useStaffs, { StaffType } from "../../../hooks/useStaffs/useStaffs";
 import CreateStaffDialog from "./CreateStaffDialog";
 import disableStaff from "../../../hooks/common/disableStaff";
 import { useAppDispatchV2 } from "../../../app/hooks";
 import { setSnackbarSuccess } from "../../../lib/reducers/snackbarReducer";
 import {
-  E10001,
   E10004,
   E11001,
   E12001,
@@ -39,7 +38,8 @@ import {
   S12001,
 } from "../../../errors";
 import enableStaff from "../../../hooks/common/enableStaff";
-import deleteStaff from "../../../hooks/common/deleteStaff";
+import deleteCognitoUser from "../../../hooks/common/deleteCognitoUser";
+import SyncCognitoUser from "./SyncCognitoUser";
 
 export default function AdminStaff() {
   const { route } = useAuthenticator();
@@ -51,6 +51,9 @@ export default function AdminStaff() {
     loading: staffLoading,
     error: staffError,
     refreshStaff,
+    createStaff,
+    updateStaff,
+    deleteStaff,
   } = useStaffs();
 
   useEffect(() => {
@@ -62,7 +65,19 @@ export default function AdminStaff() {
   const customToolbar = () => (
     <GridToolbarContainer>
       <CreateStaffDialog refreshStaff={refreshStaff} />
+      <SyncCognitoUser
+        staffs={staffs}
+        refreshStaff={refreshStaff}
+        createStaff={createStaff}
+        updateStaff={updateStaff}
+      />
     </GridToolbarContainer>
+  );
+
+  const renderErrorMessage = () => (
+    <Typography variant="body1">
+      データ取得中に予期せぬ問題が発生しました。管理者に連絡してください。
+    </Typography>
   );
 
   if (staffLoading) {
@@ -70,11 +85,7 @@ export default function AdminStaff() {
   }
 
   if (staffError) {
-    return (
-      <Typography variant="body1">
-        データ取得中に予期せぬ問題が発生しました。管理者に連絡してください。
-      </Typography>
-    );
+    return renderErrorMessage();
   }
 
   return (
@@ -98,7 +109,7 @@ export default function AdminStaff() {
                 headerName: "操作",
                 type: "actions",
                 sortable: false,
-                getActions: (params: GridRowParams<Staff>) => [
+                getActions: (params: GridRowParams<StaffType>) => [
                   <GridActionsCellItem
                     key="edit"
                     label="編集"
@@ -117,16 +128,19 @@ export default function AdminStaff() {
                         "削除すると元に戻せません。本当に削除しますか？"
                       );
                       if (result) {
-                        void deleteStaff(params.row.sub)
+                        void deleteCognitoUser(params.row.cognitoUserId)
                           .then(() => {
-                            dispatch(setSnackbarSuccess(S10004));
-                            void refreshStaff().catch(() => {
-                              dispatch(setSnackbarSuccess(E10001));
-                            });
+                            deleteStaff({
+                              id: params.row.id,
+                            })
+                              .then(() => {
+                                dispatch(setSnackbarSuccess(S10004));
+                              })
+                              .catch(() => {
+                                dispatch(setSnackbarSuccess(E10004));
+                              });
                           })
-                          .catch(() => {
-                            dispatch(setSnackbarSuccess(E10004));
-                          });
+                          .catch(() => dispatch(setSnackbarSuccess(E10004)));
                       }
                     }}
                   />,
@@ -139,12 +153,18 @@ export default function AdminStaff() {
                           label="アカウントを有効にする"
                           showInMenu
                           onClick={() => {
-                            void enableStaff(params.row.sub)
+                            void enableStaff(params.row.cognitoUserId)
                               .then(() => {
-                                dispatch(setSnackbarSuccess(S12001));
-                                void refreshStaff().catch(() => {
-                                  dispatch(setSnackbarSuccess(E10001));
-                                });
+                                updateStaff({
+                                  id: params.row.id,
+                                  enabled: true,
+                                })
+                                  .then(() => {
+                                    dispatch(setSnackbarSuccess(S12001));
+                                  })
+                                  .catch(() => {
+                                    dispatch(setSnackbarSuccess(E12001));
+                                  });
                               })
                               .catch(() => {
                                 dispatch(setSnackbarSuccess(E12001));
@@ -161,12 +181,18 @@ export default function AdminStaff() {
                         label="アカウントを無効にする"
                         showInMenu
                         onClick={() => {
-                          void disableStaff(params.row.sub)
+                          void disableStaff(params.row.cognitoUserId)
                             .then(() => {
-                              dispatch(setSnackbarSuccess(S11001));
-                              void refreshStaff().catch(() => {
-                                dispatch(setSnackbarSuccess(E10001));
-                              });
+                              updateStaff({
+                                id: params.row.id,
+                                enabled: false,
+                              })
+                                .then(() => {
+                                  dispatch(setSnackbarSuccess(S11001));
+                                })
+                                .catch(() => {
+                                  dispatch(setSnackbarSuccess(E11001));
+                                });
                             })
                             .catch(() => {
                               dispatch(setSnackbarSuccess(E11001));
@@ -181,7 +207,7 @@ export default function AdminStaff() {
                 field: "enabled",
                 headerName: "アカウント状態",
                 width: 150,
-                valueGetter(params: GridValueGetterParams<Staff>) {
+                valueGetter(params: GridValueGetterParams<StaffType>) {
                   const { enabled } = params.row;
 
                   if (enabled) return "有効";
@@ -193,7 +219,7 @@ export default function AdminStaff() {
                 field: "status",
                 headerName: "ステータス",
                 width: 200,
-                valueGetter(params: GridValueGetterParams<Staff>) {
+                valueGetter(params: GridValueGetterParams<StaffType>) {
                   const { status } = params.row;
 
                   if (!status) return "(未設定)";
@@ -212,7 +238,7 @@ export default function AdminStaff() {
                 field: "name",
                 headerName: "名前",
                 width: 200,
-                valueGetter(params: GridValueGetterParams<Staff>) {
+                valueGetter(params: GridValueGetterParams<StaffType>) {
                   const { givenName, familyName } = params.row;
 
                   if (!givenName && !familyName) return "(未設定)";
@@ -233,30 +259,27 @@ export default function AdminStaff() {
                 field: "role",
                 headerName: "権限",
                 width: 200,
-                valueGetter(params: GridValueGetterParams<Staff>) {
-                  const { roles } = params.row;
+                valueGetter(params: GridValueGetterParams<StaffType>) {
+                  const { role } = params.row;
+                  if (!role) return "(未設定)";
 
-                  if (!roles || roles.length === 0) return "(未設定)";
-
-                  return roles.map((role) => {
-                    switch (role) {
-                      case StaffRole.ADMIN:
-                        return "管理者";
-                      case StaffRole.STAFF_ADMIN:
-                        return "スタッフ管理者";
-                      case StaffRole.STAFF:
-                        return "スタッフ";
-                      default:
-                        return "(未設定)";
-                    }
-                  });
+                  switch (role) {
+                    case StaffRole.ADMIN:
+                      return "管理者";
+                    case StaffRole.STAFF_ADMIN:
+                      return "スタッフ管理者";
+                    case StaffRole.STAFF:
+                      return "スタッフ";
+                    default:
+                      return "(未設定)";
+                  }
                 },
               },
               {
                 field: "createdAt",
                 headerName: "作成日時",
                 width: 200,
-                valueGetter(params: GridValueGetterParams<Staff>) {
+                valueGetter(params: GridValueGetterParams<StaffType>) {
                   const { createdAt } = params.row;
 
                   if (!createdAt) return "(未設定)";
@@ -268,7 +291,7 @@ export default function AdminStaff() {
                 field: "updatedAt",
                 headerName: "更新日時",
                 width: 200,
-                valueGetter(params: GridValueGetterParams<Staff>) {
+                valueGetter(params: GridValueGetterParams<StaffType>) {
                   const { updatedAt } = params.row;
 
                   if (!updatedAt) return "(未設定)";
@@ -277,7 +300,7 @@ export default function AdminStaff() {
                 },
               },
             ]}
-            getRowId={(row) => row.sub}
+            getRowId={(row) => row.cognitoUserId}
             slots={{
               toolbar: customToolbar,
             }}

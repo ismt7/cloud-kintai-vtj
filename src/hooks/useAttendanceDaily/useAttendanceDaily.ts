@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Attendance } from "../../API";
 import fetchAttendance from "../common/fetchAttendance";
-import fetchStaffs from "../common/fetchStaffs";
+import fetchCognitoUsers from "../common/fetchCognitoUsers";
 
 export interface AttendanceDaily {
   sub: string;
@@ -24,7 +24,7 @@ export default function useAttendanceDaily() {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    void fetchStaffs()
+    void fetchCognitoUsers()
       .then(async (res) => {
         setAttendanceDailyList(
           await Promise.all(
