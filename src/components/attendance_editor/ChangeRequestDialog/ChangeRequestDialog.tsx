@@ -27,8 +27,8 @@ import {
 import { E04006, E04007, S04006, S04007 } from "../../../errors";
 import handleRejectChangeRequest from "./handleRejectChangeRequest";
 import sendRejectedChangeRequestMail from "./sendRejectedChangeRequestMail";
-import { Staff } from "../../../hooks/useStaffs/common";
 import sendApprovedChangeRequest from "./sendApprovedChangeRequest";
+import { StaffType } from "../../../hooks/useStaffs/useStaffs";
 
 export default function ChangeRequestDialog({
   attendance,
@@ -37,7 +37,7 @@ export default function ChangeRequestDialog({
 }: {
   attendance: Attendance | null;
   updateAttendance: (input: UpdateAttendanceInput) => Promise<Attendance>;
-  staff: Staff | null | undefined;
+  staff: StaffType | null | undefined;
 }) {
   const dispatch = useAppDispatchV2();
   const [open, setOpen] = useState(false);

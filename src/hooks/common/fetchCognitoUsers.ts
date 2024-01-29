@@ -7,7 +7,7 @@ import { API, Auth } from "aws-amplify";
 import dayjs from "dayjs";
 import { Staff, StaffRole } from "../useStaffs/common";
 
-export default async function fetchStaffs(): Promise<Staff[]> {
+export default async function fetchCognitoUsers(): Promise<Staff[]> {
   const params = {
     headers: {
       "Content-Type": "application/json",

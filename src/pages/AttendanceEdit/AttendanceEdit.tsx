@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import AddAlarmIcon from "@mui/icons-material/AddAlarm";
 import Title from "../../components/Title/Title";
-import useStaffs from "../../hooks/useStaffs/useStaffs";
+import useStaffs, { StaffType } from "../../hooks/useStaffs/useStaffs";
 import { useAppDispatchV2 } from "../../app/hooks";
 import {
   setSnackbarError,
@@ -26,7 +26,6 @@ import {
 } from "../../lib/reducers/snackbarReducer";
 import { E00001, E02001, E02005, S02005 } from "../../errors";
 import StaffNameItem from "../../components/attendance_editor/items/StaffNameItem";
-import { Staff } from "../../hooks/useStaffs/common";
 import useCognitoUser from "../../hooks/useCognitoUser";
 import WorkDateItem from "./WorkDateItem";
 import useAttendance from "../../hooks/useAttendance/useAttendance";
@@ -43,7 +42,7 @@ export default function AttendanceEdit() {
   const dispatch = useAppDispatchV2();
   const { targetWorkDate } = useParams();
 
-  const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
+  const [staff, setStaff] = useState<StaffType | undefined | null>(undefined);
   const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
 
   const { staffs, loading: staffsLoading, error: staffSError } = useStaffs();
@@ -100,7 +99,7 @@ export default function AttendanceEdit() {
       if (!staff || !targetWorkDate) return;
 
       createAttendance({
-        staffId: staff.sub,
+        staffId: staff.cognitoUserId,
         workDate: dayjs(targetWorkDate).format("YYYY-MM-DD"),
         changeRequests: [
           {
@@ -128,14 +127,17 @@ export default function AttendanceEdit() {
   useEffect(() => {
     if (!cognitoUser?.id) return;
     const { id: staffId } = cognitoUser;
-    const matchStaff = staffs.find((s) => s.sub === staffId);
+    const matchStaff = staffs.find((s) => s.id === staffId);
     setStaff(matchStaff || null);
   }, [staffs, cognitoUser]);
 
   useEffect(() => {
     if (!staff || !targetWorkDate) return;
 
-    getAttendance(staff.sub, dayjs(targetWorkDate).format("YYYY-MM-DD"))
+    getAttendance(
+      staff.cognitoUserId,
+      dayjs(targetWorkDate).format("YYYY-MM-DD")
+    )
       .then((res) => {
         if (!res) return;
 

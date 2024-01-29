@@ -1,16 +1,16 @@
 import dayjs from "dayjs";
 import { Attendance, AttendanceHistory } from "../../API";
-import { Staff } from "../../hooks/useStaffs/common";
+import { StaffType } from "../../hooks/useStaffs/useStaffs";
 
-function showBlankLine() {
+function showBlankLine(): string {
   return "";
 }
 
-function showSeparateLine() {
+function showSeparateLine(): string {
   return "----";
 }
 
-function showHelloStaffName(staff: Staff) {
+function showHelloStaffName(staff: StaffType) {
   const { familyName, givenName } = staff;
   if (!familyName && !givenName) return "こんにちは。";
 
@@ -255,7 +255,7 @@ function showLastMessage() {
 }
 
 export default function getAttendanceMailBody(
-  staff: Staff,
+  staff: StaffType,
   attendance: Attendance,
   history: AttendanceHistory
 ) {

@@ -16,6 +16,46 @@ export const sendMail = /* GraphQL */ `query SendMail($data: EmailData!) {
   }
 }
 ` as GeneratedQuery<APITypes.SendMailQueryVariables, APITypes.SendMailQuery>;
+export const getStaff = /* GraphQL */ `query GetStaff($id: ID!) {
+  getStaff(id: $id) {
+    id
+    cognitoUserId
+    familyName
+    givenName
+    mailAddress
+    role
+    enabled
+    status
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<APITypes.GetStaffQueryVariables, APITypes.GetStaffQuery>;
+export const listStaff = /* GraphQL */ `query ListStaff(
+  $filter: ModelStaffFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listStaff(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      cognitoUserId
+      familyName
+      givenName
+      mailAddress
+      role
+      enabled
+      status
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<APITypes.ListStaffQueryVariables, APITypes.ListStaffQuery>;
 export const getHolidayCalendar = /* GraphQL */ `query GetHolidayCalendar($id: ID!) {
   getHolidayCalendar(id: $id) {
     id

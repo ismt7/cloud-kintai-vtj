@@ -22,8 +22,7 @@ import { Link, useParams } from "react-router-dom";
 import { useAppDispatchV2 } from "../../app/hooks";
 import { E02001, E04001, S04001 } from "../../errors";
 import useAttendance from "../../hooks/useAttendance/useAttendance";
-import { Staff } from "../../hooks/useStaffs/common";
-import useStaffs from "../../hooks/useStaffs/useStaffs";
+import useStaffs, { StaffType } from "../../hooks/useStaffs/useStaffs";
 import {
   setSnackbarError,
   setSnackbarSuccess,
@@ -58,7 +57,7 @@ export default function AttendanceEditor() {
   const { staffs, loading: staffsLoading, error: staffSError } = useStaffs();
   const { attendance, getAttendance, updateAttendance, createAttendance } =
     useAttendance();
-  const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
+  const [staff, setStaff] = useState<StaffType | undefined | null>(undefined);
   const [workDate, setWorkDate] = useState<dayjs.Dayjs | null>(null);
   const [enabledSendMail, setEnabledSendMail] = useState<boolean>(true);
 
@@ -89,7 +88,7 @@ export default function AttendanceEditor() {
 
   useEffect(() => {
     if (!targetStaffId) return;
-    const matchStaff = staffs.find((s) => s.sub === targetStaffId);
+    const matchStaff = staffs.find((s) => s.cognitoUserId === targetStaffId);
     setStaff(matchStaff || null);
   }, [staffs, targetStaffId]);
 
@@ -98,12 +97,13 @@ export default function AttendanceEditor() {
 
     setWorkDate(dayjs(targetWorkDate));
 
-    getAttendance(staff.sub, dayjs(targetWorkDate).format("YYYY-MM-DD")).catch(
-      (e: Error) => {
-        logger.debug(e);
-        dispatch(setSnackbarError(E02001));
-      }
-    );
+    getAttendance(
+      staff.cognitoUserId,
+      dayjs(targetWorkDate).format("YYYY-MM-DD")
+    ).catch((e: Error) => {
+      logger.debug(e);
+      dispatch(setSnackbarError(E02001));
+    });
   }, [staff, targetStaffId, targetWorkDate]);
 
   useEffect(() => {

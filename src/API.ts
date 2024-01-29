@@ -2,18 +2,28 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateHolidayCalendarInput = {
+export type CreateStaffInput = {
   id?: string | null,
-  holidayDate: string,
-  name: string,
+  cognitoUserId: string,
+  familyName: string,
+  givenName: string,
+  mailAddress: string,
+  role: string,
+  enabled: boolean,
+  status: string,
 };
 
-export type ModelHolidayCalendarConditionInput = {
-  holidayDate?: ModelStringInput | null,
-  name?: ModelStringInput | null,
-  and?: Array< ModelHolidayCalendarConditionInput | null > | null,
-  or?: Array< ModelHolidayCalendarConditionInput | null > | null,
-  not?: ModelHolidayCalendarConditionInput | null,
+export type ModelStaffConditionInput = {
+  cognitoUserId?: ModelStringInput | null,
+  familyName?: ModelStringInput | null,
+  givenName?: ModelStringInput | null,
+  mailAddress?: ModelStringInput | null,
+  role?: ModelStringInput | null,
+  enabled?: ModelBooleanInput | null,
+  status?: ModelStringInput | null,
+  and?: Array< ModelStaffConditionInput | null > | null,
+  or?: Array< ModelStaffConditionInput | null > | null,
+  not?: ModelStaffConditionInput | null,
 };
 
 export type ModelStringInput = {
@@ -54,6 +64,56 @@ export type ModelSizeInput = {
   ge?: number | null,
   gt?: number | null,
   between?: Array< number | null > | null,
+};
+
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type Staff = {
+  __typename: "Staff",
+  id: string,
+  cognitoUserId: string,
+  familyName: string,
+  givenName: string,
+  mailAddress: string,
+  role: string,
+  enabled: boolean,
+  status: string,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type UpdateStaffInput = {
+  id: string,
+  cognitoUserId?: string | null,
+  familyName?: string | null,
+  givenName?: string | null,
+  mailAddress?: string | null,
+  role?: string | null,
+  enabled?: boolean | null,
+  status?: string | null,
+};
+
+export type DeleteStaffInput = {
+  id: string,
+};
+
+export type CreateHolidayCalendarInput = {
+  id?: string | null,
+  holidayDate: string,
+  name: string,
+};
+
+export type ModelHolidayCalendarConditionInput = {
+  holidayDate?: ModelStringInput | null,
+  name?: ModelStringInput | null,
+  and?: Array< ModelHolidayCalendarConditionInput | null > | null,
+  or?: Array< ModelHolidayCalendarConditionInput | null > | null,
+  not?: ModelHolidayCalendarConditionInput | null,
 };
 
 export type HolidayCalendar = {
@@ -206,13 +266,6 @@ export type ModelAttendanceConditionInput = {
   not?: ModelAttendanceConditionInput | null,
 };
 
-export type ModelBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-};
-
 export type ModelIntInput = {
   ne?: number | null,
   eq?: number | null,
@@ -309,13 +362,18 @@ export type EmailResult = {
   body?: string | null,
 };
 
-export type ModelHolidayCalendarFilterInput = {
+export type ModelStaffFilterInput = {
   id?: ModelIDInput | null,
-  holidayDate?: ModelStringInput | null,
-  name?: ModelStringInput | null,
-  and?: Array< ModelHolidayCalendarFilterInput | null > | null,
-  or?: Array< ModelHolidayCalendarFilterInput | null > | null,
-  not?: ModelHolidayCalendarFilterInput | null,
+  cognitoUserId?: ModelStringInput | null,
+  familyName?: ModelStringInput | null,
+  givenName?: ModelStringInput | null,
+  mailAddress?: ModelStringInput | null,
+  role?: ModelStringInput | null,
+  enabled?: ModelBooleanInput | null,
+  status?: ModelStringInput | null,
+  and?: Array< ModelStaffFilterInput | null > | null,
+  or?: Array< ModelStaffFilterInput | null > | null,
+  not?: ModelStaffFilterInput | null,
 };
 
 export type ModelIDInput = {
@@ -332,6 +390,21 @@ export type ModelIDInput = {
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
   size?: ModelSizeInput | null,
+};
+
+export type ModelStaffConnection = {
+  __typename: "ModelStaffConnection",
+  items:  Array<Staff | null >,
+  nextToken?: string | null,
+};
+
+export type ModelHolidayCalendarFilterInput = {
+  id?: ModelIDInput | null,
+  holidayDate?: ModelStringInput | null,
+  name?: ModelStringInput | null,
+  and?: Array< ModelHolidayCalendarFilterInput | null > | null,
+  or?: Array< ModelHolidayCalendarFilterInput | null > | null,
+  not?: ModelHolidayCalendarFilterInput | null,
 };
 
 export type ModelHolidayCalendarConnection = {
@@ -393,12 +466,17 @@ export type ModelAttendanceConnection = {
   nextToken?: string | null,
 };
 
-export type ModelSubscriptionHolidayCalendarFilterInput = {
+export type ModelSubscriptionStaffFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  holidayDate?: ModelSubscriptionStringInput | null,
-  name?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionHolidayCalendarFilterInput | null > | null,
-  or?: Array< ModelSubscriptionHolidayCalendarFilterInput | null > | null,
+  cognitoUserId?: ModelSubscriptionStringInput | null,
+  familyName?: ModelSubscriptionStringInput | null,
+  givenName?: ModelSubscriptionStringInput | null,
+  mailAddress?: ModelSubscriptionStringInput | null,
+  role?: ModelSubscriptionStringInput | null,
+  enabled?: ModelSubscriptionBooleanInput | null,
+  status?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionStaffFilterInput | null > | null,
+  or?: Array< ModelSubscriptionStaffFilterInput | null > | null,
 };
 
 export type ModelSubscriptionIDInput = {
@@ -429,6 +507,19 @@ export type ModelSubscriptionStringInput = {
   beginsWith?: string | null,
   in?: Array< string | null > | null,
   notIn?: Array< string | null > | null,
+};
+
+export type ModelSubscriptionBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+};
+
+export type ModelSubscriptionHolidayCalendarFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  holidayDate?: ModelSubscriptionStringInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionHolidayCalendarFilterInput | null > | null,
+  or?: Array< ModelSubscriptionHolidayCalendarFilterInput | null > | null,
 };
 
 export type ModelSubscriptionCompanyHolidayCalendarFilterInput = {
@@ -463,11 +554,6 @@ export type ModelSubscriptionAttendanceFilterInput = {
   or?: Array< ModelSubscriptionAttendanceFilterInput | null > | null,
 };
 
-export type ModelSubscriptionBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
-};
-
 export type ModelSubscriptionIntInput = {
   ne?: number | null,
   eq?: number | null,
@@ -478,6 +564,69 @@ export type ModelSubscriptionIntInput = {
   between?: Array< number | null > | null,
   in?: Array< number | null > | null,
   notIn?: Array< number | null > | null,
+};
+
+export type CreateStaffMutationVariables = {
+  input: CreateStaffInput,
+  condition?: ModelStaffConditionInput | null,
+};
+
+export type CreateStaffMutation = {
+  createStaff?:  {
+    __typename: "Staff",
+    id: string,
+    cognitoUserId: string,
+    familyName: string,
+    givenName: string,
+    mailAddress: string,
+    role: string,
+    enabled: boolean,
+    status: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateStaffMutationVariables = {
+  input: UpdateStaffInput,
+  condition?: ModelStaffConditionInput | null,
+};
+
+export type UpdateStaffMutation = {
+  updateStaff?:  {
+    __typename: "Staff",
+    id: string,
+    cognitoUserId: string,
+    familyName: string,
+    givenName: string,
+    mailAddress: string,
+    role: string,
+    enabled: boolean,
+    status: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteStaffMutationVariables = {
+  input: DeleteStaffInput,
+  condition?: ModelStaffConditionInput | null,
+};
+
+export type DeleteStaffMutation = {
+  deleteStaff?:  {
+    __typename: "Staff",
+    id: string,
+    cognitoUserId: string,
+    familyName: string,
+    givenName: string,
+    mailAddress: string,
+    role: string,
+    enabled: boolean,
+    status: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
 };
 
 export type CreateHolidayCalendarMutationVariables = {
@@ -822,6 +971,52 @@ export type SendMailQuery = {
   } | null,
 };
 
+export type GetStaffQueryVariables = {
+  id: string,
+};
+
+export type GetStaffQuery = {
+  getStaff?:  {
+    __typename: "Staff",
+    id: string,
+    cognitoUserId: string,
+    familyName: string,
+    givenName: string,
+    mailAddress: string,
+    role: string,
+    enabled: boolean,
+    status: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListStaffQueryVariables = {
+  filter?: ModelStaffFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListStaffQuery = {
+  listStaff?:  {
+    __typename: "ModelStaffConnection",
+    items:  Array< {
+      __typename: "Staff",
+      id: string,
+      cognitoUserId: string,
+      familyName: string,
+      givenName: string,
+      mailAddress: string,
+      role: string,
+      enabled: boolean,
+      status: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
 export type GetHolidayCalendarQueryVariables = {
   id: string,
 };
@@ -1055,6 +1250,66 @@ export type ListAttendancesQuery = {
       updatedAt: string,
     } | null >,
     nextToken?: string | null,
+  } | null,
+};
+
+export type OnCreateStaffSubscriptionVariables = {
+  filter?: ModelSubscriptionStaffFilterInput | null,
+};
+
+export type OnCreateStaffSubscription = {
+  onCreateStaff?:  {
+    __typename: "Staff",
+    id: string,
+    cognitoUserId: string,
+    familyName: string,
+    givenName: string,
+    mailAddress: string,
+    role: string,
+    enabled: boolean,
+    status: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateStaffSubscriptionVariables = {
+  filter?: ModelSubscriptionStaffFilterInput | null,
+};
+
+export type OnUpdateStaffSubscription = {
+  onUpdateStaff?:  {
+    __typename: "Staff",
+    id: string,
+    cognitoUserId: string,
+    familyName: string,
+    givenName: string,
+    mailAddress: string,
+    role: string,
+    enabled: boolean,
+    status: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteStaffSubscriptionVariables = {
+  filter?: ModelSubscriptionStaffFilterInput | null,
+};
+
+export type OnDeleteStaffSubscription = {
+  onDeleteStaff?:  {
+    __typename: "Staff",
+    id: string,
+    cognitoUserId: string,
+    familyName: string,
+    givenName: string,
+    mailAddress: string,
+    role: string,
+    enabled: boolean,
+    status: string,
+    createdAt: string,
+    updatedAt: string,
   } | null,
 };
 

@@ -8,6 +8,63 @@ type GeneratedSubscription<InputType, OutputType> = string & {
   __generatedSubscriptionOutput: OutputType;
 };
 
+export const onCreateStaff = /* GraphQL */ `subscription OnCreateStaff($filter: ModelSubscriptionStaffFilterInput) {
+  onCreateStaff(filter: $filter) {
+    id
+    cognitoUserId
+    familyName
+    givenName
+    mailAddress
+    role
+    enabled
+    status
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateStaffSubscriptionVariables,
+  APITypes.OnCreateStaffSubscription
+>;
+export const onUpdateStaff = /* GraphQL */ `subscription OnUpdateStaff($filter: ModelSubscriptionStaffFilterInput) {
+  onUpdateStaff(filter: $filter) {
+    id
+    cognitoUserId
+    familyName
+    givenName
+    mailAddress
+    role
+    enabled
+    status
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateStaffSubscriptionVariables,
+  APITypes.OnUpdateStaffSubscription
+>;
+export const onDeleteStaff = /* GraphQL */ `subscription OnDeleteStaff($filter: ModelSubscriptionStaffFilterInput) {
+  onDeleteStaff(filter: $filter) {
+    id
+    cognitoUserId
+    familyName
+    givenName
+    mailAddress
+    role
+    enabled
+    status
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteStaffSubscriptionVariables,
+  APITypes.OnDeleteStaffSubscription
+>;
 export const onCreateHolidayCalendar = /* GraphQL */ `subscription OnCreateHolidayCalendar(
   $filter: ModelSubscriptionHolidayCalendarFilterInput
 ) {

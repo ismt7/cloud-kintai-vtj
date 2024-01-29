@@ -8,6 +8,72 @@ type GeneratedMutation<InputType, OutputType> = string & {
   __generatedMutationOutput: OutputType;
 };
 
+export const createStaff = /* GraphQL */ `mutation CreateStaff(
+  $input: CreateStaffInput!
+  $condition: ModelStaffConditionInput
+) {
+  createStaff(input: $input, condition: $condition) {
+    id
+    cognitoUserId
+    familyName
+    givenName
+    mailAddress
+    role
+    enabled
+    status
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateStaffMutationVariables,
+  APITypes.CreateStaffMutation
+>;
+export const updateStaff = /* GraphQL */ `mutation UpdateStaff(
+  $input: UpdateStaffInput!
+  $condition: ModelStaffConditionInput
+) {
+  updateStaff(input: $input, condition: $condition) {
+    id
+    cognitoUserId
+    familyName
+    givenName
+    mailAddress
+    role
+    enabled
+    status
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateStaffMutationVariables,
+  APITypes.UpdateStaffMutation
+>;
+export const deleteStaff = /* GraphQL */ `mutation DeleteStaff(
+  $input: DeleteStaffInput!
+  $condition: ModelStaffConditionInput
+) {
+  deleteStaff(input: $input, condition: $condition) {
+    id
+    cognitoUserId
+    familyName
+    givenName
+    mailAddress
+    role
+    enabled
+    status
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteStaffMutationVariables,
+  APITypes.DeleteStaffMutation
+>;
 export const createHolidayCalendar = /* GraphQL */ `mutation CreateHolidayCalendar(
   $input: CreateHolidayCalendarInput!
   $condition: ModelHolidayCalendarConditionInput

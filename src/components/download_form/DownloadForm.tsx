@@ -13,15 +13,14 @@ import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import useStaffs from "../../hooks/useStaffs/useStaffs";
+import useStaffs, { StaffType } from "../../hooks/useStaffs/useStaffs";
 import useCloseDates from "../../hooks/useCloseDates/useCloseDates";
-import { Staff } from "../../hooks/useStaffs/common";
 import downloadAttendances from "./downloadAttendances";
 
 type Inputs = {
   startDate: dayjs.Dayjs | undefined;
   endDate: dayjs.Dayjs | undefined;
-  staffs: Staff[];
+  staffs: StaffType[];
 };
 
 const defaultValues: Inputs = {
@@ -32,7 +31,7 @@ const defaultValues: Inputs = {
 
 export default function DownloadForm() {
   const navigate = useNavigate();
-  const [selectedStaff, setSelectedStaff] = useState<Staff[]>([]);
+  const [selectedStaff, setSelectedStaff] = useState<StaffType[]>([]);
   const { staffs, loading: staffLoading, error: staffError } = useStaffs();
   const {
     closeDates,
@@ -67,7 +66,7 @@ export default function DownloadForm() {
         "営業日,従業員コード,名前,休憩時間,出勤打刻,退勤打刻,直行,直帰",
         ...selectedStaff.map((staff) => {
           const attendances = res.filter(
-            (attendance) => attendance.staffId === staff.sub
+            (attendance) => attendance.staffId === staff.cognitoUserId
           );
 
           return [
@@ -99,7 +98,7 @@ export default function DownloadForm() {
 
               return [
                 dayjs(workDate).format("YYYY/MM/DD"),
-                staff.sub,
+                staff.cognitoUserId,
                 `${staff.familyName} ${staff.givenName}`,
                 "",
                 "",

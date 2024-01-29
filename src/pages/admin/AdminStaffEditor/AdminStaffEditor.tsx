@@ -3,6 +3,7 @@ import {
   Box,
   Breadcrumbs,
   Button,
+  CircularProgress,
   Container,
   LinearProgress,
   Stack,
@@ -15,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import useStaffs from "../../../hooks/useStaffs/useStaffs";
 import { useAppDispatchV2 } from "../../../app/hooks";
@@ -27,7 +28,7 @@ import { E05001, E05003, S05003 } from "../../../errors";
 import Title from "../../../components/Title/Title";
 import { Staff, StaffRole } from "../../../hooks/useStaffs/common";
 import { ROLE_OPTIONS } from "../AdminStaff/CreateStaffDialog";
-import updateStaff from "../../../hooks/common/updateStaff";
+import updateCognitoUser from "../../../hooks/common/updateCognitoUser";
 import removeUserFromGroup from "../../../hooks/common/removeUserFromGroup";
 import addUserToGroup from "../../../hooks/common/addUserToGroup";
 
@@ -53,11 +54,13 @@ export default function AdminStaffEditor() {
   const dispatch = useAppDispatchV2();
   const { staffId } = useParams();
 
+  const [saving, setSaving] = useState(false);
+
   const {
     staffs,
     loading: staffLoading,
     error: staffError,
-    refreshStaff,
+    updateStaff,
   } = useStaffs();
 
   const {
@@ -78,7 +81,8 @@ export default function AdminStaffEditor() {
       throw new Error("Invalid data");
     }
 
-    updateStaff(mailAddress, familyName, givenName, mailAddress)
+    setSaving(true);
+    updateCognitoUser(mailAddress, familyName, givenName, mailAddress)
       .then(async () => {
         if (beforeRoles.length >= 1 && beforeRoles[0] !== role) {
           const removeGroupsResponse = await Promise.all(
@@ -96,12 +100,25 @@ export default function AdminStaffEditor() {
             return;
           }
 
-          await addUserToGroup(mailAddress, role)
+          await addUserToGroup(mailAddress, role).catch(() => {
+            dispatch(setSnackbarError(E05003));
+          });
+
+          const staff = staffs.find((s) => s.cognitoUserId === staffId);
+          if (!staff) {
+            dispatch(setSnackbarError(E05001));
+            return;
+          }
+
+          await updateStaff({
+            id: staff.id,
+            familyName,
+            givenName,
+            mailAddress,
+            role,
+          })
             .then(() => {
               dispatch(setSnackbarSuccess(S05003));
-              refreshStaff().catch(() => {
-                dispatch(setSnackbarError(E05001));
-              });
             })
             .catch(() => {
               dispatch(setSnackbarError(E05003));
@@ -110,6 +127,9 @@ export default function AdminStaffEditor() {
       })
       .catch(() => {
         dispatch(setSnackbarError(E05003));
+      })
+      .finally(() => {
+        setSaving(false);
       });
   };
 
@@ -118,18 +138,18 @@ export default function AdminStaffEditor() {
       return;
     }
 
-    const staff = staffs.find((s) => s.sub === staffId);
+    const staff = staffs.find((s) => s.cognitoUserId === staffId);
     if (!staff) {
       dispatch(setSnackbarError(E05001));
       return;
     }
 
-    setValue("staffId", staff.sub);
+    setValue("staffId", staff.cognitoUserId);
     setValue("familyName", staff.familyName);
     setValue("givenName", staff.givenName);
     setValue("mailAddress", staff.mailAddress);
-    setValue("beforeRoles", staff.roles);
-    setValue("role", staff.roles[0]);
+    setValue("beforeRoles", [staff.role]);
+    setValue("role", staff.role);
   }, [staffId, staffLoading]);
 
   if (staffLoading) {
@@ -242,6 +262,7 @@ export default function AdminStaffEditor() {
             variant="contained"
             size="medium"
             disabled={!isValid || !isDirty || isSubmitted}
+            startIcon={saving ? <CircularProgress size={15} /> : undefined}
             onClick={handleSubmit(onSubmit)}
           >
             保存
