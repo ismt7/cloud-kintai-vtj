@@ -2,7 +2,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { Control, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import {
+  Control,
+  UseFormGetValues,
+  UseFormSetValue,
+  UseFormWatch,
+} from "react-hook-form";
 import { AttendanceEditorInputs } from "../../common";
 import RestStartTimeInput from "./RestStartTimeInput";
 import RestEndTimeInput from "./RestEndTimeInput";
@@ -25,6 +30,7 @@ export function RestTimeItem({
   remove,
   control,
   setValue,
+  getValues,
 }: {
   targetWorkDate: dayjs.Dayjs | null;
   index: number;
@@ -32,6 +38,7 @@ export function RestTimeItem({
   remove: (index?: number | number[] | undefined) => void;
   control: Control<AttendanceEditorInputs, any>;
   setValue: UseFormSetValue<AttendanceEditorInputs>;
+  getValues: UseFormGetValues<AttendanceEditorInputs>;
 }) {
   const [totalRestTime, setTotalRestTime] = useState<number>(0);
 
@@ -75,6 +82,8 @@ export function RestTimeItem({
           workDate={targetWorkDate}
           control={control}
           setValue={setValue}
+          getValues={getValues}
+          watch={watch}
         />
         <Box sx={{ flexGrow: 1 }} textAlign={"right"}>
           {`${totalRestTime.toFixed(1)} 時間`}

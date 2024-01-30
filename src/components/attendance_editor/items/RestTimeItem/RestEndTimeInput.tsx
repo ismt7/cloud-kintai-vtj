@@ -1,10 +1,16 @@
 import { Box, Button, Chip, IconButton, Stack } from "@mui/material";
-import { Control, Controller, UseFormSetValue } from "react-hook-form";
+import {
+  Control,
+  Controller,
+  UseFormGetValues,
+  UseFormSetValue,
+  UseFormWatch,
+} from "react-hook-form";
 import { TimePicker, renderTimeViewClock } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import ClearIcon from "@mui/icons-material/Clear";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { AttendanceEditorInputs } from "../../common";
 
@@ -13,13 +19,31 @@ export default function RestEndTimeInput({
   workDate,
   control,
   setValue,
+  watch,
+  getValues,
 }: {
   index: number;
   workDate: dayjs.Dayjs;
   control: Control<AttendanceEditorInputs, any>;
   setValue: UseFormSetValue<AttendanceEditorInputs>;
+  watch: UseFormWatch<AttendanceEditorInputs>;
+  getValues: UseFormGetValues<AttendanceEditorInputs>;
 }) {
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
+
+  useEffect(() => {
+    const rest = getValues(`rests.${index}`);
+    if (!rest) return;
+    setEnableEndTime(!!rest.endTime);
+
+    watch((data) => {
+      if (!data.rests) return;
+
+      const dataRest = data.rests[index];
+      if (!dataRest) return;
+      setEnableEndTime(!!dataRest.endTime);
+    });
+  }, [watch]);
 
   if (!enableEndTime) {
     return (
