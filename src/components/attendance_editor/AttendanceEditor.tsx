@@ -49,6 +49,8 @@ import EditAttendanceHistoryList from "./EditAttendanceHistoryList";
 import { AttendanceEditorInputs, defaultValues } from "./common";
 import ChangeRequestDialog from "./ChangeRequestDialog/ChangeRequestDialog";
 import sendChangedAttendanceMail from "./sendChangedAttendanceMail";
+import GoDirectlyFlagInput from "./GoDirectlyFlagInput";
+import ReturnDirectlyFlagInput from "./ReturnDirectlyFlagInput";
 
 export default function AttendanceEditor() {
   const dispatch = useAppDispatchV2();
@@ -60,8 +62,8 @@ export default function AttendanceEditor() {
   const [staff, setStaff] = useState<StaffType | undefined | null>(undefined);
   const [workDate, setWorkDate] = useState<dayjs.Dayjs | null>(null);
   const [enabledSendMail, setEnabledSendMail] = useState<boolean>(true);
-
   const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
+  const [visibleRestWarning, setVisibleRestWarning] = useState<boolean>(false);
 
   const logger = new Logger(
     "AttendanceEditor",
@@ -117,6 +119,15 @@ export default function AttendanceEditor() {
           const diff = calcTotalRestTime(rest.startTime, rest.endTime);
           return acc + diff;
         }, 0) ?? 0;
+
+      setVisibleRestWarning(
+        !!(
+          data.startTime &&
+          data.endTime &&
+          totalWorkTime > 6 &&
+          totalRestTime === 0
+        )
+      );
 
       const totalTime = totalWorkTime - totalRestTime;
       setTotalProductionTime(totalTime);
@@ -316,6 +327,39 @@ export default function AttendanceEditor() {
             </Box>
           )}
         </Box>
+        {visibleRestWarning && (
+          <Box>
+            <Alert
+              severity="warning"
+              action={
+                <Button
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    append({
+                      startTime: dayjs(targetWorkDate)
+                        .hour(12)
+                        .minute(0)
+                        .second(0)
+                        .millisecond(0)
+                        .toISOString(),
+                      endTime: dayjs(targetWorkDate)
+                        .hour(13)
+                        .minute(0)
+                        .second(0)
+                        .millisecond(0)
+                        .toISOString(),
+                    });
+                  }}
+                >
+                  昼休みを追加
+                </Button>
+              }
+            >
+              勤務時間が6時間を超えています。休憩時間を確認をしてください。
+            </Alert>
+          </Box>
+        )}
         <EditAttendanceHistoryList getValues={getValues} />
         <Box>
           <WorkDateItem staffId={targetStaffId} workDate={workDate} />
@@ -340,24 +384,20 @@ export default function AttendanceEditor() {
         <Stack direction="row" alignItems={"center"}>
           <Box sx={{ fontWeight: "bold", width: "150px" }}>直行</Box>
           <Box>
-            <Controller
-              name="goDirectlyFlag"
+            <GoDirectlyFlagInput
               control={control}
-              render={({ field }) => (
-                <Checkbox checked={field.value || false} {...field} />
-              )}
+              setValue={setValue}
+              workDate={workDate}
             />
           </Box>
         </Stack>
         <Stack direction="row" alignItems={"center"}>
           <Box sx={{ fontWeight: "bold", width: "150px" }}>直帰</Box>
           <Box>
-            <Controller
-              name="returnDirectlyFlag"
+            <ReturnDirectlyFlagInput
               control={control}
-              render={({ field }) => (
-                <Checkbox checked={field.value || false} {...field} />
-              )}
+              setValue={setValue}
+              workDate={workDate}
             />
           </Box>
         </Stack>
@@ -385,6 +425,7 @@ export default function AttendanceEditor() {
                 remove={remove}
                 control={control}
                 setValue={setValue}
+                getValues={getValues}
               />
             ))}
             <Box>
