@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { I18n } from "aws-amplify";
 import { store } from "./app/store";
 import Layout from "./Layout";
 import { theme } from "./lib/theme";
@@ -35,6 +36,10 @@ import reportWebVitals from "./reportWebVitals";
 import AdminMasterLayout from "./stories/pages/admin/master/AdminMasterLayout";
 import AdminStaffEditor from "./pages/admin/AdminStaffEditor/AdminStaffEditor";
 import AttendanceEdit from "./pages/AttendanceEdit/AttendanceEdit";
+import vocabularies from "./vocabularies";
+
+I18n.putVocabularies(vocabularies);
+I18n.setLanguage("ja");
 
 const router = createBrowserRouter([
   {
