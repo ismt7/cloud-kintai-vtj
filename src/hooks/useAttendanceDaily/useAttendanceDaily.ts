@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Attendance } from "../../API";
 import fetchAttendance from "../common/fetchAttendance";
-import fetchCognitoUsers from "../common/fetchCognitoUsers";
+import useStaffs from "../useStaffs/useStaffs";
 
 export interface AttendanceDaily {
   sub: string;
@@ -18,27 +18,31 @@ export default function useAttendanceDaily() {
     AttendanceDaily[]
   >([]);
 
+  const { staffs, loading: staffLoading, error: staffError } = useStaffs();
+
   const now = dayjs();
   const workDate = now.format("YYYY-MM-DD");
 
   useEffect(() => {
+    if (staffLoading || staffError) return;
+    if (staffs.length === 0) return;
+
     setLoading(true);
     setError(null);
-    void fetchCognitoUsers()
-      .then(async (res) => {
-        setAttendanceDailyList(
-          await Promise.all(
-            res.map(async ({ sub, givenName, familyName }) => {
-              const attendance = await fetchAttendance(sub, workDate);
-              return {
-                sub,
-                givenName,
-                familyName,
-                attendance,
-              };
-            })
-          )
-        );
+    Promise.all(
+      staffs.map(async ({ cognitoUserId, givenName, familyName }) => {
+        const attendance = await fetchAttendance(cognitoUserId, workDate);
+
+        return {
+          sub: cognitoUserId,
+          givenName,
+          familyName,
+          attendance,
+        };
+      })
+    )
+      .then((res) => {
+        setAttendanceDailyList(res);
       })
       .catch((e: Error) => {
         setError(e);
@@ -46,7 +50,7 @@ export default function useAttendanceDaily() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [staffs, staffLoading, staffError, workDate]);
 
   return {
     loading,
