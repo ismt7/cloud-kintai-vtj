@@ -127,7 +127,7 @@ export default function AttendanceEdit() {
   useEffect(() => {
     if (!cognitoUser?.id) return;
     const { id: staffId } = cognitoUser;
-    const matchStaff = staffs.find((s) => s.id === staffId);
+    const matchStaff = staffs.find((s) => s.cognitoUserId === staffId);
     setStaff(matchStaff || null);
   }, [staffs, cognitoUser]);
 
