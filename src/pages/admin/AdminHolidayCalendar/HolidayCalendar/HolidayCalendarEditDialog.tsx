@@ -9,7 +9,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { CompanyHolidayCalendar } from "../../../API";
+import { HolidayCalendar } from "../../../../API";
 
 type Inputs = {
   id: string | null;
@@ -23,13 +23,13 @@ const defaultValues: Inputs = {
   name: "",
 };
 
-export default function EditCompanyHolidayCalendarDialog({
+export default function HolidayCalendarEditDialog({
   editRow,
   open,
   onClose,
   onSubmit,
 }: {
-  editRow: CompanyHolidayCalendar | null;
+  editRow: HolidayCalendar | null;
   open: boolean;
   onClose: () => void;
   onSubmit: (data: Inputs) => void;
@@ -63,7 +63,7 @@ export default function EditCompanyHolidayCalendarDialog({
           onClose();
         }}
       >
-        <DialogTitle>会社休日を編集</DialogTitle>
+        <DialogTitle>法定休日を編集</DialogTitle>
         <DialogContent>
           <Stack spacing={2}>
             <DialogContentText>

@@ -23,7 +23,8 @@ export function statusValueGetter(
   endTime: Attendance["endTime"],
   holidayCalendars: HolidayCalendar[],
   companyHolidayCalendars: CompanyHolidayCalendar[],
-  paidHolidayFlag: Attendance["paidHolidayFlag"]
+  paidHolidayFlag: Attendance["paidHolidayFlag"],
+  changeRequests: Attendance["changeRequests"]
 ) {
   if (paidHolidayFlag) return "OK";
 
@@ -37,6 +38,14 @@ export function statusValueGetter(
   );
 
   if (isHoliday || isCompanyHoliday) return "";
+
+  const isChangeRequesting = changeRequests
+    ? changeRequests
+        .filter((item): item is NonNullable<typeof item> => !!item)
+        .filter((item) => !item.completed).length > 0
+    : false;
+
+  if (isChangeRequesting) return "申請中";
 
   switch (dayOfWeek) {
     case "月":
@@ -67,6 +76,7 @@ export interface DataGridProps {
   endTime: Attendance["endTime"];
   remarks: Attendance["remarks"];
   paidHolidayFlag: Attendance["paidHolidayFlag"];
+  changeRequests: Attendance["changeRequests"];
   rests: Rest[];
 }
 
@@ -81,14 +91,21 @@ export default function GetColumns(
       headerName: "ステータス",
       align: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
-        const { workDate, startTime, endTime, paidHolidayFlag } = params.row;
+        const {
+          workDate,
+          startTime,
+          endTime,
+          paidHolidayFlag,
+          changeRequests,
+        } = params.row;
         return statusValueGetter(
           workDate,
           startTime,
           endTime,
           holidayCalendars,
           companyHolidayCalendars,
-          paidHolidayFlag
+          paidHolidayFlag,
+          changeRequests
         );
       },
     },
