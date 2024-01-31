@@ -8,8 +8,9 @@ import {
   DeleteCompanyHolidayCalendarInput,
   HolidayCalendar,
   UpdateCompanyHolidayCalendarInput,
-} from "../../../API";
-import CompanyHolidayCalendarList from "./CompanyHolidayCalendarList";
+  UpdateHolidayCalendarInput,
+} from "../../../../API";
+import CompanyHolidayCalendarList from "../CompanyHolidayCalendar/CompanyHolidayCalendarList";
 import HolidayCalendarList from "./HolidayCalendarList";
 
 interface TabPanelProps {
@@ -47,6 +48,7 @@ export default function HolidayCalendarListGroup({
   createCompanyHolidayCalendar,
   deleteCompanyHolidayCalendar,
   updateCompanyHolidayCalendar,
+  updateHolidayCalendar,
 }: {
   holidayCalendars: HolidayCalendar[];
   companyHolidayCalendars: CompanyHolidayCalendar[];
@@ -59,6 +61,9 @@ export default function HolidayCalendarListGroup({
   updateCompanyHolidayCalendar: (
     input: UpdateCompanyHolidayCalendarInput
   ) => Promise<CompanyHolidayCalendar>;
+  updateHolidayCalendar: (
+    input: UpdateHolidayCalendarInput
+  ) => Promise<HolidayCalendar>;
 }) {
   const [value, setValue] = useState(0);
 
@@ -79,7 +84,10 @@ export default function HolidayCalendarListGroup({
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <HolidayCalendarList holidayCalendars={holidayCalendars} />
+        <HolidayCalendarList
+          holidayCalendars={holidayCalendars}
+          updateHolidayCalendar={updateHolidayCalendar}
+        />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <CompanyHolidayCalendarList

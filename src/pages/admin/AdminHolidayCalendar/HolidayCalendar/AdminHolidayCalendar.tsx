@@ -17,16 +17,16 @@ import * as xlsx from "xlsx";
 import {
   CreateCompanyHolidayCalendarInput,
   CreateHolidayCalendarInput,
-} from "../../../API";
-import { useAppDispatchV2 } from "../../../app/hooks";
-import { E07001, E08001, S07001, S08001 } from "../../../errors";
-import useCompanyHolidayCalendars from "../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
-import useHolidayCalendar from "../../../hooks/useHolidayCalendars/useHolidayCalendars";
+} from "../../../../API";
+import { useAppDispatchV2 } from "../../../../app/hooks";
+import { E07001, E08001, S07001, S08002 } from "../../../../errors";
+import useCompanyHolidayCalendars from "../../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
+import useHolidayCalendar from "../../../../hooks/useHolidayCalendars/useHolidayCalendars";
 import {
   setSnackbarError,
   setSnackbarSuccess,
-} from "../../../lib/reducers/snackbarReducer";
-import company_holiday from "../../../templates/company_holiday.xlsx";
+} from "../../../../lib/reducers/snackbarReducer";
+import company_holiday from "../../../../templates/company_holiday.xlsx";
 import HolidayCalendarListGroup from "./HolidayCalendarListGroup";
 
 function Title() {
@@ -157,6 +157,7 @@ export default function AdminHolidayCalendar() {
     loading: holidayCalendarLoading,
     error: holidayCalendarError,
     bulkCreateHolidayCalendar,
+    updateHolidayCalendar,
   } = useHolidayCalendar();
   const {
     companyHolidayCalendars,
@@ -210,7 +211,7 @@ export default function AdminHolidayCalendar() {
               <ExcelFilePicker
                 onSubmit={(data) => {
                   bulkCreateCompanyHolidayCalendar(data)
-                    .then(() => dispatch(setSnackbarSuccess(S08001)))
+                    .then(() => dispatch(setSnackbarSuccess(S08002)))
                     .catch(() => dispatch(setSnackbarError(E08001)));
                 }}
               />
@@ -238,6 +239,7 @@ export default function AdminHolidayCalendar() {
           createCompanyHolidayCalendar={createCompanyHolidayCalendar}
           updateCompanyHolidayCalendar={updateCompanyHolidayCalendar}
           deleteCompanyHolidayCalendar={deleteCompanyHolidayCalendar}
+          updateHolidayCalendar={updateHolidayCalendar}
         />
       </Box>
     </Stack>

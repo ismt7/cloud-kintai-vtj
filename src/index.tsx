@@ -17,7 +17,7 @@ import AdminAttendance from "./pages/admin/AdminAttendance";
 import AdminAttendanceEditor from "./pages/admin/AdminAttendanceEditor";
 import AdminAttendancePrint from "./pages/admin/AdminAttendancePrint";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminHolidayCalendar from "./pages/admin/AdminHolidayCalendar/AdminHolidayCalendar";
+import AdminHolidayCalendar from "./pages/admin/AdminHolidayCalendar/HolidayCalendar/AdminHolidayCalendar";
 import AdminStaff from "./pages/admin/AdminStaff/AdminStaff";
 import AdminStaffAttendanceList from "./pages/admin/AdminStaffAttendanceList/AdminStaffAttendanceList";
 import JobTerm from "./pages/admin/JobTerm/JobTerm";

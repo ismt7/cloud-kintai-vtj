@@ -69,7 +69,7 @@ export default function AdminStaffEditor() {
     setValue,
     getValues,
     handleSubmit,
-    formState: { isValid, isDirty, isSubmitted },
+    formState: { isValid, isDirty, isSubmitting },
   } = useForm<Inputs>({
     mode: "onChange",
     defaultValues,
@@ -247,6 +247,7 @@ export default function AdminStaffEditor() {
                           onChange={(_, data) => {
                             if (!data) return;
                             setValue("role", data.value);
+                            field.onChange(data.value);
                           }}
                         />
                       )}
@@ -261,7 +262,7 @@ export default function AdminStaffEditor() {
           <Button
             variant="contained"
             size="medium"
-            disabled={!isValid || !isDirty || isSubmitted}
+            disabled={!isValid || !isDirty || isSubmitting}
             startIcon={saving ? <CircularProgress size={15} /> : undefined}
             onClick={handleSubmit(onSubmit)}
           >

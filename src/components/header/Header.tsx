@@ -75,23 +75,17 @@ export default function Header({
       { label: "マスタ管理", href: "/admin/master" },
     ];
 
-    // システム管理者
-    if (isCognitoUserRole(UserRole.Admin)) {
+    // システム管理者、スタッフ管理者
+    if (
+      isCognitoUserRole(UserRole.Admin) ||
+      isCognitoUserRole(UserRole.StaffAdmin)
+    ) {
       viewableList.push(...menuList, ...adminMenuList);
-    }
-
-    // スタッフ管理者
-    if (isCognitoUserRole(UserRole.StaffAdmin)) {
-      viewableList.push(...menuList, ...adminMenuList);
-    }
-
-    // スタッフ
-    if (isCognitoUserRole(UserRole.Staff)) {
+    } else if (isCognitoUserRole(UserRole.Staff)) {
       viewableList.push(...menuList);
+    } else {
+      viewableList.push(menuList[2]);
     }
-
-    // ゲスト
-    // 処理なし
 
     return (
       <Stack direction="row" spacing={0} sx={{ width: "auto", height: 1 }}>

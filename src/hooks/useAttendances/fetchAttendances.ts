@@ -50,6 +50,11 @@ export default async function fetchAttendances(staffId: string) {
       rests: matchAttendance?.rests ?? [],
       remarks: matchAttendance?.remarks ?? "",
       paidHolidayFlag: matchAttendance?.paidHolidayFlag ?? false,
+      changeRequests: matchAttendance?.changeRequests
+        ? matchAttendance.changeRequests.filter(
+            (item): item is NonNullable<typeof item> => item !== null
+          )
+        : [],
       createdAt: matchAttendance?.createdAt ?? "",
       updatedAt: matchAttendance?.updatedAt ?? "",
     };
