@@ -1,20 +1,42 @@
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-
-// import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import {
   Avatar,
-  // Badge,
   Box,
+  Button,
   Container,
   IconButton,
   Stack,
+  styled,
 } from "@mui/material";
-
 import { useEffect, useState } from "react";
 import useCognitoUser, { UserRole } from "../../hooks/useCognitoUser";
 import LogImage from "../../images/logo.png";
-import Button from "../button/Button";
 import Link from "../link/Link";
+
+const SignOutButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.logout.contrastText,
+  backgroundColor: theme.palette.logout.main,
+  border: `3px solid ${theme.palette.logout.main}`,
+  whiteSpace: "nowrap",
+  paddingLeft: "1rem",
+  paddingRight: "1rem",
+  "&:hover": {
+    color: theme.palette.logout.main,
+    backgroundColor: theme.palette.logout.contrastText,
+  },
+}));
+
+const SignInButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.login.contrastText,
+  backgroundColor: theme.palette.login.main,
+  whiteSpace: "nowrap",
+  paddingLeft: "1rem",
+  paddingRight: "1rem",
+  "&:hover": {
+    color: theme.palette.login.main,
+    backgroundColor: theme.palette.login.contrastText,
+  },
+}));
 
 export default function Header({
   cognitoUserId,
@@ -141,27 +163,13 @@ export default function Header({
           <Box>
             <Stack direction="row" alignItems={"center"} spacing={1}>
               <Box>
-                <Button
-                  color={cognitoUserId ? "logout" : "login"}
-                  label={cognitoUserId ? "ログアウト" : "ログイン"}
-                  onClick={cognitoUserId ? signOut : signIn}
-                  variant={cognitoUserId ? "contained" : "outlined"}
-                  height="100%"
-                  width="110px"
-                />
+                {cognitoUserId ? (
+                  <SignOutButton onClick={signOut}>ログアウト</SignOutButton>
+                ) : (
+                  <SignInButton onClick={signIn}>ログイン</SignInButton>
+                )}
               </Box>
-              {/* <Box>
-                <IconButton aria-label="notification">
-                  <Badge badgeContent={100} color="secondary">
-                    <NotificationsNoneIcon
-                      style={{ color: "white" }}
-                      fontSize="medium"
-                    />
-                  </Badge>
-                </IconButton>
-              </Box> */}
               <Box>
-                {/* <StaffIcon name={staff?.last_name} /> */}
                 <StaffIcon name={cognitoUser?.familyName} />
               </Box>
             </Stack>

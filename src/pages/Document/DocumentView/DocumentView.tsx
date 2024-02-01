@@ -1,0 +1,128 @@
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  Box,
+  Breadcrumbs,
+  Button,
+  Container,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
+import dayjs from "dayjs";
+import EditIcon from "@mui/icons-material/Edit";
+import fetchDocument from "../../../hooks/useDocuments/fetchDocument";
+import { Document as APIDocument } from "../../../API";
+import { useAppDispatchV2 } from "../../../app/hooks";
+import { setSnackbarError } from "../../../lib/reducers/snackbarReducer";
+import * as MESSAGE_CODE from "../../../errors";
+import ContentView from "./ContentView";
+
+export default function DocumentView() {
+  const dispatch = useAppDispatchV2();
+  const navigate = useNavigate();
+  const { documentId } = useParams();
+
+  const [document, setDocument] = useState<APIDocument | null | undefined>(
+    undefined
+  );
+
+  if (!documentId) {
+    return null;
+  }
+
+  useEffect(() => {
+    fetchDocument(documentId)
+      .then((res) => setDocument(res))
+      .catch(() => {
+        dispatch(setSnackbarError(MESSAGE_CODE.E13001));
+        setDocument(null);
+      });
+  }, []);
+
+  if (!document) {
+    return null;
+  }
+
+  const makeDate = (target: dayjs.Dayjs) => {
+    // 0秒前、0分前、0時間前の形式で表示する
+    // 24時間以上前の場合は、YYYY/MM/DDの形式で表示する
+    const now = dayjs();
+    const diff = now.diff(target, "hour");
+
+    if (diff >= 24) {
+      return target.format("YYYY/MM/DD");
+    }
+
+    if (diff >= 1) {
+      return `${diff}時間前`;
+    }
+
+    const diff2 = now.diff(target, "minute");
+    if (diff2 >= 1) {
+      return `${diff2}分前`;
+    }
+
+    const diff3 = now.diff(target, "second");
+    if (diff3 >= 1) {
+      return `${diff3}秒前`;
+    }
+
+    return "0秒前";
+  };
+
+  return (
+    <Stack direction="column" spacing={2}>
+      <Box>
+        <Breadcrumbs>
+          <Link to="/" color="inherit">
+            TOP
+          </Link>
+          <Link to="/docs" color="inherit">
+            ドキュメント一覧
+          </Link>
+          <Typography color="text.primary">{document.title}</Typography>
+        </Breadcrumbs>
+      </Box>
+      <Container maxWidth="md">
+        <Stack direction="column" spacing={2}>
+          <Stack direction="column" spacing={0}>
+            <Box>
+              <Typography variant="h4">{document.title}</Typography>
+            </Box>
+            <Stack direction="row" spacing={1}>
+              <Box>
+                <Typography variant="body2">
+                  {`作成日： ${makeDate(dayjs(document.createdAt))}`}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="body2">/</Typography>
+              </Box>
+              <Box>
+                <Typography variant="body2">
+                  {`更新日： ${makeDate(dayjs(document.updatedAt))}`}
+                </Typography>
+              </Box>
+            </Stack>
+          </Stack>
+          <Box>
+            <Button
+              variant="contained"
+              size="medium"
+              startIcon={<EditIcon />}
+              onClick={() => navigate(`/docs/${document.id}/edit`)}
+            >
+              編集
+            </Button>
+          </Box>
+          <Box>
+            <Paper elevation={3}>
+              <ContentView content={document.content} />
+            </Paper>
+          </Box>
+        </Stack>
+      </Container>
+    </Stack>
+  );
+}

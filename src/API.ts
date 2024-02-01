@@ -350,6 +350,51 @@ export type DeleteAttendanceInput = {
   id: string,
 };
 
+export type CreateDocumentInput = {
+  id?: string | null,
+  title: string,
+  content: string,
+  tag?: Array< string | null > | null,
+  targetRole?: Array< string | null > | null,
+  revision?: number | null,
+};
+
+export type ModelDocumentConditionInput = {
+  title?: ModelStringInput | null,
+  content?: ModelStringInput | null,
+  tag?: ModelStringInput | null,
+  targetRole?: ModelStringInput | null,
+  revision?: ModelIntInput | null,
+  and?: Array< ModelDocumentConditionInput | null > | null,
+  or?: Array< ModelDocumentConditionInput | null > | null,
+  not?: ModelDocumentConditionInput | null,
+};
+
+export type Document = {
+  __typename: "Document",
+  id: string,
+  title: string,
+  content: string,
+  tag?: Array< string | null > | null,
+  targetRole?: Array< string | null > | null,
+  revision?: number | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type UpdateDocumentInput = {
+  id: string,
+  title?: string | null,
+  content?: string | null,
+  tag?: Array< string | null > | null,
+  targetRole?: Array< string | null > | null,
+  revision?: number | null,
+};
+
+export type DeleteDocumentInput = {
+  id: string,
+};
+
 export type EmailData = {
   to?: Array< string | null > | null,
   subject: string,
@@ -466,6 +511,24 @@ export type ModelAttendanceConnection = {
   nextToken?: string | null,
 };
 
+export type ModelDocumentFilterInput = {
+  id?: ModelIDInput | null,
+  title?: ModelStringInput | null,
+  content?: ModelStringInput | null,
+  tag?: ModelStringInput | null,
+  targetRole?: ModelStringInput | null,
+  revision?: ModelIntInput | null,
+  and?: Array< ModelDocumentFilterInput | null > | null,
+  or?: Array< ModelDocumentFilterInput | null > | null,
+  not?: ModelDocumentFilterInput | null,
+};
+
+export type ModelDocumentConnection = {
+  __typename: "ModelDocumentConnection",
+  items:  Array<Document | null >,
+  nextToken?: string | null,
+};
+
 export type ModelSubscriptionStaffFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   cognitoUserId?: ModelSubscriptionStringInput | null,
@@ -564,6 +627,17 @@ export type ModelSubscriptionIntInput = {
   between?: Array< number | null > | null,
   in?: Array< number | null > | null,
   notIn?: Array< number | null > | null,
+};
+
+export type ModelSubscriptionDocumentFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  title?: ModelSubscriptionStringInput | null,
+  content?: ModelSubscriptionStringInput | null,
+  tag?: ModelSubscriptionStringInput | null,
+  targetRole?: ModelSubscriptionStringInput | null,
+  revision?: ModelSubscriptionIntInput | null,
+  and?: Array< ModelSubscriptionDocumentFilterInput | null > | null,
+  or?: Array< ModelSubscriptionDocumentFilterInput | null > | null,
 };
 
 export type CreateStaffMutationVariables = {
@@ -959,6 +1033,63 @@ export type DeleteAttendanceMutation = {
   } | null,
 };
 
+export type CreateDocumentMutationVariables = {
+  input: CreateDocumentInput,
+  condition?: ModelDocumentConditionInput | null,
+};
+
+export type CreateDocumentMutation = {
+  createDocument?:  {
+    __typename: "Document",
+    id: string,
+    title: string,
+    content: string,
+    tag?: Array< string | null > | null,
+    targetRole?: Array< string | null > | null,
+    revision?: number | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateDocumentMutationVariables = {
+  input: UpdateDocumentInput,
+  condition?: ModelDocumentConditionInput | null,
+};
+
+export type UpdateDocumentMutation = {
+  updateDocument?:  {
+    __typename: "Document",
+    id: string,
+    title: string,
+    content: string,
+    tag?: Array< string | null > | null,
+    targetRole?: Array< string | null > | null,
+    revision?: number | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteDocumentMutationVariables = {
+  input: DeleteDocumentInput,
+  condition?: ModelDocumentConditionInput | null,
+};
+
+export type DeleteDocumentMutation = {
+  deleteDocument?:  {
+    __typename: "Document",
+    id: string,
+    title: string,
+    content: string,
+    tag?: Array< string | null > | null,
+    targetRole?: Array< string | null > | null,
+    revision?: number | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
 export type SendMailQueryVariables = {
   data: EmailData,
 };
@@ -1245,6 +1376,48 @@ export type ListAttendancesQuery = {
         completed?: boolean | null,
         comment?: string | null,
       } | null > | null,
+      revision?: number | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type GetDocumentQueryVariables = {
+  id: string,
+};
+
+export type GetDocumentQuery = {
+  getDocument?:  {
+    __typename: "Document",
+    id: string,
+    title: string,
+    content: string,
+    tag?: Array< string | null > | null,
+    targetRole?: Array< string | null > | null,
+    revision?: number | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListDocumentsQueryVariables = {
+  filter?: ModelDocumentFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListDocumentsQuery = {
+  listDocuments?:  {
+    __typename: "ModelDocumentConnection",
+    items:  Array< {
+      __typename: "Document",
+      id: string,
+      title: string,
+      content: string,
+      tag?: Array< string | null > | null,
+      targetRole?: Array< string | null > | null,
       revision?: number | null,
       createdAt: string,
       updatedAt: string,
@@ -1625,6 +1798,60 @@ export type OnDeleteAttendanceSubscription = {
       completed?: boolean | null,
       comment?: string | null,
     } | null > | null,
+    revision?: number | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnCreateDocumentSubscriptionVariables = {
+  filter?: ModelSubscriptionDocumentFilterInput | null,
+};
+
+export type OnCreateDocumentSubscription = {
+  onCreateDocument?:  {
+    __typename: "Document",
+    id: string,
+    title: string,
+    content: string,
+    tag?: Array< string | null > | null,
+    targetRole?: Array< string | null > | null,
+    revision?: number | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateDocumentSubscriptionVariables = {
+  filter?: ModelSubscriptionDocumentFilterInput | null,
+};
+
+export type OnUpdateDocumentSubscription = {
+  onUpdateDocument?:  {
+    __typename: "Document",
+    id: string,
+    title: string,
+    content: string,
+    tag?: Array< string | null > | null,
+    targetRole?: Array< string | null > | null,
+    revision?: number | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteDocumentSubscriptionVariables = {
+  filter?: ModelSubscriptionDocumentFilterInput | null,
+};
+
+export type OnDeleteDocumentSubscription = {
+  onDeleteDocument?:  {
+    __typename: "Document",
+    id: string,
+    title: string,
+    content: string,
+    tag?: Array< string | null > | null,
+    targetRole?: Array< string | null > | null,
     revision?: number | null,
     createdAt: string,
     updatedAt: string,

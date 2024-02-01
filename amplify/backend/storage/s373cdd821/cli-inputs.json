@@ -1,0 +1,14 @@
+{
+  "resourceName": "s373cdd821",
+  "policyUUID": "73cdd821",
+  "bucketName": "garakufrontend0872b843871a4fb1ae1917d0364264ab",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}
