@@ -30,15 +30,6 @@ output=json
 EOL
 
 # ========================================
-#  Add aicommits tool
-# ========================================
-npm install -g aicommits
-
-if [ -n "${AICOMMITS_OPENAI_KEY}" ]; then
-  aicommits config set OPENAI_KEY=${AICOMMITS_OPENAI_KEY}
-fi
-
-# ========================================
 #  Application Package install
 # ========================================
 make setup
