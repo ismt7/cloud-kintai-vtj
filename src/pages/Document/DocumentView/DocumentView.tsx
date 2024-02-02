@@ -4,6 +4,7 @@ import {
   Box,
   Breadcrumbs,
   Button,
+  Chip,
   Container,
   Paper,
   Stack,
@@ -12,6 +13,7 @@ import {
 import dayjs from "dayjs";
 import EditIcon from "@mui/icons-material/Edit";
 import { Storage } from "aws-amplify";
+import PersonIcon from "@mui/icons-material/Person";
 import fetchDocument from "../../../hooks/useDocuments/fetchDocument";
 import { Document as APIDocument } from "../../../API";
 import { useAppDispatchV2 } from "../../../app/hooks";
@@ -145,6 +147,34 @@ export default function DocumentView() {
                 </Typography>
               </Box>
             </Stack>
+          </Stack>
+          <Stack direction="row" spacing={1}>
+            {document.targetRole ? (
+              (() => {
+                const targetRole = document.targetRole.filter(
+                  (item): item is NonNullable<typeof item> => item !== null
+                );
+
+                if (targetRole.length === 0) {
+                  return (
+                    <Chip
+                      label="すべて"
+                      icon={<PersonIcon fontSize="small" />}
+                    />
+                  );
+                }
+
+                return targetRole.map((role, i) => (
+                  <Chip
+                    label={role}
+                    key={i}
+                    icon={<PersonIcon fontSize="small" />}
+                  />
+                ));
+              })()
+            ) : (
+              <Chip label="すべて" icon={<PersonIcon fontSize="small" />} />
+            )}
           </Stack>
           <Box>
             <Button
