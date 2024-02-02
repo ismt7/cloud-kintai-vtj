@@ -21,14 +21,14 @@ import AdminHolidayCalendar from "./pages/admin/AdminHolidayCalendar/HolidayCale
 import AdminStaff from "./pages/admin/AdminStaff/AdminStaff";
 import AdminStaffAttendanceList from "./pages/admin/AdminStaffAttendanceList/AdminStaffAttendanceList";
 import JobTerm from "./pages/admin/JobTerm/JobTerm";
-import AttendanceRemarksDocument from "./pages/Document/AttendanceRemarksDocument";
-import Document from "./pages/Document/Document";
-import GoDirectDocument from "./pages/Document/GoDirectDocument";
-import RestEndDocument from "./pages/Document/RestEndDocument";
-import RestStartDocument from "./pages/Document/RestStartDocument";
-import StartDocument from "./pages/Document/StartDocument";
-import WorkEndDocument from "./pages/Document/WorkEndDocument";
-import WorkStartDocument from "./pages/Document/WorkStartDocument";
+// import AttendanceRemarksDocument from "./pages/Document/AttendanceRemarksDocument";
+// import Document from "./pages/Document/Document";
+// import GoDirectDocument from "./pages/Document/GoDirectDocument";
+// import RestEndDocument from "./pages/Document/RestEndDocument";
+// import RestStartDocument from "./pages/Document/RestStartDocument";
+import ListDocument from "./pages/Document/ListDocument";
+// import WorkEndDocument from "./pages/Document/WorkEndDocument";
+// import WorkStartDocument from "./pages/Document/WorkStartDocument";
 import List from "./pages/List";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -37,6 +37,10 @@ import AdminMasterLayout from "./stories/pages/admin/master/AdminMasterLayout";
 import AdminStaffEditor from "./pages/admin/AdminStaffEditor/AdminStaffEditor";
 import AttendanceEdit from "./pages/AttendanceEdit/AttendanceEdit";
 import vocabularies from "./vocabularies";
+import DocumentPoster from "./pages/Document/DocumentPoster";
+import DocumentView from "./pages/Document/DocumentView/DocumentView";
+import Document from "./pages/Document/Document";
+import DocumentEditor from "./pages/Document/DocumentEditor/DocumentEditor";
 
 I18n.putVocabularies(vocabularies);
 I18n.setLanguage("ja");
@@ -81,36 +85,53 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <StartDocument />,
+            element: <ListDocument />,
           },
           {
-            path: "start",
-            element: <StartDocument />,
+            path: "post",
+            element: <DocumentPoster />,
           },
           {
-            path: "work-start",
-            element: <WorkStartDocument />,
+            path: ":documentId",
+            children: [
+              {
+                index: true,
+                element: <DocumentView />,
+              },
+              {
+                path: "edit",
+                element: <DocumentEditor />,
+              },
+            ],
           },
-          {
-            path: "work-end",
-            element: <WorkEndDocument />,
-          },
-          {
-            path: "rest-start",
-            element: <RestStartDocument />,
-          },
-          {
-            path: "rest-end",
-            element: <RestEndDocument />,
-          },
-          {
-            path: "attendance-remarks",
-            element: <AttendanceRemarksDocument />,
-          },
-          {
-            path: "go-direct",
-            element: <GoDirectDocument />,
-          },
+          // {
+          //   path: "start",
+          //   element: <StartDocument />,
+          // },
+          // {
+          //   path: "work-start",
+          //   element: <WorkStartDocument />,
+          // },
+          // {
+          //   path: "work-end",
+          //   element: <WorkEndDocument />,
+          // },
+          // {
+          //   path: "rest-start",
+          //   element: <RestStartDocument />,
+          // },
+          // {
+          //   path: "rest-end",
+          //   element: <RestEndDocument />,
+          // },
+          // {
+          //   path: "attendance-remarks",
+          //   element: <AttendanceRemarksDocument />,
+          // },
+          // {
+          //   path: "go-direct",
+          //   element: <GoDirectDocument />,
+          // },
         ],
       },
       {

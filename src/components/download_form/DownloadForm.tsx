@@ -16,6 +16,7 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import useStaffs, { StaffType } from "../../hooks/useStaffs/useStaffs";
 import useCloseDates from "../../hooks/useCloseDates/useCloseDates";
 import downloadAttendances from "./downloadAttendances";
+import { calcTotalRestTime } from "../attendance_editor/items/RestTimeItem/RestTimeItem";
 
 type Inputs = {
   startDate: dayjs.Dayjs | undefined;
@@ -63,7 +64,7 @@ export default function DownloadForm() {
       }))
     ).then((res) => {
       const exportData = [
-        "営業日,従業員コード,名前,休憩時間,出勤打刻,退勤打刻,直行,直帰",
+        "営業日,従業員コード,名前,休憩時間,出勤打刻,退勤打刻,直行,直帰,有給休暇",
         ...selectedStaff.map((staff) => {
           const attendances = res.filter(
             (attendance) => attendance.staffId === staff.cognitoUserId
@@ -82,17 +83,31 @@ export default function DownloadForm() {
                   endTime,
                   goDirectlyFlag,
                   returnDirectlyFlag,
+                  paidHolidayFlag,
+                  rests,
                 } = matchAttendance;
+
+                const totalRestTime =
+                  rests?.reduce((acc, rest) => {
+                    if (!rest) return acc;
+
+                    const diff = calcTotalRestTime(
+                      rest.startTime,
+                      rest.endTime
+                    );
+                    return acc + diff;
+                  }, 0) ?? 0;
 
                 return [
                   dayjs(workDate).format("YYYY/MM/DD"),
                   staffId,
                   `${staff.familyName} ${staff.givenName}`,
+                  totalRestTime.toFixed(2),
                   startTime ? dayjs(startTime).format("HH:mm") : "",
                   endTime ? dayjs(endTime).format("HH:mm") : "",
-                  "",
                   goDirectlyFlag ? 1 : 0,
                   returnDirectlyFlag ? 1 : 0,
+                  paidHolidayFlag ? 1 : 0,
                 ].join(",");
               }
 
@@ -102,7 +117,8 @@ export default function DownloadForm() {
                 `${staff.familyName} ${staff.givenName}`,
                 "",
                 "",
-                " ",
+                "",
+                "",
                 "",
                 "",
               ].join(",");

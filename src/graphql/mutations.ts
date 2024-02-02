@@ -416,3 +416,63 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
   APITypes.DeleteAttendanceMutationVariables,
   APITypes.DeleteAttendanceMutation
 >;
+export const createDocument = /* GraphQL */ `mutation CreateDocument(
+  $input: CreateDocumentInput!
+  $condition: ModelDocumentConditionInput
+) {
+  createDocument(input: $input, condition: $condition) {
+    id
+    title
+    content
+    tag
+    targetRole
+    revision
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateDocumentMutationVariables,
+  APITypes.CreateDocumentMutation
+>;
+export const updateDocument = /* GraphQL */ `mutation UpdateDocument(
+  $input: UpdateDocumentInput!
+  $condition: ModelDocumentConditionInput
+) {
+  updateDocument(input: $input, condition: $condition) {
+    id
+    title
+    content
+    tag
+    targetRole
+    revision
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateDocumentMutationVariables,
+  APITypes.UpdateDocumentMutation
+>;
+export const deleteDocument = /* GraphQL */ `mutation DeleteDocument(
+  $input: DeleteDocumentInput!
+  $condition: ModelDocumentConditionInput
+) {
+  deleteDocument(input: $input, condition: $condition) {
+    id
+    title
+    content
+    tag
+    targetRole
+    revision
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteDocumentMutationVariables,
+  APITypes.DeleteDocumentMutation
+>;

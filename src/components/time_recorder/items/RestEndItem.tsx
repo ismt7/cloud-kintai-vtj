@@ -1,6 +1,17 @@
 import { useState, useEffect } from "react";
-import Button from "../../button/Button";
+import { Button, styled } from "@mui/material";
 import { WorkStatus, WorkStatusCodes } from "../common";
+
+const RestEndButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.rest.main,
+  "&:hover": {
+    color: theme.palette.rest.contrastText,
+    backgroundColor: theme.palette.rest.main,
+  },
+  "&:disabled": {
+    backgroundColor: "#E0E0E0",
+  },
+}));
 
 export default function RestEndItem({
   workStatus,
@@ -16,15 +27,14 @@ export default function RestEndItem({
   }, [workStatus]);
 
   return (
-    <Button
-      color="rest"
-      label="休憩終了"
+    <RestEndButton
       onClick={() => {
         setDisabled(true);
         onClick();
       }}
-      variant="text"
       disabled={disabled}
-    />
+    >
+      休憩終了
+    </RestEndButton>
   );
 }

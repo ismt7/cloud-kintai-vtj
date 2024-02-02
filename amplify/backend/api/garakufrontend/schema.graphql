@@ -49,6 +49,15 @@ type Attendance @model @auth(rules: [{ allow: private }]) {
   revision: Int
 }
 
+type Document @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  title: String!
+  content: String!
+  tag: [String]
+  targetRole: [String]
+  revision: Int
+}
+
 type Rest {
   startTime: String
   endTime: String

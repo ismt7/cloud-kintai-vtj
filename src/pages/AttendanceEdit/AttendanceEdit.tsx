@@ -11,6 +11,7 @@ import {
   Stack,
   TextField,
   Typography,
+  styled,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -36,6 +37,22 @@ import ProductionTimeItem from "../../components/attendance_editor/items/Product
 import { calcTotalWorkTime } from "../../components/attendance_editor/items/WorkTimeItem/WorkTimeItem";
 import { calcTotalRestTime } from "../../components/attendance_editor/items/RestTimeItem/RestTimeItem";
 import sendChangeRequestMail from "./sendChangeRequestMail";
+
+const RequestButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.primary.contrastText,
+  backgroundColor: theme.palette.primary.main,
+  border: `3px solid ${theme.palette.primary.main}`,
+  width: 150,
+  "&:hover": {
+    color: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.contrastText,
+  },
+  "&:disabled": {
+    color: theme.palette.text.disabled,
+    backgroundColor: theme.palette.action.disabledBackground,
+    border: "3px solid #E0E0E0",
+  },
+}));
 
 export default function AttendanceEdit() {
   const navigate = useNavigate();
@@ -208,7 +225,7 @@ export default function AttendanceEdit() {
     : [];
 
   return (
-    <Container maxWidth="xl" sx={{ pt: 1 }}>
+    <Container maxWidth="xl" sx={{ pt: 1, pb: 5 }}>
       <Stack spacing={2}>
         <Breadcrumbs>
           <Link to="/" color="inherit">
@@ -361,13 +378,9 @@ export default function AttendanceEdit() {
                 spacing={3}
               >
                 <Box>
-                  <Button
-                    variant="contained"
-                    sx={{ width: "150px" }}
-                    onClick={handleSubmit(onSubmit)}
-                  >
+                  <RequestButton onClick={handleSubmit(onSubmit)}>
                     申請
-                  </Button>
+                  </RequestButton>
                 </Box>
               </Stack>
             </Box>

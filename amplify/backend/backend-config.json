@@ -82,6 +82,12 @@
       "service": "Cognito"
     }
   },
+  "custom": {
+    "customResource89fb104d": {
+      "providerPlugin": "awscloudformation",
+      "service": "customCDK"
+    }
+  },
   "function": {
     "AdminQueriesf7a7d2e5": {
       "build": true,
@@ -158,6 +164,13 @@
           "resourceName": "amplifyhosting"
         }
       ]
+    }
+  },
+  "storage": {
+    "s373cdd821": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
     }
   }
 }

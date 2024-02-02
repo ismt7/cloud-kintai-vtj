@@ -296,3 +296,45 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
   APITypes.ListAttendancesQueryVariables,
   APITypes.ListAttendancesQuery
 >;
+export const getDocument = /* GraphQL */ `query GetDocument($id: ID!) {
+  getDocument(id: $id) {
+    id
+    title
+    content
+    tag
+    targetRole
+    revision
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetDocumentQueryVariables,
+  APITypes.GetDocumentQuery
+>;
+export const listDocuments = /* GraphQL */ `query ListDocuments(
+  $filter: ModelDocumentFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listDocuments(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      title
+      content
+      tag
+      targetRole
+      revision
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListDocumentsQueryVariables,
+  APITypes.ListDocumentsQuery
+>;

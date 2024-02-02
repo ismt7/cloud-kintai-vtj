@@ -4,20 +4,19 @@ import {
   Box,
   Breadcrumbs,
   Button,
-  Checkbox,
   FormControlLabel,
   IconButton,
   LinearProgress,
   Stack,
+  styled,
   Switch,
   Typography,
 } from "@mui/material";
-
 import AddAlarmIcon from "@mui/icons-material/AddAlarm";
 import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
 import { useAppDispatchV2 } from "../../app/hooks";
 import { E02001, E04001, S04001 } from "../../errors";
@@ -51,6 +50,23 @@ import ChangeRequestDialog from "./ChangeRequestDialog/ChangeRequestDialog";
 import sendChangedAttendanceMail from "./sendChangedAttendanceMail";
 import GoDirectlyFlagInput from "./GoDirectlyFlagInput";
 import ReturnDirectlyFlagInput from "./ReturnDirectlyFlagInput";
+import PaidHolidayFlagInput from "./PaidHolidayFlagInput";
+
+const SaveButton = styled(Button)(({ theme }) => ({
+  width: 150,
+  color: theme.palette.primary.contrastText,
+  backgroundColor: theme.palette.primary.main,
+  border: `3px solid ${theme.palette.primary.main}`,
+  "&:hover": {
+    color: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.contrastText,
+    border: `3px solid ${theme.palette.primary.light}`,
+  },
+  "&:disabled": {
+    backgroundColor: "#E0E0E0",
+    border: "3px solid #E0E0E0",
+  },
+}));
 
 export default function AttendanceEditor() {
   const dispatch = useAppDispatchV2();
@@ -284,7 +300,7 @@ export default function AttendanceEditor() {
   }
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} sx={{ pb: 5 }}>
       <Box>
         <Breadcrumbs>
           <Link to="/" color="inherit">
@@ -371,12 +387,10 @@ export default function AttendanceEditor() {
           <Stack direction="row" alignItems={"center"}>
             <Box sx={{ fontWeight: "bold", width: "150px" }}>有給休暇</Box>
             <Box>
-              <Controller
-                name="paidHolidayFlag"
+              <PaidHolidayFlagInput
+                workDate={workDate}
                 control={control}
-                render={({ field }) => (
-                  <Checkbox checked={field.value || false} {...field} />
-                )}
+                setValue={setValue}
               />
             </Box>
           </Stack>
@@ -485,13 +499,7 @@ export default function AttendanceEditor() {
             spacing={3}
           >
             <Box>
-              <Button
-                variant="contained"
-                sx={{ width: "150px" }}
-                onClick={handleSubmit(onSubmit)}
-              >
-                保存
-              </Button>
+              <SaveButton onClick={handleSubmit(onSubmit)}>保存</SaveButton>
             </Box>
           </Stack>
         </Box>

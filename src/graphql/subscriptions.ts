@@ -389,3 +389,54 @@ export const onDeleteAttendance = /* GraphQL */ `subscription OnDeleteAttendance
   APITypes.OnDeleteAttendanceSubscriptionVariables,
   APITypes.OnDeleteAttendanceSubscription
 >;
+export const onCreateDocument = /* GraphQL */ `subscription OnCreateDocument($filter: ModelSubscriptionDocumentFilterInput) {
+  onCreateDocument(filter: $filter) {
+    id
+    title
+    content
+    tag
+    targetRole
+    revision
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateDocumentSubscriptionVariables,
+  APITypes.OnCreateDocumentSubscription
+>;
+export const onUpdateDocument = /* GraphQL */ `subscription OnUpdateDocument($filter: ModelSubscriptionDocumentFilterInput) {
+  onUpdateDocument(filter: $filter) {
+    id
+    title
+    content
+    tag
+    targetRole
+    revision
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateDocumentSubscriptionVariables,
+  APITypes.OnUpdateDocumentSubscription
+>;
+export const onDeleteDocument = /* GraphQL */ `subscription OnDeleteDocument($filter: ModelSubscriptionDocumentFilterInput) {
+  onDeleteDocument(filter: $filter) {
+    id
+    title
+    content
+    tag
+    targetRole
+    revision
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteDocumentSubscriptionVariables,
+  APITypes.OnDeleteDocumentSubscription
+>;
