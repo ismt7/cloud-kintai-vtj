@@ -1,9 +1,14 @@
 // cspell:words testid
-import { Button as MuiButton } from "@mui/material";
+import { Button as MuiButton, styled } from "@mui/material";
 
 import { Color, Variant } from "../../lib/theme";
 
 type Size = "small" | "medium" | "large";
+
+const GeneralButton = styled(MuiButton)(({ theme }) => ({
+  color: theme.palette.primary.contrastText,
+  backgroundColor: theme.palette.primary.main,
+}));
 
 export interface ButtonProps {
   color?: Color;
@@ -17,25 +22,6 @@ export interface ButtonProps {
   onClick?: () => void;
 }
 
-const Button = ({
-  color = "primary",
-  variant = "contained",
-  disabled = false,
-  size = "medium",
-  label = "Button",
-  onClick = () => {},
-  ...props
-}: ButtonProps) => (
-  <MuiButton
-    color={color}
-    variant={variant}
-    disabled={disabled}
-    size={size}
-    onClick={onClick}
-    style={{ ...props }}
-  >
-    {label}
-  </MuiButton>
-);
-
-export default Button;
+export default function Button({ label, ...props }: ButtonProps) {
+  return <GeneralButton {...props}>{label}</GeneralButton>;
+}

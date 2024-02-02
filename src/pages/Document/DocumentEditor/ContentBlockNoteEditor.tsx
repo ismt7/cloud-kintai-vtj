@@ -41,7 +41,6 @@ export default function ContentBlockNoteEditor({
         .map((a) => a.toString(16).padStart(2, "0"))
         .join("");
       const fileName = `${hashHex}.${fileExtension}`;
-
       await Storage.put(fileName, file, {
         contentType: file.type,
       }).catch((err) => {

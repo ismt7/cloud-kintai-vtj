@@ -11,12 +11,48 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 import EditIcon from "@mui/icons-material/Edit";
+import { Storage } from "aws-amplify";
 import fetchDocument from "../../../hooks/useDocuments/fetchDocument";
 import { Document as APIDocument } from "../../../API";
 import { useAppDispatchV2 } from "../../../app/hooks";
 import { setSnackbarError } from "../../../lib/reducers/snackbarReducer";
 import * as MESSAGE_CODE from "../../../errors";
 import ContentView from "./ContentView";
+
+async function updateImageUrl(content: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const json: any[] = JSON.parse(content);
+  return Promise.all(
+    json.map(async (block) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (block?.type === "image") {
+        // eslint-disable-next-line max-len
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+        const url = new URL(block?.props?.url);
+        const key = url.pathname.split("/").pop();
+        if (!key) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+          return block;
+        }
+
+        const newUrl = await Storage.get(key).catch(() => null);
+        if (newUrl) {
+          // eslint-disable-next-line max-len
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
+          block.props.url = newUrl;
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return block;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return block;
+    })
+  )
+    .then((res) => JSON.stringify(res))
+    .catch(() => content);
+}
 
 export default function DocumentView() {
   const dispatch = useAppDispatchV2();
@@ -33,7 +69,11 @@ export default function DocumentView() {
 
   useEffect(() => {
     fetchDocument(documentId)
-      .then((res) => setDocument(res))
+      .then(async (res) => {
+        const updatedContent = await updateImageUrl(res.content);
+        res.content = updatedContent;
+        setDocument(res);
+      })
       .catch(() => {
         dispatch(setSnackbarError(MESSAGE_CODE.E13001));
         setDocument(null);
@@ -72,7 +112,7 @@ export default function DocumentView() {
   };
 
   return (
-    <Stack direction="column" spacing={2}>
+    <Stack direction="column" spacing={2} sx={{ pb: 5 }}>
       <Box>
         <Breadcrumbs>
           <Link to="/" color="inherit">

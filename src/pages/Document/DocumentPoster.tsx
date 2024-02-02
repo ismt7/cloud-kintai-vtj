@@ -3,8 +3,8 @@ import {
   Breadcrumbs,
   Button,
   Container,
-  LinearProgress,
   Link,
+  Paper,
   Stack,
   TextField,
   Typography,
@@ -12,15 +12,16 @@ import {
 import { BlockNoteEditor } from "@blocknote/core";
 import { BlockNoteView, useBlockNote } from "@blocknote/react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import Title from "../../components/Title/Title";
 import "@blocknote/core/style.css";
-import useDocuments from "../../hooks/useDocuments/useDocuments";
 import { useAppDispatchV2 } from "../../app/hooks";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
 import * as MESSAGE_CODE from "../../errors";
+import createDocumentData from "../../hooks/useDocuments/createDocumentData";
 
 type Inputs = {
   title: string | null | undefined;
@@ -34,12 +35,7 @@ const defaultValues: Inputs = {
 
 export default function DocumentPoster() {
   const dispatch = useAppDispatchV2();
-
-  const {
-    loading: documentLoading,
-    error: documentError,
-    createDocument,
-  } = useDocuments();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -57,8 +53,11 @@ export default function DocumentPoster() {
     }
 
     const { title, content } = data;
-    createDocument({ title, content })
-      .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S13002)))
+    createDocumentData({ title, content })
+      .then(() => {
+        dispatch(setSnackbarSuccess(MESSAGE_CODE.S13002));
+        navigate("/docs");
+      })
       .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E13002)));
   };
 
@@ -68,23 +67,17 @@ export default function DocumentPoster() {
     },
   });
 
-  if (documentLoading) {
-    return <LinearProgress />;
-  }
-
-  if (documentError) {
-    // TODO: スナックバーでエラーを表示する
-    return null;
-  }
-
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="xl" sx={{ pb: 5 }}>
       <Stack direction="column" spacing={2}>
         <Breadcrumbs>
           <Link color="inherit" href="/">
             TOP
           </Link>
-          <Typography color="text.primary">ドキュメント</Typography>
+          <Link color="inherit" href="/docs">
+            ドキュメント一覧
+          </Link>
+          <Typography color="text.primary">作成</Typography>
         </Breadcrumbs>
         <Title text="ドキュメントの作成" />
         <Container maxWidth="md">
@@ -100,7 +93,9 @@ export default function DocumentPoster() {
               </Button>
             </Box>
             <TextField label="タイトル" {...register("title")} />
-            <BlockNoteView editor={editor} />
+            <Paper elevation={3} sx={{ p: 3 }}>
+              <BlockNoteView editor={editor} />
+            </Paper>
           </Stack>
         </Container>
       </Stack>
