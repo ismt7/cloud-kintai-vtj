@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
   Breadcrumbs,
   Button,
@@ -11,7 +12,7 @@ import {
 } from "@mui/material";
 import { BlockNoteEditor } from "@blocknote/core";
 import { BlockNoteView, useBlockNote } from "@blocknote/react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import Title from "../../components/Title/Title";
 import "@blocknote/core/style.css";
@@ -26,11 +27,13 @@ import createDocumentData from "../../hooks/useDocuments/createDocumentData";
 type Inputs = {
   title: string | null | undefined;
   content: string | null | undefined;
+  targetRole: string[];
 };
 
 const defaultValues: Inputs = {
   title: undefined,
   content: undefined,
+  targetRole: [],
 };
 
 export default function DocumentPoster() {
@@ -39,6 +42,7 @@ export default function DocumentPoster() {
 
   const {
     register,
+    control,
     setValue,
     handleSubmit,
     formState: { isDirty, isValid, isSubmitting },
@@ -52,8 +56,8 @@ export default function DocumentPoster() {
       return;
     }
 
-    const { title, content } = data;
-    createDocumentData({ title, content })
+    const { title, content, targetRole } = data;
+    createDocumentData({ title, content, targetRole })
       .then(() => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S13002));
         navigate("/docs");
@@ -93,6 +97,23 @@ export default function DocumentPoster() {
               </Button>
             </Box>
             <TextField label="タイトル" {...register("title")} />
+            <Controller
+              name="targetRole"
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  value={field.value}
+                  multiple
+                  options={["スタッフ", "管理者"]}
+                  renderInput={(params) => (
+                    <TextField {...params} label="対象者" />
+                  )}
+                  onChange={(_, data) => {
+                    field.onChange(data);
+                  }}
+                />
+              )}
+            />
             <Paper elevation={3} sx={{ p: 3 }}>
               <BlockNoteView editor={editor} />
             </Paper>

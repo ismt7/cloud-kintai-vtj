@@ -8,7 +8,7 @@ const Footer = () => (
   >
     <Box textAlign="center" sx={{ p: 1 }}>
       <Typography variant="body1" color="white">
-        © 2022 Virtual VirtualTech Japan Inc. All rights reserved.
+        © 2024 Virtual VirtualTech Japan Inc. All rights reserved.
       </Typography>
     </Box>
   </footer>
