@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+
 import { CreateDocumentInput, Document as APIDocument } from "../../API";
-import fetchDocuments from "./fetchDocuments";
 import createDocumentData from "./createDocumentData";
+import fetchDocuments from "./fetchDocuments";
 
 export default function useDocuments() {
   const [loading, setLoading] = useState(false);

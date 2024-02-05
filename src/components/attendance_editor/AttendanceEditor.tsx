@@ -1,3 +1,4 @@
+import AddAlarmIcon from "@mui/icons-material/AddAlarm";
 import {
   Alert,
   AlertTitle,
@@ -12,24 +13,27 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
-import AddAlarmIcon from "@mui/icons-material/AddAlarm";
 import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
+
 import { useAppDispatchV2 } from "../../app/hooks";
-import { E02001, E04001, S04001 } from "../../errors";
+import * as MESSAGE_CODE from "../../errors";
 import useAttendance from "../../hooks/useAttendance/useAttendance";
 import useStaffs, { StaffType } from "../../hooks/useStaffs/useStaffs";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
+import Title from "../Title/Title";
+import ChangeRequestDialog from "./ChangeRequestDialog/ChangeRequestDialog";
+import { AttendanceEditorInputs, defaultValues } from "./common";
+// eslint-disable-next-line import/no-cycle
+import EditAttendanceHistoryList from "./EditAttendanceHistoryList";
+import GoDirectlyFlagInput from "./GoDirectlyFlagInput";
 import ProductionTimeItem from "./items/ProductionTimeItem";
-import SeparatorItem from "./items/SeparatorItem";
-import StaffNameItem from "./items/StaffNameItem";
-import WorkDateItem from "./items/WorkDateItem";
 // eslint-disable-next-line import/no-cycle
 import RemarksItem from "./items/RemarksItem";
 // eslint-disable-next-line import/no-cycle
@@ -37,20 +41,17 @@ import {
   calcTotalRestTime,
   RestTimeItem,
 } from "./items/RestTimeItem/RestTimeItem";
+import SeparatorItem from "./items/SeparatorItem";
+import StaffNameItem from "./items/StaffNameItem";
+import WorkDateItem from "./items/WorkDateItem";
 // eslint-disable-next-line import/no-cycle
 import {
   calcTotalWorkTime,
   WorkTimeItem,
 } from "./items/WorkTimeItem/WorkTimeItem";
-import Title from "../Title/Title";
-// eslint-disable-next-line import/no-cycle
-import EditAttendanceHistoryList from "./EditAttendanceHistoryList";
-import { AttendanceEditorInputs, defaultValues } from "./common";
-import ChangeRequestDialog from "./ChangeRequestDialog/ChangeRequestDialog";
-import sendChangedAttendanceMail from "./sendChangedAttendanceMail";
-import GoDirectlyFlagInput from "./GoDirectlyFlagInput";
-import ReturnDirectlyFlagInput from "./ReturnDirectlyFlagInput";
 import PaidHolidayFlagInput from "./PaidHolidayFlagInput";
+import ReturnDirectlyFlagInput from "./ReturnDirectlyFlagInput";
+import sendChangedAttendanceMail from "./sendChangedAttendanceMail";
 
 const SaveButton = styled(Button)(({ theme }) => ({
   width: 150,
@@ -120,7 +121,7 @@ export default function AttendanceEditor() {
       dayjs(targetWorkDate).format("YYYY-MM-DD")
     ).catch((e: Error) => {
       logger.debug(e);
-      dispatch(setSnackbarError(E02001));
+      dispatch(setSnackbarError(MESSAGE_CODE.E02001));
     });
   }, [staff, targetStaffId, targetWorkDate]);
 
@@ -166,7 +167,7 @@ export default function AttendanceEditor() {
         revision: data.revision,
       })
         .then((res) => {
-          dispatch(setSnackbarSuccess(S04001));
+          dispatch(setSnackbarSuccess(MESSAGE_CODE.S04001));
 
           if (!staff || !res.histories) return;
 
@@ -190,7 +191,7 @@ export default function AttendanceEditor() {
         })
         .catch((e: Error) => {
           logger.error(e);
-          dispatch(setSnackbarError(E04001));
+          dispatch(setSnackbarError(MESSAGE_CODE.E04001));
         });
 
       return;
@@ -210,7 +211,7 @@ export default function AttendanceEditor() {
       paidHolidayFlag: data.paidHolidayFlag,
     })
       .then((res) => {
-        dispatch(setSnackbarSuccess(S04001));
+        dispatch(setSnackbarSuccess(MESSAGE_CODE.S04001));
 
         if (!staff || !res.histories) return;
 
@@ -234,7 +235,7 @@ export default function AttendanceEditor() {
       })
       .catch((e: Error) => {
         logger.error(e);
-        dispatch(setSnackbarError(E04001));
+        dispatch(setSnackbarError(MESSAGE_CODE.E04001));
       });
   };
 

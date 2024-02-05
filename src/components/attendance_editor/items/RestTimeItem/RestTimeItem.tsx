@@ -8,9 +8,10 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
+
 import { AttendanceEditorInputs } from "../../common";
-import RestStartTimeInput from "./RestStartTimeInput";
 import RestEndTimeInput from "./RestEndTimeInput";
+import RestStartTimeInput from "./RestStartTimeInput";
 
 export function calcTotalRestTime(
   startTime: string | null | undefined,
@@ -36,6 +37,7 @@ export function RestTimeItem({
   index: number;
   watch: UseFormWatch<AttendanceEditorInputs>;
   remove: (index?: number | number[] | undefined) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditorInputs, any>;
   setValue: UseFormSetValue<AttendanceEditorInputs>;
   getValues: UseFormGetValues<AttendanceEditorInputs>;

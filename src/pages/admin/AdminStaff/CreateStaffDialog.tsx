@@ -11,7 +11,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { useAppDispatchV2 } from "../../../app/hooks";
-import { E10001, E10002, S10002 } from "../../../errors";
+import * as MESSAGE_CODE from "../../../errors";
 import addUserToGroup from "../../../hooks/common/addUserToGroup";
 import createStaff from "../../../hooks/common/createStaff";
 import { StaffRole } from "../../../hooks/useStaffs/common";
@@ -79,18 +79,18 @@ export default function CreateStaffDialog({
       .then(async () => {
         await addUserToGroup(mailAddress, role)
           .then(() => {
-            dispatch(setSnackbarSuccess(S10002));
+            dispatch(setSnackbarSuccess(MESSAGE_CODE.S10002));
             handleClose();
             refreshStaff().catch(() => {
-              dispatch(setSnackbarError(E10001));
+              dispatch(setSnackbarError(MESSAGE_CODE.E10001));
             });
           })
           .catch(() => {
-            dispatch(setSnackbarError(E10002));
+            dispatch(setSnackbarError(MESSAGE_CODE.E10002));
           });
       })
       .catch(() => {
-        dispatch(setSnackbarError(E10002));
+        dispatch(setSnackbarError(MESSAGE_CODE.E10002));
       });
   };
 

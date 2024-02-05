@@ -1,7 +1,8 @@
 import { API } from "aws-amplify";
 import dayjs from "dayjs";
-import { sendMail } from "../../../graphql/queries";
+
 import { Attendance } from "../../../API";
+import { sendMail } from "../../../graphql/queries";
 import { StaffType } from "../../../hooks/useStaffs/useStaffs";
 
 export default function sendRejectedChangeRequestMail(

@@ -24,14 +24,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { useAppDispatchV2 } from "../../../app/hooks";
 import Title from "../../../components/Title/Title";
-import {
-  E10004,
-  E11001,
-  E12001,
-  S10004,
-  S11001,
-  S12001,
-} from "../../../errors";
+import * as MESSAGE_CODE from "../../../errors";
 import deleteCognitoUser from "../../../hooks/common/deleteCognitoUser";
 import disableStaff from "../../../hooks/common/disableStaff";
 import enableStaff from "../../../hooks/common/enableStaff";
@@ -135,13 +128,19 @@ export default function AdminStaff() {
                               id: params.row.id,
                             })
                               .then(() => {
-                                dispatch(setSnackbarSuccess(S10004));
+                                dispatch(
+                                  setSnackbarSuccess(MESSAGE_CODE.S10004)
+                                );
                               })
                               .catch(() => {
-                                dispatch(setSnackbarSuccess(E10004));
+                                dispatch(
+                                  setSnackbarSuccess(MESSAGE_CODE.E10004)
+                                );
                               });
                           })
-                          .catch(() => dispatch(setSnackbarSuccess(E10004)));
+                          .catch(() =>
+                            dispatch(setSnackbarSuccess(MESSAGE_CODE.E10004))
+                          );
                       }
                     }}
                   />,
@@ -161,14 +160,20 @@ export default function AdminStaff() {
                                   enabled: true,
                                 })
                                   .then(() => {
-                                    dispatch(setSnackbarSuccess(S12001));
+                                    dispatch(
+                                      setSnackbarSuccess(MESSAGE_CODE.S12001)
+                                    );
                                   })
                                   .catch(() => {
-                                    dispatch(setSnackbarSuccess(E12001));
+                                    dispatch(
+                                      setSnackbarSuccess(MESSAGE_CODE.E12001)
+                                    );
                                   });
                               })
                               .catch(() => {
-                                dispatch(setSnackbarSuccess(E12001));
+                                dispatch(
+                                  setSnackbarSuccess(MESSAGE_CODE.E12001)
+                                );
                               });
                           }}
                         />
@@ -189,14 +194,18 @@ export default function AdminStaff() {
                                 enabled: false,
                               })
                                 .then(() => {
-                                  dispatch(setSnackbarSuccess(S11001));
+                                  dispatch(
+                                    setSnackbarSuccess(MESSAGE_CODE.S11001)
+                                  );
                                 })
                                 .catch(() => {
-                                  dispatch(setSnackbarSuccess(E11001));
+                                  dispatch(
+                                    setSnackbarSuccess(MESSAGE_CODE.E11001)
+                                  );
                                 });
                             })
                             .catch(() => {
-                              dispatch(setSnackbarSuccess(E11001));
+                              dispatch(setSnackbarSuccess(MESSAGE_CODE.E11001));
                             });
                         }}
                       />

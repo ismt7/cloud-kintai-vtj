@@ -1,7 +1,8 @@
-import { API } from "aws-amplify";
 import { GraphQLResult } from "@aws-amplify/api";
+import { API } from "aws-amplify";
+
+import { Document as APIDocument, ListDocumentsQuery } from "../../API";
 import { listDocuments } from "../../graphql/queries";
-import { ListDocumentsQuery, Document as APIDocument } from "../../API";
 
 export default async function fetchDocuments() {
   const response = (await API.graphql({

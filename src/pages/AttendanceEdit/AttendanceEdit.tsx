@@ -25,7 +25,7 @@ import { calcTotalRestTime } from "../../components/attendance_editor/items/Rest
 import StaffNameItem from "../../components/attendance_editor/items/StaffNameItem";
 import { calcTotalWorkTime } from "../../components/attendance_editor/items/WorkTimeItem/WorkTimeItem";
 import Title from "../../components/Title/Title";
-import { E00001, E02001, E02005, S02005 } from "../../errors";
+import * as MESSAGE_CODE from "../../errors";
 import useAttendance from "../../hooks/useAttendance/useAttendance";
 import useCognitoUser from "../../hooks/useCognitoUser";
 import useStaffs, { StaffType } from "../../hooks/useStaffs/useStaffs";
@@ -101,7 +101,7 @@ export default function AttendanceEdit() {
         revision: attendance.revision,
       })
         .then(() => {
-          dispatch(setSnackbarSuccess(S02005));
+          dispatch(setSnackbarSuccess(MESSAGE_CODE.S02005));
 
           if (!cognitoUser) return;
           sendChangeRequestMail(
@@ -112,7 +112,7 @@ export default function AttendanceEdit() {
 
           navigate("/attendance/list");
         })
-        .catch(() => dispatch(setSnackbarError(E02005)));
+        .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E02005)));
     } else {
       if (!staff || !targetWorkDate) return;
 
@@ -132,13 +132,13 @@ export default function AttendanceEdit() {
         ],
       })
         .then(() => {
-          dispatch(setSnackbarSuccess(S02005));
+          dispatch(setSnackbarSuccess(MESSAGE_CODE.S02005));
 
           if (!cognitoUser) return;
           sendChangeRequestMail(cognitoUser, dayjs(targetWorkDate), staffs);
           navigate("/attendance/list");
         })
-        .catch(() => dispatch(setSnackbarError(E02005)));
+        .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E02005)));
     }
   };
 
@@ -180,7 +180,7 @@ export default function AttendanceEdit() {
         );
       })
       .catch(() => {
-        dispatch(setSnackbarError(E02001));
+        dispatch(setSnackbarError(MESSAGE_CODE.E02001));
       });
   }, [staff, targetWorkDate]);
 
@@ -215,7 +215,7 @@ export default function AttendanceEdit() {
   }
 
   if (staffSError) {
-    dispatch(setSnackbarError(E00001));
+    dispatch(setSnackbarError(MESSAGE_CODE.E00001));
     return null;
   }
 

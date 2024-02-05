@@ -1,7 +1,8 @@
-import { API } from "aws-amplify";
 import { GraphQLResult } from "@aws-amplify/api";
-import { createStaff } from "../../graphql/mutations";
+import { API } from "aws-amplify";
+
 import { CreateStaffInput, CreateStaffMutation, Staff } from "../../API";
+import { createStaff } from "../../graphql/mutations";
 
 export default async function createStaffData(input: CreateStaffInput) {
   const response = (await API.graphql({

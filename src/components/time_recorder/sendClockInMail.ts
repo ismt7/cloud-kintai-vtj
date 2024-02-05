@@ -1,8 +1,9 @@
 import { API } from "aws-amplify";
 import dayjs from "dayjs";
+
+import { Attendance } from "../../API";
 import { sendMail } from "../../graphql/queries";
 import { CognitoUser } from "../../hooks/useCognitoUser";
-import { Attendance } from "../../API";
 
 export default function sendClockInMail(
   cognitoUser: CognitoUser,

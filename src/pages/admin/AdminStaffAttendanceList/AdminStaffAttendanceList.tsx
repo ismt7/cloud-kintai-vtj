@@ -16,7 +16,7 @@ import { useAppDispatchV2 } from "../../../app/hooks";
 import getDayOfWeek, {
   DayOfWeek,
 } from "../../../components/attendance_list/getDayOfWeek";
-import { E02001 } from "../../../errors";
+import * as MESSAGE_CODE from "../../../errors";
 import useAttendances from "../../../hooks/useAttendances/useAttendances";
 import useCompanyHolidayCalendars from "../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 import useHolidayCalendars from "../../../hooks/useHolidayCalendars/useHolidayCalendars";
@@ -48,7 +48,9 @@ export default function AdminStaffAttendanceList() {
 
   useEffect(() => {
     if (!staffId) return;
-    getAttendances(staffId).catch(() => dispatch(setSnackbarError(E02001)));
+    getAttendances(staffId).catch(() =>
+      dispatch(setSnackbarError(MESSAGE_CODE.E02001))
+    );
   }, [staffId]);
 
   const {

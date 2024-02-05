@@ -1,3 +1,4 @@
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import {
   Box,
   Button,
@@ -10,25 +11,25 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+
 import {
   Attendance,
   AttendanceChangeRequest,
   UpdateAttendanceInput,
 } from "../../../API";
-import BeforeCard from "./BeforeCard/BeforeCard";
-import AfterCard from "./AfterCard/AfterCard";
-import handleApproveChangeRequest from "./handleApproveChangeRequest";
 import { useAppDispatchV2 } from "../../../app/hooks";
+import * as MESSAGE_CODE from "../../../errors";
+import { StaffType } from "../../../hooks/useStaffs/useStaffs";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../../lib/reducers/snackbarReducer";
-import { E04006, E04007, S04006, S04007 } from "../../../errors";
+import AfterCard from "./AfterCard/AfterCard";
+import BeforeCard from "./BeforeCard/BeforeCard";
+import handleApproveChangeRequest from "./handleApproveChangeRequest";
 import handleRejectChangeRequest from "./handleRejectChangeRequest";
-import sendRejectedChangeRequestMail from "./sendRejectedChangeRequestMail";
 import sendApprovedChangeRequest from "./sendApprovedChangeRequest";
-import { StaffType } from "../../../hooks/useStaffs/useStaffs";
+import sendRejectedChangeRequestMail from "./sendRejectedChangeRequestMail";
 
 export default function ChangeRequestDialog({
   attendance,
@@ -107,14 +108,11 @@ export default function ChangeRequestDialog({
           onClick={() => {
             handleRejectChangeRequest(attendance, updateAttendance, comment)
               .then(() => {
-                dispatch(setSnackbarSuccess(S04007));
+                dispatch(setSnackbarSuccess(MESSAGE_CODE.S04007));
                 sendRejectedChangeRequestMail(staff, attendance, comment);
                 handleClose();
               })
-              .catch((e: Error) => {
-                console.log(e);
-                dispatch(setSnackbarError(E04007));
-              });
+              .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E04007)));
             handleClose();
           }}
           variant="contained"
@@ -126,14 +124,11 @@ export default function ChangeRequestDialog({
           onClick={() => {
             handleApproveChangeRequest(attendance, updateAttendance, comment)
               .then(() => {
-                dispatch(setSnackbarSuccess(S04006));
+                dispatch(setSnackbarSuccess(MESSAGE_CODE.S04006));
                 sendApprovedChangeRequest(staff, attendance, comment);
                 handleClose();
               })
-              .catch((e: Error) => {
-                console.log(e);
-                dispatch(setSnackbarError(E04006));
-              });
+              .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E04006)));
           }}
           variant="contained"
         >

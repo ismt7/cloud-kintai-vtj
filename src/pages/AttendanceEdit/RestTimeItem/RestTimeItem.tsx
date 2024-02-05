@@ -31,6 +31,7 @@ export function RestTimeItem({
   index: number;
   watch: UseFormWatch<AttendanceEditInputs>;
   remove: (index?: number | number[] | undefined) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
 }) {

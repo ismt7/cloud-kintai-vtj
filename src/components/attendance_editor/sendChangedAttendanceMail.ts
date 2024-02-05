@@ -1,9 +1,10 @@
 import { API } from "aws-amplify";
 import dayjs from "dayjs";
-import { sendMail } from "../../graphql/queries";
+
 import { Attendance, AttendanceHistory } from "../../API";
-import getAttendanceMailBody from "./attendanceMailTemplate";
+import { sendMail } from "../../graphql/queries";
 import { StaffType } from "../../hooks/useStaffs/useStaffs";
+import getAttendanceMailBody from "./attendanceMailTemplate";
 
 export default function sendChangedAttendanceMail(
   toMailAddresses: string[],

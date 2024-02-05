@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
+
 import {
   CreateStaffInput,
   DeleteStaffInput,
   Staff,
   UpdateStaffInput,
 } from "../../API";
-import fetchStaffs from "./fetchStaffs";
 import createStaffData from "./createStaffData";
-import updateStaffData from "./updateStaffData";
 import deleteStaffData from "./deleteStaffData";
+import fetchStaffs from "./fetchStaffs";
+import updateStaffData from "./updateStaffData";
 
 export enum StaffRole {
   ADMIN = "Admin",
