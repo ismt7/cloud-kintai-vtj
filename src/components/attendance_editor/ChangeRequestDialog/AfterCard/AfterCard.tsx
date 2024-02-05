@@ -6,13 +6,14 @@ import {
   Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
+
 import { AttendanceChangeRequest } from "../../../../API";
-import PaidHolidayFlagTableRow from "./PaidHolidayFlagTableRow";
 import GoDirectlyFlagTableRow from "./GoDirectlyFlagTableRow";
+import PaidHolidayFlagTableRow from "./PaidHolidayFlagTableRow";
+import RemarksTableRow from "./RemarksTableRow";
+import RestTableRow from "./RestTableRow";
 import ReturnDirectlyFlagTableRow from "./ReturnDirectlyFlagTableRow";
 import WorkTimeTableRow from "./WorkTimeTableRow";
-import RestTableRow from "./RestTableRow";
-import RemarksTableRow from "./RemarksTableRow";
 
 export default function AfterCard({
   changeRequest,

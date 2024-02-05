@@ -1,6 +1,7 @@
-import { Control, Controller, UseFormSetValue } from "react-hook-form";
 import { Checkbox } from "@mui/material";
 import dayjs from "dayjs";
+import { Control, Controller, UseFormSetValue } from "react-hook-form";
+
 import { AttendanceEditorInputs } from "./common";
 
 export default function PaidHolidayFlagInput({
@@ -9,6 +10,7 @@ export default function PaidHolidayFlagInput({
   setValue,
 }: {
   workDate: dayjs.Dayjs | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditorInputs, any>;
   setValue: UseFormSetValue<AttendanceEditorInputs>;
 }) {

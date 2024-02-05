@@ -1,11 +1,12 @@
-import { API } from "aws-amplify";
 import { GraphQLResult } from "@aws-amplify/api";
-import { updateDocument } from "../../graphql/mutations";
+import { API } from "aws-amplify";
+
 import {
+  Document as APIDocument,
   UpdateDocumentInput,
   UpdateDocumentMutation,
-  Document as APIDocument,
 } from "../../API";
+import { updateDocument } from "../../graphql/mutations";
 
 export default async function updateDocumentData(input: UpdateDocumentInput) {
   const response = (await API.graphql({

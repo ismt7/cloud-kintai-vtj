@@ -32,6 +32,7 @@ export function WorkTimeInput({
   getValues,
 }: {
   targetWorkDate: dayjs.Dayjs | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
   watch: UseFormWatch<AttendanceEditInputs>;
   setValue: UseFormSetValue<AttendanceEditInputs>;

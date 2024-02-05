@@ -1,6 +1,7 @@
 import { Checkbox } from "@mui/material";
-import { Control, Controller, UseFormSetValue } from "react-hook-form";
 import dayjs from "dayjs";
+import { Control, Controller, UseFormSetValue } from "react-hook-form";
+
 import { AttendanceEditorInputs } from "./common";
 
 export default function ReturnDirectlyFlagInput({
@@ -8,6 +9,7 @@ export default function ReturnDirectlyFlagInput({
   setValue,
   workDate,
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditorInputs, any>;
   setValue: UseFormSetValue<AttendanceEditorInputs>;
   workDate: dayjs.Dayjs | null;

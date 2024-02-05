@@ -1,26 +1,10 @@
-import { useEffect, useState } from "react";
-
 import { Box, LinearProgress, Stack, Typography } from "@mui/material";
-
 import { Cache, Logger } from "aws-amplify";
 import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+
 import { useAppDispatchV2 } from "../../app/hooks";
-import {
-  E01001,
-  E01002,
-  E01003,
-  E01004,
-  E01005,
-  E01006,
-  E02003,
-  S01001,
-  S01002,
-  S01003,
-  S01004,
-  S01005,
-  S01006,
-  S02003,
-} from "../../errors";
+import * as MESSAGE_CODE from "../../errors";
 import useAttendance, {
   GoDirectlyFlag,
   ReturnDirectlyFlag,
@@ -32,16 +16,16 @@ import {
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
 import Clock from "../clock/Clock";
+import { WorkStatus } from "./common";
 import ClockInItem from "./items/ClockInItem";
 import ClockOutItem from "./items/ClockOutItem";
 import GoDirectlyItem from "./items/GoDirectlyItem";
 import RestEndItem from "./items/RestEndItem";
 import RestStartItem from "./items/RestStartItem";
 import ReturnDirectly from "./items/ReturnDirectlyItem";
-import TimeRecorderRemarks from "./TimeRecorderRemarks";
-import { WorkStatus } from "./common";
 import sendClockInMail from "./sendClockInMail";
 import sendClockOutMail from "./sendClockOutMail";
+import TimeRecorderRemarks from "./TimeRecorderRemarks";
 
 export default function TimeRecorder() {
   const dispatch = useAppDispatchV2();
@@ -72,6 +56,7 @@ export default function TimeRecorder() {
 
     setInterval(() => {
       if (!Cache.getItem("reloadTimer")) {
+        // eslint-disable-next-line no-alert
         alert("ページの有効期限が切れました。リロードしてください。");
         Cache.setItem("reloadTimer", true, {
           expires: dayjs().add(10, "minute").toDate().getTime(),
@@ -87,7 +72,7 @@ export default function TimeRecorder() {
 
     getAttendance(cognitoUser.id, today).catch((e) => {
       logger.debug(e);
-      dispatch(setSnackbarError(E01001));
+      dispatch(setSnackbarError(MESSAGE_CODE.E01001));
     });
   }, [cognitoUser]);
 
@@ -122,12 +107,12 @@ export default function TimeRecorder() {
               const now = dayjs().toISOString();
               clockIn(cognitoUser.id, today, now)
                 .then((res) => {
-                  dispatch(setSnackbarSuccess(S01001));
+                  dispatch(setSnackbarSuccess(MESSAGE_CODE.S01001));
                   sendClockInMail(cognitoUser, res);
                 })
                 .catch((e) => {
                   logger.debug(e);
-                  dispatch(setSnackbarError(E01001));
+                  dispatch(setSnackbarError(MESSAGE_CODE.E01001));
                 });
             }}
           />
@@ -139,12 +124,12 @@ export default function TimeRecorder() {
               const now = dayjs().toISOString();
               clockOut(cognitoUser.id, today, now)
                 .then((res) => {
-                  dispatch(setSnackbarSuccess(S01002));
+                  dispatch(setSnackbarSuccess(MESSAGE_CODE.S01002));
                   sendClockOutMail(cognitoUser, res);
                 })
                 .catch((e) => {
                   logger.debug(e);
-                  dispatch(setSnackbarError(E01002));
+                  dispatch(setSnackbarError(MESSAGE_CODE.E01002));
                 });
             }}
           />
@@ -164,12 +149,12 @@ export default function TimeRecorder() {
                 const now = dayjs().toISOString();
                 clockIn(cognitoUser.id, today, now, GoDirectlyFlag.YES)
                   .then((res) => {
-                    dispatch(setSnackbarSuccess(S01003));
+                    dispatch(setSnackbarSuccess(MESSAGE_CODE.S01003));
                     sendClockInMail(cognitoUser, res);
                   })
                   .catch((e) => {
                     logger.debug(e);
-                    dispatch(setSnackbarError(E01005));
+                    dispatch(setSnackbarError(MESSAGE_CODE.E01005));
                   });
               }}
             />
@@ -181,12 +166,12 @@ export default function TimeRecorder() {
                 const now = dayjs().toISOString();
                 clockOut(cognitoUser.id, today, now, ReturnDirectlyFlag.YES)
                   .then((res) => {
-                    dispatch(setSnackbarSuccess(S01004));
+                    dispatch(setSnackbarSuccess(MESSAGE_CODE.S01004));
                     sendClockOutMail(cognitoUser, res);
                   })
                   .catch((e) => {
                     logger.debug(e);
-                    dispatch(setSnackbarError(E01006));
+                    dispatch(setSnackbarError(MESSAGE_CODE.E01006));
                   });
               }}
             />
@@ -199,10 +184,10 @@ export default function TimeRecorder() {
 
                 const now = dayjs().toISOString();
                 restStart(cognitoUser.id, today, now)
-                  .then(() => dispatch(setSnackbarSuccess(S01005)))
+                  .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S01005)))
                   .catch((e) => {
                     logger.debug(e);
-                    dispatch(setSnackbarError(E01003));
+                    dispatch(setSnackbarError(MESSAGE_CODE.E01003));
                   });
               }}
             />
@@ -213,10 +198,10 @@ export default function TimeRecorder() {
 
                 const now = dayjs().toISOString();
                 restEnd(cognitoUser.id, today, now)
-                  .then(() => dispatch(setSnackbarSuccess(S01006)))
+                  .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S01006)))
                   .catch((e) => {
                     logger.debug(e);
-                    dispatch(setSnackbarError(E01004));
+                    dispatch(setSnackbarError(MESSAGE_CODE.E01004));
                   });
               }}
             />
@@ -229,11 +214,11 @@ export default function TimeRecorder() {
 
             updateRemarks(cognitoUser.id, today, remarks || "")
               .then(() => {
-                dispatch(setSnackbarSuccess(S02003));
+                dispatch(setSnackbarSuccess(MESSAGE_CODE.S02003));
               })
               .catch((e) => {
                 logger.debug(e);
-                dispatch(setSnackbarError(E02003));
+                dispatch(setSnackbarError(MESSAGE_CODE.E02003));
               });
           }}
         />

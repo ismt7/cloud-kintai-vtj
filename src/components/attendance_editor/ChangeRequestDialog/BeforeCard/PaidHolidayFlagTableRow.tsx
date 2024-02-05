@@ -1,4 +1,5 @@
-import { TableRow, TableCell } from "@mui/material";
+import { TableCell, TableRow } from "@mui/material";
+
 import { Attendance } from "../../../../API";
 
 export default function PaidHolidayFlagTableRow({

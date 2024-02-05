@@ -17,6 +17,7 @@ export default function RestEndTimeInput({
 }: {
   workDate: dayjs.Dayjs;
   index: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
 }) {

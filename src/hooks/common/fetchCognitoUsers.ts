@@ -5,6 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { API, Auth } from "aws-amplify";
 import dayjs from "dayjs";
+
 import { Staff, StaffRole } from "../useStaffs/common";
 
 export default async function fetchCognitoUsers(): Promise<Staff[]> {

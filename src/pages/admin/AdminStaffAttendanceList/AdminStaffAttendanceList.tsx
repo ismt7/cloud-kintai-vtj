@@ -12,18 +12,22 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { Attendance } from "../../../API";
+import { useAppDispatchV2 } from "../../../app/hooks";
 import getDayOfWeek, {
   DayOfWeek,
 } from "../../../components/attendance_list/getDayOfWeek";
+import * as MESSAGE_CODE from "../../../errors";
 import useAttendances from "../../../hooks/useAttendances/useAttendances";
 import useCompanyHolidayCalendars from "../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 import useHolidayCalendars from "../../../hooks/useHolidayCalendars/useHolidayCalendars";
 import useStaffs, { StaffType } from "../../../hooks/useStaffs/useStaffs";
+import { setSnackbarError } from "../../../lib/reducers/snackbarReducer";
 import getColumns from "./getColumns";
 
 export default function AdminStaffAttendanceList() {
   const { staffId } = useParams();
   const navigate = useNavigate();
+  const dispatch = useAppDispatchV2();
 
   const { attendances, getAttendances } = useAttendances();
   const { staffs, loading: staffLoading, error: staffError } = useStaffs();
@@ -44,9 +48,9 @@ export default function AdminStaffAttendanceList() {
 
   useEffect(() => {
     if (!staffId) return;
-    getAttendances(staffId).catch((error) => {
-      console.log(error);
-    });
+    getAttendances(staffId).catch(() =>
+      dispatch(setSnackbarError(MESSAGE_CODE.E02001))
+    );
   }, [staffId]);
 
   const {
@@ -81,10 +85,6 @@ export default function AdminStaffAttendanceList() {
     );
   }
 
-  const deleteAttendance = async (attendanceId: number) => {
-    console.log(attendanceId);
-  };
-
   return (
     <Container maxWidth="xl">
       <Stack spacing={1} sx={{ pt: 1 }}>
@@ -106,7 +106,6 @@ export default function AdminStaffAttendanceList() {
           <DataGrid
             rows={attendances}
             columns={getColumns(
-              deleteAttendance,
               rowModelsModel,
               staffId,
               navigate,

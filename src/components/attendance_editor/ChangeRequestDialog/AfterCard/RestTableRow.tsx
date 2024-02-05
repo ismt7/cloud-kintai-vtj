@@ -1,5 +1,6 @@
-import { TableRow, TableCell, Stack, Box } from "@mui/material";
+import { Box, Stack, TableCell, TableRow } from "@mui/material";
 import dayjs from "dayjs";
+
 import { Rest } from "../../../../API";
 
 export default function RestTableRow({ rests }: { rests: Rest[] }) {

@@ -1,5 +1,6 @@
-import { API } from "aws-amplify";
 import { GraphQLResult } from "@aws-amplify/api";
+import { API } from "aws-amplify";
+
 import { Staff, UpdateStaffInput, UpdateStaffMutation } from "../../API";
 import { updateStaff } from "../../graphql/mutations";
 

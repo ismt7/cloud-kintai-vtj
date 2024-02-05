@@ -1,11 +1,12 @@
-import { API } from "aws-amplify";
 import { GraphQLResult } from "@aws-amplify/api";
-import { updateHolidayCalendar } from "../../graphql/mutations";
+import { API } from "aws-amplify";
+
 import {
   HolidayCalendar,
   UpdateHolidayCalendarInput,
   UpdateHolidayCalendarMutation,
 } from "../../API";
+import { updateHolidayCalendar } from "../../graphql/mutations";
 
 export default async function updateHolidayCalendarData(
   input: UpdateHolidayCalendarInput

@@ -1,6 +1,7 @@
 import { GraphQLResult } from "@aws-amplify/api";
 import { API } from "aws-amplify";
 import dayjs from "dayjs";
+
 import { Attendance, ListAttendancesQuery } from "../../API";
 import { listAttendances } from "../../graphql/queries";
 

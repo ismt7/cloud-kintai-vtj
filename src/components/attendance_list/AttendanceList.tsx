@@ -10,17 +10,18 @@ import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
+import { Attendance } from "../../API";
 import { useAppDispatchV2 } from "../../app/hooks";
-import { E02001 } from "../../errors";
+import * as MESSAGE_CODE from "../../errors";
 import useAttendances from "../../hooks/useAttendances/useAttendances";
 import useCognitoUser from "../../hooks/useCognitoUser";
+import useCompanyHolidayCalendars from "../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 import useHolidayCalendars from "../../hooks/useHolidayCalendars/useHolidayCalendars";
 import { setSnackbarError } from "../../lib/reducers/snackbarReducer";
 import Title from "../Title/Title";
 import GetColumns from "./Column";
 import getDayOfWeek, { DayOfWeek } from "./getDayOfWeek";
-import { Attendance } from "../../API";
-import useCompanyHolidayCalendars from "../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 
 export default function AttendanceTable() {
   const dispatch = useAppDispatchV2();
@@ -49,7 +50,7 @@ export default function AttendanceTable() {
 
     getAttendances(cognitoUser.id).catch((error) => {
       logger.debug(error);
-      dispatch(setSnackbarError(E02001));
+      dispatch(setSnackbarError(MESSAGE_CODE.E02001));
     });
   }, [cognitoUser]);
 

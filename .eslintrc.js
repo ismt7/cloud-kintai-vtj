@@ -20,7 +20,7 @@ module.exports = {
     project: "./tsconfig.eslint.json",
     tsconfigRootDir: __dirname,
   },
-  ignorePatterns: ["dist", "src/api"],
+  ignorePatterns: ["dist", "src/api", "src/ui-components"],
   plugins: [
     "react",
     "@typescript-eslint",

@@ -1,4 +1,10 @@
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import ClearIcon from "@mui/icons-material/Clear";
 import { Box, Button, Chip, IconButton, Stack } from "@mui/material";
+import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 import {
   Control,
   Controller,
@@ -6,12 +12,7 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
-import { TimePicker, renderTimeViewClock } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import ClearIcon from "@mui/icons-material/Clear";
-import { useEffect, useState } from "react";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+
 import { AttendanceEditorInputs } from "../../common";
 
 export default function RestEndTimeInput({
@@ -24,6 +25,7 @@ export default function RestEndTimeInput({
 }: {
   index: number;
   workDate: dayjs.Dayjs;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditorInputs, any>;
   setValue: UseFormSetValue<AttendanceEditorInputs>;
   watch: UseFormWatch<AttendanceEditorInputs>;

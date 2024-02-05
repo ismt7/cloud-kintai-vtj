@@ -27,7 +27,8 @@ import { defaultValues, DocumentInputs } from "./common";
 import ContentBlockNoteEditor from "./ContentBlockNoteEditor";
 
 async function updateImageUrl(content: string) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  // eslint-disable-next-line max-len
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
   const json: any[] = JSON.parse(content);
   return Promise.all(
     json.map(async (block) => {

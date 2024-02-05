@@ -7,9 +7,10 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
+
 import { AttendanceEditorInputs } from "../../common";
-import StartTimeInput from "./StartTimeInput";
 import EndTimeInput from "./EndTimeInput";
+import StartTimeInput from "./StartTimeInput";
 
 export function calcTotalWorkTime(
   startTime: string | null | undefined,
@@ -31,6 +32,7 @@ export function WorkTimeItem({
   getValues,
 }: {
   targetWorkDate: dayjs.Dayjs | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditorInputs, any>;
   watch: UseFormWatch<AttendanceEditorInputs>;
   setValue: UseFormSetValue<AttendanceEditorInputs>;

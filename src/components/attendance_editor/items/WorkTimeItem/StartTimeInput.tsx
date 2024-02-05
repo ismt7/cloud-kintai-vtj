@@ -1,8 +1,9 @@
-import { TimePicker, renderTimeViewClock } from "@mui/x-date-pickers";
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import { Box, Chip, Stack } from "@mui/material";
+import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { Control, Controller, UseFormSetValue } from "react-hook-form";
-import { Box, Chip, Stack } from "@mui/material";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+
 import { AttendanceEditorInputs } from "../../common";
 
 export default function StartTimeInput({
@@ -11,6 +12,7 @@ export default function StartTimeInput({
   setValue,
 }: {
   workDate: dayjs.Dayjs | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditorInputs, any>;
   setValue: UseFormSetValue<AttendanceEditorInputs>;
 }) {

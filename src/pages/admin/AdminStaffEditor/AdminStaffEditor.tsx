@@ -21,7 +21,7 @@ import { Link, useParams } from "react-router-dom";
 
 import { useAppDispatchV2 } from "../../../app/hooks";
 import Title from "../../../components/Title/Title";
-import { E05001, E05003, S05003 } from "../../../errors";
+import * as MESSAGE_CODE from "../../../errors";
 import addUserToGroup from "../../../hooks/common/addUserToGroup";
 import removeUserFromGroup from "../../../hooks/common/removeUserFromGroup";
 import updateCognitoUser from "../../../hooks/common/updateCognitoUser";
@@ -97,17 +97,17 @@ export default function AdminStaffEditor() {
             .catch(() => false);
 
           if (!removeGroupsResponse) {
-            dispatch(setSnackbarError(E05003));
+            dispatch(setSnackbarError(MESSAGE_CODE.E05003));
             return;
           }
 
           await addUserToGroup(mailAddress, role).catch(() => {
-            dispatch(setSnackbarError(E05003));
+            dispatch(setSnackbarError(MESSAGE_CODE.E05003));
           });
 
           const staff = staffs.find((s) => s.cognitoUserId === staffId);
           if (!staff) {
-            dispatch(setSnackbarError(E05001));
+            dispatch(setSnackbarError(MESSAGE_CODE.E05001));
             return;
           }
 
@@ -119,15 +119,15 @@ export default function AdminStaffEditor() {
             role,
           })
             .then(() => {
-              dispatch(setSnackbarSuccess(S05003));
+              dispatch(setSnackbarSuccess(MESSAGE_CODE.S05003));
             })
             .catch(() => {
-              dispatch(setSnackbarError(E05003));
+              dispatch(setSnackbarError(MESSAGE_CODE.E05003));
             });
         }
       })
       .catch(() => {
-        dispatch(setSnackbarError(E05003));
+        dispatch(setSnackbarError(MESSAGE_CODE.E05003));
       })
       .finally(() => {
         setSaving(false);
@@ -141,7 +141,7 @@ export default function AdminStaffEditor() {
 
     const staff = staffs.find((s) => s.cognitoUserId === staffId);
     if (!staff) {
-      dispatch(setSnackbarError(E05001));
+      dispatch(setSnackbarError(MESSAGE_CODE.E05001));
       return;
     }
 
@@ -158,7 +158,7 @@ export default function AdminStaffEditor() {
   }
 
   if (staffError) {
-    dispatch(setSnackbarError(E05001));
+    dispatch(setSnackbarError(MESSAGE_CODE.E05001));
     return null;
   }
 

@@ -23,6 +23,7 @@ export default function EndTimeInput({
   watch,
 }: {
   workDate: dayjs.Dayjs | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
   getValues: UseFormGetValues<AttendanceEditInputs>;

@@ -1,20 +1,19 @@
+import EditIcon from "@mui/icons-material/Edit";
 import {
   GridActionsCellItem,
   GridColDef,
   GridRowParams,
   GridValueGetterParams,
 } from "@mui/x-data-grid";
-
-import EditIcon from "@mui/icons-material/Edit";
 import dayjs from "dayjs";
 import { NavigateFunction } from "react-router-dom";
+
 import {
   Attendance,
   CompanyHolidayCalendar,
   HolidayCalendar,
   Rest,
 } from "../../API";
-
 import getDayOfWeek from "./getDayOfWeek";
 
 export function statusValueGetter(

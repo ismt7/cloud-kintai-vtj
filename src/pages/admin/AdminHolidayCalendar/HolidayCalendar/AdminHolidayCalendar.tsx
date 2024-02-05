@@ -20,7 +20,7 @@ import {
   CreateHolidayCalendarInput,
 } from "../../../../API";
 import { useAppDispatchV2 } from "../../../../app/hooks";
-import { E07001, E08001, S07001, S08002 } from "../../../../errors";
+import * as MESSAGE_CODE from "../../../../errors";
 import useCompanyHolidayCalendars from "../../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 import useHolidayCalendar from "../../../../hooks/useHolidayCalendars/useHolidayCalendars";
 import {
@@ -183,8 +183,7 @@ export default function AdminHolidayCalendar() {
   }
 
   if (holidayCalendarError || companyHolidayCalendarError) {
-    // eslint-disable-next-line no-alert
-    alert("データ取得中に問題が発生しました。管理者にお問い合わせください。");
+    dispatch(setSnackbarError(MESSAGE_CODE.E08001));
     return null;
   }
 
@@ -202,8 +201,12 @@ export default function AdminHolidayCalendar() {
               <CSVFilePicker
                 onSubmit={(data) => {
                   bulkCreateHolidayCalendar(data)
-                    .then(() => dispatch(setSnackbarSuccess(S07001)))
-                    .catch(() => dispatch(setSnackbarError(E07001)));
+                    .then(() =>
+                      dispatch(setSnackbarSuccess(MESSAGE_CODE.S07001))
+                    )
+                    .catch(() =>
+                      dispatch(setSnackbarError(MESSAGE_CODE.E07001))
+                    );
                 }}
               />
             </TableCell>
@@ -215,8 +218,12 @@ export default function AdminHolidayCalendar() {
               <ExcelFilePicker
                 onSubmit={(data) => {
                   bulkCreateCompanyHolidayCalendar(data)
-                    .then(() => dispatch(setSnackbarSuccess(S08002)))
-                    .catch(() => dispatch(setSnackbarError(E08001)));
+                    .then(() =>
+                      dispatch(setSnackbarSuccess(MESSAGE_CODE.S08002))
+                    )
+                    .catch(() =>
+                      dispatch(setSnackbarError(MESSAGE_CODE.E08001))
+                    );
                 }}
               />
             </TableCell>
