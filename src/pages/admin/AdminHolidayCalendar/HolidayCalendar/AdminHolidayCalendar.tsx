@@ -81,6 +81,7 @@ function CSVFilePicker({
                     } as CreateHolidayCalendarInput)
                 );
 
+              // eslint-disable-next-line no-alert
               const result = window.confirm(
                 `以下の${requestHolidayCalendars.length}件のデータを登録しますか？`
               );
@@ -133,6 +134,7 @@ function ExcelFilePicker({
                   name: String(row[1]),
                 }));
 
+              // eslint-disable-next-line no-alert
               const result = window.confirm(
                 `以下の${requestCompanyHolidayCalendars.length}件のデータを登録しますか？`
               );
@@ -180,7 +182,7 @@ export default function AdminHolidayCalendar() {
   }
 
   if (holidayCalendarError || companyHolidayCalendarError) {
-    alert("データ取得中に問題が発生しました。管理者にお問い合わせください。");
+    dispatch(setSnackbarError(E08001));
     return null;
   }
 

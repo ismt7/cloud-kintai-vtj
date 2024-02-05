@@ -19,7 +19,6 @@ import {
 import getDayOfWeek from "../../../components/attendance_list/getDayOfWeek";
 
 export default function getColumns(
-  deleteAttendance: (attendanceId: number) => Promise<void>,
   rowModelsModel: GridRowModesModel,
   staffId: string | undefined,
   navigate: NavigateFunction,

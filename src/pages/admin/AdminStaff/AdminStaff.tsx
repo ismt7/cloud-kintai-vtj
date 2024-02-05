@@ -124,6 +124,7 @@ export default function AdminStaff() {
                     label="アカウントを削除する"
                     showInMenu
                     onClick={() => {
+                      // eslint-disable-next-line no-alert
                       const result = window.confirm(
                         "削除すると元に戻せません。本当に削除しますか？"
                       );

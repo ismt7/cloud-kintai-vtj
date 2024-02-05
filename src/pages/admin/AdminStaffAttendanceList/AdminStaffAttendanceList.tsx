@@ -19,10 +19,14 @@ import useStaffs, { StaffType } from "../../../hooks/useStaffs/useStaffs";
 import getColumns from "./getColumns";
 import { Attendance } from "../../../API";
 import useCompanyHolidayCalendars from "../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
+import { useAppDispatchV2 } from "../../../app/hooks";
+import { setSnackbarError } from "../../../lib/reducers/snackbarReducer";
+import { E02001 } from "../../../errors";
 
 export default function AdminStaffAttendanceList() {
   const { staffId } = useParams();
   const navigate = useNavigate();
+  const dispatch = useAppDispatchV2();
 
   const { attendances, getAttendances } = useAttendances();
   const { staffs, loading: staffLoading, error: staffError } = useStaffs();
@@ -43,9 +47,7 @@ export default function AdminStaffAttendanceList() {
 
   useEffect(() => {
     if (!staffId) return;
-    getAttendances(staffId).catch((error) => {
-      console.log(error);
-    });
+    getAttendances(staffId).catch(() => dispatch(setSnackbarError(E02001)));
   }, [staffId]);
 
   const {
@@ -80,10 +82,6 @@ export default function AdminStaffAttendanceList() {
     );
   }
 
-  const deleteAttendance = async (attendanceId: number) => {
-    console.log(attendanceId);
-  };
-
   return (
     <Container maxWidth="xl">
       <Stack spacing={1} sx={{ pt: 1 }}>
@@ -105,7 +103,6 @@ export default function AdminStaffAttendanceList() {
           <DataGrid
             rows={attendances}
             columns={getColumns(
-              deleteAttendance,
               rowModelsModel,
               staffId,
               navigate,

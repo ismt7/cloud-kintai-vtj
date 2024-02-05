@@ -51,6 +51,7 @@ export default function CompanyHolidayCalendarList({
   const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   const handleDelete = (id: string) => {
+    // eslint-disable-next-line no-alert
     const confirm = window.confirm("本当に削除しますか？");
     if (!confirm) return;
 
