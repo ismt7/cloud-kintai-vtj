@@ -1,3 +1,7 @@
+import "@blocknote/core/style.css";
+
+import { BlockNoteEditor } from "@blocknote/core";
+import { BlockNoteView, useBlockNote } from "@blocknote/react";
 import {
   Autocomplete,
   Box,
@@ -10,19 +14,17 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { BlockNoteEditor } from "@blocknote/core";
-import { BlockNoteView, useBlockNote } from "@blocknote/react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import Title from "../../components/Title/Title";
-import "@blocknote/core/style.css";
+
 import { useAppDispatchV2 } from "../../app/hooks";
+import Title from "../../components/Title/Title";
+import * as MESSAGE_CODE from "../../errors";
+import createDocumentData from "../../hooks/useDocuments/createDocumentData";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
-import * as MESSAGE_CODE from "../../errors";
-import createDocumentData from "../../hooks/useDocuments/createDocumentData";
 
 type Inputs = {
   title: string | null | undefined;

@@ -1,4 +1,5 @@
 import { Box, Card, Stack, Typography } from "@mui/material";
+
 import Title from "../../components/Title/Title";
 import go_direct from "../../images/go_direct.gif";
 

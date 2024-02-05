@@ -15,22 +15,23 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import useStaffs from "../../../hooks/useStaffs/useStaffs";
+import { Link, useParams } from "react-router-dom";
+
 import { useAppDispatchV2 } from "../../../app/hooks";
+import Title from "../../../components/Title/Title";
+import { E05001, E05003, S05003 } from "../../../errors";
+import addUserToGroup from "../../../hooks/common/addUserToGroup";
+import removeUserFromGroup from "../../../hooks/common/removeUserFromGroup";
+import updateCognitoUser from "../../../hooks/common/updateCognitoUser";
+import { Staff, StaffRole } from "../../../hooks/useStaffs/common";
+import useStaffs from "../../../hooks/useStaffs/useStaffs";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../../lib/reducers/snackbarReducer";
-import { E05001, E05003, S05003 } from "../../../errors";
-import Title from "../../../components/Title/Title";
-import { Staff, StaffRole } from "../../../hooks/useStaffs/common";
 import { ROLE_OPTIONS } from "../AdminStaff/CreateStaffDialog";
-import updateCognitoUser from "../../../hooks/common/updateCognitoUser";
-import removeUserFromGroup from "../../../hooks/common/removeUserFromGroup";
-import addUserToGroup from "../../../hooks/common/addUserToGroup";
 
 type Inputs = {
   staffId?: Staff["sub"];

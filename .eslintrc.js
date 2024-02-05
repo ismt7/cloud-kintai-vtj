@@ -21,7 +21,13 @@ module.exports = {
     tsconfigRootDir: __dirname,
   },
   ignorePatterns: ["dist", "src/api", "src/ui-components"],
-  plugins: ["react", "@typescript-eslint", "unused-imports", "import"],
+  plugins: [
+    "react",
+    "@typescript-eslint",
+    "unused-imports",
+    "import",
+    "simple-import-sort",
+  ],
   rules: {
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
@@ -42,6 +48,7 @@ module.exports = {
     "no-confusing-arrow": "off",
     "no-continue": "off",
     "@typescript-eslint/no-misused-promises": "off",
+    "simple-import-sort/imports": "error",
   },
   settings: {
     react: {

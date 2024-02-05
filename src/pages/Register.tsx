@@ -1,8 +1,8 @@
-import { Box, CircularProgress } from "@mui/material";
-
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import { Box, CircularProgress } from "@mui/material";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 import TimeRecorder from "../components/time_recorder/TimeRecorder";
 
 export default function Register() {

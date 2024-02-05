@@ -1,6 +1,7 @@
+import "@blocknote/core/style.css";
+
 import { BlockNoteEditor } from "@blocknote/core";
 import { BlockNoteView, useBlockNote } from "@blocknote/react";
-import "@blocknote/core/style.css";
 
 export default function ContentView({ content }: { content: string }) {
   const editor: BlockNoteEditor = useBlockNote({

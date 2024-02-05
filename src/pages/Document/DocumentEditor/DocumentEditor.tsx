@@ -1,6 +1,3 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Controller, useForm } from "react-hook-form";
 import {
   Autocomplete,
   Box,
@@ -13,17 +10,21 @@ import {
   Typography,
 } from "@mui/material";
 import { Storage } from "aws-amplify";
-import fetchDocument from "../../../hooks/useDocuments/fetchDocument";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Link, useNavigate, useParams } from "react-router-dom";
+
 import { useAppDispatchV2 } from "../../../app/hooks";
+import Title from "../../../components/Title/Title";
+import * as MESSAGE_CODE from "../../../errors";
+import fetchDocument from "../../../hooks/useDocuments/fetchDocument";
+import updateDocumentData from "../../../hooks/useDocuments/updateDocumentData";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../../lib/reducers/snackbarReducer";
-import * as MESSAGE_CODE from "../../../errors";
-import Title from "../../../components/Title/Title";
-import { DocumentInputs, defaultValues } from "./common";
+import { defaultValues, DocumentInputs } from "./common";
 import ContentBlockNoteEditor from "./ContentBlockNoteEditor";
-import updateDocumentData from "../../../hooks/useDocuments/updateDocumentData";
 
 async function updateImageUrl(content: string) {
   // eslint-disable-next-line max-len
