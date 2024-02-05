@@ -1,10 +1,10 @@
-import { useEffect } from "react";
+import "@aws-amplify/ui-react/styles.css";
 
 import { Authenticator, useAuthenticator, View } from "@aws-amplify/ui-react";
 import { Amplify } from "aws-amplify";
-
-import "@aws-amplify/ui-react/styles.css";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
 import awsConfig from "../aws-exports";
 
 Amplify.configure(awsConfig);

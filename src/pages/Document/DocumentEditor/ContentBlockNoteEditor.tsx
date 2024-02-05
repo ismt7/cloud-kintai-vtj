@@ -1,8 +1,10 @@
+import "@blocknote/core/style.css";
+
 import { BlockNoteEditor } from "@blocknote/core";
 import { BlockNoteView, useBlockNote } from "@blocknote/react";
-import "@blocknote/core/style.css";
-import { UseFormSetValue } from "react-hook-form";
 import { Storage } from "aws-amplify";
+import { UseFormSetValue } from "react-hook-form";
+
 import { DocumentInputs } from "./common";
 
 export default function ContentBlockNoteEditor({

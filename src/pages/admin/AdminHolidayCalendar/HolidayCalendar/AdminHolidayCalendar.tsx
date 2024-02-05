@@ -14,6 +14,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as xlsx from "xlsx";
+
 import {
   CreateCompanyHolidayCalendarInput,
   CreateHolidayCalendarInput,
@@ -81,6 +82,7 @@ function CSVFilePicker({
                     } as CreateHolidayCalendarInput)
                 );
 
+              // eslint-disable-next-line no-alert
               const result = window.confirm(
                 `以下の${requestHolidayCalendars.length}件のデータを登録しますか？`
               );
@@ -133,6 +135,7 @@ function ExcelFilePicker({
                   name: String(row[1]),
                 }));
 
+              // eslint-disable-next-line no-alert
               const result = window.confirm(
                 `以下の${requestCompanyHolidayCalendars.length}件のデータを登録しますか？`
               );
@@ -180,6 +183,7 @@ export default function AdminHolidayCalendar() {
   }
 
   if (holidayCalendarError || companyHolidayCalendarError) {
+    // eslint-disable-next-line no-alert
     alert("データ取得中に問題が発生しました。管理者にお問い合わせください。");
     return null;
   }

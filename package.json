@@ -97,5 +97,8 @@
     "outputDirectory": "reports/jest"
   },
   "readme": "ERROR: No README data found!",
-  "_id": "app@0.1.0"
+  "_id": "app@0.1.0",
+  "devDependencies": {
+    "eslint-plugin-simple-import-sort": "^10.0.0"
+  }
 }

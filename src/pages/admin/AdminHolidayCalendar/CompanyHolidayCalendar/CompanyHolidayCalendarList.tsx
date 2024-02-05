@@ -1,3 +1,4 @@
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {
@@ -13,7 +14,7 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 import { useState } from "react";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+
 import {
   CompanyHolidayCalendar,
   CreateCompanyHolidayCalendarInput,
