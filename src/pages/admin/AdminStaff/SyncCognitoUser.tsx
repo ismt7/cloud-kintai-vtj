@@ -1,15 +1,16 @@
-import { Box, Button, CircularProgress } from "@mui/material";
 import SyncIcon from "@mui/icons-material/Sync";
+import { Box, Button, CircularProgress } from "@mui/material";
 import { useState } from "react";
-import fetchCognitoUsers from "../../../hooks/common/fetchCognitoUsers";
+
+import { CreateStaffInput, UpdateStaffInput } from "../../../API";
 import { useAppDispatchV2 } from "../../../app/hooks";
+import * as MESSAGE_CODE from "../../../errors";
+import fetchCognitoUsers from "../../../hooks/common/fetchCognitoUsers";
+import { StaffType } from "../../../hooks/useStaffs/useStaffs";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../../lib/reducers/snackbarReducer";
-import * as MESSAGE_CODE from "../../../errors";
-import { StaffType } from "../../../hooks/useStaffs/useStaffs";
-import { CreateStaffInput, UpdateStaffInput } from "../../../API";
 
 export default function SyncCognitoUser({
   staffs,

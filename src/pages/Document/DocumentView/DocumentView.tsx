@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import EditIcon from "@mui/icons-material/Edit";
+import PersonIcon from "@mui/icons-material/Person";
 import {
   Box,
   Breadcrumbs,
@@ -10,15 +10,16 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import dayjs from "dayjs";
-import EditIcon from "@mui/icons-material/Edit";
 import { Storage } from "aws-amplify";
-import PersonIcon from "@mui/icons-material/Person";
-import fetchDocument from "../../../hooks/useDocuments/fetchDocument";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+
 import { Document as APIDocument } from "../../../API";
 import { useAppDispatchV2 } from "../../../app/hooks";
-import { setSnackbarError } from "../../../lib/reducers/snackbarReducer";
 import * as MESSAGE_CODE from "../../../errors";
+import fetchDocument from "../../../hooks/useDocuments/fetchDocument";
+import { setSnackbarError } from "../../../lib/reducers/snackbarReducer";
 import ContentView from "./ContentView";
 
 async function updateImageUrl(content: string) {

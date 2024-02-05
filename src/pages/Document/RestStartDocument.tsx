@@ -1,4 +1,5 @@
 import { Box, Card, Stack, Typography } from "@mui/material";
+
 import Title from "../../components/Title/Title";
 import rest_start from "../../images/rest_start.gif";
 

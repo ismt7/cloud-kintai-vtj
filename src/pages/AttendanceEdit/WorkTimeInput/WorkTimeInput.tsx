@@ -7,9 +7,10 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
+
 import { AttendanceEditInputs } from "../common";
-import StartTimeInput from "./StartTimeInput";
 import EndTimeInput from "./EndTimeInput";
+import StartTimeInput from "./StartTimeInput";
 
 export function calcTotalWorkTime(
   startTime: string | null | undefined,

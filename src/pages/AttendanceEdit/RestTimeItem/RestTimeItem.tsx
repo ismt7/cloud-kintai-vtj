@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import { Control, UseFormSetValue, UseFormWatch } from "react-hook-form";
 
 import { AttendanceEditInputs } from "../common";
-import RestStartTimeInput from "./RestStartTimeInput";
 import RestEndTimeInput from "./RestEndTimeInput";
+import RestStartTimeInput from "./RestStartTimeInput";
 
 export function calcTotalRestTime(
   startTime: string | null | undefined,

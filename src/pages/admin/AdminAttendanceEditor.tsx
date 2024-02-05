@@ -2,6 +2,7 @@ import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Container } from "@mui/material";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 import AttendanceEditor from "../../components/attendance_editor/AttendanceEditor";
 
 export default function AdminAttendanceEditor() {
