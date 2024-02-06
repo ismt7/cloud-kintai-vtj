@@ -1,6 +1,7 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import PersonIcon from "@mui/icons-material/Person";
 import {
+  Breadcrumbs,
   Chip,
   Grid,
   LinearProgress,
@@ -32,76 +33,84 @@ export default function ListDocument() {
   }
 
   return (
-    <Grid container spacing={2} sx={{ p: 5 }}>
-      <Grid item xs={12}>
-        <TextField
-          label="キーワード"
-          fullWidth
-          onChange={(e) => setSearchKeyword(e.target.value)}
-        />
-      </Grid>
-      <Grid item xs={4}>
-        <Link href="/docs/post">
-          <Paper
-            elevation={3}
-            sx={{
-              p: 3,
-              height: 120,
-              textAlign: "center",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <AddCircleIcon fontSize="large" color="success" />
-          </Paper>
+    <Stack direction="column" spacing={2} sx={{ pt: 2 }}>
+      <Breadcrumbs>
+        <Link href="/" color="inherit">
+          TOP
         </Link>
-      </Grid>
-      {documents
-        .filter((document) => document.title.includes(searchKeyword))
-        .map((document, index) => (
-          <Grid item xs={4} key={index}>
-            <Paper elevation={3} sx={{ p: 3 }}>
-              <Stack direction="column" spacing={2}>
-                <Link href={`/docs/${document.id}`}>
-                  <Typography variant="body1">{document.title}</Typography>
-                </Link>
-                <Stack direction="row" spacing={1}>
-                  {document.targetRole ? (
-                    (() => {
-                      const targetRole = document.targetRole.filter(
-                        (item): item is NonNullable<typeof item> =>
-                          item !== null
-                      );
+        <Typography color="text.primary">ドキュメント一覧</Typography>
+      </Breadcrumbs>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <TextField
+            label="キーワード"
+            fullWidth
+            onChange={(e) => setSearchKeyword(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <Link href="/docs/post">
+            <Paper
+              elevation={3}
+              sx={{
+                p: 3,
+                height: 120,
+                textAlign: "center",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <AddCircleIcon fontSize="large" color="success" />
+            </Paper>
+          </Link>
+        </Grid>
+        {documents
+          .filter((document) => document.title.includes(searchKeyword))
+          .map((document, index) => (
+            <Grid item xs={4} key={index}>
+              <Paper elevation={3} sx={{ p: 3 }}>
+                <Stack direction="column" spacing={2}>
+                  <Link href={`/docs/${document.id}`}>
+                    <Typography variant="body1">{document.title}</Typography>
+                  </Link>
+                  <Stack direction="row" spacing={1}>
+                    {document.targetRole ? (
+                      (() => {
+                        const targetRole = document.targetRole.filter(
+                          (item): item is NonNullable<typeof item> =>
+                            item !== null
+                        );
 
-                      if (targetRole.length === 0) {
-                        return (
+                        if (targetRole.length === 0) {
+                          return (
+                            <Chip
+                              label={"すべて"}
+                              icon={<PersonIcon fontSize="small" />}
+                            />
+                          );
+                        }
+
+                        return targetRole.map((role, i) => (
                           <Chip
-                            label={"すべて"}
+                            label={role}
+                            key={i}
                             icon={<PersonIcon fontSize="small" />}
                           />
-                        );
-                      }
-
-                      return targetRole.map((role, i) => (
-                        <Chip
-                          label={role}
-                          key={i}
-                          icon={<PersonIcon fontSize="small" />}
-                        />
-                      ));
-                    })()
-                  ) : (
-                    <Chip
-                      label={"すべて"}
-                      icon={<PersonIcon fontSize="small" />}
-                    />
-                  )}
+                        ));
+                      })()
+                    ) : (
+                      <Chip
+                        label={"すべて"}
+                        icon={<PersonIcon fontSize="small" />}
+                      />
+                    )}
+                  </Stack>
                 </Stack>
-              </Stack>
-            </Paper>
-          </Grid>
-        ))}
-    </Grid>
+              </Paper>
+            </Grid>
+          ))}
+      </Grid>
+    </Stack>
   );
 }

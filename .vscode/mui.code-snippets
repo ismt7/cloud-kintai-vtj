@@ -67,5 +67,14 @@
       "</TableContainer>"
     ],
     "description": ""
+  },
+  "MUI Container": {
+    "prefix": "MUI Container",
+    "body": [
+      "<Container maxWidth=\"${1|xs,sm,md,lg,xl|}\">",
+      "  $0",
+      "</Container>"
+    ],
+    "description": ""
   }
 }

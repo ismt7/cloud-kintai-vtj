@@ -14,6 +14,7 @@ import {
   HolidayCalendar,
   Rest,
 } from "../../API";
+import { CognitoUser } from "../../hooks/useCognitoUser";
 import getDayOfWeek from "./getDayOfWeek";
 
 export function statusValueGetter(
@@ -82,7 +83,8 @@ export interface DataGridProps {
 export default function GetColumns(
   holidayCalendars: HolidayCalendar[],
   companyHolidayCalendars: CompanyHolidayCalendar[],
-  navigate: NavigateFunction
+  navigate: NavigateFunction,
+  cognitoUser: CognitoUser | undefined
 ): GridColDef[] {
   return [
     {
@@ -97,6 +99,9 @@ export default function GetColumns(
           paidHolidayFlag,
           changeRequests,
         } = params.row;
+
+        if (!cognitoUser) return "";
+
         return statusValueGetter(
           workDate,
           startTime,

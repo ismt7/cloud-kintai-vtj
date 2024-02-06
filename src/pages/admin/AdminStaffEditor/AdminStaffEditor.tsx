@@ -82,8 +82,10 @@ export default function AdminStaffEditor() {
   const onSubmit = (data: Inputs) => {
     const { familyName, givenName, mailAddress, beforeRoles, role, owner } =
       data;
+
     if (!familyName || !givenName || !mailAddress || !role) {
-      throw new Error("Invalid data");
+      dispatch(setSnackbarError(MESSAGE_CODE.E05003));
+      return;
     }
 
     setSaving(true);

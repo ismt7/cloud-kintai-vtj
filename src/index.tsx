@@ -31,6 +31,7 @@ import ListDocument from "./pages/Document/ListDocument";
 import List from "./pages/List";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register";
+import Setting from "./pages/Setting";
 import reportWebVitals from "./reportWebVitals";
 import AdminMasterLayout from "./stories/pages/admin/master/AdminMasterLayout";
 import vocabularies from "./vocabularies";
@@ -98,6 +99,10 @@ const router = createBrowserRouter([
             ],
           },
         ],
+      },
+      {
+        path: "profile",
+        element: <Setting />,
       },
       {
         path: "*",
