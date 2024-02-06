@@ -3,8 +3,7 @@ import dayjs from "dayjs";
 
 import { sendMail } from "../../graphql/queries";
 import { CognitoUser } from "../../hooks/useCognitoUser";
-import { StaffRole } from "../../hooks/useStaffs/common";
-import { StaffType } from "../../hooks/useStaffs/useStaffs";
+import { StaffRole, StaffType } from "../../hooks/useStaffs/useStaffs";
 
 export default function sendChangeRequestMail(
   cognitoUser: CognitoUser,

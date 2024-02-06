@@ -2,7 +2,8 @@ import { Box, Button, Container, Stack, styled } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import useCognitoUser, { UserRole } from "../../hooks/useCognitoUser";
+import useCognitoUser from "../../hooks/useCognitoUser";
+import { StaffRole } from "../../hooks/useStaffs/useStaffs";
 import Link from "../link/Link";
 import Logo from "./Logo";
 import StaffIcon from "./StaffIcon";
@@ -75,14 +76,12 @@ export default function Header({
 
     // システム管理者、スタッフ管理者
     if (
-      isCognitoUserRole(UserRole.Admin) ||
-      isCognitoUserRole(UserRole.StaffAdmin)
+      isCognitoUserRole(StaffRole.ADMIN) ||
+      isCognitoUserRole(StaffRole.STAFF_ADMIN)
     ) {
       viewableList.push(...menuList, ...adminMenuList);
-    } else if (isCognitoUserRole(UserRole.Staff)) {
+    } else if (isCognitoUserRole(StaffRole.STAFF)) {
       viewableList.push(...menuList);
-    } else {
-      viewableList.push(menuList[2]);
     }
 
     return (

@@ -7,6 +7,7 @@ import {
   Container,
   LinearProgress,
   Stack,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -25,8 +26,8 @@ import * as MESSAGE_CODE from "../../../errors";
 import addUserToGroup from "../../../hooks/common/addUserToGroup";
 import removeUserFromGroup from "../../../hooks/common/removeUserFromGroup";
 import updateCognitoUser from "../../../hooks/common/updateCognitoUser";
-import { Staff, StaffRole } from "../../../hooks/useStaffs/common";
-import useStaffs from "../../../hooks/useStaffs/useStaffs";
+import { Staff } from "../../../hooks/useStaffs/common";
+import useStaffs, { StaffRole } from "../../../hooks/useStaffs/useStaffs";
 import {
   setSnackbarError,
   setSnackbarSuccess,
@@ -38,6 +39,7 @@ type Inputs = {
   familyName?: Staff["familyName"];
   givenName?: Staff["givenName"];
   mailAddress?: Staff["mailAddress"];
+  owner: boolean;
   beforeRoles: StaffRole[];
   role: string;
 };
@@ -47,6 +49,7 @@ const defaultValues: Inputs = {
   familyName: undefined,
   givenName: undefined,
   mailAddress: undefined,
+  owner: false,
   beforeRoles: [],
   role: StaffRole.STAFF,
 };
@@ -77,13 +80,14 @@ export default function AdminStaffEditor() {
   });
 
   const onSubmit = (data: Inputs) => {
-    const { familyName, givenName, mailAddress, beforeRoles, role } = data;
+    const { familyName, givenName, mailAddress, beforeRoles, role, owner } =
+      data;
     if (!familyName || !givenName || !mailAddress || !role) {
       throw new Error("Invalid data");
     }
 
     setSaving(true);
-    updateCognitoUser(mailAddress, familyName, givenName, mailAddress)
+    updateCognitoUser(mailAddress, familyName, givenName, mailAddress, owner)
       .then(async () => {
         if (beforeRoles.length >= 1 && beforeRoles[0] !== role) {
           const removeGroupsResponse = await Promise.all(
@@ -116,6 +120,7 @@ export default function AdminStaffEditor() {
             familyName,
             givenName,
             mailAddress,
+            owner,
             role,
           })
             .then(() => {
@@ -149,6 +154,7 @@ export default function AdminStaffEditor() {
     setValue("familyName", staff.familyName);
     setValue("givenName", staff.givenName);
     setValue("mailAddress", staff.mailAddress);
+    setValue("owner", staff.owner || false);
     setValue("beforeRoles", [staff.role]);
     setValue("role", staff.role);
   }, [staffId, staffLoading]);
@@ -254,6 +260,24 @@ export default function AdminStaffEditor() {
                       )}
                     />
                   </Box>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>オーナー権限</TableCell>
+                <TableCell>
+                  <Controller
+                    name="owner"
+                    control={control}
+                    render={({ field }) => (
+                      <Switch
+                        checked={field.value}
+                        onChange={() => {
+                          setValue("owner", !field.value);
+                          field.onChange(!field.value);
+                        }}
+                      />
+                    )}
+                  />
                 </TableCell>
               </TableRow>
             </TableBody>
