@@ -28,7 +28,7 @@ export default function ClockOutItem({
   workStatus: WorkStatus | null;
   onClick: () => void;
 }) {
-  const [disabled, setDisabled] = useState(false);
+  const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
     setDisabled(workStatus?.code !== WorkStatusCodes.WORKING);

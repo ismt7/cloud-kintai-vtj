@@ -24,13 +24,13 @@ export default function ClockInItem({
   workStatus,
   onClick,
 }: {
-  workStatus: WorkStatus | null;
+  workStatus: WorkStatus;
   onClick: () => void;
 }) {
-  const [disabled, setDisabled] = useState(false);
+  const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
-    setDisabled(workStatus?.code !== WorkStatusCodes.BEFORE_WORK);
+    setDisabled(workStatus.code !== WorkStatusCodes.BEFORE_WORK);
   }, [workStatus]);
 
   return (
