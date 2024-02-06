@@ -32,6 +32,7 @@ export default function TimeRecorder() {
   const { cognitoUser, loading: cognitoUserLoading } = useCognitoUser();
   const {
     attendance,
+    loading: attendanceLoading,
     getAttendance,
     clockIn,
     clockOut,
@@ -39,7 +40,9 @@ export default function TimeRecorder() {
     restEnd,
     updateRemarks,
   } = useAttendance();
-  const [workStatus, setWorkStatus] = useState<WorkStatus | null>(null);
+  const [workStatus, setWorkStatus] = useState<WorkStatus | null | undefined>(
+    undefined
+  );
 
   const today = dayjs().format("YYYY-MM-DD");
   const logger = new Logger(
@@ -66,22 +69,29 @@ export default function TimeRecorder() {
   }, []);
 
   useEffect(() => {
-    if (!cognitoUser) {
-      return;
-    }
+    if (!cognitoUser) return;
 
-    getAttendance(cognitoUser.id, today).catch((e) => {
-      logger.debug(e);
-      dispatch(setSnackbarError(MESSAGE_CODE.E01001));
-    });
+    getAttendance(cognitoUser.id, today).catch(() =>
+      dispatch(setSnackbarError(MESSAGE_CODE.E01001))
+    );
   }, [cognitoUser]);
 
   useEffect(() => {
     setWorkStatus(getWorkStatus(attendance));
   }, [attendance]);
 
-  if (cognitoUserLoading) {
+  if (
+    attendanceLoading ||
+    cognitoUserLoading ||
+    cognitoUser === undefined ||
+    workStatus === undefined
+  ) {
     return <LinearProgress />;
+  }
+
+  if (cognitoUser === null || workStatus === null) {
+    dispatch(setSnackbarError(MESSAGE_CODE.E00001));
+    return null;
   }
 
   return (
@@ -89,7 +99,7 @@ export default function TimeRecorder() {
       <Stack spacing={3}>
         <Box>
           <Typography variant="h6" textAlign="center">
-            {workStatus?.text || "読み込み中..."}
+            {workStatus.text || "読み込み中..."}
           </Typography>
         </Box>
         <Clock />
