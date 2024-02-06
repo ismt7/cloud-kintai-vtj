@@ -1,5 +1,5 @@
 import "@aws-amplify/ui-react/styles.css";
-import "./styles.css";
+import "./styles.scss";
 
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import { Stack } from "@mui/material";
