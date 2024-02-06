@@ -26,6 +26,7 @@ import * as MESSAGE_CODE from "../../../errors";
 import addUserToGroup from "../../../hooks/common/addUserToGroup";
 import removeUserFromGroup from "../../../hooks/common/removeUserFromGroup";
 import updateCognitoUser from "../../../hooks/common/updateCognitoUser";
+import useCognitoUser from "../../../hooks/useCognitoUser";
 import { Staff } from "../../../hooks/useStaffs/common";
 import useStaffs, { StaffRole } from "../../../hooks/useStaffs/useStaffs";
 import {
@@ -59,6 +60,8 @@ export default function AdminStaffEditor() {
   const { staffId } = useParams();
 
   const [saving, setSaving] = useState(false);
+
+  const { cognitoUser, loading: cognitoUserLoading } = useCognitoUser();
 
   const {
     staffs,
@@ -159,11 +162,11 @@ export default function AdminStaffEditor() {
     setValue("role", staff.role);
   }, [staffId, staffLoading]);
 
-  if (staffLoading) {
+  if (staffLoading || cognitoUserLoading) {
     return <LinearProgress />;
   }
 
-  if (staffError) {
+  if (staffError || cognitoUser === null) {
     dispatch(setSnackbarError(MESSAGE_CODE.E05001));
     return null;
   }
@@ -262,24 +265,26 @@ export default function AdminStaffEditor() {
                   </Box>
                 </TableCell>
               </TableRow>
-              <TableRow>
-                <TableCell>オーナー権限</TableCell>
-                <TableCell>
-                  <Controller
-                    name="owner"
-                    control={control}
-                    render={({ field }) => (
-                      <Switch
-                        checked={field.value}
-                        onChange={() => {
-                          setValue("owner", !field.value);
-                          field.onChange(!field.value);
-                        }}
-                      />
-                    )}
-                  />
-                </TableCell>
-              </TableRow>
+              {cognitoUser?.owner && (
+                <TableRow>
+                  <TableCell>オーナー権限</TableCell>
+                  <TableCell>
+                    <Controller
+                      name="owner"
+                      control={control}
+                      render={({ field }) => (
+                        <Switch
+                          checked={field.value}
+                          onChange={() => {
+                            setValue("owner", !field.value);
+                            field.onChange(!field.value);
+                          }}
+                        />
+                      )}
+                    />
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
