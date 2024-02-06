@@ -2,6 +2,7 @@ import { API } from "aws-amplify";
 import dayjs from "dayjs";
 
 import { Attendance, AttendanceHistory } from "../../API";
+import * as MESSAGE_CODE from "../../errors";
 import { sendMail } from "../../graphql/queries";
 import { StaffType } from "../../hooks/useStaffs/useStaffs";
 import getAttendanceMailBody from "./attendanceMailTemplate";
@@ -13,7 +14,7 @@ export default function sendChangedAttendanceMail(
   attendance: Attendance,
   latestHistory: AttendanceHistory
 ) {
-  return API.graphql({
+  const mailParams = {
     query: sendMail,
     variables: {
       data: {
@@ -24,5 +25,11 @@ export default function sendChangedAttendanceMail(
         ),
       },
     },
-  });
+  };
+
+  try {
+    void API.graphql(mailParams);
+  } catch {
+    throw new Error(MESSAGE_CODE.E00001);
+  }
 }

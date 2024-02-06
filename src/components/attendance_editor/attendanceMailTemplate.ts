@@ -171,10 +171,10 @@ function showRestTime(attendance: Attendance, history: AttendanceHistory) {
 
     // 休憩時間を削除した場合
     if (!afterRest) {
-      const beforeRestStartTime = beforeRest
+      const beforeRestStartTime = beforeRest.startTime
         ? dayjs(beforeRest.startTime).format(TIME_FORMAT)
         : NOT_SET;
-      const beforeRestEndTime = beforeRest
+      const beforeRestEndTime = beforeRest.endTime
         ? dayjs(beforeRest.endTime).format(TIME_FORMAT)
         : NOT_SET;
 
@@ -184,10 +184,10 @@ function showRestTime(attendance: Attendance, history: AttendanceHistory) {
 
     // 休憩時間を追加した場合
     if (!beforeRest) {
-      const afterRestStartTime = afterRest
+      const afterRestStartTime = afterRest.startTime
         ? dayjs(afterRest.startTime).format(TIME_FORMAT)
         : NOT_SET;
-      const afterRestEndTime = afterRest
+      const afterRestEndTime = afterRest.endTime
         ? dayjs(afterRest.endTime).format(TIME_FORMAT)
         : NOT_SET;
 
@@ -197,17 +197,17 @@ function showRestTime(attendance: Attendance, history: AttendanceHistory) {
 
     // 休憩時間を変更した場合
     {
-      const beforeRestStartTime = beforeRest
+      const beforeRestStartTime = beforeRest.startTime
         ? dayjs(beforeRest.startTime).format(TIME_FORMAT)
         : NOT_SET;
-      const beforeRestEndTime = beforeRest
+      const beforeRestEndTime = beforeRest.endTime
         ? dayjs(beforeRest.endTime).format(TIME_FORMAT)
         : NOT_SET;
 
-      const afterRestStartTime = afterRest
+      const afterRestStartTime = afterRest.startTime
         ? dayjs(afterRest.startTime).format(TIME_FORMAT)
         : NOT_SET;
-      const afterRestEndTime = afterRest
+      const afterRestEndTime = afterRest.endTime
         ? dayjs(afterRest.endTime).format(TIME_FORMAT)
         : NOT_SET;
 

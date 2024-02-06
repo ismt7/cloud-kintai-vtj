@@ -1,6 +1,7 @@
 import { API } from "aws-amplify";
 import dayjs from "dayjs";
 
+import * as MESSAGE_CODE from "../../errors";
 import { sendMail } from "../../graphql/queries";
 import { CognitoUser } from "../../hooks/useCognitoUser";
 import { StaffRole, StaffType } from "../../hooks/useStaffs/useStaffs";
@@ -18,7 +19,12 @@ export default function sendChangeRequestMail(
   );
 
   if (adminStaffs.length === 0) {
-    return;
+    throw new Error(MESSAGE_CODE.E00002);
+  }
+
+  const APP_BASE_PATH = process.env.REACT_APP_BASE_PATH;
+  if (!APP_BASE_PATH) {
+    throw new Error(MESSAGE_CODE.E00002);
   }
 
   const makeWorkDate = () => dayjs(workDate).format("YYYY/MM/DD");
@@ -37,10 +43,10 @@ export default function sendChangeRequestMail(
 
   const makeAttendanceEditUrl = () => {
     const targetDate = workDate.format("YYYYMMDD");
-    return `https://dev.kintai.virtualtech.jp/admin/attendances/edit/${targetDate}/${id}`;
+    return `${APP_BASE_PATH}/admin/attendances/edit/${targetDate}/${id}`;
   };
 
-  void API.graphql({
+  const mailParams = {
     query: sendMail,
     variables: {
       data: {
@@ -59,5 +65,11 @@ export default function sendChangeRequestMail(
         ].join("\n"),
       },
     },
-  });
+  };
+
+  try {
+    void API.graphql(mailParams);
+  } catch {
+    throw new Error(MESSAGE_CODE.E00002);
+  }
 }
