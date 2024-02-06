@@ -53,6 +53,7 @@ export default function SyncCognitoUser({
             role: cognitoUser.roles[0],
             enabled: cognitoUser.enabled,
             status: cognitoUser.status,
+            owner: cognitoUser.owner,
           }).catch((e) => {
             throw e;
           });
@@ -67,6 +68,7 @@ export default function SyncCognitoUser({
           role: cognitoUser.roles[0],
           enabled: cognitoUser.enabled,
           status: cognitoUser.status,
+          owner: cognitoUser.owner,
         }).catch((e) => {
           throw e;
         });

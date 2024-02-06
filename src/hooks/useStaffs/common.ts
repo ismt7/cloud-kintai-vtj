@@ -1,12 +1,6 @@
 import dayjs from "dayjs";
 
-export enum StaffRole {
-  ADMIN = "Admin",
-  STAFF_ADMIN = "StaffAdmin",
-  STAFF = "Staff",
-  GUEST = "Guest",
-  NONE = "None",
-}
+import { StaffRole } from "./useStaffs";
 
 export interface Staff {
   sub: string;
@@ -15,6 +9,7 @@ export interface Staff {
   givenName: string;
   familyName: string;
   mailAddress: string;
+  owner: boolean;
   roles: StaffRole[];
   createdAt: dayjs.Dayjs;
   updatedAt: dayjs.Dayjs;

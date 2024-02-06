@@ -6,7 +6,8 @@
 import { API, Auth } from "aws-amplify";
 import dayjs from "dayjs";
 
-import { Staff, StaffRole } from "../useStaffs/common";
+import { Staff } from "../useStaffs/common";
+import { StaffRole } from "../useStaffs/useStaffs";
 
 export default async function fetchCognitoUsers(): Promise<Staff[]> {
   const params = {
@@ -48,6 +49,9 @@ export default async function fetchCognitoUsers(): Promise<Staff[]> {
         )?.Value,
         mailAddress: user.Attributes.find((attr: any) => attr.Name === "email")
           ?.Value,
+        owner: !!user.Attributes.find(
+          (attr: any) => attr.Name === "custom:owner"
+        ),
         roles: adminResponse.Groups.map((group: any) => {
           switch (group.GroupName as string) {
             case "Admin":

@@ -28,9 +28,15 @@ import * as MESSAGE_CODE from "../../../errors";
 import deleteCognitoUser from "../../../hooks/common/deleteCognitoUser";
 import disableStaff from "../../../hooks/common/disableStaff";
 import enableStaff from "../../../hooks/common/enableStaff";
-import { StaffRole } from "../../../hooks/useStaffs/common";
-import useStaffs, { StaffType } from "../../../hooks/useStaffs/useStaffs";
-import { setSnackbarSuccess } from "../../../lib/reducers/snackbarReducer";
+import useCognitoUser from "../../../hooks/useCognitoUser";
+import useStaffs, {
+  StaffRole,
+  StaffType,
+} from "../../../hooks/useStaffs/useStaffs";
+import {
+  setSnackbarError,
+  setSnackbarSuccess,
+} from "../../../lib/reducers/snackbarReducer";
 import CreateStaffDialog from "./CreateStaffDialog";
 import SyncCognitoUser from "./SyncCognitoUser";
 
@@ -38,6 +44,8 @@ export default function AdminStaff() {
   const { route } = useAuthenticator();
   const navigate = useNavigate();
   const dispatch = useAppDispatchV2();
+
+  const { cognitoUser, loading: cognitoUserLoading } = useCognitoUser();
 
   const {
     staffs,
@@ -67,18 +75,13 @@ export default function AdminStaff() {
     </GridToolbarContainer>
   );
 
-  const renderErrorMessage = () => (
-    <Typography variant="body1">
-      データ取得中に予期せぬ問題が発生しました。管理者に連絡してください。
-    </Typography>
-  );
-
-  if (staffLoading) {
+  if (staffLoading || cognitoUserLoading) {
     return <LinearProgress />;
   }
 
-  if (staffError) {
-    return renderErrorMessage();
+  if (staffError || cognitoUser === null) {
+    dispatch(setSnackbarError(MESSAGE_CODE.E00001));
+    return null;
   }
 
   return (
@@ -116,6 +119,7 @@ export default function AdminStaff() {
                     icon={<DeleteIcon />}
                     label="アカウントを削除する"
                     showInMenu
+                    disabled={!cognitoUser?.owner || false}
                     onClick={() => {
                       // eslint-disable-next-line no-alert
                       const result = window.confirm(
@@ -270,8 +274,10 @@ export default function AdminStaff() {
                 headerName: "権限",
                 width: 200,
                 valueGetter(params: GridValueGetterParams<StaffType>) {
-                  const { role } = params.row;
+                  const { role, owner } = params.row;
                   if (!role) return "(未設定)";
+
+                  if (owner) return "オーナー";
 
                   switch (role) {
                     case StaffRole.ADMIN:

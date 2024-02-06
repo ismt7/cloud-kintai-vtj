@@ -9,7 +9,8 @@ export default async function updateCognitoUser(
   username: string,
   familyName: string,
   givenName: string,
-  mailAddress: string
+  mailAddress: string,
+  owner: boolean
 ) {
   const params = {
     headers: {
@@ -24,6 +25,7 @@ export default async function updateCognitoUser(
         { Name: "family_name", Value: familyName },
         { Name: "given_name", Value: givenName },
         { Name: "email", Value: mailAddress },
+        { Name: "custom:owner", Value: owner ? "1" : "0" },
       ],
     },
   };

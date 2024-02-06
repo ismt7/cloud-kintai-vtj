@@ -37,6 +37,7 @@ export default function StaffUpdateForm(props) {
     role: "",
     enabled: false,
     status: "",
+    owner: false,
   };
   const [cognitoUserId, setCognitoUserId] = React.useState(
     initialValues.cognitoUserId
@@ -49,6 +50,7 @@ export default function StaffUpdateForm(props) {
   const [role, setRole] = React.useState(initialValues.role);
   const [enabled, setEnabled] = React.useState(initialValues.enabled);
   const [status, setStatus] = React.useState(initialValues.status);
+  const [owner, setOwner] = React.useState(initialValues.owner);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = staffRecord
@@ -61,6 +63,7 @@ export default function StaffUpdateForm(props) {
     setRole(cleanValues.role);
     setEnabled(cleanValues.enabled);
     setStatus(cleanValues.status);
+    setOwner(cleanValues.owner);
     setErrors({});
   };
   const [staffRecord, setStaffRecord] = React.useState(staffModelProp);
@@ -87,6 +90,7 @@ export default function StaffUpdateForm(props) {
     role: [{ type: "Required" }],
     enabled: [{ type: "Required" }],
     status: [{ type: "Required" }],
+    owner: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -121,6 +125,7 @@ export default function StaffUpdateForm(props) {
           role,
           enabled,
           status,
+          owner: owner ?? null,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -188,6 +193,7 @@ export default function StaffUpdateForm(props) {
               role,
               enabled,
               status,
+              owner,
             };
             const result = onChange(modelFields);
             value = result?.cognitoUserId ?? value;
@@ -218,6 +224,7 @@ export default function StaffUpdateForm(props) {
               role,
               enabled,
               status,
+              owner,
             };
             const result = onChange(modelFields);
             value = result?.familyName ?? value;
@@ -248,6 +255,7 @@ export default function StaffUpdateForm(props) {
               role,
               enabled,
               status,
+              owner,
             };
             const result = onChange(modelFields);
             value = result?.givenName ?? value;
@@ -278,6 +286,7 @@ export default function StaffUpdateForm(props) {
               role,
               enabled,
               status,
+              owner,
             };
             const result = onChange(modelFields);
             value = result?.mailAddress ?? value;
@@ -308,6 +317,7 @@ export default function StaffUpdateForm(props) {
               role: value,
               enabled,
               status,
+              owner,
             };
             const result = onChange(modelFields);
             value = result?.role ?? value;
@@ -338,6 +348,7 @@ export default function StaffUpdateForm(props) {
               role,
               enabled: value,
               status,
+              owner,
             };
             const result = onChange(modelFields);
             value = result?.enabled ?? value;
@@ -368,6 +379,7 @@ export default function StaffUpdateForm(props) {
               role,
               enabled,
               status: value,
+              owner,
             };
             const result = onChange(modelFields);
             value = result?.status ?? value;
@@ -382,6 +394,37 @@ export default function StaffUpdateForm(props) {
         hasError={errors.status?.hasError}
         {...getOverrideProps(overrides, "status")}
       ></TextField>
+      <SwitchField
+        label="Owner"
+        defaultChecked={false}
+        isDisabled={false}
+        isChecked={owner}
+        onChange={(e) => {
+          let value = e.target.checked;
+          if (onChange) {
+            const modelFields = {
+              cognitoUserId,
+              familyName,
+              givenName,
+              mailAddress,
+              role,
+              enabled,
+              status,
+              owner: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.owner ?? value;
+          }
+          if (errors.owner?.hasError) {
+            runValidationTasks("owner", value);
+          }
+          setOwner(value);
+        }}
+        onBlur={() => runValidationTasks("owner", owner)}
+        errorMessage={errors.owner?.errorMessage}
+        hasError={errors.owner?.hasError}
+        {...getOverrideProps(overrides, "owner")}
+      ></SwitchField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}

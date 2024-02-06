@@ -12,6 +12,7 @@ import fetchStaffs from "./fetchStaffs";
 import updateStaffData from "./updateStaffData";
 
 export enum StaffRole {
+  OWNER = "Owner",
   ADMIN = "Admin",
   STAFF_ADMIN = "StaffAdmin",
   STAFF = "Staff",
@@ -25,6 +26,7 @@ export type StaffType = {
   familyName: Staff["familyName"];
   givenName: Staff["givenName"];
   mailAddress: Staff["mailAddress"];
+  owner: Staff["owner"];
   role: StaffRole;
   enabled: Staff["enabled"];
   status: Staff["status"];
@@ -64,6 +66,7 @@ export default function useStaffs() {
             familyName: staff.familyName,
             givenName: staff.givenName,
             mailAddress: staff.mailAddress,
+            owner: staff.owner ?? false,
             role: mappingRole(staff.role),
             enabled: staff.enabled,
             status: staff.status,
@@ -90,6 +93,7 @@ export default function useStaffs() {
             familyName: staff.familyName,
             givenName: staff.givenName,
             mailAddress: staff.mailAddress,
+            owner: staff.owner ?? false,
             role: mappingRole(staff.role),
             enabled: staff.enabled,
             status: staff.status,
@@ -113,6 +117,7 @@ export default function useStaffs() {
             familyName: staff.familyName,
             givenName: staff.givenName,
             mailAddress: staff.mailAddress,
+            owner: staff.owner ?? false,
             role: mappingRole(staff.role),
             enabled: staff.enabled,
             status: staff.status,
@@ -137,6 +142,7 @@ export default function useStaffs() {
                 familyName: staff.familyName,
                 givenName: staff.givenName,
                 mailAddress: staff.mailAddress,
+                owner: staff.owner ?? false,
                 role: mappingRole(staff.role),
                 enabled: staff.enabled,
                 status: staff.status,

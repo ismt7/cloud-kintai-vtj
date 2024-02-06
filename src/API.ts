@@ -11,6 +11,7 @@ export type CreateStaffInput = {
   role: string,
   enabled: boolean,
   status: string,
+  owner?: boolean | null,
 };
 
 export type ModelStaffConditionInput = {
@@ -21,6 +22,7 @@ export type ModelStaffConditionInput = {
   role?: ModelStringInput | null,
   enabled?: ModelBooleanInput | null,
   status?: ModelStringInput | null,
+  owner?: ModelBooleanInput | null,
   and?: Array< ModelStaffConditionInput | null > | null,
   or?: Array< ModelStaffConditionInput | null > | null,
   not?: ModelStaffConditionInput | null,
@@ -83,6 +85,7 @@ export type Staff = {
   role: string,
   enabled: boolean,
   status: string,
+  owner?: boolean | null,
   createdAt: string,
   updatedAt: string,
 };
@@ -96,6 +99,7 @@ export type UpdateStaffInput = {
   role?: string | null,
   enabled?: boolean | null,
   status?: string | null,
+  owner?: boolean | null,
 };
 
 export type DeleteStaffInput = {
@@ -416,6 +420,7 @@ export type ModelStaffFilterInput = {
   role?: ModelStringInput | null,
   enabled?: ModelBooleanInput | null,
   status?: ModelStringInput | null,
+  owner?: ModelBooleanInput | null,
   and?: Array< ModelStaffFilterInput | null > | null,
   or?: Array< ModelStaffFilterInput | null > | null,
   not?: ModelStaffFilterInput | null,
@@ -538,6 +543,7 @@ export type ModelSubscriptionStaffFilterInput = {
   role?: ModelSubscriptionStringInput | null,
   enabled?: ModelSubscriptionBooleanInput | null,
   status?: ModelSubscriptionStringInput | null,
+  owner?: ModelSubscriptionBooleanInput | null,
   and?: Array< ModelSubscriptionStaffFilterInput | null > | null,
   or?: Array< ModelSubscriptionStaffFilterInput | null > | null,
 };
@@ -656,6 +662,7 @@ export type CreateStaffMutation = {
     role: string,
     enabled: boolean,
     status: string,
+    owner?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -677,6 +684,7 @@ export type UpdateStaffMutation = {
     role: string,
     enabled: boolean,
     status: string,
+    owner?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -698,6 +706,7 @@ export type DeleteStaffMutation = {
     role: string,
     enabled: boolean,
     status: string,
+    owner?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1117,6 +1126,7 @@ export type GetStaffQuery = {
     role: string,
     enabled: boolean,
     status: string,
+    owner?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1141,6 +1151,7 @@ export type ListStaffQuery = {
       role: string,
       enabled: boolean,
       status: string,
+      owner?: boolean | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -1441,6 +1452,7 @@ export type OnCreateStaffSubscription = {
     role: string,
     enabled: boolean,
     status: string,
+    owner?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1461,6 +1473,7 @@ export type OnUpdateStaffSubscription = {
     role: string,
     enabled: boolean,
     status: string,
+    owner?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1481,6 +1494,7 @@ export type OnDeleteStaffSubscription = {
     role: string,
     enabled: boolean,
     status: string,
+    owner?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,

@@ -30,6 +30,7 @@ export declare type StaffUpdateFormInputValues = {
     role?: string;
     enabled?: boolean;
     status?: string;
+    owner?: boolean;
 };
 export declare type StaffUpdateFormValidationValues = {
     cognitoUserId?: ValidationFunction<string>;
@@ -39,6 +40,7 @@ export declare type StaffUpdateFormValidationValues = {
     role?: ValidationFunction<string>;
     enabled?: ValidationFunction<boolean>;
     status?: ValidationFunction<string>;
+    owner?: ValidationFunction<boolean>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type StaffUpdateFormOverridesProps = {
@@ -50,6 +52,7 @@ export declare type StaffUpdateFormOverridesProps = {
     role?: PrimitiveOverrideProps<TextFieldProps>;
     enabled?: PrimitiveOverrideProps<SwitchFieldProps>;
     status?: PrimitiveOverrideProps<TextFieldProps>;
+    owner?: PrimitiveOverrideProps<SwitchFieldProps>;
 } & EscapeHatchProps;
 export declare type StaffUpdateFormProps = React.PropsWithChildren<{
     overrides?: StaffUpdateFormOverridesProps | undefined | null;

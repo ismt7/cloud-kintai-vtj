@@ -21,6 +21,7 @@ export const createStaff = /* GraphQL */ `mutation CreateStaff(
     role
     enabled
     status
+    owner
     createdAt
     updatedAt
     __typename
@@ -43,6 +44,7 @@ export const updateStaff = /* GraphQL */ `mutation UpdateStaff(
     role
     enabled
     status
+    owner
     createdAt
     updatedAt
     __typename
@@ -65,6 +67,7 @@ export const deleteStaff = /* GraphQL */ `mutation DeleteStaff(
     role
     enabled
     status
+    owner
     createdAt
     updatedAt
     __typename

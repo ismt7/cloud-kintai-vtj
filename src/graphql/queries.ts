@@ -26,6 +26,7 @@ export const getStaff = /* GraphQL */ `query GetStaff($id: ID!) {
     role
     enabled
     status
+    owner
     createdAt
     updatedAt
     __typename
@@ -47,6 +48,7 @@ export const listStaff = /* GraphQL */ `query ListStaff(
       role
       enabled
       status
+      owner
       createdAt
       updatedAt
       __typename

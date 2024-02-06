@@ -18,6 +18,7 @@ export const onCreateStaff = /* GraphQL */ `subscription OnCreateStaff($filter: 
     role
     enabled
     status
+    owner
     createdAt
     updatedAt
     __typename
@@ -37,6 +38,7 @@ export const onUpdateStaff = /* GraphQL */ `subscription OnUpdateStaff($filter: 
     role
     enabled
     status
+    owner
     createdAt
     updatedAt
     __typename
@@ -56,6 +58,7 @@ export const onDeleteStaff = /* GraphQL */ `subscription OnDeleteStaff($filter: 
     role
     enabled
     status
+    owner
     createdAt
     updatedAt
     __typename

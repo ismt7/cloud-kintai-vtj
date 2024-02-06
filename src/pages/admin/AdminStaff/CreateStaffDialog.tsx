@@ -14,7 +14,8 @@ import { useAppDispatchV2 } from "../../../app/hooks";
 import * as MESSAGE_CODE from "../../../errors";
 import addUserToGroup from "../../../hooks/common/addUserToGroup";
 import createStaff from "../../../hooks/common/createStaff";
-import { StaffRole } from "../../../hooks/useStaffs/common";
+import useCognitoUser from "../../../hooks/useCognitoUser";
+import { StaffRole } from "../../../hooks/useStaffs/useStaffs";
 import {
   setSnackbarError,
   setSnackbarSuccess,
@@ -36,7 +37,6 @@ const defaultValues: Inputs = {
 
 export const ROLE_OPTIONS = [
   { value: StaffRole.ADMIN, label: "管理者" },
-  { value: StaffRole.STAFF_ADMIN, label: "スタッフ管理者" },
   { value: StaffRole.STAFF, label: "スタッフ" },
 ];
 
@@ -47,6 +47,8 @@ export default function CreateStaffDialog({
 }) {
   const dispatch = useAppDispatchV2();
   const [open, setOpen] = useState(false);
+
+  const { cognitoUser, loading: cognitoUserLoading } = useCognitoUser();
 
   const {
     register,
@@ -93,6 +95,15 @@ export default function CreateStaffDialog({
         dispatch(setSnackbarError(MESSAGE_CODE.E10002));
       });
   };
+
+  if (cognitoUserLoading) {
+    return null;
+  }
+
+  if (cognitoUser === null) {
+    dispatch(setSnackbarError(MESSAGE_CODE.E00001));
+    return null;
+  }
 
   return (
     <>
