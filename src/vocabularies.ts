@@ -15,6 +15,15 @@ const vocabularies = {
     "Invalid session for the user, session is expired.":
       "セッションが切れています。再度アクセスし直してからログインしてください。",
     "Signing in": "ログイン中",
+    "Account recovery requires verified contact information":
+      "アカウントの復旧には、確認済みの連絡先情報が必要です",
+    Verify: "確認",
+    verifing: "確認中",
+    Skip: "スキップ",
+    Code: "コード",
+    Submit: "送信",
+    Submitting: "送信中",
+    "Your passwords must match": "パスワードが一致しません",
   },
 };
 

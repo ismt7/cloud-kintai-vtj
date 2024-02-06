@@ -49,9 +49,18 @@ export default async function fetchCognitoUsers(): Promise<Staff[]> {
         )?.Value,
         mailAddress: user.Attributes.find((attr: any) => attr.Name === "email")
           ?.Value,
-        owner: !!user.Attributes.find(
-          (attr: any) => attr.Name === "custom:owner"
-        ),
+        owner: (() => {
+          const owner = Number(
+            user.Attributes.find((attr: any) => attr.Name === "custom:owner")
+              ?.Value
+          );
+
+          if (Number.isNaN(owner)) {
+            return false;
+          }
+
+          return Boolean(owner);
+        })(),
         roles: adminResponse.Groups.map((group: any) => {
           switch (group.GroupName as string) {
             case "Admin":

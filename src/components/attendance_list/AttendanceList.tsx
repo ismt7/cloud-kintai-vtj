@@ -62,8 +62,13 @@ export default function AttendanceTable() {
     return <LinearProgress />;
   }
 
-  if (holidayCalendarError || companyHolidayCalendarError) {
-    return <div>データ取得中に何らかの問題が発生しました</div>;
+  if (
+    holidayCalendarError ||
+    companyHolidayCalendarError ||
+    cognitoUser === null
+  ) {
+    dispatch(setSnackbarError(MESSAGE_CODE.E00001));
+    return null;
   }
 
   return (
@@ -90,7 +95,8 @@ export default function AttendanceTable() {
           columns={GetColumns(
             holidayCalendars,
             companyHolidayCalendars,
-            navigate
+            navigate,
+            cognitoUser
           )}
           autoHeight
           hideFooter={true}
