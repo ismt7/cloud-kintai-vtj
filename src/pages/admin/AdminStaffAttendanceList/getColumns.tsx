@@ -27,20 +27,6 @@ export default function getColumns(
   companyHolidayCalendars: CompanyHolidayCalendar[]
 ): GridColDef[] {
   return [
-    // {
-    //   field: "status",
-    //   headerName: "ステータス",
-    //   align: "center",
-    //   valueGetter: (params: GridValueGetterParams<AttendanceOrigin>) => {
-    //     const { workDate, startTime, endTime } = params.row;
-    //     return statusValueGetter(
-    //       workDate,
-    //       startTime,
-    //       endTime,
-    //       holidayCalendars
-    //     );
-    //   },
-    // },
     {
       field: "workDate",
       headerName: "勤務日",

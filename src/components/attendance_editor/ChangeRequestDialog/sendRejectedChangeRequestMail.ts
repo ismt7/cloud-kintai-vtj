@@ -2,6 +2,7 @@ import { API } from "aws-amplify";
 import dayjs from "dayjs";
 
 import { Attendance } from "../../../API";
+import * as MESSAGE_CODE from "../../../errors";
 import { sendMail } from "../../../graphql/queries";
 import { StaffType } from "../../../hooks/useStaffs/useStaffs";
 
@@ -11,12 +12,18 @@ export default function sendRejectedChangeRequestMail(
   comment: string | undefined
 ) {
   if (!staff || !attendance) {
-    return;
+    throw new Error(MESSAGE_CODE.E00002);
+  }
+
+  const APP_BASE_PATH = process.env.REACT_APP_BASE_PATH;
+  if (!APP_BASE_PATH) {
+    throw new Error(MESSAGE_CODE.E00002);
   }
 
   const { mailAddress, familyName, givenName } = staff;
   const { workDate } = attendance;
-  void API.graphql({
+
+  const mailParams = {
     query: sendMail,
     variables: {
       data: {
@@ -39,9 +46,9 @@ export default function sendRejectedChangeRequestMail(
           "",
           "勤怠情報の変更リクエストが却下されました。",
           "",
-          `https://dev.kintai.virtualtech.jp/attendance/${dayjs(
-            workDate
-          ).format("YYYYMMDD")}/edit`,
+          `${APP_BASE_PATH}/attendance/${dayjs(workDate).format(
+            "YYYYMMDD"
+          )}/edit`,
           "",
           "【コメント】",
           comment || "コメントはありません。",
@@ -50,5 +57,11 @@ export default function sendRejectedChangeRequestMail(
         ].join("\n"),
       },
     },
-  });
+  };
+
+  try {
+    void API.graphql(mailParams);
+  } catch {
+    throw new Error(MESSAGE_CODE.E00002);
+  }
 }
