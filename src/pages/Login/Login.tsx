@@ -1,15 +1,18 @@
 import "@aws-amplify/ui-react/styles.css";
+import "./styles.css";
 
-import { Authenticator, useAuthenticator, View } from "@aws-amplify/ui-react";
+import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
+import { Stack } from "@mui/material";
 import { Amplify } from "aws-amplify";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import awsConfig from "../aws-exports";
+import awsConfig from "../../aws-exports";
+import logo from "./logo_large.png";
 
 Amplify.configure(awsConfig);
 
-function Login() {
+export default function Login() {
   const { route } = useAuthenticator((context) => [
     context.route,
     context.user,
@@ -27,9 +30,15 @@ function Login() {
   }, [route, navigate, from]);
 
   return (
-    <View className="auth-wrapper">
-      <Authenticator hideSignUp></Authenticator>
-    </View>
+    <Stack
+      direction="column"
+      spacing={2}
+      justifyContent={"center"}
+      alignItems={"center"}
+      sx={{ pt: 10 }}
+    >
+      <img src={logo} height={200} />
+      <Authenticator hideSignUp />
+    </Stack>
   );
 }
-export default Login;

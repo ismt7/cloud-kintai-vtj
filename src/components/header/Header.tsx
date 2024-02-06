@@ -1,18 +1,11 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  IconButton,
-  Stack,
-  styled,
-} from "@mui/material";
+import { Box, Button, Container, Stack, styled } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import useCognitoUser, { UserRole } from "../../hooks/useCognitoUser";
-import LogImage from "../../images/logo.png";
 import Link from "../link/Link";
+import Logo from "./Logo";
+import StaffIcon from "./StaffIcon";
 
 const SignOutButton = styled(Button)(({ theme }) => ({
   color: theme.palette.logout.contrastText,
@@ -66,24 +59,6 @@ export default function Header({
     navigate("/login");
   };
 
-  const Logo = () => (
-    <Box
-      sx={{
-        height: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <RouterLink to="/">
-        <img
-          src={LogImage}
-          alt="クラウド勤怠のロゴ"
-          style={{ height: "100%" }}
-        />
-      </RouterLink>
-    </Box>
-  );
-
   const MenuItem = () => {
     const viewableList = [];
     const menuList = [
@@ -133,12 +108,6 @@ export default function Header({
     );
   };
 
-  const StaffIcon = ({ name }: { name: string | undefined }) => (
-    <IconButton aria-label="account">
-      <Avatar>{name ? name.slice(0, 1) : ""}</Avatar>
-    </IconButton>
-  );
-
   if (cognitoUserLoading) {
     return null;
   }
@@ -161,20 +130,24 @@ export default function Header({
           <Box sx={{ width: 1, height: 1 }}>
             <MenuItem />
           </Box>
-          <Box>
-            <Stack direction="row" alignItems={"center"} spacing={1}>
-              <Box>
-                {cognitoUserId ? (
-                  <SignOutButton onClick={signOut}>ログアウト</SignOutButton>
-                ) : (
-                  <SignInButton onClick={signIn}>ログイン</SignInButton>
+          {pathName !== "/login" && (
+            <Box>
+              <Stack direction="row" alignItems={"center"} spacing={1}>
+                <Box>
+                  {cognitoUserId ? (
+                    <SignOutButton onClick={signOut}>ログアウト</SignOutButton>
+                  ) : (
+                    <SignInButton onClick={signIn}>ログイン</SignInButton>
+                  )}
+                </Box>
+                {cognitoUser && (
+                  <Box>
+                    <StaffIcon name={cognitoUser.familyName} />
+                  </Box>
                 )}
-              </Box>
-              <Box>
-                <StaffIcon name={cognitoUser?.familyName} />
-              </Box>
-            </Stack>
-          </Box>
+              </Stack>
+            </Box>
+          )}
         </Stack>
       </Container>
     </header>

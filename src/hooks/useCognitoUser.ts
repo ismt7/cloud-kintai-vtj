@@ -24,11 +24,13 @@ export default function useCognitoUser() {
   useEffect(() => {
     setLoading(true);
     if (!user) {
+      setLoading(false);
       return;
     }
 
     const userAttributes = user.attributes;
     if (!userAttributes) {
+      setLoading(false);
       return;
     }
 
@@ -36,6 +38,7 @@ export default function useCognitoUser() {
 
     const signInUserSession = user.getSignInUserSession();
     if (!signInUserSession) {
+      setLoading(false);
       return;
     }
 

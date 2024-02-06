@@ -29,7 +29,7 @@ import DocumentPoster from "./pages/Document/DocumentPoster";
 import DocumentView from "./pages/Document/DocumentView/DocumentView";
 import ListDocument from "./pages/Document/ListDocument";
 import List from "./pages/List";
-import Login from "./pages/Login";
+import Login from "./pages/Login/Login";
 import Register from "./pages/Register";
 import reportWebVitals from "./reportWebVitals";
 import AdminMasterLayout from "./stories/pages/admin/master/AdminMasterLayout";
