@@ -1,4 +1,11 @@
-import { Box, LinearProgress, Stack, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertTitle,
+  Box,
+  LinearProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { Cache, Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -114,7 +121,7 @@ export default function TimeRecorder() {
             onClick={() => {
               if (!cognitoUser) return;
 
-              const now = dayjs().toISOString();
+              const now = dayjs().second(0).millisecond(0).toISOString();
               clockIn(cognitoUser.id, today, now)
                 .then((res) => {
                   dispatch(setSnackbarSuccess(MESSAGE_CODE.S01001));
@@ -131,7 +138,7 @@ export default function TimeRecorder() {
             onClick={() => {
               if (!cognitoUser) return;
 
-              const now = dayjs().toISOString();
+              const now = dayjs().second(0).millisecond(0).toISOString();
               clockOut(cognitoUser.id, today, now)
                 .then((res) => {
                   dispatch(setSnackbarSuccess(MESSAGE_CODE.S01002));
@@ -156,7 +163,12 @@ export default function TimeRecorder() {
               onClick={() => {
                 if (!cognitoUser) return;
 
-                const now = dayjs().toISOString();
+                const now = dayjs()
+                  .hour(9)
+                  .minute(0)
+                  .second(0)
+                  .millisecond(0)
+                  .toISOString();
                 clockIn(cognitoUser.id, today, now, GoDirectlyFlag.YES)
                   .then((res) => {
                     dispatch(setSnackbarSuccess(MESSAGE_CODE.S01003));
@@ -173,7 +185,12 @@ export default function TimeRecorder() {
               onClick={() => {
                 if (!cognitoUser) return;
 
-                const now = dayjs().toISOString();
+                const now = dayjs()
+                  .hour(18)
+                  .minute(0)
+                  .second(0)
+                  .millisecond(0)
+                  .toISOString();
                 clockOut(cognitoUser.id, today, now, ReturnDirectlyFlag.YES)
                   .then((res) => {
                     dispatch(setSnackbarSuccess(MESSAGE_CODE.S01004));
@@ -192,7 +209,7 @@ export default function TimeRecorder() {
               onClick={() => {
                 if (!cognitoUser) return;
 
-                const now = dayjs().toISOString();
+                const now = dayjs().second(0).millisecond(0).toISOString();
                 restStart(cognitoUser.id, today, now)
                   .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S01005)))
                   .catch((e) => {
@@ -206,7 +223,7 @@ export default function TimeRecorder() {
               onClick={() => {
                 if (!cognitoUser) return;
 
-                const now = dayjs().toISOString();
+                const now = dayjs().second(0).millisecond(0).toISOString();
                 restEnd(cognitoUser.id, today, now)
                   .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S01006)))
                   .catch((e) => {
@@ -233,6 +250,12 @@ export default function TimeRecorder() {
           }}
         />
       </Stack>
+      <Alert severity="info" sx={{ mt: 2 }}>
+        <AlertTitle>昼休憩は退勤時に自動打刻されます</AlertTitle>
+        <Typography variant="body2">
+          修正する際は、変更リクエストまたは、管理者へ問い合わせてください。
+        </Typography>
+      </Alert>
     </Box>
   );
 }

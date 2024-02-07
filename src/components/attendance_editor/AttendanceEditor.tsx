@@ -429,6 +429,9 @@ export default function AttendanceEditor() {
             {fields.length === 0 && (
               <Box>
                 <Typography variant="body1">休憩時間はありません</Typography>
+                <Typography variant="body1">
+                  ※昼休憩はスタッフが退勤打刻時に12:00〜13:00で自動打刻されます
+                </Typography>
               </Box>
             )}
             {fields.map((_, index) => (
