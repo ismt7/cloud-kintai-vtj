@@ -3,6 +3,7 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import ClearIcon from "@mui/icons-material/Clear";
 import { Box, Button, Chip, IconButton, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
+import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import {
@@ -29,6 +30,8 @@ export default function EndTimeInput({
   getValues: UseFormGetValues<AttendanceEditorInputs>;
   watch: UseFormWatch<AttendanceEditorInputs>;
 }) {
+  if (!workDate) return null;
+
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
 
   useEffect(() => {
@@ -40,9 +43,10 @@ export default function EndTimeInput({
     });
   }, [watch]);
 
-  if (!workDate) {
-    return null;
-  }
+  const logger = new Logger(
+    "EndTimeInput",
+    process.env.NODE_ENV === "development" ? "DEBUG" : "ERROR"
+  );
 
   return enableEndTime ? (
     <Stack direction="row" spacing={1}>
@@ -52,7 +56,15 @@ export default function EndTimeInput({
           control={control}
           render={({ field }) => (
             <TimePicker
-              value={dayjs(field.value)}
+              value={(() => {
+                logger.debug(
+                  "endTime:",
+                  field.value
+                    ? dayjs(field.value).format("YYYY/MM/DD HH:mm:ss")
+                    : field.value
+                );
+                return field.value ? dayjs(field.value) : null;
+              })()}
               ampm={false}
               viewRenderers={{
                 hours: renderTimeViewClock,
