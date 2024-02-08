@@ -20,7 +20,17 @@ export default function Register() {
   }
 
   return (
-    <Box sx={{ height: 1, py: 10, justifyContent: "center", display: "flex" }}>
+    <Box
+      sx={{
+        height: 1,
+        py: {
+          xs: 2,
+          md: 10,
+        },
+        justifyContent: "center",
+        display: "flex",
+      }}
+    >
       <TimeRecorder />
     </Box>
   );

@@ -2,7 +2,7 @@ import "@aws-amplify/ui-react/styles.css";
 import "./styles.scss";
 
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
-import { Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { Amplify } from "aws-amplify";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -13,10 +13,7 @@ import logo from "./logo_large.png";
 Amplify.configure(awsConfig);
 
 export default function Login() {
-  const { route } = useAuthenticator((context) => [
-    context.route,
-    context.user,
-  ]);
+  const { authStatus } = useAuthenticator();
   const location = useLocation();
   const navigate = useNavigate();
   // eslint-disable-next-line max-len
@@ -24,10 +21,10 @@ export default function Login() {
   const from = (location.state?.from as string) || "/";
 
   useEffect(() => {
-    if (route !== "authenticated") return;
+    if (authStatus !== "authenticated") return;
 
     navigate(from, { replace: true });
-  }, [route, navigate, from]);
+  }, [authStatus, navigate, from]);
 
   return (
     <Stack
@@ -35,9 +32,16 @@ export default function Login() {
       spacing={2}
       justifyContent={"center"}
       alignItems={"center"}
-      sx={{ pt: 10 }}
+      sx={{
+        pt: {
+          xs: 0,
+          sm: 10,
+        },
+      }}
     >
-      <img src={logo} height={200} />
+      <Box sx={{ display: { xs: "none", sm: "block" } }}>
+        <img src={logo} height={200} />
+      </Box>
       <Authenticator hideSignUp />
     </Stack>
   );

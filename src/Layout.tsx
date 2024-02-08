@@ -8,11 +8,13 @@ import SnackbarGroup from "./components/ snackbar/SnackbarGroup";
 import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
 
-function Layout() {
-  const { user, signOut } = useAuthenticator();
+export default function Layout() {
+  const { user, signOut, authStatus } = useAuthenticator();
   const cognitoUserId = user?.attributes?.sub;
 
   useEffect(() => {
+    if (authStatus !== "authenticated") return;
+
     void Storage.get("revision.json").then(async (fileUrl) => {
       void fetch(fileUrl)
         .then((res) => res.blob())
@@ -83,4 +85,3 @@ function Layout() {
     </>
   );
 }
-export default Layout;

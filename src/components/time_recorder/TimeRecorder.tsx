@@ -102,8 +102,24 @@ export default function TimeRecorder() {
   }
 
   return (
-    <Box width="400px">
-      <Stack spacing={3}>
+    <Box
+      sx={{
+        width: {
+          xs: "100%",
+          md: "400px",
+        },
+        mx: {
+          xs: 3,
+          md: 0,
+        },
+      }}
+    >
+      <Stack
+        spacing={{
+          xs: 2,
+          md: 3,
+        }}
+      >
         <Box>
           <Typography variant="h6" textAlign="center">
             {workStatus.text || "読み込み中..."}
@@ -112,7 +128,10 @@ export default function TimeRecorder() {
         <Clock />
         <Stack
           direction="row"
-          spacing={10}
+          spacing={{
+            xs: 2,
+            md: 10,
+          }}
           alignItems="flex-start"
           justifyContent="space-evenly"
         >
@@ -153,7 +172,10 @@ export default function TimeRecorder() {
         </Stack>
         <Stack
           direction="row"
-          spacing={5}
+          spacing={{
+            xs: 2,
+            md: 5,
+          }}
           alignItems="flex-start"
           justifyContent="center"
         >
