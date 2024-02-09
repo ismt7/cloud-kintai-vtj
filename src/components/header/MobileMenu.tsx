@@ -1,6 +1,7 @@
 import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
+import ViewListIcon from "@mui/icons-material/ViewList";
 import {
   Box,
   Divider,
@@ -13,8 +14,10 @@ import {
   ListItemText,
 } from "@mui/material";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function MobileMenu() {
+  const navigate = useNavigate();
   const [state, setState] = useState(false);
 
   const toggleDrawer =
@@ -38,6 +41,18 @@ export default function MobileMenu() {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => {
+              navigate("/attendance/list");
+            }}
+          >
+            <ListItemIcon>
+              <ViewListIcon />
+            </ListItemIcon>
+            <ListItemText primary={"勤怠一覧"} />
+          </ListItemButton>
+        </ListItem>
         {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
