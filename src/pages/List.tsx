@@ -3,7 +3,7 @@ import { Box, Container, Stack } from "@mui/material";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import AttendanceList from "../components/attendance_list/AttendanceList";
+import AttendanceList from "../components/AttendanceList/AttendanceList";
 
 export default function List() {
   const { route } = useAuthenticator();

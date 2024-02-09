@@ -15,7 +15,7 @@ import { Attendance } from "../../../API";
 import { useAppDispatchV2 } from "../../../app/hooks";
 import getDayOfWeek, {
   DayOfWeek,
-} from "../../../components/attendance_list/getDayOfWeek";
+} from "../../../components/AttendanceList/getDayOfWeek";
 import * as MESSAGE_CODE from "../../../errors";
 import useAttendances from "../../../hooks/useAttendances/useAttendances";
 import useCompanyHolidayCalendars from "../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";

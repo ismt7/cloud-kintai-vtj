@@ -3,15 +3,13 @@ import {
   Breadcrumbs,
   LinearProgress,
   Stack,
+  styled,
   Typography,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 import { Logger } from "aws-amplify";
-import dayjs from "dayjs";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { Attendance } from "../../API";
 import { useAppDispatchV2 } from "../../app/hooks";
 import * as MESSAGE_CODE from "../../errors";
 import useAttendances from "../../hooks/useAttendances/useAttendances";
@@ -20,8 +18,15 @@ import useCompanyHolidayCalendars from "../../hooks/useCompanyHolidayCalendars/u
 import useHolidayCalendars from "../../hooks/useHolidayCalendars/useHolidayCalendars";
 import { setSnackbarError } from "../../lib/reducers/snackbarReducer";
 import Title from "../Title/Title";
-import GetColumns from "./Column";
-import getDayOfWeek, { DayOfWeek } from "./getDayOfWeek";
+import DesktopList from "./DesktopList";
+import MobileList from "./MobileList/MobileList";
+
+const DescriptionTypography = styled(Typography)(({ theme }) => ({
+  padding: "0px 40px",
+  [theme.breakpoints.down("md")]: {
+    padding: "0px 10px",
+  },
+}));
 
 export default function AttendanceTable() {
   const dispatch = useAppDispatchV2();
@@ -84,69 +89,20 @@ export default function AttendanceTable() {
       <Box>
         <Title text="勤怠一覧" />
       </Box>
-      <Box sx={{ px: 5 }}>
-        <Typography variant="body1">
-          今日から30日前までの勤怠情報を表示しています
-        </Typography>
-      </Box>
-      <Box sx={{ px: 5, pb: 5 }}>
-        <DataGrid
-          rows={attendances ?? []}
-          columns={GetColumns(
-            holidayCalendars,
-            companyHolidayCalendars,
-            navigate,
-            cognitoUser
-          )}
-          autoHeight
-          hideFooter={true}
-          getRowId={(row) => row.workDate}
-          getRowClassName={(params: {
-            row: { workDate: Attendance["workDate"] };
-          }) => {
-            const today = dayjs().format("YYYY-MM-DD");
-            if (params.row.workDate === today) {
-              return "super-app-theme--today";
-            }
-
-            const isHoliday = holidayCalendars?.find(
-              (holidayCalendar) =>
-                holidayCalendar.holidayDate === params.row.workDate
-            );
-
-            const isCompanyHoliday = companyHolidayCalendars?.find(
-              (companyHolidayCalendar) =>
-                companyHolidayCalendar.holidayDate === params.row.workDate
-            );
-
-            if (isHoliday || isCompanyHoliday) {
-              return "super-app-theme--sunday";
-            }
-
-            const dayOfWeek = getDayOfWeek(params.row.workDate);
-            switch (dayOfWeek) {
-              case DayOfWeek.Sat:
-                return "super-app-theme--saturday";
-              case DayOfWeek.Sun:
-                return "super-app-theme--sunday";
-              default:
-                return "super-app-theme--default";
-            }
-          }}
-          sx={{
-            "& .super-app-theme--saturday": {
-              backgroundColor: "#93FFFF",
-            },
-            "& .super-app-theme--sunday": {
-              backgroundColor: "#FF9393",
-            },
-            "& .super-app-theme--today": {
-              backgroundColor: "#FFFF93",
-              fontWeight: "bold",
-            },
-          }}
-        />
-      </Box>
+      <DescriptionTypography variant="body1">
+        今日から30日前までの勤怠情報を表示しています
+      </DescriptionTypography>
+      <DesktopList
+        attendances={attendances}
+        holidayCalendars={holidayCalendars}
+        companyHolidayCalendars={companyHolidayCalendars}
+        navigate={navigate}
+      />
+      <MobileList
+        attendances={attendances}
+        holidayCalendars={holidayCalendars}
+        companyHolidayCalendars={companyHolidayCalendars}
+      />
     </Stack>
   );
 }
