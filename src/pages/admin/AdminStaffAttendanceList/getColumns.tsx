@@ -17,7 +17,7 @@ import {
   CompanyHolidayCalendar,
   HolidayCalendar,
 } from "../../../API";
-import getDayOfWeek from "../../../components/attendance_list/getDayOfWeek";
+import getDayOfWeek from "../../../components/AttendanceList/getDayOfWeek";
 
 export default function getColumns(
   rowModelsModel: GridRowModesModel,
