@@ -16,5 +16,10 @@
     "prefix": "TSX Use Effect",
     "body": ["useEffect(() => {", "  $0", "}, []);"],
     "description": ""
+  },
+  "TSX Navigate": {
+    "prefix": "TSX Navigate",
+    "body": ["const navigate = useNavigate();"],
+    "description": ""
   }
 }
