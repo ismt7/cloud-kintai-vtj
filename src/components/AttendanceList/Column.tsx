@@ -14,60 +14,15 @@ import {
   HolidayCalendar,
   Rest,
 } from "../../API";
-import { CognitoUser } from "../../hooks/useCognitoUser";
-import getDayOfWeek from "./getDayOfWeek";
-
-export function statusValueGetter(
-  workDate: Attendance["workDate"],
-  startTime: Attendance["startTime"],
-  endTime: Attendance["endTime"],
-  holidayCalendars: HolidayCalendar[],
-  companyHolidayCalendars: CompanyHolidayCalendar[],
-  paidHolidayFlag: Attendance["paidHolidayFlag"],
-  changeRequests: Attendance["changeRequests"]
-) {
-  if (paidHolidayFlag) return "OK";
-
-  const today = dayjs().format("YYYY-MM-DD");
-  const dayOfWeek = getDayOfWeek(workDate);
-  const isHoliday = holidayCalendars?.find(
-    (holiday) => holiday.holidayDate === workDate
-  );
-  const isCompanyHoliday = companyHolidayCalendars?.find(
-    (companyHoliday) => companyHoliday.holidayDate === workDate
-  );
-
-  if (isHoliday || isCompanyHoliday) return "";
-
-  const isChangeRequesting = changeRequests
-    ? changeRequests
-        .filter((item): item is NonNullable<typeof item> => !!item)
-        .filter((item) => !item.completed).length > 0
-    : false;
-
-  if (isChangeRequesting) return "申請中";
-
-  switch (dayOfWeek) {
-    case "月":
-    case "火":
-    case "水":
-    case "木":
-    case "金":
-      if (today === workDate) {
-        if (!startTime) return "遅刻";
-        if (!endTime) return "勤務中";
-      }
-      return !startTime || !endTime ? "エラー" : "OK";
-
-    case "土":
-    case "日":
-      if (!startTime && !endTime) return "";
-      return "OK";
-
-    default:
-      return "";
-  }
-}
+import {
+  calcRestTotalTime,
+  calcWorkTimeTotal,
+  judgeStatus,
+  makeRemarks,
+  makeWorkDate,
+  makeWorkEndTime,
+  makeWorkStartTime,
+} from "./common";
 
 export interface DataGridProps {
   id: Attendance["id"];
@@ -83,8 +38,7 @@ export interface DataGridProps {
 export default function GetColumns(
   holidayCalendars: HolidayCalendar[],
   companyHolidayCalendars: CompanyHolidayCalendar[],
-  navigate: NavigateFunction,
-  cognitoUser: CognitoUser | undefined
+  navigate: NavigateFunction
 ): GridColDef[] {
   return [
     {
@@ -100,9 +54,7 @@ export default function GetColumns(
           changeRequests,
         } = params.row;
 
-        if (!cognitoUser) return "";
-
-        return statusValueGetter(
+        return judgeStatus(
           workDate,
           startTime,
           endTime,
@@ -121,13 +73,7 @@ export default function GetColumns(
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
         const { workDate } = params.row;
-        if (!workDate) return "";
-        const date = dayjs(workDate);
-        const isHoliday = holidayCalendars?.find(
-          ({ holidayDate }) => holidayDate === params.row.workDate
-        );
-        const dayOfWeek = isHoliday ? "祝" : getDayOfWeek(params.row.workDate);
-        return `${date.format("M/D")}(${dayOfWeek})`;
+        return makeWorkDate(workDate, holidayCalendars);
       },
     },
     {
@@ -138,14 +84,7 @@ export default function GetColumns(
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
         const { startTime, paidHolidayFlag } = params.row;
-        if (paidHolidayFlag) {
-          return "09:00";
-        }
-
-        if (!startTime) return "";
-
-        const date = dayjs(startTime);
-        return date.format("HH:mm");
+        return makeWorkStartTime(startTime, paidHolidayFlag);
       },
     },
     {
@@ -156,14 +95,7 @@ export default function GetColumns(
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
         const { endTime, paidHolidayFlag } = params.row;
-        if (paidHolidayFlag) {
-          return "18:00";
-        }
-
-        if (!endTime) return "";
-
-        const date = dayjs(endTime);
-        return date.format("HH:mm");
+        return makeWorkEndTime(endTime, paidHolidayFlag);
       },
     },
     {
@@ -174,28 +106,7 @@ export default function GetColumns(
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
         const { startTime, endTime, paidHolidayFlag, rests } = params.row;
-        if (paidHolidayFlag) {
-          return "01:00";
-        }
-
-        if (!startTime && !endTime) return "";
-        if (rests.length === 0) return "00:00";
-
-        const restTimeTotal = rests.reduce((acc, cur) => {
-          const { startTime: restStartTime, endTime: restEndTime } = cur;
-          if (!restStartTime || !restEndTime) return acc;
-
-          const start = dayjs(restStartTime);
-          const end = dayjs(restEndTime);
-          const restTime = end.diff(start, "minute");
-          return acc + restTime;
-        }, 0);
-
-        return `${Math.floor(restTimeTotal / 60)
-          .toString()
-          .padStart(2, "0")}:${(restTimeTotal % 60)
-          .toString()
-          .padStart(2, "0")}`;
+        return calcRestTotalTime(startTime, endTime, paidHolidayFlag, rests);
       },
     },
     {
@@ -205,37 +116,14 @@ export default function GetColumns(
       sortable: false,
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
-        const today = dayjs().format("YYYY-MM-DD");
         const { startTime, endTime, paidHolidayFlag, rests } = params.row;
-        if (paidHolidayFlag) {
-          return "08:00";
-        }
-
-        if (!startTime && !endTime) return "";
-
-        if (!startTime || !endTime) {
-          return today === params.row.workDate ? "(計算中)" : "--:--";
-        }
-
-        const start = dayjs(startTime);
-        const end = dayjs(endTime);
-        const workTime = end.diff(start, "minute");
-        const restTimeTotal = rests.reduce((acc, cur) => {
-          const { startTime: restStartTime, endTime: restEndTime } = cur;
-          if (!restStartTime || !restEndTime) return acc;
-
-          const restStart = dayjs(restStartTime);
-          const restEnd = dayjs(restEndTime);
-          const restTime = restEnd.diff(restStart, "minute");
-          return acc + restTime;
-        }, 0);
-
-        const workTimeTotal = workTime - restTimeTotal;
-        return `${Math.floor(workTimeTotal / 60)
-          .toString()
-          .padStart(2, "0")}:${(workTimeTotal % 60)
-          .toString()
-          .padStart(2, "0")}`;
+        return calcWorkTimeTotal(
+          params.row.workDate,
+          startTime,
+          endTime,
+          paidHolidayFlag,
+          rests
+        );
       },
     },
     {
@@ -246,21 +134,14 @@ export default function GetColumns(
       width: 300,
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
-        const { workDate, paidHolidayFlag } = params.row;
-        const isHoliday = holidayCalendars?.find(
-          ({ holidayDate }) => holidayDate === workDate
+        const { workDate, paidHolidayFlag, remarks } = params.row;
+        return makeRemarks(
+          workDate,
+          paidHolidayFlag,
+          remarks,
+          holidayCalendars,
+          companyHolidayCalendars
         );
-
-        const isCompanyHoliday = companyHolidayCalendars?.find(
-          ({ holidayDate }) => holidayDate === workDate
-        );
-
-        const summaryMessage = [];
-        if (paidHolidayFlag) summaryMessage.push("有給休暇");
-        if (isHoliday) summaryMessage.push(isHoliday.name);
-        if (isCompanyHoliday) summaryMessage.push(isCompanyHoliday.name);
-        if (params.row.remarks) summaryMessage.push(params.row.remarks);
-        return summaryMessage.join(" ");
       },
     },
     {

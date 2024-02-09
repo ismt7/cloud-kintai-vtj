@@ -13,6 +13,11 @@
     "body": ["<Box>", "  $0", "</Box>"],
     "description": ""
   },
+  "MUI Import Box": {
+    "prefix": "MUI Import Box",
+    "body": ["import { Box } from \"@mui/material\";"],
+    "description": ""
+  },
   "MUI Typography": {
     "prefix": "MUI Typography",
     "body": [
@@ -30,6 +35,11 @@
   "MUI DataGrid": {
     "prefix": "MUI DataGrid",
     "body": ["<DataGrid rows={[]} columns={[]} autoHeight />"],
+    "description": ""
+  },
+  "MUI Import DataGrid": {
+    "prefix": "MUI Import DataGrid",
+    "body": ["import { DataGrid } from \"@mui/x-data-grid\";"],
     "description": ""
   },
   "MUI Button": {
@@ -74,6 +84,24 @@
       "<Container maxWidth=\"${1|xs,sm,md,lg,xl|}\">",
       "  $0",
       "</Container>"
+    ],
+    "description": ""
+  },
+  "MUI Styled": {
+    "prefix": "MUI Styled",
+    "body": [
+      "const ${1:Component} = styled(${2:Component})(({ theme }) => ({",
+      "  $0",
+      "}));"
+    ],
+    "description": ""
+  }
+  "MUI Icon Button": {
+    "prefix": "MUI Icon Button",
+    "body": [
+      "<IconButton>",
+      "  $0",
+      "</IconButton>"
     ],
     "description": ""
   }
