@@ -1,30 +1,12 @@
-import AddAlarmIcon from "@mui/icons-material/AddAlarm";
-import {
-  Alert,
-  AlertTitle,
-  Box,
-  Breadcrumbs,
-  Button,
-  Checkbox,
-  Container,
-  IconButton,
-  LinearProgress,
-  Stack,
-  styled,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { LinearProgress } from "@mui/material";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useFieldArray, useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useAppDispatchV2 } from "../../app/hooks";
-import ProductionTimeItem from "../../components/attendance_editor/items/ProductionTimeItem";
 import { calcTotalRestTime } from "../../components/attendance_editor/items/RestTimeItem/RestTimeItem";
-import StaffNameItem from "../../components/attendance_editor/items/StaffNameItem";
 import { calcTotalWorkTime } from "../../components/attendance_editor/items/WorkTimeItem/WorkTimeItem";
-import Title from "../../components/Title/Title";
 import * as MESSAGE_CODE from "../../errors";
 import useAttendance from "../../hooks/useAttendance/useAttendance";
 import useCognitoUser from "../../hooks/useCognitoUser";
@@ -34,26 +16,8 @@ import {
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
 import { AttendanceEditInputs, defaultValues } from "./common";
-import { RestTimeItem } from "./RestTimeItem/RestTimeItem";
+import DesktopEditor from "./DesktopEditor/DesktopEditor";
 import sendChangeRequestMail from "./sendChangeRequestMail";
-import WorkDateItem from "./WorkDateItem";
-import { WorkTimeInput } from "./WorkTimeInput/WorkTimeInput";
-
-const RequestButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.primary.contrastText,
-  backgroundColor: theme.palette.primary.main,
-  border: `3px solid ${theme.palette.primary.main}`,
-  width: 150,
-  "&:hover": {
-    color: theme.palette.primary.main,
-    backgroundColor: theme.palette.primary.contrastText,
-  },
-  "&:disabled": {
-    color: theme.palette.text.disabled,
-    backgroundColor: theme.palette.action.disabledBackground,
-    border: "3px solid #E0E0E0",
-  },
-}));
 
 export default function AttendanceEdit() {
   const navigate = useNavigate();
@@ -226,175 +190,22 @@ export default function AttendanceEdit() {
     : [];
 
   return (
-    <Container maxWidth="xl" sx={{ pt: 1, pb: 5 }}>
-      <Stack spacing={2}>
-        <Breadcrumbs>
-          <Link to="/" color="inherit">
-            TOP
-          </Link>
-          <Link to={"/attendance/list"} color="inherit">
-            勤怠一覧
-          </Link>
-          {targetWorkDate && (
-            <Typography color="text.primary">
-              {dayjs(targetWorkDate).format("YYYY/MM/DD")}
-            </Typography>
-          )}
-        </Breadcrumbs>
-        <Title text="勤怠編集" />
-        {changeRequests.length > 0 && (
-          <Alert severity="warning">
-            変更リクエスト申請中です。承認されるまで新しい申請はできません。
-          </Alert>
-        )}
-
-        {changeRequests.length === 0 && (
-          <Stack spacing={2} sx={{ px: 30 }}>
-            {!attendance && (
-              <Box>
-                <Alert severity="info">
-                  <AlertTitle>お知らせ</AlertTitle>
-                  指定された日付に勤怠情報の登録がありませんでした。保存時に新規作成されます。
-                </Alert>
-              </Box>
-            )}
-            <WorkDateItem
-              workDate={targetWorkDate ? dayjs(targetWorkDate) : null}
-            />
-            <StaffNameItem staff={staff} />
-            <Stack direction="row" alignItems={"center"}>
-              <Typography
-                variant="body1"
-                sx={{ width: "150px", fontWeight: "bold" }}
-              >
-                有給休暇
-              </Typography>
-              <Controller
-                name="paidHolidayFlag"
-                control={control}
-                render={({ field }) => (
-                  <Checkbox checked={field.value || false} {...field} />
-                )}
-              />
-            </Stack>
-            <Stack direction="row" alignItems={"center"}>
-              <Typography
-                variant="body1"
-                sx={{ fontWeight: "bold", width: "150px" }}
-              >
-                直行
-              </Typography>
-              <Controller
-                name="goDirectlyFlag"
-                control={control}
-                render={({ field }) => (
-                  <Checkbox checked={field.value || false} {...field} />
-                )}
-              />
-            </Stack>
-            <Stack direction="row" alignItems={"center"}>
-              <Typography
-                variant="body1"
-                sx={{ fontWeight: "bold", width: "150px" }}
-              >
-                直帰
-              </Typography>
-              <Controller
-                name="returnDirectlyFlag"
-                control={control}
-                render={({ field }) => (
-                  <Checkbox checked={field.value || false} {...field} />
-                )}
-              />
-            </Stack>
-            <WorkTimeInput
-              targetWorkDate={targetWorkDate ? dayjs(targetWorkDate) : null}
-              control={control}
-              watch={watch}
-              setValue={setValue}
-              getValues={getValues}
-            />
-            <Stack direction="row">
-              <Typography
-                variant="body1"
-                sx={{ fontWeight: "bold", width: "150px" }}
-              >
-                休憩時間
-              </Typography>
-              <Stack spacing={1} sx={{ flexGrow: 2 }}>
-                {restFields.length === 0 && (
-                  <>
-                    <Typography variant="body1">
-                      休憩時間はありません
-                    </Typography>
-                    <Typography variant="body1">
-                      ※昼休憩は退勤打刻の際に12:00〜13:00で自動打刻されます
-                    </Typography>
-                  </>
-                )}
-                {restFields.map((_, index) => (
-                  <RestTimeItem
-                    key={index}
-                    targetWorkDate={
-                      targetWorkDate ? dayjs(targetWorkDate) : null
-                    }
-                    index={index}
-                    watch={watch}
-                    remove={restRemove}
-                    control={control}
-                    setValue={setValue}
-                  />
-                ))}
-                <Box>
-                  <IconButton
-                    aria-label="staff-search"
-                    onClick={() =>
-                      restAppend({
-                        startTime: null,
-                        endTime: null,
-                      })
-                    }
-                  >
-                    <AddAlarmIcon />
-                  </IconButton>
-                </Box>
-              </Stack>
-            </Stack>
-            <Box>
-              <ProductionTimeItem time={totalProductionTime} />
-            </Box>
-            <Box>
-              <Stack direction="row" alignItems={"center"}>
-                <Box sx={{ fontWeight: "bold", width: "150px" }}>備考</Box>
-                <Box sx={{ flexGrow: 2 }}>
-                  <TextField
-                    multiline
-                    minRows={2}
-                    fullWidth
-                    placeholder="備考欄：客先名やイベント名などを記載"
-                    sx={{ width: 1 }}
-                    {...register("remarks")}
-                  />
-                </Box>
-              </Stack>
-            </Box>
-            <Box>
-              <Stack
-                direction="row"
-                alignItems={"center"}
-                justifyContent={"center"}
-                spacing={3}
-              >
-                <Box>
-                  <RequestButton onClick={handleSubmit(onSubmit)}>
-                    申請
-                  </RequestButton>
-                </Box>
-              </Stack>
-            </Box>
-          </Stack>
-        )}
-      </Stack>
-    </Container>
+    <DesktopEditor
+      workDate={dayjs(targetWorkDate)}
+      changeRequests={changeRequests}
+      attendance={attendance}
+      staff={staff}
+      control={control}
+      watch={watch}
+      setValue={setValue}
+      getValues={getValues}
+      restFields={restFields}
+      restRemove={restRemove}
+      restAppend={restAppend}
+      totalProductionTime={totalProductionTime}
+      register={register}
+      handleSubmit={handleSubmit}
+      onSubmit={onSubmit}
+    />
   );
 }

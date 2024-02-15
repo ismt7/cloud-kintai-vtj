@@ -49,6 +49,7 @@ module.exports = {
     "no-continue": "off",
     "@typescript-eslint/no-misused-promises": "off",
     "simple-import-sort/imports": "error",
+    "unused-imports/no-unused-imports": "error",
   },
   settings: {
     react: {

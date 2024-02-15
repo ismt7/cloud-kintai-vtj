@@ -4,100 +4,116 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { Box, Button, Chip, IconButton, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useState } from "react";
-import { Control, Controller, UseFormSetValue } from "react-hook-form";
+import { useEffect, useState } from "react";
+import {
+  Control,
+  Controller,
+  UseFormGetValues,
+  UseFormSetValue,
+  UseFormWatch,
+} from "react-hook-form";
 
-import { AttendanceEditInputs } from "../common";
+import { AttendanceEditInputs } from "../../common";
 
-export default function RestEndTimeInput({
+export default function EndTimeInput({
   workDate,
-  index,
   control,
   setValue,
+  getValues,
+  watch,
 }: {
-  workDate: dayjs.Dayjs;
-  index: number;
+  workDate: dayjs.Dayjs | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
+  getValues: UseFormGetValues<AttendanceEditInputs>;
+  watch: UseFormWatch<AttendanceEditInputs>;
 }) {
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
 
-  if (!enableEndTime) {
-    return (
-      <Box>
-        <Button
-          variant="outlined"
-          startIcon={<AddCircleOutlineIcon />}
-          onClick={() => {
-            setEnableEndTime(true);
-          }}
-          sx={{ my: 1.2 }}
-        >
-          終了時間を追加
-        </Button>
-      </Box>
-    );
+  useEffect(() => {
+    const endTime = getValues("endTime");
+    setEnableEndTime(!!endTime);
+
+    watch((data) => {
+      setEnableEndTime(!!data.endTime);
+    });
+  }, [watch]);
+
+  if (!workDate) {
+    return null;
   }
 
-  return (
+  return enableEndTime ? (
     <Stack direction="row" spacing={1}>
       <Stack spacing={1}>
         <Controller
-          name={`rests.${index}.endTime`}
+          name="endTime"
           control={control}
           render={({ field }) => (
             <TimePicker
-              value={dayjs(field.value)}
+              value={field.value ? dayjs(field.value) : null}
               ampm={false}
               viewRenderers={{
                 hours: renderTimeViewClock,
                 minutes: renderTimeViewClock,
               }}
-              onChange={(newEndTime) => {
-                const formattedEndTime = newEndTime
-                  ? newEndTime
-                      .year(workDate.year())
-                      .month(workDate.month())
-                      .date(workDate.date())
-                      .second(0)
-                      .millisecond(0)
-                      .toISOString()
-                  : null;
-                field.onChange(formattedEndTime);
+              onChange={(value) => {
+                field.onChange(
+                  value && value.isValid()
+                    ? value
+                        .year(workDate.year())
+                        .month(workDate.month())
+                        .date(workDate.date())
+                        .second(0)
+                        .millisecond(0)
+                        .toISOString()
+                    : null
+                );
               }}
             />
           )}
         />
         <Box>
           <Chip
-            label="13:00"
-            variant="outlined"
+            label="18:00"
             color="success"
+            variant="outlined"
             icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
             onClick={() => {
               const endTime = workDate
-                .hour(13)
+                .hour(18)
                 .minute(0)
                 .second(0)
                 .millisecond(0)
                 .toISOString();
-              setValue(`rests.${index}.endTime`, endTime);
+              setValue("endTime", endTime);
             }}
           />
         </Box>
       </Stack>
       <Box>
         <IconButton
+          sx={{ my: 1 }}
           onClick={() => {
-            setValue(`rests.${index}.endTime`, null);
+            setValue("endTime", null);
             setEnableEndTime(false);
           }}
-          sx={{ my: 1.2 }}
         >
           <ClearIcon />
         </IconButton>
       </Box>
     </Stack>
+  ) : (
+    <Button
+      variant="outlined"
+      startIcon={<AddCircleOutlineIcon />}
+      onClick={() => {
+        setEnableEndTime(true);
+      }}
+      sx={{ my: 1.4 }}
+    >
+      終了時間を追加
+    </Button>
   );
 }

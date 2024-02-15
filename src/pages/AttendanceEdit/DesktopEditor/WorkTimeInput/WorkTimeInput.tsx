@@ -8,7 +8,7 @@ import {
   UseFormWatch,
 } from "react-hook-form";
 
-import { AttendanceEditInputs } from "../common";
+import { AttendanceEditInputs } from "../../common";
 import EndTimeInput from "./EndTimeInput";
 import StartTimeInput from "./StartTimeInput";
 
