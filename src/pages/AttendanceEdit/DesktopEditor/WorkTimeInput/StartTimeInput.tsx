@@ -4,62 +4,65 @@ import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { Control, Controller, UseFormSetValue } from "react-hook-form";
 
-import { AttendanceEditInputs } from "../common";
+import { AttendanceEditInputs } from "../../common";
 
-export default function RestStartTimeInput({
+export default function StartTimeInput({
   workDate,
-  index,
   control,
   setValue,
 }: {
-  workDate: dayjs.Dayjs;
-  index: number;
+  workDate: dayjs.Dayjs | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
 }) {
+  if (!workDate) {
+    return null;
+  }
+
   return (
     <Stack spacing={1}>
       <Controller
-        name={`rests.${index}.startTime`}
+        name="startTime"
         control={control}
         render={({ field }) => (
           <TimePicker
-            value={dayjs(field.value)}
             ampm={false}
+            value={field.value ? dayjs(field.value) : null}
             viewRenderers={{
               hours: renderTimeViewClock,
               minutes: renderTimeViewClock,
             }}
-            onChange={(newStartTime) => {
-              const formattedStartTime = newStartTime
-                ? newStartTime
-                    .year(workDate.year())
-                    .month(workDate.month())
-                    .date(workDate.date())
-                    .second(0)
-                    .millisecond(0)
-                    .toISOString()
-                : null;
-              field.onChange(formattedStartTime);
+            onChange={(value) => {
+              field.onChange(
+                value && value.isValid()
+                  ? value
+                      .year(workDate.year())
+                      .month(workDate.month())
+                      .date(workDate.date())
+                      .second(0)
+                      .millisecond(0)
+                      .toISOString()
+                  : null
+              );
             }}
           />
         )}
       />
       <Box>
         <Chip
-          label="12:00"
-          variant="outlined"
+          label="09:00"
           color="success"
+          variant="outlined"
           icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
           onClick={() => {
             const startTime = workDate
-              .hour(12)
+              .hour(9)
               .minute(0)
               .second(0)
               .millisecond(0)
               .toISOString();
-            setValue(`rests.${index}.startTime`, startTime);
+            setValue("startTime", startTime);
           }}
         />
       </Box>

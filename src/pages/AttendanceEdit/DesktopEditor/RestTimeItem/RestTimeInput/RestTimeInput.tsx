@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Control, UseFormSetValue, UseFormWatch } from "react-hook-form";
 
-import { AttendanceEditInputs } from "../common";
+import { AttendanceEditInputs } from "../../../common";
 import RestEndTimeInput from "./RestEndTimeInput";
 import RestStartTimeInput from "./RestStartTimeInput";
 
@@ -19,7 +19,7 @@ export function calcTotalRestTime(
   return diff;
 }
 
-export function RestTimeItem({
+export function RestTimeInput({
   targetWorkDate,
   index,
   watch,

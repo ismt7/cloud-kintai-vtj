@@ -9,7 +9,8 @@ import { StaffRole, StaffType } from "../../hooks/useStaffs/useStaffs";
 export default function sendChangeRequestMail(
   cognitoUser: CognitoUser,
   workDate: dayjs.Dayjs,
-  staffs: StaffType[]
+  staffs: StaffType[],
+  staffComment: string | undefined
 ) {
   const { id, familyName, givenName } = cognitoUser;
 
@@ -61,6 +62,9 @@ export default function sendChangeRequestMail(
           "申請内容を確認して「承認」または「却下」を選択してください",
           "",
           makeAttendanceEditUrl(),
+          "",
+          "【コメント】",
+          staffComment || "コメントはありません",
           "",
         ].join("\n"),
       },

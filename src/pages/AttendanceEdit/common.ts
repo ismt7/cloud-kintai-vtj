@@ -13,6 +13,7 @@ export type AttendanceEditInputs = {
   returnDirectlyFlag: UpdateAttendanceInput["returnDirectlyFlag"];
   remarks: UpdateAttendanceInput["remarks"];
   rests: RestInputs[];
+  staffComment?: string;
 };
 
 export const defaultValues: AttendanceEditInputs = {

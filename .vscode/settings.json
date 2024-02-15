@@ -66,5 +66,6 @@
       "label": "自分が作成",
       "query": "is:open author:${user}"
     }
-  ]
+  ],
+  "testing.openTesting": "neverOpen"
 }

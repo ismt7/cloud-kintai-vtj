@@ -2,6 +2,7 @@ import { TableCell as MuiTableCell, TableRow } from "@aws-amplify/ui-react";
 import EditIcon from "@mui/icons-material/Edit";
 import { IconButton } from "@mui/material";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 
 import {
   Attendance,
@@ -64,6 +65,8 @@ export default function TableBodyRow({
   holidayCalendars: HolidayCalendar[];
   companyHolidayCalendars: CompanyHolidayCalendar[];
 }) {
+  const navigate = useNavigate();
+
   const {
     workDate,
     startTime,
@@ -79,6 +82,11 @@ export default function TableBodyRow({
       )
     : [];
 
+  const handleEdit = () => {
+    const formattedWorkDate = dayjs(workDate).format("YYYYMMDD");
+    navigate(`/attendance/${formattedWorkDate}/edit`);
+  };
+
   return (
     <TableRow
       className={selectClassName(
@@ -88,7 +96,7 @@ export default function TableBodyRow({
       )}
     >
       <MuiTableCell>
-        <IconButton>
+        <IconButton onClick={handleEdit}>
           <EditIcon fontSize="small" />
         </IconButton>
       </MuiTableCell>

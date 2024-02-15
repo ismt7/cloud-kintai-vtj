@@ -90,7 +90,18 @@ export default function ChangeRequestDialog({
               <AfterCard changeRequest={changeRequest} />
             </Box>
           </Stack>
-          <Box>
+          <Stack direction="column" spacing={1}>
+            <Typography variant="body1">【スタッフからのコメント】</Typography>
+            <TextField
+              fullWidth
+              multiline
+              disabled
+              minRows={3}
+              value={changeRequest?.staffComment || "コメントはありません"}
+            />
+          </Stack>
+          <Stack direction="column" spacing={1}>
+            <Typography variant="body1">【スタッフへのコメント】</Typography>
             <TextField
               label="コメント"
               fullWidth
@@ -99,7 +110,7 @@ export default function ChangeRequestDialog({
               value={comment}
               onChange={(e) => setComment(e.target.value)}
             />
-          </Box>
+          </Stack>
         </Stack>
       </DialogContent>
       <DialogActions>
