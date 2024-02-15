@@ -60,6 +60,7 @@ export default function AttendanceEdit() {
             rests: data.rests,
             remarks: data.remarks,
             paidHolidayFlag: data.paidHolidayFlag,
+            staffComment: data.staffComment,
           },
         ],
         revision: attendance.revision,
@@ -71,7 +72,8 @@ export default function AttendanceEdit() {
           sendChangeRequestMail(
             cognitoUser,
             dayjs(attendance.workDate),
-            staffs
+            staffs,
+            data.staffComment
           );
 
           navigate("/attendance/list");
@@ -92,6 +94,7 @@ export default function AttendanceEdit() {
             rests: data.rests,
             remarks: data.remarks,
             paidHolidayFlag: data.paidHolidayFlag,
+            staffComment: data.staffComment,
           },
         ],
       })
@@ -99,7 +102,12 @@ export default function AttendanceEdit() {
           dispatch(setSnackbarSuccess(MESSAGE_CODE.S02005));
 
           if (!cognitoUser) return;
-          sendChangeRequestMail(cognitoUser, dayjs(targetWorkDate), staffs);
+          sendChangeRequestMail(
+            cognitoUser,
+            dayjs(targetWorkDate),
+            staffs,
+            data.staffComment
+          );
           navigate("/attendance/list");
         })
         .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E02005)));

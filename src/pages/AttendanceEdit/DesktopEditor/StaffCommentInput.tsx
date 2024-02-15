@@ -8,22 +8,21 @@ const Label = styled(Typography)(() => ({
   fontWeight: "bold",
 }));
 
-export default function RemarksInput({
+export default function StaffCommentInput({
   register,
 }: {
   register: UseFormRegister<AttendanceEditInputs>;
 }) {
   return (
     <Stack direction="row" alignItems={"center"}>
-      <Label>備考</Label>
+      <Label>コメント</Label>
       <Box sx={{ flexGrow: 2 }}>
         <TextField
+          {...register("staffComment")}
           multiline
-          minRows={2}
           fullWidth
-          placeholder="備考欄：客先名やイベント名などを記載"
-          sx={{ width: 1 }}
-          {...register("remarks")}
+          minRows={2}
+          placeholder="コメント欄：管理者へ伝えたいことを記載(修正理由など)"
         />
       </Box>
     </Stack>

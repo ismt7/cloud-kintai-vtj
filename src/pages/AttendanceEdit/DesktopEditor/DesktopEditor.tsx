@@ -1,4 +1,4 @@
-import { Box, Button, Container, Stack, styled } from "@mui/material";
+import { Box, Button, Container, Divider, Stack, styled } from "@mui/material";
 import dayjs from "dayjs";
 import {
   Control,
@@ -26,6 +26,7 @@ import PaidHolidayFlagInput from "./PaidHolidayFlagInput";
 import RemarksInput from "./RemarksInput";
 import RestTimeItem from "./RestTimeItem/RestTimeItem";
 import ReturnDirectlyFlagInput from "./ReturnDirectlyFlagInput";
+import StaffCommentInput from "./StaffCommentInput";
 import WorkDateItem from "./WorkDateItem";
 import { WorkTimeInput } from "./WorkTimeInput/WorkTimeInput";
 
@@ -133,6 +134,8 @@ export default function DesktopEditor({
           />
           <ProductionTimeItem time={totalProductionTime} />
           <RemarksInput register={register} />
+          <Divider />
+          <StaffCommentInput register={register} />
           <Box>
             <Stack
               direction="row"
