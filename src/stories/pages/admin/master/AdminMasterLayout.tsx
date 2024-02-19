@@ -20,10 +20,10 @@ export default function Layout() {
       name: "休日カレンダー",
       path: "/admin/master/holiday_calendar",
     },
-    {
-      name: "修正理由",
-      path: "/admin/master/modify_reason",
-    },
+    // {
+    //   name: "修正理由",
+    //   path: "/admin/master/modify_reason",
+    // },
   ];
 
   const menuBoxList = menuList.map((item, index) => (

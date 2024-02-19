@@ -1,9 +1,9 @@
 // cspell: ignore testid
-import { useEffect, useState } from "react";
-
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Box, IconButton, Stack, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
+
 import { Attendance } from "../../API";
 
 export interface TimeRecorderRemarksProps {
@@ -34,7 +34,7 @@ export default function TimeRecorderRemarks({
           multiline
           minRows={2}
           fullWidth
-          value={formState}
+          value={formState ?? undefined}
           placeholder="備考欄：客先名やイベント名などを記載"
           onChange={(event) => {
             setFormState(event.target.value);

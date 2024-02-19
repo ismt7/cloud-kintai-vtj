@@ -1,6 +1,18 @@
-import { useState, useEffect } from "react";
-import Button from "../../button/Button";
+import { Button, styled } from "@mui/material";
+import { useEffect, useState } from "react";
+
 import { WorkStatus, WorkStatusCodes } from "../common";
+
+const GoDirectlyButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.clock_in.main,
+  "&:hover": {
+    color: theme.palette.clock_in.contrastText,
+    backgroundColor: theme.palette.clock_in.main,
+  },
+  "&:disabled": {
+    backgroundColor: "#E0E0E0",
+  },
+}));
 
 export default function GoDirectlyItem({
   workStatus,
@@ -9,22 +21,21 @@ export default function GoDirectlyItem({
   workStatus: WorkStatus | null;
   onClick: () => void;
 }) {
-  const [disabled, setDisabled] = useState(false);
+  const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
     setDisabled(workStatus?.code !== WorkStatusCodes.BEFORE_WORK);
   }, [workStatus]);
 
   return (
-    <Button
-      color="clock_in"
-      label="直行"
+    <GoDirectlyButton
       onClick={() => {
         setDisabled(true);
         onClick();
       }}
-      variant="text"
       disabled={disabled}
-    />
+    >
+      直行
+    </GoDirectlyButton>
   );
 }

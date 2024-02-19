@@ -1,6 +1,18 @@
-import { useState, useEffect } from "react";
-import Button from "../../button/Button";
+import { Button, styled } from "@mui/material";
+import { useEffect, useState } from "react";
+
 import { WorkStatus, WorkStatusCodes } from "../common";
+
+const ReturnDirectlyButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.clock_out.main,
+  "&:hover": {
+    color: theme.palette.clock_out.contrastText,
+    backgroundColor: theme.palette.clock_out.main,
+  },
+  "&:disabled": {
+    backgroundColor: "#E0E0E0",
+  },
+}));
 
 export default function ReturnDirectly({
   workStatus,
@@ -9,22 +21,21 @@ export default function ReturnDirectly({
   workStatus: WorkStatus | null;
   onClick: () => void;
 }) {
-  const [disabled, setDisabled] = useState(false);
+  const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
     setDisabled(workStatus?.code !== WorkStatusCodes.WORKING);
   }, [workStatus]);
 
   return (
-    <Button
-      color="clock_out"
-      label="直帰"
+    <ReturnDirectlyButton
       onClick={() => {
         setDisabled(true);
         onClick();
       }}
-      variant="text"
       disabled={disabled}
-    />
+    >
+      直帰
+    </ReturnDirectlyButton>
   );
 }

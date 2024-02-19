@@ -1,5 +1,6 @@
-import { useState } from "react";
 import dayjs from "dayjs";
+import { useState } from "react";
+
 import {
   Attendance,
   CreateAttendanceInput,
@@ -24,6 +25,7 @@ export default function useAttendance() {
   const [attendance, setAttendance] = useState<Attendance | undefined | null>(
     undefined
   );
+  const [loading, setLoading] = useState(true);
 
   const getAttendance = async (staffId: string, workDate: string) =>
     fetchAttendance(staffId, workDate)
@@ -33,21 +35,11 @@ export default function useAttendance() {
       })
       .catch((e: Error) => {
         throw e;
-      });
-
-  const createAttendance = async (input: CreateAttendanceInput) => {
-    const { staffId, workDate } = input;
-    await getAttendance(staffId, workDate)
-      .then((res) => {
-        if (res) {
-          throw new Error("Attendance already exists");
-        }
       })
-      .catch((e: Error) => {
-        throw e;
-      });
+      .finally(() => setLoading(false));
 
-    return createAttendanceData(input)
+  const createAttendance = async (input: CreateAttendanceInput) =>
+    createAttendanceData(input)
       .then((res) => {
         setAttendance(res);
         return res;
@@ -55,7 +47,6 @@ export default function useAttendance() {
       .catch((e: Error) => {
         throw e;
       });
-  };
 
   const updateAttendance = async (input: UpdateAttendanceInput) =>
     updateAttendanceData(input)
@@ -318,6 +309,7 @@ export default function useAttendance() {
 
   return {
     attendance,
+    loading,
     getAttendance,
     createAttendance,
     updateAttendance,

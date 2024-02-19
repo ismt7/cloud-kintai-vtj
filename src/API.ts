@@ -2,18 +2,30 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateHolidayCalendarInput = {
+export type CreateStaffInput = {
   id?: string | null,
-  holidayDate: string,
-  name: string,
+  cognitoUserId: string,
+  familyName: string,
+  givenName: string,
+  mailAddress: string,
+  role: string,
+  enabled: boolean,
+  status: string,
+  owner?: boolean | null,
 };
 
-export type ModelHolidayCalendarConditionInput = {
-  holidayDate?: ModelStringInput | null,
-  name?: ModelStringInput | null,
-  and?: Array< ModelHolidayCalendarConditionInput | null > | null,
-  or?: Array< ModelHolidayCalendarConditionInput | null > | null,
-  not?: ModelHolidayCalendarConditionInput | null,
+export type ModelStaffConditionInput = {
+  cognitoUserId?: ModelStringInput | null,
+  familyName?: ModelStringInput | null,
+  givenName?: ModelStringInput | null,
+  mailAddress?: ModelStringInput | null,
+  role?: ModelStringInput | null,
+  enabled?: ModelBooleanInput | null,
+  status?: ModelStringInput | null,
+  owner?: ModelBooleanInput | null,
+  and?: Array< ModelStaffConditionInput | null > | null,
+  or?: Array< ModelStaffConditionInput | null > | null,
+  not?: ModelStaffConditionInput | null,
 };
 
 export type ModelStringInput = {
@@ -54,6 +66,58 @@ export type ModelSizeInput = {
   ge?: number | null,
   gt?: number | null,
   between?: Array< number | null > | null,
+};
+
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type Staff = {
+  __typename: "Staff",
+  id: string,
+  cognitoUserId: string,
+  familyName: string,
+  givenName: string,
+  mailAddress: string,
+  role: string,
+  enabled: boolean,
+  status: string,
+  owner?: boolean | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type UpdateStaffInput = {
+  id: string,
+  cognitoUserId?: string | null,
+  familyName?: string | null,
+  givenName?: string | null,
+  mailAddress?: string | null,
+  role?: string | null,
+  enabled?: boolean | null,
+  status?: string | null,
+  owner?: boolean | null,
+};
+
+export type DeleteStaffInput = {
+  id: string,
+};
+
+export type CreateHolidayCalendarInput = {
+  id?: string | null,
+  holidayDate: string,
+  name: string,
+};
+
+export type ModelHolidayCalendarConditionInput = {
+  holidayDate?: ModelStringInput | null,
+  name?: ModelStringInput | null,
+  and?: Array< ModelHolidayCalendarConditionInput | null > | null,
+  or?: Array< ModelHolidayCalendarConditionInput | null > | null,
+  not?: ModelHolidayCalendarConditionInput | null,
 };
 
 export type HolidayCalendar = {
@@ -157,6 +221,7 @@ export type CreateAttendanceInput = {
   remarks?: string | null,
   paidHolidayFlag?: boolean | null,
   histories?: Array< AttendanceHistoryInput | null > | null,
+  changeRequests?: Array< AttendanceChangeRequestInput | null > | null,
   revision?: number | null,
 };
 
@@ -178,6 +243,19 @@ export type AttendanceHistoryInput = {
   createdAt: string,
 };
 
+export type AttendanceChangeRequestInput = {
+  startTime?: string | null,
+  endTime?: string | null,
+  goDirectlyFlag?: boolean | null,
+  returnDirectlyFlag?: boolean | null,
+  rests?: Array< RestInput | null > | null,
+  remarks?: string | null,
+  paidHolidayFlag?: boolean | null,
+  completed?: boolean | null,
+  comment?: string | null,
+  staffComment?: string | null,
+};
+
 export type ModelAttendanceConditionInput = {
   staffId?: ModelStringInput | null,
   workDate?: ModelStringInput | null,
@@ -191,13 +269,6 @@ export type ModelAttendanceConditionInput = {
   and?: Array< ModelAttendanceConditionInput | null > | null,
   or?: Array< ModelAttendanceConditionInput | null > | null,
   not?: ModelAttendanceConditionInput | null,
-};
-
-export type ModelBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
 };
 
 export type ModelIntInput = {
@@ -225,6 +296,7 @@ export type Attendance = {
   remarks?: string | null,
   paidHolidayFlag?: boolean | null,
   histories?:  Array<AttendanceHistory | null > | null,
+  changeRequests?:  Array<AttendanceChangeRequest | null > | null,
   revision?: number | null,
   createdAt: string,
   updatedAt: string,
@@ -250,6 +322,20 @@ export type AttendanceHistory = {
   createdAt: string,
 };
 
+export type AttendanceChangeRequest = {
+  __typename: "AttendanceChangeRequest",
+  startTime?: string | null,
+  endTime?: string | null,
+  goDirectlyFlag?: boolean | null,
+  returnDirectlyFlag?: boolean | null,
+  rests?:  Array<Rest | null > | null,
+  remarks?: string | null,
+  paidHolidayFlag?: boolean | null,
+  completed?: boolean | null,
+  comment?: string | null,
+  staffComment?: string | null,
+};
+
 export type UpdateAttendanceInput = {
   id: string,
   staffId?: string | null,
@@ -262,10 +348,56 @@ export type UpdateAttendanceInput = {
   remarks?: string | null,
   paidHolidayFlag?: boolean | null,
   histories?: Array< AttendanceHistoryInput | null > | null,
+  changeRequests?: Array< AttendanceChangeRequestInput | null > | null,
   revision?: number | null,
 };
 
 export type DeleteAttendanceInput = {
+  id: string,
+};
+
+export type CreateDocumentInput = {
+  id?: string | null,
+  title: string,
+  content: string,
+  tag?: Array< string | null > | null,
+  targetRole?: Array< string | null > | null,
+  revision?: number | null,
+};
+
+export type ModelDocumentConditionInput = {
+  title?: ModelStringInput | null,
+  content?: ModelStringInput | null,
+  tag?: ModelStringInput | null,
+  targetRole?: ModelStringInput | null,
+  revision?: ModelIntInput | null,
+  and?: Array< ModelDocumentConditionInput | null > | null,
+  or?: Array< ModelDocumentConditionInput | null > | null,
+  not?: ModelDocumentConditionInput | null,
+};
+
+export type Document = {
+  __typename: "Document",
+  id: string,
+  title: string,
+  content: string,
+  tag?: Array< string | null > | null,
+  targetRole?: Array< string | null > | null,
+  revision?: number | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type UpdateDocumentInput = {
+  id: string,
+  title?: string | null,
+  content?: string | null,
+  tag?: Array< string | null > | null,
+  targetRole?: Array< string | null > | null,
+  revision?: number | null,
+};
+
+export type DeleteDocumentInput = {
   id: string,
 };
 
@@ -281,13 +413,19 @@ export type EmailResult = {
   body?: string | null,
 };
 
-export type ModelHolidayCalendarFilterInput = {
+export type ModelStaffFilterInput = {
   id?: ModelIDInput | null,
-  holidayDate?: ModelStringInput | null,
-  name?: ModelStringInput | null,
-  and?: Array< ModelHolidayCalendarFilterInput | null > | null,
-  or?: Array< ModelHolidayCalendarFilterInput | null > | null,
-  not?: ModelHolidayCalendarFilterInput | null,
+  cognitoUserId?: ModelStringInput | null,
+  familyName?: ModelStringInput | null,
+  givenName?: ModelStringInput | null,
+  mailAddress?: ModelStringInput | null,
+  role?: ModelStringInput | null,
+  enabled?: ModelBooleanInput | null,
+  status?: ModelStringInput | null,
+  owner?: ModelBooleanInput | null,
+  and?: Array< ModelStaffFilterInput | null > | null,
+  or?: Array< ModelStaffFilterInput | null > | null,
+  not?: ModelStaffFilterInput | null,
 };
 
 export type ModelIDInput = {
@@ -304,6 +442,21 @@ export type ModelIDInput = {
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
   size?: ModelSizeInput | null,
+};
+
+export type ModelStaffConnection = {
+  __typename: "ModelStaffConnection",
+  items:  Array<Staff | null >,
+  nextToken?: string | null,
+};
+
+export type ModelHolidayCalendarFilterInput = {
+  id?: ModelIDInput | null,
+  holidayDate?: ModelStringInput | null,
+  name?: ModelStringInput | null,
+  and?: Array< ModelHolidayCalendarFilterInput | null > | null,
+  or?: Array< ModelHolidayCalendarFilterInput | null > | null,
+  not?: ModelHolidayCalendarFilterInput | null,
 };
 
 export type ModelHolidayCalendarConnection = {
@@ -365,12 +518,36 @@ export type ModelAttendanceConnection = {
   nextToken?: string | null,
 };
 
-export type ModelSubscriptionHolidayCalendarFilterInput = {
+export type ModelDocumentFilterInput = {
+  id?: ModelIDInput | null,
+  title?: ModelStringInput | null,
+  content?: ModelStringInput | null,
+  tag?: ModelStringInput | null,
+  targetRole?: ModelStringInput | null,
+  revision?: ModelIntInput | null,
+  and?: Array< ModelDocumentFilterInput | null > | null,
+  or?: Array< ModelDocumentFilterInput | null > | null,
+  not?: ModelDocumentFilterInput | null,
+};
+
+export type ModelDocumentConnection = {
+  __typename: "ModelDocumentConnection",
+  items:  Array<Document | null >,
+  nextToken?: string | null,
+};
+
+export type ModelSubscriptionStaffFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  holidayDate?: ModelSubscriptionStringInput | null,
-  name?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionHolidayCalendarFilterInput | null > | null,
-  or?: Array< ModelSubscriptionHolidayCalendarFilterInput | null > | null,
+  cognitoUserId?: ModelSubscriptionStringInput | null,
+  familyName?: ModelSubscriptionStringInput | null,
+  givenName?: ModelSubscriptionStringInput | null,
+  mailAddress?: ModelSubscriptionStringInput | null,
+  role?: ModelSubscriptionStringInput | null,
+  enabled?: ModelSubscriptionBooleanInput | null,
+  status?: ModelSubscriptionStringInput | null,
+  owner?: ModelSubscriptionBooleanInput | null,
+  and?: Array< ModelSubscriptionStaffFilterInput | null > | null,
+  or?: Array< ModelSubscriptionStaffFilterInput | null > | null,
 };
 
 export type ModelSubscriptionIDInput = {
@@ -401,6 +578,19 @@ export type ModelSubscriptionStringInput = {
   beginsWith?: string | null,
   in?: Array< string | null > | null,
   notIn?: Array< string | null > | null,
+};
+
+export type ModelSubscriptionBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+};
+
+export type ModelSubscriptionHolidayCalendarFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  holidayDate?: ModelSubscriptionStringInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionHolidayCalendarFilterInput | null > | null,
+  or?: Array< ModelSubscriptionHolidayCalendarFilterInput | null > | null,
 };
 
 export type ModelSubscriptionCompanyHolidayCalendarFilterInput = {
@@ -435,11 +625,6 @@ export type ModelSubscriptionAttendanceFilterInput = {
   or?: Array< ModelSubscriptionAttendanceFilterInput | null > | null,
 };
 
-export type ModelSubscriptionBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
-};
-
 export type ModelSubscriptionIntInput = {
   ne?: number | null,
   eq?: number | null,
@@ -450,6 +635,83 @@ export type ModelSubscriptionIntInput = {
   between?: Array< number | null > | null,
   in?: Array< number | null > | null,
   notIn?: Array< number | null > | null,
+};
+
+export type ModelSubscriptionDocumentFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  title?: ModelSubscriptionStringInput | null,
+  content?: ModelSubscriptionStringInput | null,
+  tag?: ModelSubscriptionStringInput | null,
+  targetRole?: ModelSubscriptionStringInput | null,
+  revision?: ModelSubscriptionIntInput | null,
+  and?: Array< ModelSubscriptionDocumentFilterInput | null > | null,
+  or?: Array< ModelSubscriptionDocumentFilterInput | null > | null,
+};
+
+export type CreateStaffMutationVariables = {
+  input: CreateStaffInput,
+  condition?: ModelStaffConditionInput | null,
+};
+
+export type CreateStaffMutation = {
+  createStaff?:  {
+    __typename: "Staff",
+    id: string,
+    cognitoUserId: string,
+    familyName: string,
+    givenName: string,
+    mailAddress: string,
+    role: string,
+    enabled: boolean,
+    status: string,
+    owner?: boolean | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateStaffMutationVariables = {
+  input: UpdateStaffInput,
+  condition?: ModelStaffConditionInput | null,
+};
+
+export type UpdateStaffMutation = {
+  updateStaff?:  {
+    __typename: "Staff",
+    id: string,
+    cognitoUserId: string,
+    familyName: string,
+    givenName: string,
+    mailAddress: string,
+    role: string,
+    enabled: boolean,
+    status: string,
+    owner?: boolean | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteStaffMutationVariables = {
+  input: DeleteStaffInput,
+  condition?: ModelStaffConditionInput | null,
+};
+
+export type DeleteStaffMutation = {
+  deleteStaff?:  {
+    __typename: "Staff",
+    id: string,
+    cognitoUserId: string,
+    familyName: string,
+    givenName: string,
+    mailAddress: string,
+    role: string,
+    enabled: boolean,
+    status: string,
+    owner?: boolean | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
 };
 
 export type CreateHolidayCalendarMutationVariables = {
@@ -638,6 +900,23 @@ export type CreateAttendanceMutation = {
       paidHolidayFlag?: boolean | null,
       createdAt: string,
     } | null > | null,
+    changeRequests?:  Array< {
+      __typename: "AttendanceChangeRequest",
+      startTime?: string | null,
+      endTime?: string | null,
+      goDirectlyFlag?: boolean | null,
+      returnDirectlyFlag?: boolean | null,
+      rests?:  Array< {
+        __typename: "Rest",
+        startTime?: string | null,
+        endTime?: string | null,
+      } | null > | null,
+      remarks?: string | null,
+      paidHolidayFlag?: boolean | null,
+      completed?: boolean | null,
+      comment?: string | null,
+      staffComment?: string | null,
+    } | null > | null,
     revision?: number | null,
     createdAt: string,
     updatedAt: string,
@@ -682,6 +961,23 @@ export type UpdateAttendanceMutation = {
       remarks?: string | null,
       paidHolidayFlag?: boolean | null,
       createdAt: string,
+    } | null > | null,
+    changeRequests?:  Array< {
+      __typename: "AttendanceChangeRequest",
+      startTime?: string | null,
+      endTime?: string | null,
+      goDirectlyFlag?: boolean | null,
+      returnDirectlyFlag?: boolean | null,
+      rests?:  Array< {
+        __typename: "Rest",
+        startTime?: string | null,
+        endTime?: string | null,
+      } | null > | null,
+      remarks?: string | null,
+      paidHolidayFlag?: boolean | null,
+      completed?: boolean | null,
+      comment?: string | null,
+      staffComment?: string | null,
     } | null > | null,
     revision?: number | null,
     createdAt: string,
@@ -728,6 +1024,80 @@ export type DeleteAttendanceMutation = {
       paidHolidayFlag?: boolean | null,
       createdAt: string,
     } | null > | null,
+    changeRequests?:  Array< {
+      __typename: "AttendanceChangeRequest",
+      startTime?: string | null,
+      endTime?: string | null,
+      goDirectlyFlag?: boolean | null,
+      returnDirectlyFlag?: boolean | null,
+      rests?:  Array< {
+        __typename: "Rest",
+        startTime?: string | null,
+        endTime?: string | null,
+      } | null > | null,
+      remarks?: string | null,
+      paidHolidayFlag?: boolean | null,
+      completed?: boolean | null,
+      comment?: string | null,
+      staffComment?: string | null,
+    } | null > | null,
+    revision?: number | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type CreateDocumentMutationVariables = {
+  input: CreateDocumentInput,
+  condition?: ModelDocumentConditionInput | null,
+};
+
+export type CreateDocumentMutation = {
+  createDocument?:  {
+    __typename: "Document",
+    id: string,
+    title: string,
+    content: string,
+    tag?: Array< string | null > | null,
+    targetRole?: Array< string | null > | null,
+    revision?: number | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateDocumentMutationVariables = {
+  input: UpdateDocumentInput,
+  condition?: ModelDocumentConditionInput | null,
+};
+
+export type UpdateDocumentMutation = {
+  updateDocument?:  {
+    __typename: "Document",
+    id: string,
+    title: string,
+    content: string,
+    tag?: Array< string | null > | null,
+    targetRole?: Array< string | null > | null,
+    revision?: number | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteDocumentMutationVariables = {
+  input: DeleteDocumentInput,
+  condition?: ModelDocumentConditionInput | null,
+};
+
+export type DeleteDocumentMutation = {
+  deleteDocument?:  {
+    __typename: "Document",
+    id: string,
+    title: string,
+    content: string,
+    tag?: Array< string | null > | null,
+    targetRole?: Array< string | null > | null,
     revision?: number | null,
     createdAt: string,
     updatedAt: string,
@@ -743,6 +1113,54 @@ export type SendMailQuery = {
     __typename: "EmailResult",
     statusCode?: number | null,
     body?: string | null,
+  } | null,
+};
+
+export type GetStaffQueryVariables = {
+  id: string,
+};
+
+export type GetStaffQuery = {
+  getStaff?:  {
+    __typename: "Staff",
+    id: string,
+    cognitoUserId: string,
+    familyName: string,
+    givenName: string,
+    mailAddress: string,
+    role: string,
+    enabled: boolean,
+    status: string,
+    owner?: boolean | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListStaffQueryVariables = {
+  filter?: ModelStaffFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListStaffQuery = {
+  listStaff?:  {
+    __typename: "ModelStaffConnection",
+    items:  Array< {
+      __typename: "Staff",
+      id: string,
+      cognitoUserId: string,
+      familyName: string,
+      givenName: string,
+      mailAddress: string,
+      role: string,
+      enabled: boolean,
+      status: string,
+      owner?: boolean | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
   } | null,
 };
 
@@ -894,6 +1312,23 @@ export type GetAttendanceQuery = {
       paidHolidayFlag?: boolean | null,
       createdAt: string,
     } | null > | null,
+    changeRequests?:  Array< {
+      __typename: "AttendanceChangeRequest",
+      startTime?: string | null,
+      endTime?: string | null,
+      goDirectlyFlag?: boolean | null,
+      returnDirectlyFlag?: boolean | null,
+      rests?:  Array< {
+        __typename: "Rest",
+        startTime?: string | null,
+        endTime?: string | null,
+      } | null > | null,
+      remarks?: string | null,
+      paidHolidayFlag?: boolean | null,
+      completed?: boolean | null,
+      comment?: string | null,
+      staffComment?: string | null,
+    } | null > | null,
     revision?: number | null,
     createdAt: string,
     updatedAt: string,
@@ -942,11 +1377,133 @@ export type ListAttendancesQuery = {
         paidHolidayFlag?: boolean | null,
         createdAt: string,
       } | null > | null,
+      changeRequests?:  Array< {
+        __typename: "AttendanceChangeRequest",
+        startTime?: string | null,
+        endTime?: string | null,
+        goDirectlyFlag?: boolean | null,
+        returnDirectlyFlag?: boolean | null,
+        rests?:  Array< {
+          __typename: "Rest",
+          startTime?: string | null,
+          endTime?: string | null,
+        } | null > | null,
+        remarks?: string | null,
+        paidHolidayFlag?: boolean | null,
+        completed?: boolean | null,
+        comment?: string | null,
+        staffComment?: string | null,
+      } | null > | null,
       revision?: number | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
     nextToken?: string | null,
+  } | null,
+};
+
+export type GetDocumentQueryVariables = {
+  id: string,
+};
+
+export type GetDocumentQuery = {
+  getDocument?:  {
+    __typename: "Document",
+    id: string,
+    title: string,
+    content: string,
+    tag?: Array< string | null > | null,
+    targetRole?: Array< string | null > | null,
+    revision?: number | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListDocumentsQueryVariables = {
+  filter?: ModelDocumentFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListDocumentsQuery = {
+  listDocuments?:  {
+    __typename: "ModelDocumentConnection",
+    items:  Array< {
+      __typename: "Document",
+      id: string,
+      title: string,
+      content: string,
+      tag?: Array< string | null > | null,
+      targetRole?: Array< string | null > | null,
+      revision?: number | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type OnCreateStaffSubscriptionVariables = {
+  filter?: ModelSubscriptionStaffFilterInput | null,
+};
+
+export type OnCreateStaffSubscription = {
+  onCreateStaff?:  {
+    __typename: "Staff",
+    id: string,
+    cognitoUserId: string,
+    familyName: string,
+    givenName: string,
+    mailAddress: string,
+    role: string,
+    enabled: boolean,
+    status: string,
+    owner?: boolean | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateStaffSubscriptionVariables = {
+  filter?: ModelSubscriptionStaffFilterInput | null,
+};
+
+export type OnUpdateStaffSubscription = {
+  onUpdateStaff?:  {
+    __typename: "Staff",
+    id: string,
+    cognitoUserId: string,
+    familyName: string,
+    givenName: string,
+    mailAddress: string,
+    role: string,
+    enabled: boolean,
+    status: string,
+    owner?: boolean | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteStaffSubscriptionVariables = {
+  filter?: ModelSubscriptionStaffFilterInput | null,
+};
+
+export type OnDeleteStaffSubscription = {
+  onDeleteStaff?:  {
+    __typename: "Staff",
+    id: string,
+    cognitoUserId: string,
+    familyName: string,
+    givenName: string,
+    mailAddress: string,
+    role: string,
+    enabled: boolean,
+    status: string,
+    owner?: boolean | null,
+    createdAt: string,
+    updatedAt: string,
   } | null,
 };
 
@@ -1126,6 +1683,23 @@ export type OnCreateAttendanceSubscription = {
       paidHolidayFlag?: boolean | null,
       createdAt: string,
     } | null > | null,
+    changeRequests?:  Array< {
+      __typename: "AttendanceChangeRequest",
+      startTime?: string | null,
+      endTime?: string | null,
+      goDirectlyFlag?: boolean | null,
+      returnDirectlyFlag?: boolean | null,
+      rests?:  Array< {
+        __typename: "Rest",
+        startTime?: string | null,
+        endTime?: string | null,
+      } | null > | null,
+      remarks?: string | null,
+      paidHolidayFlag?: boolean | null,
+      completed?: boolean | null,
+      comment?: string | null,
+      staffComment?: string | null,
+    } | null > | null,
     revision?: number | null,
     createdAt: string,
     updatedAt: string,
@@ -1169,6 +1743,23 @@ export type OnUpdateAttendanceSubscription = {
       remarks?: string | null,
       paidHolidayFlag?: boolean | null,
       createdAt: string,
+    } | null > | null,
+    changeRequests?:  Array< {
+      __typename: "AttendanceChangeRequest",
+      startTime?: string | null,
+      endTime?: string | null,
+      goDirectlyFlag?: boolean | null,
+      returnDirectlyFlag?: boolean | null,
+      rests?:  Array< {
+        __typename: "Rest",
+        startTime?: string | null,
+        endTime?: string | null,
+      } | null > | null,
+      remarks?: string | null,
+      paidHolidayFlag?: boolean | null,
+      completed?: boolean | null,
+      comment?: string | null,
+      staffComment?: string | null,
     } | null > | null,
     revision?: number | null,
     createdAt: string,
@@ -1214,6 +1805,77 @@ export type OnDeleteAttendanceSubscription = {
       paidHolidayFlag?: boolean | null,
       createdAt: string,
     } | null > | null,
+    changeRequests?:  Array< {
+      __typename: "AttendanceChangeRequest",
+      startTime?: string | null,
+      endTime?: string | null,
+      goDirectlyFlag?: boolean | null,
+      returnDirectlyFlag?: boolean | null,
+      rests?:  Array< {
+        __typename: "Rest",
+        startTime?: string | null,
+        endTime?: string | null,
+      } | null > | null,
+      remarks?: string | null,
+      paidHolidayFlag?: boolean | null,
+      completed?: boolean | null,
+      comment?: string | null,
+      staffComment?: string | null,
+    } | null > | null,
+    revision?: number | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnCreateDocumentSubscriptionVariables = {
+  filter?: ModelSubscriptionDocumentFilterInput | null,
+};
+
+export type OnCreateDocumentSubscription = {
+  onCreateDocument?:  {
+    __typename: "Document",
+    id: string,
+    title: string,
+    content: string,
+    tag?: Array< string | null > | null,
+    targetRole?: Array< string | null > | null,
+    revision?: number | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateDocumentSubscriptionVariables = {
+  filter?: ModelSubscriptionDocumentFilterInput | null,
+};
+
+export type OnUpdateDocumentSubscription = {
+  onUpdateDocument?:  {
+    __typename: "Document",
+    id: string,
+    title: string,
+    content: string,
+    tag?: Array< string | null > | null,
+    targetRole?: Array< string | null > | null,
+    revision?: number | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteDocumentSubscriptionVariables = {
+  filter?: ModelSubscriptionDocumentFilterInput | null,
+};
+
+export type OnDeleteDocumentSubscription = {
+  onDeleteDocument?:  {
+    __typename: "Document",
+    id: string,
+    title: string,
+    content: string,
+    tag?: Array< string | null > | null,
+    targetRole?: Array< string | null > | null,
     revision?: number | null,
     createdAt: string,
     updatedAt: string,

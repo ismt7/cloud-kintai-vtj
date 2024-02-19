@@ -3,6 +3,18 @@
 input AMPLIFY {
   globalAuthRule: AuthRule = { allow: public }
 } # FOR TESTING ONLY!
+type Staff @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  cognitoUserId: String!
+  familyName: String!
+  givenName: String!
+  mailAddress: String!
+  role: String!
+  enabled: Boolean!
+  status: String!
+  owner: Boolean
+}
+
 type HolidayCalendar @model @auth(rules: [{ allow: private }]) {
   id: ID!
   holidayDate: String!
@@ -34,6 +46,16 @@ type Attendance @model @auth(rules: [{ allow: private }]) {
   remarks: String
   paidHolidayFlag: Boolean
   histories: [AttendanceHistory]
+  changeRequests: [AttendanceChangeRequest]
+  revision: Int
+}
+
+type Document @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  title: String!
+  content: String!
+  tag: [String]
+  targetRole: [String]
   revision: Int
 }
 
@@ -53,6 +75,19 @@ type AttendanceHistory {
   remarks: String
   paidHolidayFlag: Boolean
   createdAt: String!
+}
+
+type AttendanceChangeRequest {
+  startTime: String
+  endTime: String
+  goDirectlyFlag: Boolean
+  returnDirectlyFlag: Boolean
+  rests: [Rest]
+  remarks: String
+  paidHolidayFlag: Boolean
+  completed: Boolean
+  comment: String
+  staffComment: String
 }
 
 type EmailResult {

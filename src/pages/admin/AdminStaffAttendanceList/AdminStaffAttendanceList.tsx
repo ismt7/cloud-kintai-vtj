@@ -10,20 +10,24 @@ import { DataGrid, GridRowModesModel } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+
+import { Attendance } from "../../../API";
+import { useAppDispatchV2 } from "../../../app/hooks";
 import getDayOfWeek, {
   DayOfWeek,
-} from "../../../components/attendance_list/getDayOfWeek";
+} from "../../../components/AttendanceList/getDayOfWeek";
+import * as MESSAGE_CODE from "../../../errors";
 import useAttendances from "../../../hooks/useAttendances/useAttendances";
-import useHolidayCalendars from "../../../hooks/useHolidayCalendars/useHolidayCalendars";
-import { Staff } from "../../../hooks/useStaffs/common";
-import useStaffs from "../../../hooks/useStaffs/useStaffs";
-import getColumns from "./getColumns";
-import { Attendance } from "../../../API";
 import useCompanyHolidayCalendars from "../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
+import useHolidayCalendars from "../../../hooks/useHolidayCalendars/useHolidayCalendars";
+import useStaffs, { StaffType } from "../../../hooks/useStaffs/useStaffs";
+import { setSnackbarError } from "../../../lib/reducers/snackbarReducer";
+import getColumns from "./getColumns";
 
 export default function AdminStaffAttendanceList() {
   const { staffId } = useParams();
   const navigate = useNavigate();
+  const dispatch = useAppDispatchV2();
 
   const { attendances, getAttendances } = useAttendances();
   const { staffs, loading: staffLoading, error: staffError } = useStaffs();
@@ -33,20 +37,20 @@ export default function AdminStaffAttendanceList() {
     error: companyHolidayCalendarError,
   } = useCompanyHolidayCalendars();
 
-  const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
+  const [staff, setStaff] = useState<StaffType | undefined | null>(undefined);
 
   useEffect(() => {
     if (!staffId || staffLoading) return;
 
-    const matchStaff = staffs.find((item) => item.sub === staffId);
+    const matchStaff = staffs.find((item) => item.cognitoUserId === staffId);
     setStaff(matchStaff);
   }, [staffId, staffLoading]);
 
   useEffect(() => {
     if (!staffId) return;
-    getAttendances(staffId).catch((error) => {
-      console.log(error);
-    });
+    getAttendances(staffId).catch(() =>
+      dispatch(setSnackbarError(MESSAGE_CODE.E02001))
+    );
   }, [staffId]);
 
   const {
@@ -81,10 +85,6 @@ export default function AdminStaffAttendanceList() {
     );
   }
 
-  const deleteAttendance = async (attendanceId: number) => {
-    console.log(attendanceId);
-  };
-
   return (
     <Container maxWidth="xl">
       <Stack spacing={1} sx={{ pt: 1 }}>
@@ -106,7 +106,6 @@ export default function AdminStaffAttendanceList() {
           <DataGrid
             rows={attendances}
             columns={getColumns(
-              deleteAttendance,
               rowModelsModel,
               staffId,
               navigate,

@@ -1,8 +1,7 @@
 import { Box, Stack, TextField } from "@mui/material";
 import { UseFormRegister } from "react-hook-form";
-// TODO: あとで修正
-// eslint-disable-next-line import/no-cycle
-import { AttendanceEditorInputs } from "../AttendanceEditor";
+
+import { AttendanceEditorInputs } from "../common";
 
 export default function RemarksItem({
   register,

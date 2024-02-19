@@ -1,3 +1,6 @@
+import HistoryIcon from "@mui/icons-material/History";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
   Box,
   Button,
@@ -15,15 +18,12 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import HistoryIcon from "@mui/icons-material/History";
+import dayjs from "dayjs";
 import { useState } from "react";
 import { UseFormGetValues } from "react-hook-form";
-import dayjs from "dayjs";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-// eslint-disable-next-line import/no-cycle
-import { AttendanceEditorInputs } from "./AttendanceEditor";
+
 import { AttendanceHistory } from "../../API";
+import { AttendanceEditorInputs } from "./common";
 
 function Row({ history }: { history: AttendanceHistory }) {
   const [open, setOpen] = useState(false);

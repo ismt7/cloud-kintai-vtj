@@ -1,8 +1,8 @@
-import { Box, CircularProgress } from "@mui/material";
-
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import { Box, CircularProgress } from "@mui/material";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 import TimeRecorder from "../components/time_recorder/TimeRecorder";
 
 export default function Register() {
@@ -20,7 +20,17 @@ export default function Register() {
   }
 
   return (
-    <Box sx={{ height: 1, py: 10, justifyContent: "center", display: "flex" }}>
+    <Box
+      sx={{
+        height: 1,
+        py: {
+          xs: 2,
+          md: 10,
+        },
+        justifyContent: "center",
+        display: "flex",
+      }}
+    >
       <TimeRecorder />
     </Box>
   );

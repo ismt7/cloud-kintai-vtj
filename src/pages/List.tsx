@@ -2,9 +2,10 @@ import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Box, Container, Stack } from "@mui/material";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import AttendanceList from "../components/attendance_list/AttendanceList";
 
-function List() {
+import AttendanceList from "../components/AttendanceList/AttendanceList";
+
+export default function List() {
   const { route } = useAuthenticator();
   const navigate = useNavigate();
 
@@ -24,5 +25,3 @@ function List() {
     </Container>
   );
 }
-
-export default List;

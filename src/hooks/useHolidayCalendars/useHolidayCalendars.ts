@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
-import { CreateHolidayCalendarInput, HolidayCalendar } from "../../API";
+
+import {
+  CreateHolidayCalendarInput,
+  HolidayCalendar,
+  UpdateHolidayCalendarInput,
+} from "../../API";
 import createHolidayCalendarData from "./createHolidayCalendarData";
 import fetchHolidayCalendars from "./fetchHolidayCalendars";
+import updateHolidayCalendarData from "./updateHolidayCalendarData";
 
 export default function useHolidayCalendar() {
   const [loading, setLoading] = useState(false);
@@ -44,11 +50,22 @@ export default function useHolidayCalendar() {
         throw e;
       });
 
+  const updateHolidayCalendar = async (input: UpdateHolidayCalendarInput) =>
+    updateHolidayCalendarData(input)
+      .then((res) => {
+        setHolidayCalendars([...holidayCalendars, res]);
+        return res;
+      })
+      .catch((e) => {
+        throw e;
+      });
+
   return {
     loading,
     error,
     holidayCalendars,
     createHolidayCalendar,
     bulkCreateHolidayCalendar,
+    updateHolidayCalendar,
   };
 }

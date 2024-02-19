@@ -1,73 +1,61 @@
+import { useAuthenticator } from "@aws-amplify/ui-react";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import PersonIcon from "@mui/icons-material/Person";
+import PersonOffIcon from "@mui/icons-material/PersonOff";
 import {
   Box,
   Breadcrumbs,
-  Button,
   Container,
   LinearProgress,
   Stack,
   Typography,
 } from "@mui/material";
-
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   DataGrid,
+  GridActionsCellItem,
+  GridRowParams,
   GridToolbarContainer,
   GridValueGetterParams,
 } from "@mui/x-data-grid";
+import dayjs from "dayjs";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Title from "../../../components/Title/Title";
-import { Staff } from "../../../hooks/useStaffs/common";
-import useStaffs from "../../../hooks/useStaffs/useStaffs";
 
-// const defaultValues: Staff = {
-//   sub: "",
-//   givenName: "",
-//   familyName: "",
-//   email: "",
-// };
+import { useAppDispatchV2 } from "../../../app/hooks";
+import Title from "../../../components/Title/Title";
+import * as MESSAGE_CODE from "../../../errors";
+import deleteCognitoUser from "../../../hooks/common/deleteCognitoUser";
+import disableStaff from "../../../hooks/common/disableStaff";
+import enableStaff from "../../../hooks/common/enableStaff";
+import useCognitoUser from "../../../hooks/useCognitoUser";
+import useStaffs, {
+  StaffRole,
+  StaffType,
+} from "../../../hooks/useStaffs/useStaffs";
+import {
+  setSnackbarError,
+  setSnackbarSuccess,
+} from "../../../lib/reducers/snackbarReducer";
+import CreateStaffDialog from "./CreateStaffDialog";
+import SyncCognitoUser from "./SyncCognitoUser";
 
 export default function AdminStaff() {
   const { route } = useAuthenticator();
   const navigate = useNavigate();
+  const dispatch = useAppDispatchV2();
 
-  const { staffs, loading: staffLoading, error: staffError } = useStaffs();
+  const { cognitoUser, loading: cognitoUserLoading } = useCognitoUser();
 
-  // const [editDialogOpen, setEditDialogOpen] = useState<boolean>(false);
-  // const [selectedStaffId, setSelectedStaffId] = useState<Staff["id"] | null>(
-  //   null
-  // );
-
-  // const { register } = useForm<Staff>({
-  //   mode: "onChange",
-  //   defaultValues,
-  // });
-
-  // const { fields: staffFields } = useFieldArray({
-  //   control,
-  //   name: "staffs",
-  // });
-
-  // useEffect(() => {
-  //   if (staffLoading || staffRoleLoading) return;
-
-  //   // setValue(
-  //   //   "staffs",
-  //   //   staffs.map((staff) => ({
-  //   //     staffId: staff.id,
-  //   //     lastName: staff.last_name,
-  //   //     firstName: staff.first_name,
-  //   //     mailAddress: staff.mail_address,
-  //   //     iconPath: staff.icon_path,
-  //   //     createdAt: staff.created_at,
-  //   //     updatedAt: staff.updated_at,
-  //   //     staffRole:
-  //   //       staffRoles.find((staffRole) => staffRole.staff_id === staff.id) ||
-  //   //       null,
-  //   //   }))
-  //   );
-  // }, [staffLoading, staffRoleLoading, staffs, staffRoles]);
+  const {
+    staffs,
+    loading: staffLoading,
+    error: staffError,
+    refreshStaff,
+    createStaff,
+    updateStaff,
+    deleteStaff,
+  } = useStaffs();
 
   useEffect(() => {
     if (route !== "idle" && route !== "authenticated") {
@@ -77,28 +65,23 @@ export default function AdminStaff() {
 
   const customToolbar = () => (
     <GridToolbarContainer>
-      <Button
-        variant="text"
-        size="small"
-        disabled={true}
-        startIcon={<AddCircleIcon />}
-        onClick={() => {}}
-      >
-        スタッフ登録
-      </Button>
+      <CreateStaffDialog refreshStaff={refreshStaff} />
+      <SyncCognitoUser
+        staffs={staffs}
+        refreshStaff={refreshStaff}
+        createStaff={createStaff}
+        updateStaff={updateStaff}
+      />
     </GridToolbarContainer>
   );
 
-  if (staffLoading) {
+  if (staffLoading || cognitoUserLoading) {
     return <LinearProgress />;
   }
 
-  if (staffError) {
-    return (
-      <Typography variant="body1">
-        データ取得中に予期せぬ問題が発生しました。管理者に連絡してください。
-      </Typography>
-    );
+  if (staffError || cognitoUser === null) {
+    dispatch(setSnackbarError(MESSAGE_CODE.E00001));
+    return null;
   }
 
   return (
@@ -118,15 +101,158 @@ export default function AdminStaff() {
             rows={staffs}
             columns={[
               {
-                field: "sub",
-                headerName: "スタッフID",
-                width: 300,
+                field: "actions",
+                headerName: "操作",
+                type: "actions",
+                sortable: false,
+                getActions: (params: GridRowParams<StaffType>) => [
+                  <GridActionsCellItem
+                    key="edit"
+                    label="編集"
+                    icon={<EditIcon />}
+                    onClick={() => {
+                      navigate(`/admin/staff/${params.id}/edit`);
+                    }}
+                  />,
+                  <GridActionsCellItem
+                    key="delete"
+                    icon={<DeleteIcon />}
+                    label="アカウントを削除する"
+                    showInMenu
+                    disabled={!cognitoUser?.owner || false}
+                    onClick={() => {
+                      // eslint-disable-next-line no-alert
+                      const result = window.confirm(
+                        "削除すると元に戻せません。本当に削除しますか？"
+                      );
+                      if (result) {
+                        void deleteCognitoUser(params.row.cognitoUserId)
+                          .then(() => {
+                            deleteStaff({
+                              id: params.row.id,
+                            })
+                              .then(() => {
+                                dispatch(
+                                  setSnackbarSuccess(MESSAGE_CODE.S10004)
+                                );
+                              })
+                              .catch(() => {
+                                dispatch(
+                                  setSnackbarSuccess(MESSAGE_CODE.E10004)
+                                );
+                              });
+                          })
+                          .catch(() =>
+                            dispatch(setSnackbarSuccess(MESSAGE_CODE.E10004))
+                          );
+                      }
+                    }}
+                  />,
+                  (() => {
+                    if (!params.row.enabled) {
+                      return (
+                        <GridActionsCellItem
+                          key="enable"
+                          icon={<PersonIcon />}
+                          label="アカウントを有効にする"
+                          showInMenu
+                          onClick={() => {
+                            void enableStaff(params.row.cognitoUserId)
+                              .then(() => {
+                                updateStaff({
+                                  id: params.row.id,
+                                  enabled: true,
+                                })
+                                  .then(() => {
+                                    dispatch(
+                                      setSnackbarSuccess(MESSAGE_CODE.S12001)
+                                    );
+                                  })
+                                  .catch(() => {
+                                    dispatch(
+                                      setSnackbarSuccess(MESSAGE_CODE.E12001)
+                                    );
+                                  });
+                              })
+                              .catch(() => {
+                                dispatch(
+                                  setSnackbarSuccess(MESSAGE_CODE.E12001)
+                                );
+                              });
+                          }}
+                        />
+                      );
+                    }
+
+                    return (
+                      <GridActionsCellItem
+                        key="disable"
+                        icon={<PersonOffIcon />}
+                        label="アカウントを無効にする"
+                        showInMenu
+                        onClick={() => {
+                          void disableStaff(params.row.cognitoUserId)
+                            .then(() => {
+                              updateStaff({
+                                id: params.row.id,
+                                enabled: false,
+                              })
+                                .then(() => {
+                                  dispatch(
+                                    setSnackbarSuccess(MESSAGE_CODE.S11001)
+                                  );
+                                })
+                                .catch(() => {
+                                  dispatch(
+                                    setSnackbarSuccess(MESSAGE_CODE.E11001)
+                                  );
+                                });
+                            })
+                            .catch(() => {
+                              dispatch(setSnackbarSuccess(MESSAGE_CODE.E11001));
+                            });
+                        }}
+                      />
+                    );
+                  })(),
+                ],
+              },
+              {
+                field: "enabled",
+                headerName: "アカウント状態",
+                width: 150,
+                valueGetter(params: GridValueGetterParams<StaffType>) {
+                  const { enabled } = params.row;
+
+                  if (enabled) return "有効";
+
+                  return "無効";
+                },
+              },
+              {
+                field: "status",
+                headerName: "ステータス",
+                width: 200,
+                valueGetter(params: GridValueGetterParams<StaffType>) {
+                  const { status } = params.row;
+
+                  if (!status) return "(未設定)";
+
+                  switch (status) {
+                    case "CONFIRMED":
+                      return "確認済み";
+                    case "FORCE_CHANGE_PASSWORD":
+                      return "パスワード変更必要";
+                    default:
+                      return status;
+                  }
+                },
               },
               {
                 field: "name",
                 headerName: "名前",
                 width: 200,
-                valueGetter(params: GridValueGetterParams<Staff>) {
+                valueGetter(params: GridValueGetterParams<StaffType>) {
                   const { givenName, familyName } = params.row;
 
                   if (!givenName && !familyName) return "(未設定)";
@@ -141,42 +267,56 @@ export default function AdminStaff() {
               {
                 field: "mailAddress",
                 headerName: "メールアドレス",
-                width: 200,
+                width: 300,
               },
-              // {
-              //   field: "actions",
-              //   headerName: "操作",
-              //   type: "actions",
-              //   sortable: false,
-              //   getActions: (
-              //     params: GridRowParams<
-              //       FieldArrayWithId<AdminStaffInputs, "staffs", "id">
-              //     >
-              //   ) => [
-              //     <GridActionsCellItem
-              //       key="edit"
-              //       label="編集"
-              //       icon={<EditIcon />}
-              //       onClick={() => {
-              //         setSelectedStaffId(params.row.staffId);
-              //         setEditDialogOpen(true);
-              //       }}
-              //     />,
-              //     <GridActionsCellItem
-              //       key="delete"
-              //       label="削除"
-              //       icon={<DeleteIcon />}
-              //       onClick={() => {
-              //         const confirm = window.confirm("本当に削除しますか？");
-              //         if (confirm) {
-              //           console.log("削除処理");
-              //         }
-              //       }}
-              //     />,
-              //   ],
-              // },
+              {
+                field: "role",
+                headerName: "権限",
+                width: 200,
+                valueGetter(params: GridValueGetterParams<StaffType>) {
+                  const { role, owner } = params.row;
+                  if (!role) return "(未設定)";
+
+                  if (owner) return "オーナー";
+
+                  switch (role) {
+                    case StaffRole.ADMIN:
+                      return "管理者";
+                    case StaffRole.STAFF_ADMIN:
+                      return "スタッフ管理者";
+                    case StaffRole.STAFF:
+                      return "スタッフ";
+                    default:
+                      return "(未設定)";
+                  }
+                },
+              },
+              {
+                field: "createdAt",
+                headerName: "作成日時",
+                width: 200,
+                valueGetter(params: GridValueGetterParams<StaffType>) {
+                  const { createdAt } = params.row;
+
+                  if (!createdAt) return "(未設定)";
+
+                  return dayjs(createdAt).format("YYYY/MM/DD HH:mm:ss");
+                },
+              },
+              {
+                field: "updatedAt",
+                headerName: "更新日時",
+                width: 200,
+                valueGetter(params: GridValueGetterParams<StaffType>) {
+                  const { updatedAt } = params.row;
+
+                  if (!updatedAt) return "(未設定)";
+
+                  return dayjs(updatedAt).format("YYYY/MM/DD HH:mm:ss");
+                },
+              },
             ]}
-            getRowId={(row) => row.sub}
+            getRowId={(row) => row.cognitoUserId}
             slots={{
               toolbar: customToolbar,
             }}
@@ -184,15 +324,6 @@ export default function AdminStaff() {
           />
         </Stack>
       </Container>
-      {/* <AdminStaffEditDialog
-        open={editDialogOpen}
-        selectedStaffId={selectedStaffId}
-        register={register}
-        onClose={() => {
-          setEditDialogOpen(false);
-          setSelectedStaffId(null);
-        }}
-      /> */}
     </>
   );
 }

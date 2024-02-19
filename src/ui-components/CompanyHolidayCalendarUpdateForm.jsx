@@ -8,10 +8,9 @@
 import * as React from "react";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
-import { generateClient } from "aws-amplify/api";
+import { API } from "aws-amplify";
 import { getCompanyHolidayCalendar } from "../graphql/queries";
 import { updateCompanyHolidayCalendar } from "../graphql/mutations";
-const client = generateClient();
 export default function CompanyHolidayCalendarUpdateForm(props) {
   const {
     id: idProp,
@@ -47,7 +46,7 @@ export default function CompanyHolidayCalendarUpdateForm(props) {
     const queryData = async () => {
       const record = idProp
         ? (
-            await client.graphql({
+            await API.graphql({
               query: getCompanyHolidayCalendar.replaceAll("__typename", ""),
               variables: { id: idProp },
             })
@@ -119,7 +118,7 @@ export default function CompanyHolidayCalendarUpdateForm(props) {
               modelFields[key] = null;
             }
           });
-          await client.graphql({
+          await API.graphql({
             query: updateCompanyHolidayCalendar.replaceAll("__typename", ""),
             variables: {
               input: {

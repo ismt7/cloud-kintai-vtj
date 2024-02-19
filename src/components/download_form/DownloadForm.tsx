@@ -1,3 +1,4 @@
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import {
   Autocomplete,
   Box,
@@ -9,19 +10,19 @@ import {
 } from "@mui/material";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import useStaffs from "../../hooks/useStaffs/useStaffs";
+
 import useCloseDates from "../../hooks/useCloseDates/useCloseDates";
-import { Staff } from "../../hooks/useStaffs/common";
+import useStaffs, { StaffType } from "../../hooks/useStaffs/useStaffs";
+import { calcTotalRestTime } from "../attendance_editor/items/RestTimeItem/RestTimeItem";
 import downloadAttendances from "./downloadAttendances";
 
 type Inputs = {
   startDate: dayjs.Dayjs | undefined;
   endDate: dayjs.Dayjs | undefined;
-  staffs: Staff[];
+  staffs: StaffType[];
 };
 
 const defaultValues: Inputs = {
@@ -32,7 +33,7 @@ const defaultValues: Inputs = {
 
 export default function DownloadForm() {
   const navigate = useNavigate();
-  const [selectedStaff, setSelectedStaff] = useState<Staff[]>([]);
+  const [selectedStaff, setSelectedStaff] = useState<StaffType[]>([]);
   const { staffs, loading: staffLoading, error: staffError } = useStaffs();
   const {
     closeDates,
@@ -64,10 +65,10 @@ export default function DownloadForm() {
       }))
     ).then((res) => {
       const exportData = [
-        "営業日,従業員コード,名前,休憩時間,出勤打刻,退勤打刻,直行,直帰",
+        "営業日,従業員コード,名前,休憩時間,出勤打刻,退勤打刻,直行,直帰,有給休暇",
         ...selectedStaff.map((staff) => {
           const attendances = res.filter(
-            (attendance) => attendance.staffId === staff.sub
+            (attendance) => attendance.staffId === staff.cognitoUserId
           );
 
           return [
@@ -83,27 +84,42 @@ export default function DownloadForm() {
                   endTime,
                   goDirectlyFlag,
                   returnDirectlyFlag,
+                  paidHolidayFlag,
+                  rests,
                 } = matchAttendance;
+
+                const totalRestTime =
+                  rests?.reduce((acc, rest) => {
+                    if (!rest) return acc;
+
+                    const diff = calcTotalRestTime(
+                      rest.startTime,
+                      rest.endTime
+                    );
+                    return acc + diff;
+                  }, 0) ?? 0;
 
                 return [
                   dayjs(workDate).format("YYYY/MM/DD"),
                   staffId,
                   `${staff.familyName} ${staff.givenName}`,
+                  totalRestTime.toFixed(2),
                   startTime ? dayjs(startTime).format("HH:mm") : "",
                   endTime ? dayjs(endTime).format("HH:mm") : "",
-                  "",
                   goDirectlyFlag ? 1 : 0,
                   returnDirectlyFlag ? 1 : 0,
+                  paidHolidayFlag ? 1 : 0,
                 ].join(",");
               }
 
               return [
                 dayjs(workDate).format("YYYY/MM/DD"),
-                staff.sub,
+                staff.cognitoUserId,
                 `${staff.familyName} ${staff.givenName}`,
                 "",
                 "",
-                " ",
+                "",
+                "",
                 "",
                 "",
               ].join(",");

@@ -1,5 +1,6 @@
 import { GraphQLResult } from "@aws-amplify/api";
 import { API } from "aws-amplify";
+
 import { CloseDate, ListCloseDatesQuery } from "../../API";
 import { listCloseDates } from "../../graphql/queries";
 

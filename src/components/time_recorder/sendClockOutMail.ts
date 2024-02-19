@@ -1,8 +1,10 @@
 import { API } from "aws-amplify";
 import dayjs from "dayjs";
+
+import { Attendance } from "../../API";
+import * as MESSAGE_CODE from "../../errors";
 import { sendMail } from "../../graphql/queries";
 import { CognitoUser } from "../../hooks/useCognitoUser";
-import { Attendance } from "../../API";
 
 export default function sendClockOutMail(
   cognitoUser: CognitoUser,
@@ -10,7 +12,8 @@ export default function sendClockOutMail(
 ) {
   const { mailAddress, familyName, givenName } = cognitoUser;
   const { workDate, endTime, returnDirectlyFlag } = attendance;
-  void API.graphql({
+
+  const mailParams = {
     query: sendMail,
     variables: {
       data: {
@@ -41,5 +44,11 @@ export default function sendClockOutMail(
         ].join("\n"),
       },
     },
-  });
+  };
+
+  try {
+    void API.graphql(mailParams);
+  } catch {
+    throw new Error(MESSAGE_CODE.E00001);
+  }
 }

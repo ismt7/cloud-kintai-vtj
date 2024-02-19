@@ -1,3 +1,4 @@
+// cspell:ignore notistack
 import CloseIcon from "@mui/icons-material/Close";
 import { IconButton, styled } from "@mui/material";
 import {
@@ -7,6 +8,7 @@ import {
   SnackbarProvider,
 } from "notistack";
 import { useEffect } from "react";
+
 import { useAppDispatchV2, useAppSelectorV2 } from "../../app/hooks";
 import {
   selectSnackbar,

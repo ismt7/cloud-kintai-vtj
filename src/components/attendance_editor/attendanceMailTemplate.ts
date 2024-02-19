@@ -1,16 +1,17 @@
 import dayjs from "dayjs";
-import { Attendance, AttendanceHistory } from "../../API";
-import { Staff } from "../../hooks/useStaffs/common";
 
-function showBlankLine() {
+import { Attendance, AttendanceHistory } from "../../API";
+import { StaffType } from "../../hooks/useStaffs/useStaffs";
+
+function showBlankLine(): string {
   return "";
 }
 
-function showSeparateLine() {
+function showSeparateLine(): string {
   return "----";
 }
 
-function showHelloStaffName(staff: Staff) {
+function showHelloStaffName(staff: StaffType) {
   const { familyName, givenName } = staff;
   if (!familyName && !givenName) return "こんにちは。";
 
@@ -170,10 +171,10 @@ function showRestTime(attendance: Attendance, history: AttendanceHistory) {
 
     // 休憩時間を削除した場合
     if (!afterRest) {
-      const beforeRestStartTime = beforeRest
+      const beforeRestStartTime = beforeRest.startTime
         ? dayjs(beforeRest.startTime).format(TIME_FORMAT)
         : NOT_SET;
-      const beforeRestEndTime = beforeRest
+      const beforeRestEndTime = beforeRest.endTime
         ? dayjs(beforeRest.endTime).format(TIME_FORMAT)
         : NOT_SET;
 
@@ -183,10 +184,10 @@ function showRestTime(attendance: Attendance, history: AttendanceHistory) {
 
     // 休憩時間を追加した場合
     if (!beforeRest) {
-      const afterRestStartTime = afterRest
+      const afterRestStartTime = afterRest.startTime
         ? dayjs(afterRest.startTime).format(TIME_FORMAT)
         : NOT_SET;
-      const afterRestEndTime = afterRest
+      const afterRestEndTime = afterRest.endTime
         ? dayjs(afterRest.endTime).format(TIME_FORMAT)
         : NOT_SET;
 
@@ -196,17 +197,17 @@ function showRestTime(attendance: Attendance, history: AttendanceHistory) {
 
     // 休憩時間を変更した場合
     {
-      const beforeRestStartTime = beforeRest
+      const beforeRestStartTime = beforeRest.startTime
         ? dayjs(beforeRest.startTime).format(TIME_FORMAT)
         : NOT_SET;
-      const beforeRestEndTime = beforeRest
+      const beforeRestEndTime = beforeRest.endTime
         ? dayjs(beforeRest.endTime).format(TIME_FORMAT)
         : NOT_SET;
 
-      const afterRestStartTime = afterRest
+      const afterRestStartTime = afterRest.startTime
         ? dayjs(afterRest.startTime).format(TIME_FORMAT)
         : NOT_SET;
-      const afterRestEndTime = afterRest
+      const afterRestEndTime = afterRest.endTime
         ? dayjs(afterRest.endTime).format(TIME_FORMAT)
         : NOT_SET;
 
@@ -255,7 +256,7 @@ function showLastMessage() {
 }
 
 export default function getAttendanceMailBody(
-  staff: Staff,
+  staff: StaffType,
   attendance: Attendance,
   history: AttendanceHistory
 ) {

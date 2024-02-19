@@ -9,9 +9,10 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
+
 import { CloseDate, UpdateCloseDateInput } from "../../../API";
 import { useAppDispatchV2 } from "../../../app/hooks";
-import { E09003, S09003 } from "../../../errors";
+import * as MESSAGE_CODE from "../../../errors";
 import {
   setSnackbarError,
   setSnackbarSuccess,
@@ -61,10 +62,10 @@ export default function EditJobTermInputDialog({
       endDate: data.endDate.toISOString(),
     })
       .then(() => {
-        dispatch(setSnackbarSuccess(S09003));
+        dispatch(setSnackbarSuccess(MESSAGE_CODE.S09003));
         onClose();
       })
-      .catch(() => dispatch(setSnackbarError(E09003)));
+      .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E09003)));
   };
 
   useEffect(() => {

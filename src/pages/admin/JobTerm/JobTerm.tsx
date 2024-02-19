@@ -14,9 +14,10 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+
 import { CloseDate } from "../../../API";
 import { useAppDispatchV2 } from "../../../app/hooks";
-import { E09004, S09004 } from "../../../errors";
+import * as MESSAGE_CODE from "../../../errors";
 import useCloseDates from "../../../hooks/useCloseDates/useCloseDates";
 import {
   setSnackbarError,
@@ -229,8 +230,12 @@ export default function JobTerm() {
                     if (!result) return;
 
                     deleteCloseDate({ id: params.row.id })
-                      .then(() => dispatch(setSnackbarSuccess(S09004)))
-                      .catch(() => dispatch(setSnackbarError(E09004)));
+                      .then(() =>
+                        dispatch(setSnackbarSuccess(MESSAGE_CODE.S09004))
+                      )
+                      .catch(() =>
+                        dispatch(setSnackbarError(MESSAGE_CODE.E09004))
+                      );
                   }}
                 />,
               ],

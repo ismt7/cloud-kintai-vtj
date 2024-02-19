@@ -11,15 +11,15 @@ import {
 } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { NavigateFunction } from "react-router-dom";
+
 import {
   Attendance,
   CompanyHolidayCalendar,
   HolidayCalendar,
 } from "../../../API";
-import getDayOfWeek from "../../../components/attendance_list/getDayOfWeek";
+import getDayOfWeek from "../../../components/AttendanceList/getDayOfWeek";
 
 export default function getColumns(
-  deleteAttendance: (attendanceId: number) => Promise<void>,
   rowModelsModel: GridRowModesModel,
   staffId: string | undefined,
   navigate: NavigateFunction,
@@ -27,20 +27,6 @@ export default function getColumns(
   companyHolidayCalendars: CompanyHolidayCalendar[]
 ): GridColDef[] {
   return [
-    // {
-    //   field: "status",
-    //   headerName: "ステータス",
-    //   align: "center",
-    //   valueGetter: (params: GridValueGetterParams<AttendanceOrigin>) => {
-    //     const { workDate, startTime, endTime } = params.row;
-    //     return statusValueGetter(
-    //       workDate,
-    //       startTime,
-    //       endTime,
-    //       holidayCalendars
-    //     );
-    //   },
-    // },
     {
       field: "workDate",
       headerName: "勤務日",

@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Title component snapshot 1`] = `
+<DocumentFragment>
+  <h4
+    class="MuiTypography-root MuiTypography-h4 css-1u87xcl-MuiTypography-root"
+  >
+    Title
+  </h4>
+</DocumentFragment>
+`;

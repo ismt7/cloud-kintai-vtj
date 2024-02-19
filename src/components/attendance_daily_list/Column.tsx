@@ -1,25 +1,14 @@
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import {
   GridActionsCellItem,
   GridColDef,
   GridRowParams,
   GridValueGetterParams,
 } from "@mui/x-data-grid";
-
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import { AttendanceDaily } from "../../hooks/useAttendanceDaily/useAttendanceDaily";
 
-// export interface SummaryAttendance {
-//   id: Staff["id"];
-//   lastName: Staff["last_name"];
-//   firstName: Staff["first_name"];
-//   workStatus: string;
-//   startTime: Attendance["endTime"];
-//   endTime: Attendance["endTime"];
-//   totalWorkHoursPerMonth: number;
-//   totalWorkDaysPerMonth: number;
-// }
+import { AttendanceDaily } from "../../hooks/useAttendanceDaily/useAttendanceDaily";
 
 export default function GetColumns(): GridColDef[] {
   const navigate = useNavigate();
@@ -48,7 +37,7 @@ export default function GetColumns(): GridColDef[] {
       align: "left",
       sortable: false,
       headerAlign: "center",
-      width: 100,
+      width: 200,
       valueGetter: (params: GridValueGetterParams<AttendanceDaily>) => {
         const { familyName, givenName } = params.row;
         if (!familyName && !givenName) return "(未設定)";
@@ -56,14 +45,6 @@ export default function GetColumns(): GridColDef[] {
         return `${familyName || ""} ${givenName || ""}`;
       },
     },
-    // {
-    //   field: "workStatus",
-    //   type: "string",
-    //   headerName: "ステータス",
-    //   align: "right",
-    //   sortable: false,
-    //   headerAlign: "center",
-    // },
     {
       field: "startTime",
       type: "string",
@@ -96,45 +77,5 @@ export default function GetColumns(): GridColDef[] {
         return dayjs(endTime).format("HH:mm");
       },
     },
-    // {
-    //   field: "totalWorkHoursPerMonth",
-    //   headerName: "総稼動時間(h)",
-    //   align: "right",
-    //   sortable: false,
-    //   headerAlign: "center",
-    //   width: 150,
-    // },
-    // {
-    //   field: "operatingRate",
-    //   headerName: "稼働率(%)",
-    //   align: "right",
-    //   sortable: false,
-    //   headerAlign: "center",
-    //   valueGetter: (params: GridValueGetterParams<SummaryAttendance>) => {
-    //     const { totalWorkHoursPerMonth, totalWorkDaysPerMonth } = params.row;
-    //     const totalWorkHoursPerMonthNumber = Number(totalWorkHoursPerMonth);
-    //     const currentTotalWorkHoursPerMonthNumber = totalWorkDaysPerMonth * 8;
-
-    //     if (
-    //       totalWorkHoursPerMonthNumber === 0 ||
-    //       currentTotalWorkHoursPerMonthNumber === 0
-    //     ) {
-    //       return 0;
-    //     }
-
-    //     return Math.round(
-    //       (totalWorkHoursPerMonthNumber / currentTotalWorkHoursPerMonthNumber) *
-    //         100
-    //     );
-    //   },
-    // },
-    // {
-    //   field: "totalWorkDaysPerMonth",
-    //   type: "number",
-    //   headerName: "勤務日数(日)",
-    //   align: "right",
-    //   sortable: false,
-    //   headerAlign: "center",
-    // },
   ];
 }

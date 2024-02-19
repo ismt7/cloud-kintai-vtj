@@ -2,18 +2,83 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const sendMail = /* GraphQL */ `
-  query SendMail($data: EmailData!) {
-    sendMail(data: $data) {
-      statusCode
-      body
+import * as APITypes from "../API";
+type GeneratedQuery<InputType, OutputType> = string & {
+  __generatedQueryInput: InputType;
+  __generatedQueryOutput: OutputType;
+};
+
+export const sendMail = /* GraphQL */ `query SendMail($data: EmailData!) {
+  sendMail(data: $data) {
+    statusCode
+    body
+    __typename
+  }
+}
+` as GeneratedQuery<APITypes.SendMailQueryVariables, APITypes.SendMailQuery>;
+export const getStaff = /* GraphQL */ `query GetStaff($id: ID!) {
+  getStaff(id: $id) {
+    id
+    cognitoUserId
+    familyName
+    givenName
+    mailAddress
+    role
+    enabled
+    status
+    owner
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<APITypes.GetStaffQueryVariables, APITypes.GetStaffQuery>;
+export const listStaff = /* GraphQL */ `query ListStaff(
+  $filter: ModelStaffFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listStaff(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      cognitoUserId
+      familyName
+      givenName
+      mailAddress
+      role
+      enabled
+      status
+      owner
+      createdAt
+      updatedAt
       __typename
     }
+    nextToken
+    __typename
   }
-`;
-export const getHolidayCalendar = /* GraphQL */ `
-  query GetHolidayCalendar($id: ID!) {
-    getHolidayCalendar(id: $id) {
+}
+` as GeneratedQuery<APITypes.ListStaffQueryVariables, APITypes.ListStaffQuery>;
+export const getHolidayCalendar = /* GraphQL */ `query GetHolidayCalendar($id: ID!) {
+  getHolidayCalendar(id: $id) {
+    id
+    holidayDate
+    name
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetHolidayCalendarQueryVariables,
+  APITypes.GetHolidayCalendarQuery
+>;
+export const listHolidayCalendars = /* GraphQL */ `query ListHolidayCalendars(
+  $filter: ModelHolidayCalendarFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listHolidayCalendars(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
       id
       holidayDate
       name
@@ -21,35 +86,39 @@ export const getHolidayCalendar = /* GraphQL */ `
       updatedAt
       __typename
     }
+    nextToken
+    __typename
   }
-`;
-export const listHolidayCalendars = /* GraphQL */ `
-  query ListHolidayCalendars(
-    $filter: ModelHolidayCalendarFilterInput
-    $limit: Int
-    $nextToken: String
+}
+` as GeneratedQuery<
+  APITypes.ListHolidayCalendarsQueryVariables,
+  APITypes.ListHolidayCalendarsQuery
+>;
+export const getCompanyHolidayCalendar = /* GraphQL */ `query GetCompanyHolidayCalendar($id: ID!) {
+  getCompanyHolidayCalendar(id: $id) {
+    id
+    holidayDate
+    name
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetCompanyHolidayCalendarQueryVariables,
+  APITypes.GetCompanyHolidayCalendarQuery
+>;
+export const listCompanyHolidayCalendars = /* GraphQL */ `query ListCompanyHolidayCalendars(
+  $filter: ModelCompanyHolidayCalendarFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listCompanyHolidayCalendars(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
   ) {
-    listHolidayCalendars(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        holidayDate
-        name
-        createdAt
-        updatedAt
-        __typename
-      }
-      nextToken
-      __typename
-    }
-  }
-`;
-export const getCompanyHolidayCalendar = /* GraphQL */ `
-  query GetCompanyHolidayCalendar($id: ID!) {
-    getCompanyHolidayCalendar(id: $id) {
+    items {
       id
       holidayDate
       name
@@ -57,35 +126,36 @@ export const getCompanyHolidayCalendar = /* GraphQL */ `
       updatedAt
       __typename
     }
+    nextToken
+    __typename
   }
-`;
-export const listCompanyHolidayCalendars = /* GraphQL */ `
-  query ListCompanyHolidayCalendars(
-    $filter: ModelCompanyHolidayCalendarFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listCompanyHolidayCalendars(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        holidayDate
-        name
-        createdAt
-        updatedAt
-        __typename
-      }
-      nextToken
-      __typename
-    }
+}
+` as GeneratedQuery<
+  APITypes.ListCompanyHolidayCalendarsQueryVariables,
+  APITypes.ListCompanyHolidayCalendarsQuery
+>;
+export const getCloseDate = /* GraphQL */ `query GetCloseDate($id: ID!) {
+  getCloseDate(id: $id) {
+    id
+    closeDate
+    startDate
+    endDate
+    createdAt
+    updatedAt
+    __typename
   }
-`;
-export const getCloseDate = /* GraphQL */ `
-  query GetCloseDate($id: ID!) {
-    getCloseDate(id: $id) {
+}
+` as GeneratedQuery<
+  APITypes.GetCloseDateQueryVariables,
+  APITypes.GetCloseDateQuery
+>;
+export const listCloseDates = /* GraphQL */ `query ListCloseDates(
+  $filter: ModelCloseDateFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listCloseDates(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
       id
       closeDate
       startDate
@@ -94,32 +164,81 @@ export const getCloseDate = /* GraphQL */ `
       updatedAt
       __typename
     }
+    nextToken
+    __typename
   }
-`;
-export const listCloseDates = /* GraphQL */ `
-  query ListCloseDates(
-    $filter: ModelCloseDateFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listCloseDates(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        closeDate
-        startDate
-        endDate
-        createdAt
-        updatedAt
-        __typename
-      }
-      nextToken
+}
+` as GeneratedQuery<
+  APITypes.ListCloseDatesQueryVariables,
+  APITypes.ListCloseDatesQuery
+>;
+export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
+  getAttendance(id: $id) {
+    id
+    staffId
+    workDate
+    startTime
+    endTime
+    goDirectlyFlag
+    returnDirectlyFlag
+    rests {
+      startTime
+      endTime
       __typename
     }
+    remarks
+    paidHolidayFlag
+    histories {
+      staffId
+      workDate
+      startTime
+      endTime
+      goDirectlyFlag
+      returnDirectlyFlag
+      rests {
+        startTime
+        endTime
+        __typename
+      }
+      remarks
+      paidHolidayFlag
+      createdAt
+      __typename
+    }
+    changeRequests {
+      startTime
+      endTime
+      goDirectlyFlag
+      returnDirectlyFlag
+      rests {
+        startTime
+        endTime
+        __typename
+      }
+      remarks
+      paidHolidayFlag
+      completed
+      comment
+      staffComment
+      __typename
+    }
+    revision
+    createdAt
+    updatedAt
+    __typename
   }
-`;
-export const getAttendance = /* GraphQL */ `
-  query GetAttendance($id: ID!) {
-    getAttendance(id: $id) {
+}
+` as GeneratedQuery<
+  APITypes.GetAttendanceQueryVariables,
+  APITypes.GetAttendanceQuery
+>;
+export const listAttendances = /* GraphQL */ `query ListAttendances(
+  $filter: ModelAttendanceFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listAttendances(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
       id
       staffId
       workDate
@@ -151,24 +270,7 @@ export const getAttendance = /* GraphQL */ `
         createdAt
         __typename
       }
-      revision
-      createdAt
-      updatedAt
-      __typename
-    }
-  }
-`;
-export const listAttendances = /* GraphQL */ `
-  query ListAttendances(
-    $filter: ModelAttendanceFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listAttendances(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        staffId
-        workDate
+      changeRequests {
         startTime
         endTime
         goDirectlyFlag
@@ -180,30 +282,63 @@ export const listAttendances = /* GraphQL */ `
         }
         remarks
         paidHolidayFlag
-        histories {
-          staffId
-          workDate
-          startTime
-          endTime
-          goDirectlyFlag
-          returnDirectlyFlag
-          rests {
-            startTime
-            endTime
-            __typename
-          }
-          remarks
-          paidHolidayFlag
-          createdAt
-          __typename
-        }
-        revision
-        createdAt
-        updatedAt
+        completed
+        comment
+        staffComment
         __typename
       }
-      nextToken
+      revision
+      createdAt
+      updatedAt
       __typename
     }
+    nextToken
+    __typename
   }
-`;
+}
+` as GeneratedQuery<
+  APITypes.ListAttendancesQueryVariables,
+  APITypes.ListAttendancesQuery
+>;
+export const getDocument = /* GraphQL */ `query GetDocument($id: ID!) {
+  getDocument(id: $id) {
+    id
+    title
+    content
+    tag
+    targetRole
+    revision
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetDocumentQueryVariables,
+  APITypes.GetDocumentQuery
+>;
+export const listDocuments = /* GraphQL */ `query ListDocuments(
+  $filter: ModelDocumentFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listDocuments(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      title
+      content
+      tag
+      targetRole
+      revision
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListDocumentsQueryVariables,
+  APITypes.ListDocumentsQuery
+>;

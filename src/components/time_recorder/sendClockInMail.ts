@@ -1,8 +1,10 @@
 import { API } from "aws-amplify";
 import dayjs from "dayjs";
+
+import { Attendance } from "../../API";
+import * as MESSAGE_CODE from "../../errors";
 import { sendMail } from "../../graphql/queries";
 import { CognitoUser } from "../../hooks/useCognitoUser";
-import { Attendance } from "../../API";
 
 export default function sendClockInMail(
   cognitoUser: CognitoUser,
@@ -10,7 +12,8 @@ export default function sendClockInMail(
 ) {
   const { mailAddress, familyName, givenName } = cognitoUser;
   const { workDate, startTime, goDirectlyFlag } = attendance;
-  void API.graphql({
+
+  const mailParams = {
     query: sendMail,
     variables: {
       data: {
@@ -34,12 +37,18 @@ export default function sendClockInMail(
           "-----",
           `勤務日：${dayjs(workDate).format("YYYY/MM/DD")}`,
           `出勤時刻：${startTime ? dayjs(startTime).format("HH:mm") : ""}`,
-          `出退勤区分：${goDirectlyFlag ? "直行" : "通常出勤"}}`,
+          `出退勤区分：${goDirectlyFlag ? "直行" : "通常出勤"}`,
           "-----",
           "",
           "本日も1日よろしくお願いします。",
         ].join("\n"),
       },
     },
-  });
+  };
+
+  try {
+    void API.graphql(mailParams);
+  } catch {
+    throw new Error(MESSAGE_CODE.E00001);
+  }
 }

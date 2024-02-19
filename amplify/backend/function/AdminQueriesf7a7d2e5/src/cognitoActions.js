@@ -18,14 +18,17 @@ const {
   AdminConfirmSignUpCommand,
   AdminDisableUserCommand,
   AdminEnableUserCommand,
+  AdminCreateUserCommand,
   AdminGetUserCommand,
+  AdminUpdateUserAttributesCommand,
+  AdminDeleteUserCommand,
   AdminListGroupsForUserCommand,
   AdminRemoveUserFromGroupCommand,
   AdminUserGlobalSignOutCommand,
   ListGroupsCommand,
   ListUsersCommand,
   ListUsersInGroupCommand,
-} = require('@aws-sdk/client-cognito-identity-provider');
+} = require("@aws-sdk/client-cognito-identity-provider");
 
 const cognitoIdentityProviderClient = new CognitoIdentityProviderClient({});
 const userPoolId = process.env.USERPOOL;
@@ -40,7 +43,9 @@ async function addUserToGroup(username, groupname) {
   console.log(`Attempting to add ${username} to ${groupname}`);
 
   try {
-    await cognitoIdentityProviderClient.send(new AdminAddUserToGroupCommand(params));
+    await cognitoIdentityProviderClient.send(
+      new AdminAddUserToGroupCommand(params)
+    );
     console.log(`Success adding ${username} to ${groupname}`);
     return {
       message: `Success adding ${username} to ${groupname}`,
@@ -61,7 +66,9 @@ async function removeUserFromGroup(username, groupname) {
   console.log(`Attempting to remove ${username} from ${groupname}`);
 
   try {
-    await cognitoIdentityProviderClient.send(new AdminRemoveUserFromGroupCommand(params));
+    await cognitoIdentityProviderClient.send(
+      new AdminRemoveUserFromGroupCommand(params)
+    );
     console.log(`Removed ${username} from ${groupname}`);
     return {
       message: `Removed ${username} from ${groupname}`,
@@ -80,7 +87,9 @@ async function confirmUserSignUp(username) {
   };
 
   try {
-    await cognitoIdentityProviderClient.send(new AdminConfirmSignUpCommand(params));
+    await cognitoIdentityProviderClient.send(
+      new AdminConfirmSignUpCommand(params)
+    );
     console.log(`Confirmed ${username} registration`);
     return {
       message: `Confirmed ${username} registration`,
@@ -98,7 +107,9 @@ async function disableUser(username) {
   };
 
   try {
-    await cognitoIdentityProviderClient.send(new AdminDisableUserCommand(params));
+    await cognitoIdentityProviderClient.send(
+      new AdminDisableUserCommand(params)
+    );
     console.log(`Disabled ${username}`);
     return {
       message: `Disabled ${username}`,
@@ -116,10 +127,35 @@ async function enableUser(username) {
   };
 
   try {
-    await cognitoIdentityProviderClient.send(new AdminEnableUserCommand(params));
+    await cognitoIdentityProviderClient.send(
+      new AdminEnableUserCommand(params)
+    );
     console.log(`Enabled ${username}`);
     return {
       message: `Enabled ${username}`,
+    };
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+async function createUser(username, userAttributes) {
+  const params = {
+    UserPoolId: userPoolId,
+    Username: username,
+    UserAttributes: userAttributes,
+  };
+
+  console.log(`Attempting to create ${username}`);
+
+  try {
+    await cognitoIdentityProviderClient.send(
+      new AdminCreateUserCommand(params)
+    );
+    console.log(`Created ${username}`);
+    return {
+      message: `Created ${username}`,
     };
   } catch (err) {
     console.log(err);
@@ -136,8 +172,55 @@ async function getUser(username) {
   console.log(`Attempting to retrieve information for ${username}`);
 
   try {
-    const result = await cognitoIdentityProviderClient.send(new AdminGetUserCommand(params));
+    const result = await cognitoIdentityProviderClient.send(
+      new AdminGetUserCommand(params)
+    );
     return result;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+async function updateUser(username, userAttributes) {
+  const params = {
+    UserPoolId: userPoolId,
+    Username: username,
+    UserAttributes: userAttributes,
+  };
+
+  console.log(`Attempting to update ${username}`);
+
+  try {
+    await cognitoIdentityProviderClient.send(
+      new AdminUpdateUserAttributesCommand(params)
+    );
+    console.log(`Updated ${username}`);
+    return {
+      message: `Updated ${username}`,
+    };
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+async function deleteUser(username) {
+  const params = {
+    UserPoolId: userPoolId,
+    Username: username,
+  };
+
+  console.log(`Attempting to delete ${username}`);
+
+  try {
+    await cognitoIdentityProviderClient.send(
+      new AdminDeleteUserCommand(params)
+    );
+    console.log(`Deleted ${username}`);
+    return {
+      message: `Deleted ${username}`,
+    };
   } catch (err) {
     console.log(err);
     throw err;
@@ -151,10 +234,12 @@ async function listUsers(Limit, PaginationToken) {
     ...(PaginationToken && { PaginationToken }),
   };
 
-  console.log('Attempting to list users');
+  console.log("Attempting to list users");
 
   try {
-    const result = await cognitoIdentityProviderClient.send(new ListUsersCommand(params));
+    const result = await cognitoIdentityProviderClient.send(
+      new ListUsersCommand(params)
+    );
 
     // Rename to NextToken for consistency with other Cognito APIs
     result.NextToken = result.PaginationToken;
@@ -174,10 +259,12 @@ async function listGroups(Limit, PaginationToken) {
     ...(PaginationToken && { PaginationToken }),
   };
 
-  console.log('Attempting to list groups');
+  console.log("Attempting to list groups");
 
   try {
-    const result = await cognitoIdentityProviderClient.send(new ListGroupsCommand(params));
+    const result = await cognitoIdentityProviderClient.send(
+      new ListGroupsCommand(params)
+    );
 
     // Rename to NextToken for consistency with other Cognito APIs
     result.NextToken = result.PaginationToken;
@@ -201,13 +288,19 @@ async function listGroupsForUser(username, Limit, NextToken) {
   console.log(`Attempting to list groups for ${username}`);
 
   try {
-    const result = await cognitoIdentityProviderClient.send(new AdminListGroupsForUserCommand(params));
+    const result = await cognitoIdentityProviderClient.send(
+      new AdminListGroupsForUserCommand(params)
+    );
     /**
      * We are filtering out the results that seem to be innapropriate for client applications
      * to prevent any informaiton disclosure. Customers can modify if they have the need.
      */
     result.Groups.forEach((val) => {
-      delete val.UserPoolId, delete val.LastModifiedDate, delete val.CreationDate, delete val.Precedence, delete val.RoleArn;
+      delete val.UserPoolId,
+        delete val.LastModifiedDate,
+        delete val.CreationDate,
+        delete val.Precedence,
+        delete val.RoleArn;
     });
 
     return result;
@@ -228,7 +321,9 @@ async function listUsersInGroup(groupname, Limit, NextToken) {
   console.log(`Attempting to list users in group ${groupname}`);
 
   try {
-    const result = await cognitoIdentityProviderClient.send(new ListUsersInGroupCommand(params));
+    const result = await cognitoIdentityProviderClient.send(
+      new ListUsersInGroupCommand(params)
+    );
     return result;
   } catch (err) {
     console.log(err);
@@ -246,7 +341,9 @@ async function signUserOut(username) {
   console.log(`Attempting to signout ${username}`);
 
   try {
-    await cognitoIdentityProviderClient.send(new AdminUserGlobalSignOutCommand(params));
+    await cognitoIdentityProviderClient.send(
+      new AdminUserGlobalSignOutCommand(params)
+    );
     console.log(`Signed out ${username} from all devices`);
     return {
       message: `Signed out ${username} from all devices`,
@@ -263,7 +360,10 @@ module.exports = {
   confirmUserSignUp,
   disableUser,
   enableUser,
+  createUser,
   getUser,
+  updateUser,
+  deleteUser,
   listUsers,
   listGroups,
   listGroupsForUser,
