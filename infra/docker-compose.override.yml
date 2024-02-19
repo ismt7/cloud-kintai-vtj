@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   frontend:
@@ -11,11 +11,11 @@ services:
     environment:
       - TZ=Asia/Tokyo
     ports:
-      - "3000:3000"
+      - "5173:5173"
     volumes:
       - ../src:/app/src:delegated
     healthcheck:
-      test: "curl -f http://localhost:3000 || exit 1"
+      test: "curl -f http://localhost:5173 || exit 1"
       interval: 5s
       timeout: 30s
       start_period: 20s
@@ -40,7 +40,7 @@ services:
       - ../.storybook:/app/.storybook:delegated
       - ../src/app:/app/src/app:delegated
 
-    command: [ "npm", "run", "storybook" ]
+    command: ["npm", "run", "storybook"]
     healthcheck:
       test: "curl -f http://localhost:6006 || exit 1"
       interval: 5s
@@ -66,7 +66,7 @@ services:
         "--",
         "--url",
         "http://storybook:6006",
-        "--no-stories-json"
+        "--no-stories-json",
       ]
     depends_on:
       storybook:
@@ -79,4 +79,4 @@ services:
       target: dev
     volumes:
       - ../:/app:delegated
-    command: [ "npm", "test", "--ci", "" ]
+    command: ["npm", "test", "--ci", ""]
