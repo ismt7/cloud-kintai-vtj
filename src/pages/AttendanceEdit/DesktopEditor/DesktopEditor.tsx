@@ -135,7 +135,7 @@ export default function DesktopEditor({
           <ProductionTimeItem time={totalProductionTime} />
           <RemarksInput register={register} />
           <Divider />
-          <StaffCommentInput register={register} />
+          <StaffCommentInput register={register} setValue={setValue} />
           <Box>
             <Stack
               direction="row"
