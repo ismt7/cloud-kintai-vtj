@@ -9,7 +9,7 @@
     "@blocknote/react": "^0.10.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@mui/icons-material": "^5.15.1",
+    "@mui/icons-material": "^5.15.6",
     "@mui/material": "^5.15.6",
     "@mui/styled-engine": "^5.15.1",
     "@mui/x-data-grid": "^6.18.5",
