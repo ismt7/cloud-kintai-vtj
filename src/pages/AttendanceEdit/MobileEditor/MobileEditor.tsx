@@ -1,0 +1,108 @@
+import { Stack } from "@mui/material";
+import Title from "../../../components/Title/Title";
+import AttendanceEditBreadcrumb from "../AttendanceEditBreadcrumb";
+import dayjs from "dayjs";
+import { Attendance } from "../../../API";
+import NoDataAlert from "../DesktopEditor/NoDataAlert";
+import { StaffType } from "../../../hooks/useStaffs/useStaffs";
+import { WorkDateItem } from "./WorkDateItem";
+import { StaffNameItem } from "./StaffNameItem";
+import {
+  Control,
+  FieldArrayMethodProps,
+  FieldArrayWithId,
+  UseFieldArrayRemove,
+  UseFormGetValues,
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch,
+} from "react-hook-form";
+import { AttendanceEditInputs, RestInputs } from "../common";
+import { PaidHolidayFlagInput } from "./PaidHolidayFlagInput";
+import { GoDirectlyFlagInput } from "./GoDirectlyFlagInput";
+import { ReturnDirectlyFlagInput } from "./ReturnDirectlyFlagInput";
+import { WorkTimeInput } from "./WorkTimeInput/WorkTimeInput";
+import { RestTimeInput } from "./RestTimeInput/RestTimeInput";
+import { Label } from "./Label";
+import RemarksInput from "../DesktopEditor/RemarksInput";
+
+type AttendanceEditProps = {
+  workDate: dayjs.Dayjs;
+  attendance: Attendance | null | undefined;
+  staff: StaffType | undefined | null;
+  control: Control<AttendanceEditInputs, any>;
+  setValue: UseFormSetValue<AttendanceEditInputs>;
+  getValues: UseFormGetValues<AttendanceEditInputs>;
+  watch: UseFormWatch<AttendanceEditInputs>;
+  restFields: FieldArrayWithId<AttendanceEditInputs, "rests", "id">[];
+  restAppend: (
+    value: RestInputs | RestInputs[],
+    options?: FieldArrayMethodProps | undefined
+  ) => void;
+  restRemove: UseFieldArrayRemove;
+  register: UseFormRegister<AttendanceEditInputs>;
+};
+
+export function MobileEditor({
+  workDate,
+  attendance,
+  staff,
+  control,
+  setValue,
+  getValues,
+  watch,
+  restFields,
+  restAppend,
+  restRemove,
+  register,
+}: AttendanceEditProps) {
+  if (!staff) return null;
+
+  return (
+    <Stack direction="column" spacing={1} sx={{ p: 1 }}>
+      <AttendanceEditBreadcrumb workDate={workDate} />
+      <Title text="勤怠編集" />
+      <Stack direction="column" spacing={2} sx={{ p: 1 }}>
+        <NoDataAlert attendance={attendance} />
+
+        {/* 勤務日 */}
+        <WorkDateItem workDate={workDate} />
+
+        {/* スタッフ */}
+        <StaffNameItem staff={staff} />
+
+        {/* 有給休暇 */}
+        <PaidHolidayFlagInput control={control} />
+
+        {/* 直行 */}
+        <GoDirectlyFlagInput control={control} />
+
+        {/* 直帰 */}
+        <ReturnDirectlyFlagInput control={control} />
+
+        {/* 勤務時間 */}
+        <WorkTimeInput
+          workDate={workDate}
+          control={control}
+          setValue={setValue}
+          getValues={getValues}
+          watch={watch}
+        />
+
+        {/* 休憩時間 */}
+        <RestTimeInput
+          restFields={restFields}
+          workDate={workDate}
+          control={control}
+          setValue={setValue}
+          restAppend={restAppend}
+          restRemove={restRemove}
+        />
+
+        {/* 備考 */}
+        <Label>備考</Label>
+        <RemarksInput register={register} />
+      </Stack>
+    </Stack>
+  );
+}

@@ -18,7 +18,7 @@ import StaffNameItem from "../../../components/attendance_editor/items/StaffName
 import Title from "../../../components/Title/Title";
 import { StaffType } from "../../../hooks/useStaffs/useStaffs";
 import { AttendanceEditInputs, RestInputs } from "../common";
-import AttendanceEditBreadcrumb from "./AttendanceEditBreadcrumb";
+import AttendanceEditBreadcrumb from "../AttendanceEditBreadcrumb";
 import ChangeRequestingAlert from "./ChangeRequestingMessage";
 import GoDirectlyFlagInput from "./GoDirectlyFlagInput";
 import NoDataAlert from "./NoDataAlert";
