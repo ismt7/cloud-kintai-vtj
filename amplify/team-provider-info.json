@@ -44,31 +44,45 @@
       }
     }
   },
-  "prd": {
+  "main": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-garakufrontend-prd-64713-authRole",
-      "UnauthRoleArn": "arn:aws:iam::952389366704:role/amplify-garakufrontend-prd-64713-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::952389366704:role/amplify-garakufrontend-prd-64713-authRole",
+      "AuthRoleName": "amplify-garakufrontend-main-82846-authRole",
+      "UnauthRoleArn": "arn:aws:iam::952389366704:role/amplify-garakufrontend-main-82846-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::952389366704:role/amplify-garakufrontend-main-82846-authRole",
       "Region": "ap-northeast-1",
-      "DeploymentBucketName": "amplify-garakufrontend-prd-64713-deployment",
-      "UnauthRoleName": "amplify-garakufrontend-prd-64713-unauthRole",
-      "StackName": "amplify-garakufrontend-prd-64713",
-      "StackId": "arn:aws:cloudformation:ap-northeast-1:952389366704:stack/amplify-garakufrontend-prd-64713/f98a7b40-844b-11ee-bb94-0660f04e275f",
+      "DeploymentBucketName": "amplify-garakufrontend-main-82846-deployment",
+      "UnauthRoleName": "amplify-garakufrontend-main-82846-unauthRole",
+      "StackName": "amplify-garakufrontend-main-82846",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:952389366704:stack/amplify-garakufrontend-main-82846/10b5fe10-cfca-11ee-a65a-0a9e3c520dbb",
       "AmplifyAppId": "dmghdnhtsemgt"
     },
     "categories": {
+      "auth": {
+        "garakufrontendbfa3456a": {}
+      },
+      "function": {
+        "AdminQueriesf7a7d2e5": {
+          "deploymentBucketName": "amplify-garakufrontend-main-82846-deployment",
+          "s3Key": "amplify-builds/AdminQueriesf7a7d2e5-6e52387656484b595857-build.zip"
+        },
+        "garakuSendMail": {
+          "deploymentBucketName": "amplify-garakufrontend-main-82846-deployment",
+          "s3Key": "amplify-builds/garakuSendMail-774e6a484256685a346c-build.zip"
+        },
+        "garakufrontendbfa3456a": {}
+      },
       "hosting": {
         "amplifyhosting": {
           "appId": "dmghdnhtsemgt",
           "type": "cicd"
         }
       },
-      "auth": {
-        "garakufrontendbfa3456a": {},
-        "garakufrontend705c8f74": {}
-      },
       "api": {
+        "AdminQueries": {},
         "garakufrontend": {}
+      },
+      "storage": {
+        "s373cdd821": {}
       }
     }
   }

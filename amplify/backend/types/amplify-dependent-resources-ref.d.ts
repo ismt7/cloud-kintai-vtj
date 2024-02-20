@@ -22,11 +22,6 @@ export type AmplifyDependentResourcesAttributes = {
       "UserPoolName": "string"
     }
   },
-  "custom": {
-    "customResourceb6662693": {
-      "snsTopicArn": "string"
-    }
-  },
   "function": {
     "AdminQueriesf7a7d2e5": {
       "Arn": "string",
