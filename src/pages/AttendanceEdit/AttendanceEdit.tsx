@@ -1,4 +1,4 @@
-import { LinearProgress } from "@mui/material";
+import { Box, LinearProgress } from "@mui/material";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -18,6 +18,7 @@ import {
 import { AttendanceEditInputs, defaultValues } from "./common";
 import DesktopEditor from "./DesktopEditor/DesktopEditor";
 import sendChangeRequestMail from "./sendChangeRequestMail";
+import { MobileEditor } from "./MobileEditor/MobileEditor";
 
 export default function AttendanceEdit() {
   const navigate = useNavigate();
@@ -198,22 +199,41 @@ export default function AttendanceEdit() {
     : [];
 
   return (
-    <DesktopEditor
-      workDate={dayjs(targetWorkDate)}
-      changeRequests={changeRequests}
-      attendance={attendance}
-      staff={staff}
-      control={control}
-      watch={watch}
-      setValue={setValue}
-      getValues={getValues}
-      restFields={restFields}
-      restRemove={restRemove}
-      restAppend={restAppend}
-      totalProductionTime={totalProductionTime}
-      register={register}
-      handleSubmit={handleSubmit}
-      onSubmit={onSubmit}
-    />
+    <>
+      <Box sx={{ display: { xs: "block", md: "none" } }}>
+        <MobileEditor
+          workDate={dayjs(targetWorkDate)}
+          attendance={attendance}
+          staff={staff}
+          control={control}
+          setValue={setValue}
+          getValues={getValues}
+          watch={watch}
+          restFields={restFields}
+          restAppend={restAppend}
+          restRemove={restRemove}
+          register={register}
+        />
+      </Box>
+      <Box sx={{ display: { xs: "none", md: "block" } }}>
+        <DesktopEditor
+          workDate={dayjs(targetWorkDate)}
+          changeRequests={changeRequests}
+          attendance={attendance}
+          staff={staff}
+          control={control}
+          watch={watch}
+          setValue={setValue}
+          getValues={getValues}
+          restFields={restFields}
+          restRemove={restRemove}
+          restAppend={restAppend}
+          totalProductionTime={totalProductionTime}
+          register={register}
+          handleSubmit={handleSubmit}
+          onSubmit={onSubmit}
+        />
+      </Box>
+    </>
   );
 }

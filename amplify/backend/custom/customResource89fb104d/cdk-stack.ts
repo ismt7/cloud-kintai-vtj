@@ -22,7 +22,11 @@ export class cdkStack extends cdk.Stack {
     // update with your username before running amplify push. This must be the same principal that is setup for your amplify profile
     // if you are using a federated role, change the code to load that role by name instead of loading a user
     // const keyAdmin = iam.User.fromUserName(this, "keyAdmin", "amplify-backup");
-    const keyAdmin = iam.User.fromUserName(this, "keyAdmin", "amplify-dev");
+    const keyAdmin = iam.User.fromUserName(
+      this,
+      "keyAdmin",
+      "amplify-backup-prd"
+    );
     // The BackupAdminRole can below assumed principals in your account for which you give the right to assume them
     // via STS assume role. You'll need to adjust the assumedBy principals to reference roles or users in your account
     // and this role can then administer restore points
