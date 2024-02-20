@@ -86,6 +86,10 @@
     "customResource89fb104d": {
       "providerPlugin": "awscloudformation",
       "service": "customCDK"
+    },
+    "customResourceb6662693": {
+      "providerPlugin": "awscloudformation",
+      "service": "customCDK"
     }
   },
   "function": {
