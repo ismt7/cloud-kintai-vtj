@@ -1,0 +1,97 @@
+import {
+  Button,
+  Divider,
+  IconButton,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
+import dayjs from "dayjs";
+import {
+  Control,
+  FieldArrayMethodProps,
+  FieldArrayWithId,
+  UseFieldArrayRemove,
+  UseFormSetValue,
+} from "react-hook-form";
+import { AttendanceEditInputs, RestInputs } from "../../common";
+import { Label } from "../Label";
+import RestStartTimeInput from "../../DesktopEditor/RestTimeItem/RestTimeInput/RestStartTimeInput";
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import RestEndTimeInput from "./RestEndTimeInput";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+export function RestTimeInput({
+  restFields,
+  workDate,
+  control,
+  setValue,
+  restAppend,
+  restRemove,
+}: {
+  restFields: FieldArrayWithId<AttendanceEditInputs, "rests", "id">[];
+  workDate: dayjs.Dayjs;
+  control: Control<AttendanceEditInputs, any>;
+  setValue: UseFormSetValue<AttendanceEditInputs>;
+  restAppend: (
+    value: RestInputs | RestInputs[],
+    options?: FieldArrayMethodProps | undefined
+  ) => void;
+  restRemove: UseFieldArrayRemove;
+}) {
+  return (
+    <>
+      <Label>休憩時間</Label>
+      {restFields.map((_, index) => (
+        <Paper elevation={2} key={index} sx={{ p: 2 }}>
+          <Stack direction="column" spacing={1}>
+            <Stack direction="row" spacing={0} alignItems={"center"}>
+              <Typography
+                variant="body1"
+                sx={{ fontWeight: "bold", flexGrow: 1 }}
+              >
+                開始時刻
+              </Typography>
+              <IconButton
+                aria-label="staff-search"
+                onClick={() => restRemove(index)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Stack>
+            <RestStartTimeInput
+              workDate={workDate}
+              index={index}
+              control={control}
+              setValue={setValue}
+            />
+            <Divider />
+            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+              終了時間
+            </Typography>
+            <RestEndTimeInput
+              workDate={workDate}
+              index={index}
+              control={control}
+              setValue={setValue}
+            />
+          </Stack>
+        </Paper>
+      ))}
+      <Button
+        variant="outlined"
+        size="medium"
+        startIcon={<AddCircleOutlineOutlinedIcon />}
+        fullWidth
+        onClick={() =>
+          restAppend({
+            startTime: null,
+            endTime: null,
+          })
+        }
+      >
+        休憩時間を追加
+      </Button>
+    </>
+  );
+}
