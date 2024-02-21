@@ -44,7 +44,9 @@ export default function useCognitoUser() {
     }
 
     const idToken = signInUserSession.getIdToken();
-    const userGroups = idToken.payload["cognito:groups"] as string[];
+    const userGroups: string[] = idToken.payload["cognito:groups"]
+      ? idToken.payload["cognito:groups"]
+      : [];
 
     if (!user?.attributes?.sub) {
       setCognitoUser(null);
@@ -58,8 +60,12 @@ export default function useCognitoUser() {
       familyName: user.attributes.family_name,
       mailAddress: user.attributes.email,
       owner: !!user.attributes["custom:owner"],
-      roles: (() =>
-        userGroups.map((group) => {
+      roles: (() => {
+        if (userGroups.length === 0) {
+          return [StaffRole.GUEST];
+        }
+
+        return userGroups.map((group) => {
           switch (group) {
             case "Admin":
               return StaffRole.ADMIN;
@@ -70,7 +76,8 @@ export default function useCognitoUser() {
             default:
               return StaffRole.GUEST;
           }
-        }))(),
+        });
+      })(),
     });
     setLoading(false);
   }, [user]);
