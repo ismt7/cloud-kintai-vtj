@@ -213,6 +213,8 @@ export default function AttendanceEdit() {
           restAppend={restAppend}
           restRemove={restRemove}
           register={register}
+          handleSubmit={handleSubmit}
+          onSubmit={onSubmit}
         />
       </Box>
       <Box sx={{ display: { xs: "none", md: "block" } }}>

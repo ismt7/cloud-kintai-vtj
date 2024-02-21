@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import Title from "../../../components/Title/Title";
 import AttendanceEditBreadcrumb from "../AttendanceEditBreadcrumb";
 import dayjs from "dayjs";
@@ -13,6 +13,7 @@ import {
   FieldArrayWithId,
   UseFieldArrayRemove,
   UseFormGetValues,
+  UseFormHandleSubmit,
   UseFormRegister,
   UseFormSetValue,
   UseFormWatch,
@@ -24,7 +25,7 @@ import { ReturnDirectlyFlagInput } from "./ReturnDirectlyFlagInput";
 import { WorkTimeInput } from "./WorkTimeInput/WorkTimeInput";
 import { RestTimeInput } from "./RestTimeInput/RestTimeInput";
 import { Label } from "./Label";
-import RemarksInput from "../DesktopEditor/RemarksInput";
+import RemarksInput from "./RemarksInput";
 
 type AttendanceEditProps = {
   workDate: dayjs.Dayjs;
@@ -41,6 +42,8 @@ type AttendanceEditProps = {
   ) => void;
   restRemove: UseFieldArrayRemove;
   register: UseFormRegister<AttendanceEditInputs>;
+  handleSubmit: UseFormHandleSubmit<AttendanceEditInputs, undefined>;
+  onSubmit: (data: AttendanceEditInputs) => Promise<void>;
 };
 
 export function MobileEditor({
@@ -55,6 +58,8 @@ export function MobileEditor({
   restAppend,
   restRemove,
   register,
+  handleSubmit,
+  onSubmit,
 }: AttendanceEditProps) {
   if (!staff) return null;
 
@@ -102,7 +107,24 @@ export function MobileEditor({
         {/* 備考 */}
         <Label>備考</Label>
         <RemarksInput register={register} />
+
+        {/* 申請ボタン */}
+        <RequestButtonItem handleSubmit={handleSubmit} onSubmit={onSubmit} />
       </Stack>
     </Stack>
+  );
+}
+
+function RequestButtonItem({
+  handleSubmit,
+  onSubmit,
+}: {
+  handleSubmit: UseFormHandleSubmit<AttendanceEditInputs, undefined>;
+  onSubmit: (data: AttendanceEditInputs) => Promise<void>;
+}) {
+  return (
+    <Button variant="contained" size="medium" onClick={handleSubmit(onSubmit)}>
+      申請
+    </Button>
   );
 }
