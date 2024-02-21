@@ -33,7 +33,8 @@
         "garakuSendMail": {
           "deploymentBucketName": "amplify-garakufrontend-dev-24913-deployment",
           "s3Key": "amplify-builds/garakuSendMail-774e6a484256685a346c-build.zip"
-        }
+        },
+        "garakufrontendbfa3456a": {}
       },
       "custom": {
         "customResource89fb104d": {},
