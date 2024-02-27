@@ -13,6 +13,26 @@ export default function Layout() {
   const cognitoUserId = user?.attributes?.sub;
 
   useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.pathname === "/login") return;
+
+    if (!cognitoUserId) return;
+
+    const isMailVerified = user?.attributes?.email_verified ? true : false;
+    if (isMailVerified) return;
+
+    alert(
+      "メール認証が完了していません。ログイン時にメール認証を行なってください。"
+    );
+
+    try {
+      void signOut();
+    } catch (error) {
+      console.error(error);
+    }
+  }, [user]);
+
+  useEffect(() => {
     if (authStatus !== "authenticated") return;
 
     void Storage.get("revision.json").then(async (fileUrl) => {

@@ -21,7 +21,7 @@ export default function PaidHolidayFlagInput({
         name="paidHolidayFlag"
         control={control}
         render={({ field }) => (
-          <Checkbox checked={field.value || false} {...field} />
+          <Checkbox {...field} checked={field.value || false} />
         )}
       />
     </Stack>

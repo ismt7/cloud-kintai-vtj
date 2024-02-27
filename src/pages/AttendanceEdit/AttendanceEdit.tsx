@@ -67,15 +67,20 @@ export default function AttendanceEdit() {
         revision: attendance.revision,
       })
         .then(() => {
-          dispatch(setSnackbarSuccess(MESSAGE_CODE.S02005));
-
           if (!cognitoUser) return;
-          sendChangeRequestMail(
-            cognitoUser,
-            dayjs(attendance.workDate),
-            staffs,
-            data.staffComment
-          );
+
+          try {
+            sendChangeRequestMail(
+              cognitoUser,
+              dayjs(attendance.workDate),
+              staffs,
+              data.staffComment
+            );
+          } catch (e) {
+            console.log(e);
+          }
+
+          dispatch(setSnackbarSuccess(MESSAGE_CODE.S02005));
 
           navigate("/attendance/list");
         })

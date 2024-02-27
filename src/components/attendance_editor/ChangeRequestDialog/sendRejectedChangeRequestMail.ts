@@ -15,7 +15,7 @@ export default function sendRejectedChangeRequestMail(
     throw new Error(MESSAGE_CODE.E00002);
   }
 
-  const APP_BASE_PATH = process.env.VITE_BASE_PATH;
+  const APP_BASE_PATH = import.meta.env.VITE_BASE_PATH;
   if (!APP_BASE_PATH) {
     throw new Error(MESSAGE_CODE.E00002);
   }
