@@ -49,7 +49,6 @@ export default function AttendanceEdit() {
   });
 
   const onSubmit = async (data: AttendanceEditInputs) => {
-    console.log(data);
     if (attendance) {
       updateAttendance({
         id: attendance.id,
@@ -68,7 +67,6 @@ export default function AttendanceEdit() {
         revision: attendance.revision,
       })
         .then(() => {
-          dispatch(setSnackbarSuccess(MESSAGE_CODE.S02005));
           if (!cognitoUser) return;
 
           try {
@@ -81,6 +79,8 @@ export default function AttendanceEdit() {
           } catch (e) {
             console.log(e);
           }
+
+          dispatch(setSnackbarSuccess(MESSAGE_CODE.S02005));
 
           navigate("/attendance/list");
         })
