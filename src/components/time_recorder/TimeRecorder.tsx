@@ -54,7 +54,7 @@ export default function TimeRecorder() {
   const today = dayjs().format("YYYY-MM-DD");
   const logger = new Logger(
     "TimeRecorder",
-    process.env.NODE_ENV === "development" ? "DEBUG" : "ERROR"
+    import.meta.env.DEV ? "DEBUG" : "ERROR"
   );
 
   useEffect(() => {

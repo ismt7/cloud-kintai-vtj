@@ -45,7 +45,7 @@ export default function EndTimeInput({
 
   const logger = new Logger(
     "EndTimeInput",
-    process.env.NODE_ENV === "development" ? "DEBUG" : "ERROR"
+    import.meta.env.DEV ? "DEBUG" : "ERROR"
   );
 
   return enableEndTime ? (

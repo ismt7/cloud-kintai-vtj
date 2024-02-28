@@ -84,7 +84,7 @@ export default function AttendanceEditor() {
 
   const logger = new Logger(
     "AttendanceEditor",
-    process.env.NODE_ENV === "development" ? "DEBUG" : "ERROR"
+    import.meta.env.DEV ? "DEBUG" : "ERROR"
   );
 
   const {
