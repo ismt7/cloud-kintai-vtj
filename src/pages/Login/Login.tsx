@@ -3,14 +3,10 @@ import "./styles.scss";
 
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { Amplify } from "aws-amplify";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import awsConfig from "../../aws-exports";
 import logo from "./logo_large.png";
-
-Amplify.configure(awsConfig);
 
 export default function Login() {
   const { authStatus, user } = useAuthenticator();
@@ -20,8 +16,6 @@ export default function Login() {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   const from = (location.state?.from as string) || "/";
 
-  const [hoge, setHoge] = useState(0);
-
   useEffect(() => {
     if (authStatus !== "authenticated") return;
     if (!user?.attributes?.sub) return;
@@ -30,7 +24,7 @@ export default function Login() {
     if (!isMailVerified) return;
 
     navigate(from, { replace: true });
-  }, [authStatus, navigate, from, user, hoge]);
+  }, [authStatus, navigate, from, user]);
 
   return (
     <Stack

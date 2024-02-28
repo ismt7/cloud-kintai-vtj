@@ -4,7 +4,7 @@ import { Authenticator } from "@aws-amplify/ui-react";
 import { ThemeProvider } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { I18n } from "aws-amplify";
+import { Amplify, I18n } from "aws-amplify";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
@@ -15,6 +15,9 @@ import { theme } from "./lib/theme";
 import reportWebVitals from "./reportWebVitals";
 import router from "./router";
 import vocabularies from "./vocabularies";
+import config from "./aws-exports";
+
+Amplify.configure(config);
 
 I18n.putVocabularies(vocabularies);
 I18n.setLanguage("ja");
