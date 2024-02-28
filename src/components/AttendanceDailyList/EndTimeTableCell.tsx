@@ -1,0 +1,13 @@
+import { AttendanceDaily } from "../../hooks/useAttendanceDaily/useAttendanceDaily";
+import { TableCell } from "@mui/material";
+import dayjs from "dayjs";
+
+export function EndTimeTableCell({ row }: { row: AttendanceDaily }) {
+  if (!row.attendance) return <TableCell></TableCell>;
+
+  const { endTime } = row.attendance;
+  if (!endTime) return <TableCell></TableCell>;
+
+  const date = dayjs(endTime).format("H:mm");
+  return <TableCell sx={{ textAlign: "right" }}>{date}</TableCell>;
+}
