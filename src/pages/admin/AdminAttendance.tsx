@@ -3,7 +3,7 @@ import { Box, Breadcrumbs, Container, Stack, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import AttendanceDailyList from "../../components/attendance_daily_list/AttendanceDailyList";
+import AttendanceDailyList from "../../components/AttendanceDailyList/AttendanceDailyList";
 import DownloadForm from "../../components/download_form/DownloadForm";
 
 export default function AdminAttendance() {
