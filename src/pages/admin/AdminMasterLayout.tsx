@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
-export default function Layout() {
+export default function AdminMasterLayout() {
   const navigate = useNavigate();
 
   const menuList = [

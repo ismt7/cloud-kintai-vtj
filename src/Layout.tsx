@@ -2,19 +2,25 @@ import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Box, Stack } from "@mui/material";
 import { Storage } from "aws-amplify";
 import { useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import SnackbarGroup from "./components/ snackbar/SnackbarGroup";
 import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
 
 export default function Layout() {
+  const navigate = useNavigate();
   const { user, signOut, authStatus } = useAuthenticator();
   const cognitoUserId = user?.attributes?.sub;
 
   useEffect(() => {
     const url = new URL(window.location.href);
     if (url.pathname === "/login") return;
+
+    if (authStatus === "unauthenticated") {
+      navigate("/login");
+      return;
+    }
 
     if (!cognitoUserId) return;
 
@@ -30,7 +36,7 @@ export default function Layout() {
     } catch (error) {
       console.error(error);
     }
-  }, [user]);
+  }, [authStatus, user, window.location.href]);
 
   useEffect(() => {
     if (authStatus !== "authenticated") return;

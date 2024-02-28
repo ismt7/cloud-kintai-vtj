@@ -25,6 +25,7 @@ import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 
 type Inputs = {
   title: string | null | undefined;
@@ -74,54 +75,52 @@ export default function DocumentPoster() {
   });
 
   return (
-    <Container maxWidth="xl" sx={{ pb: 5 }}>
-      <Stack direction="column" spacing={2}>
-        <Breadcrumbs>
-          <Link color="inherit" href="/">
-            TOP
-          </Link>
-          <Link color="inherit" href="/docs">
-            ドキュメント一覧
-          </Link>
-          <Typography color="text.primary">作成</Typography>
-        </Breadcrumbs>
-        <Title text="ドキュメントの作成" />
-        <Container maxWidth="md">
-          <Stack direction="column" spacing={2}>
-            <Box>
-              <Button
-                variant="contained"
-                size="medium"
-                onClick={handleSubmit(onSubmit)}
-                disabled={!isDirty || !isValid || isSubmitting}
-              >
-                保存
-              </Button>
-            </Box>
-            <TextField label="タイトル" {...register("title")} />
-            <Controller
-              name="targetRole"
-              control={control}
-              render={({ field }) => (
-                <Autocomplete
-                  value={field.value}
-                  multiple
-                  options={["スタッフ", "管理者"]}
-                  renderInput={(params) => (
-                    <TextField {...params} label="対象者" />
-                  )}
-                  onChange={(_, data) => {
-                    field.onChange(data);
-                  }}
-                />
-              )}
-            />
-            <Paper elevation={3} sx={{ p: 3 }}>
-              <BlockNoteView editor={editor} />
-            </Paper>
-          </Stack>
-        </Container>
-      </Stack>
-    </Container>
+    <>
+      <Breadcrumbs>
+        <Link color="inherit" href="/">
+          TOP
+        </Link>
+        <Link color="inherit" href="/docs">
+          ドキュメント一覧
+        </Link>
+        <Typography color="text.primary">作成</Typography>
+      </Breadcrumbs>
+      <Title text="ドキュメントの作成" />
+      <Container maxWidth="md">
+        <Stack direction="column" spacing={2}>
+          <Box>
+            <Button
+              variant="contained"
+              size="medium"
+              onClick={handleSubmit(onSubmit)}
+              disabled={!isDirty || !isValid || isSubmitting}
+            >
+              保存
+            </Button>
+          </Box>
+          <TextField label="タイトル" {...register("title")} />
+          <Controller
+            name="targetRole"
+            control={control}
+            render={({ field }) => (
+              <Autocomplete
+                value={field.value}
+                multiple
+                options={["スタッフ", "管理者"]}
+                renderInput={(params) => (
+                  <TextField {...params} label="対象者" />
+                )}
+                onChange={(_, data) => {
+                  field.onChange(data);
+                }}
+              />
+            )}
+          />
+          <Paper elevation={3} sx={{ p: 3 }}>
+            <BlockNoteView editor={editor} />
+          </Paper>
+        </Stack>
+      </Container>
+    </>
   );
 }

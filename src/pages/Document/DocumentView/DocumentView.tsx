@@ -21,6 +21,7 @@ import * as MESSAGE_CODE from "../../../errors";
 import fetchDocument from "../../../hooks/useDocuments/fetchDocument";
 import { setSnackbarError } from "../../../lib/reducers/snackbarReducer";
 import ContentView from "./ContentView";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 
 async function updateImageUrl(content: string) {
   // eslint-disable-next-line max-len
@@ -116,7 +117,7 @@ export default function DocumentView() {
   };
 
   return (
-    <Stack direction="column" spacing={2} sx={{ pb: 5 }}>
+    <>
       <Box>
         <Breadcrumbs>
           <Link to="/" color="inherit">
@@ -195,6 +196,6 @@ export default function DocumentView() {
           </Box>
         </Stack>
       </Container>
-    </Stack>
+    </>
   );
 }
