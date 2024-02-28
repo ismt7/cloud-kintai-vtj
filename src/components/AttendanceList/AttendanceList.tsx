@@ -47,7 +47,7 @@ export default function AttendanceTable() {
 
   const logger = new Logger(
     "AttendanceList",
-    process.env.NODE_ENV === "development" ? "DEBUG" : "ERROR"
+    import.meta.env.DEV ? "DEBUG" : "ERROR"
   );
 
   useEffect(() => {
