@@ -13,14 +13,17 @@ export interface CognitoUser {
 }
 
 export default function useCognitoUser() {
-  const { user } = useAuthenticator();
-  const [loading, setLoading] = useState(false);
+  const { user, authStatus } = useAuthenticator();
+  const [loading, setLoading] = useState(true);
   const [cognitoUser, setCognitoUser] = useState<
     CognitoUser | null | undefined
   >(undefined);
 
   useEffect(() => {
-    setLoading(true);
+    if (authStatus !== "authenticated") {
+      return;
+    }
+
     if (!user) {
       setCognitoUser(null);
       setLoading(false);
@@ -80,7 +83,7 @@ export default function useCognitoUser() {
       })(),
     });
     setLoading(false);
-  }, [user]);
+  }, [user, authStatus]);
 
   const isCognitoUserRole = (role: StaffRole) => {
     if (!cognitoUser) {

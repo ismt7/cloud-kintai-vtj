@@ -1,7 +1,6 @@
 import {
   Breadcrumbs,
   Container,
-  LinearProgress,
   Link,
   Stack,
   Table,
@@ -13,16 +12,13 @@ import {
 } from "@mui/material";
 
 import Title from "../components/Title/Title";
-import useCognitoUser from "../hooks/useCognitoUser";
+import { useContext } from "react";
+import { AuthContext } from "../Layout";
 
 export default function Setting() {
-  const { cognitoUser, loading: cognitoUserLoading } = useCognitoUser();
+  const { cognitoUser } = useContext(AuthContext);
 
-  if (cognitoUserLoading || cognitoUser === undefined) {
-    return <LinearProgress />;
-  }
-
-  if (cognitoUser === null) {
+  if (!cognitoUser) {
     return null;
   }
 

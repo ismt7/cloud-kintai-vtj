@@ -3,14 +3,11 @@ import { Box, Stack } from "@mui/material";
 import { StaffRole } from "../../hooks/useStaffs/useStaffs";
 import Link from "../link/Link";
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import { useContext } from "react";
+import { AuthContext } from "../../Layout";
 
-export default function DesktopMenu({
-  pathName,
-  isCognitoUserRole,
-}: {
-  pathName: string;
-  isCognitoUserRole: (role: StaffRole) => boolean;
-}) {
+export default function DesktopMenu({ pathName }: { pathName: string }) {
+  const { isCognitoUserRole } = useContext(AuthContext);
   const viewableList = [];
   const menuList = [
     { label: "勤怠打刻", href: "/register" },

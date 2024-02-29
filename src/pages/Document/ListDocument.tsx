@@ -15,8 +15,6 @@ import {
 import { useState } from "react";
 
 import useDocuments from "../../hooks/useDocuments/useDocuments";
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import { useNavigate } from "react-router-dom";
 
 export default function ListDocument() {
   const [searchKeyword, setSearchKeyword] = useState("");

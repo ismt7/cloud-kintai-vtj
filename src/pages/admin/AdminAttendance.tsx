@@ -1,21 +1,10 @@
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Box, Breadcrumbs, Container, Stack, Typography } from "@mui/material";
-import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import AttendanceDailyList from "../../components/AttendanceDailyList/AttendanceDailyList";
 import DownloadForm from "../../components/download_form/DownloadForm";
 
 export default function AdminAttendance() {
-  const { route } = useAuthenticator();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (route !== "idle" && route !== "authenticated") {
-      navigate("/login");
-    }
-  }, [route]);
-
   return (
     <Container maxWidth="xl">
       <Stack spacing={2} sx={{ pt: 1 }}>
