@@ -60,7 +60,7 @@
     "prefix": "MUI Table",
     "body": [
       "<TableContainer>",
-      "  <Table>",
+      "  <Table size="small">",
       "    <TableHead>",
       "      <TableRow>",
       "        <TableCell></TableCell>",

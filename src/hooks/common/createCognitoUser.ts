@@ -10,7 +10,7 @@ import { API, Auth } from "aws-amplify";
 //   Value: string;
 // };
 
-export default async function createStaff(
+export default async function createCognitoUser(
   username: string,
   familyName: string,
   givenName: string
