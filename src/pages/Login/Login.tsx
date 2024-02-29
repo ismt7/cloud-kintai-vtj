@@ -3,13 +3,14 @@ import "./styles.scss";
 
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import logo from "./logo_large.png";
+import { AuthContext } from "../../Layout";
 
 export default function Login() {
-  const { authStatus, user } = useAuthenticator();
+  const { user, authStatus } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
   // eslint-disable-next-line max-len

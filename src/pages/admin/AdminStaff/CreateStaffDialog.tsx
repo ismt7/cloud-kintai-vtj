@@ -7,14 +7,13 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { useAppDispatchV2 } from "../../../app/hooks";
 import * as MESSAGE_CODE from "../../../errors";
 import addUserToGroup from "../../../hooks/common/addUserToGroup";
 import createCognitoUser from "../../../hooks/common/createCognitoUser";
-import useCognitoUser from "../../../hooks/useCognitoUser";
 import { StaffRole, StaffType } from "../../../hooks/useStaffs/useStaffs";
 import {
   setSnackbarError,
@@ -22,6 +21,7 @@ import {
 } from "../../../lib/reducers/snackbarReducer";
 import { CreateStaffInput, UpdateStaffInput } from "../../../API";
 import { handleSyncCognitoUser } from "./handleSyncCognitoUser";
+import { AuthContext } from "../../../Layout";
 
 type Inputs = {
   familyName?: string;
@@ -53,11 +53,10 @@ export default function CreateStaffDialog({
   createStaff: (input: CreateStaffInput) => Promise<void>;
   updateStaff: (input: UpdateStaffInput) => Promise<void>;
 }) {
+  const { cognitoUser } = useContext(AuthContext);
   const dispatch = useAppDispatchV2();
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const { cognitoUser, loading: cognitoUserLoading } = useCognitoUser();
 
   const {
     register,
@@ -88,43 +87,27 @@ export default function CreateStaffDialog({
       throw new Error("Invalid data");
     }
 
-    createCognitoUser(mailAddress, familyName, givenName)
-      .then(async () => {
-        await addUserToGroup(mailAddress, role)
-          .then(async () => {
-            handleSyncCognitoUser(
-              staffs,
-              refreshStaff,
-              createStaff,
-              updateStaff
-            )
-              .catch(() => {
-                dispatch(setSnackbarError(MESSAGE_CODE.E10001));
-              })
-              .finally(() => {
-                handleClose();
-              });
-          })
-          .catch(() => {
-            dispatch(setSnackbarError(MESSAGE_CODE.E10002));
-          });
-      })
-      .catch(() => {
-        dispatch(setSnackbarError(MESSAGE_CODE.E10002));
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    await createCognitoUser(mailAddress, familyName, givenName).catch(() => {
+      dispatch(setSnackbarError(MESSAGE_CODE.E10002));
+    });
+
+    await addUserToGroup(mailAddress, role).catch(() => {
+      dispatch(setSnackbarError(MESSAGE_CODE.E10002));
+    });
+
+    await handleSyncCognitoUser(
+      staffs,
+      refreshStaff,
+      createStaff,
+      updateStaff
+    ).catch(() => {
+      dispatch(setSnackbarError(MESSAGE_CODE.E10001));
+    });
+
+    setIsSubmitting(false);
+    dispatch(setSnackbarSuccess(MESSAGE_CODE.S10002));
+    handleClose();
   };
-
-  if (cognitoUserLoading) {
-    return null;
-  }
-
-  if (cognitoUser === null) {
-    dispatch(setSnackbarError(MESSAGE_CODE.E00001));
-    return null;
-  }
 
   return (
     <>

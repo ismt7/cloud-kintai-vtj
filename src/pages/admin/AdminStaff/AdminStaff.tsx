@@ -1,4 +1,3 @@
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import {
   Box,
   Breadcrumbs,
@@ -13,13 +12,11 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { useAppDispatchV2 } from "../../../app/hooks";
 import Title from "../../../components/Title/Title";
 import * as MESSAGE_CODE from "../../../errors";
-import useCognitoUser from "../../../hooks/useCognitoUser";
 import useStaffs from "../../../hooks/useStaffs/useStaffs";
 import { setSnackbarError } from "../../../lib/reducers/snackbarReducer";
 import CreateStaffDialog from "./CreateStaffDialog";
@@ -35,11 +32,7 @@ import { MoreActionButton } from "./MoreActionButton/MoreActionButton";
 import "./styles.scss";
 
 export default function AdminStaff() {
-  const { route } = useAuthenticator();
-  const navigate = useNavigate();
   const dispatch = useAppDispatchV2();
-
-  const { cognitoUser, loading: cognitoUserLoading } = useCognitoUser();
 
   const {
     staffs,
@@ -51,17 +44,11 @@ export default function AdminStaff() {
     deleteStaff,
   } = useStaffs();
 
-  useEffect(() => {
-    if (route !== "idle" && route !== "authenticated") {
-      navigate("/login");
-    }
-  }, [route]);
-
-  if (staffLoading || cognitoUserLoading) {
+  if (staffLoading) {
     return <LinearProgress />;
   }
 
-  if (staffError || cognitoUser === null) {
+  if (staffError) {
     dispatch(setSnackbarError(MESSAGE_CODE.E00001));
     return null;
   }

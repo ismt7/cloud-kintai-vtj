@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { Cache, Logger } from "aws-amplify";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { useAppDispatchV2 } from "../../app/hooks";
 import * as MESSAGE_CODE from "../../errors";
@@ -17,7 +17,6 @@ import useAttendance, {
   ReturnDirectlyFlag,
 } from "../../hooks/useAttendance/useAttendance";
 import { getWorkStatus } from "../../hooks/useAttendance/WorkStatus";
-import useCognitoUser from "../../hooks/useCognitoUser";
 import {
   setSnackbarError,
   setSnackbarSuccess,
@@ -33,10 +32,11 @@ import ReturnDirectly from "./items/ReturnDirectlyItem";
 import sendClockInMail from "./sendClockInMail";
 import sendClockOutMail from "./sendClockOutMail";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
+import { AuthContext } from "../../Layout";
 
 export default function TimeRecorder() {
+  const { cognitoUser } = useContext(AuthContext);
   const dispatch = useAppDispatchV2();
-  const { cognitoUser, loading: cognitoUserLoading } = useCognitoUser();
   const {
     attendance,
     loading: attendanceLoading,
@@ -87,16 +87,11 @@ export default function TimeRecorder() {
     setWorkStatus(getWorkStatus(attendance));
   }, [attendance]);
 
-  if (
-    attendanceLoading ||
-    cognitoUserLoading ||
-    cognitoUser === undefined ||
-    workStatus === undefined
-  ) {
+  if (attendanceLoading || workStatus === undefined) {
     return <LinearProgress />;
   }
 
-  if (cognitoUser === null || workStatus === null) {
+  if (workStatus === null) {
     dispatch(setSnackbarError(MESSAGE_CODE.E00001));
     return null;
   }

@@ -1,12 +1,12 @@
 import { Box, Button, Container, Stack, styled } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import useCognitoUser from "../../hooks/useCognitoUser";
 import DesktopMenu from "./DesktopMenu";
 import Logo from "./Logo";
 import MobileMenu from "./MobileMenu";
 import StaffIcon from "./StaffIcon";
+import { AuthContext } from "../../Layout";
 
 const SignOutButton = styled(Button)(({ theme }) => ({
   color: theme.palette.logout.contrastText,
@@ -33,20 +33,9 @@ const SignInButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-export default function Header({
-  cognitoUserId,
-  signOut,
-}: {
-  cognitoUserId: string | undefined;
-  signOut: () => void;
-}) {
-  const {
-    cognitoUser,
-    isCognitoUserRole,
-    loading: cognitoUserLoading,
-  } = useCognitoUser();
-
+export default function Header() {
   const navigate = useNavigate();
+  const { signOut, cognitoUser } = useContext(AuthContext);
 
   const [pathName, setPathName] = useState("/register");
 
@@ -59,10 +48,6 @@ export default function Header({
   const signIn = () => {
     navigate("/login");
   };
-
-  if (cognitoUserLoading) {
-    return null;
-  }
 
   return (
     <header
@@ -79,10 +64,7 @@ export default function Header({
           spacing={2}
         >
           <Logo />
-          <DesktopMenu
-            pathName={pathName}
-            isCognitoUserRole={isCognitoUserRole}
-          />
+          <DesktopMenu pathName={pathName} />
           <MobileMenu />
           {pathName !== "/login" && (
             <Box
@@ -95,7 +77,7 @@ export default function Header({
             >
               <Stack direction="row" alignItems={"center"} spacing={1}>
                 <Box>
-                  {cognitoUserId ? (
+                  {cognitoUser?.id ? (
                     <SignOutButton onClick={signOut}>ログアウト</SignOutButton>
                   ) : (
                     <SignInButton onClick={signIn}>ログイン</SignInButton>

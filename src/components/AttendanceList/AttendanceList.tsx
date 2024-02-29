@@ -7,19 +7,19 @@ import {
   Typography,
 } from "@mui/material";
 import { Logger } from "aws-amplify";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useAppDispatchV2 } from "../../app/hooks";
 import * as MESSAGE_CODE from "../../errors";
 import useAttendances from "../../hooks/useAttendances/useAttendances";
-import useCognitoUser from "../../hooks/useCognitoUser";
 import useCompanyHolidayCalendars from "../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 import useHolidayCalendars from "../../hooks/useHolidayCalendars/useHolidayCalendars";
 import { setSnackbarError } from "../../lib/reducers/snackbarReducer";
 import Title from "../Title/Title";
 import DesktopList from "./DesktopList";
 import MobileList from "./MobileList/MobileList";
+import { AuthContext } from "../../Layout";
 
 const DescriptionTypography = styled(Typography)(({ theme }) => ({
   padding: "0px 40px",
@@ -29,10 +29,9 @@ const DescriptionTypography = styled(Typography)(({ theme }) => ({
 }));
 
 export default function AttendanceTable() {
+  const { cognitoUser } = useContext(AuthContext);
   const dispatch = useAppDispatchV2();
   const navigate = useNavigate();
-
-  const { cognitoUser, loading: cognitoUserLoading } = useCognitoUser();
   const { attendances, getAttendances } = useAttendances();
   const {
     holidayCalendars,
@@ -59,19 +58,11 @@ export default function AttendanceTable() {
     });
   }, [cognitoUser]);
 
-  if (
-    holidayCalendarLoading ||
-    cognitoUserLoading ||
-    companyHolidayCalendarLoading
-  ) {
+  if (holidayCalendarLoading || companyHolidayCalendarLoading) {
     return <LinearProgress />;
   }
 
-  if (
-    holidayCalendarError ||
-    companyHolidayCalendarError ||
-    cognitoUser === null
-  ) {
+  if (holidayCalendarError || companyHolidayCalendarError) {
     dispatch(setSnackbarError(MESSAGE_CODE.E00001));
     return null;
   }
