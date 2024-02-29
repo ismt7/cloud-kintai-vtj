@@ -54,7 +54,7 @@ export default function Header({
     const url = new URL(window.location.href);
     const name = url.pathname === "/" ? "/register" : url.pathname;
     setPathName(name);
-  }, []);
+  }, [window.location.href]);
 
   const signIn = () => {
     navigate("/login");

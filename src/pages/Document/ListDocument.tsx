@@ -3,6 +3,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import {
   Breadcrumbs,
   Chip,
+  Container,
   Grid,
   LinearProgress,
   Link,
@@ -14,6 +15,8 @@ import {
 import { useState } from "react";
 
 import useDocuments from "../../hooks/useDocuments/useDocuments";
+import { useAuthenticator } from "@aws-amplify/ui-react";
+import { useNavigate } from "react-router-dom";
 
 export default function ListDocument() {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -33,7 +36,7 @@ export default function ListDocument() {
   }
 
   return (
-    <Stack direction="column" spacing={2} sx={{ pt: 2 }}>
+    <>
       <Breadcrumbs>
         <Link href="/" color="inherit">
           TOP
@@ -111,6 +114,6 @@ export default function ListDocument() {
             </Grid>
           ))}
       </Grid>
-    </Stack>
+    </>
   );
 }

@@ -2,6 +2,7 @@ import { Box, Stack } from "@mui/material";
 
 import { StaffRole } from "../../hooks/useStaffs/useStaffs";
 import Link from "../link/Link";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 
 export default function DesktopMenu({
   pathName,
@@ -24,13 +25,18 @@ export default function DesktopMenu({
   ];
 
   // システム管理者、スタッフ管理者
-  if (
-    isCognitoUserRole(StaffRole.ADMIN) ||
-    isCognitoUserRole(StaffRole.STAFF_ADMIN)
-  ) {
-    viewableList.push(...menuList, ...adminMenuList);
-  } else if (isCognitoUserRole(StaffRole.STAFF)) {
-    viewableList.push(...menuList);
+  const { user } = useAuthenticator();
+  const isMailVerified = user?.attributes?.email_verified ? true : false;
+
+  if (isMailVerified) {
+    if (
+      isCognitoUserRole(StaffRole.ADMIN) ||
+      isCognitoUserRole(StaffRole.STAFF_ADMIN)
+    ) {
+      viewableList.push(...menuList, ...adminMenuList);
+    } else if (isCognitoUserRole(StaffRole.STAFF)) {
+      viewableList.push(...menuList);
+    }
   }
 
   return (

@@ -25,6 +25,7 @@ import {
 } from "../../../lib/reducers/snackbarReducer";
 import { defaultValues, DocumentInputs } from "./common";
 import ContentBlockNoteEditor from "./ContentBlockNoteEditor";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 
 async function updateImageUrl(content: string) {
   // eslint-disable-next-line max-len
@@ -67,19 +68,20 @@ export default function DocumentEditor() {
   const dispatch = useAppDispatchV2();
   const { documentId } = useParams();
 
-  const [documentTitle, setDocumentTitle] = useState<string | null | undefined>(
-    undefined
-  );
-  const [documentContent, setDocumentContent] = useState<
-    string | null | undefined
-  >(undefined);
-
   const { register, control, setValue, handleSubmit } = useForm<DocumentInputs>(
     {
       mode: "onChange",
       defaultValues,
     }
   );
+
+  const [documentTitle, setDocumentTitle] = useState<string | null | undefined>(
+    undefined
+  );
+
+  const [documentContent, setDocumentContent] = useState<
+    string | null | undefined
+  >(undefined);
 
   const onSubmit = (data: DocumentInputs) => {
     if (!documentId) return;
@@ -130,7 +132,7 @@ export default function DocumentEditor() {
   }
 
   return (
-    <Stack direction="column" spacing={2} sx={{ pb: 5 }}>
+    <>
       <Box>
         <Breadcrumbs>
           <Link to="/" color="inherit">
@@ -183,6 +185,6 @@ export default function DocumentEditor() {
           </Paper>
         </Stack>
       </Container>
-    </Stack>
+    </>
   );
 }

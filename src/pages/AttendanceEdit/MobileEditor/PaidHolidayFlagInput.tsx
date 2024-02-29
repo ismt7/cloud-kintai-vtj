@@ -15,7 +15,11 @@ export function PaidHolidayFlagInput({
         name="paidHolidayFlag"
         control={control}
         render={({ field }) => (
-          <Switch checked={field.value || false} onChange={field.onChange} />
+          <Switch
+            {...field}
+            checked={field.value || false}
+            onChange={field.onChange}
+          />
         )}
       />
     </>

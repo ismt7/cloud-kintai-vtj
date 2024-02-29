@@ -16,7 +16,7 @@ export default defineConfig({
     outDir: "build",
   },
   plugins: [react()],
-  assetsInclude: ["**/*.xlsx"],
+  assetsInclude: ["**/*.xlsx", "**/*.png"],
   define: {
     global: "window",
   },

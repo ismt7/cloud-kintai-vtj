@@ -4,7 +4,6 @@ import Layout from "./Layout";
 import AdminAttendance from "./pages/admin/AdminAttendance";
 import AdminAttendanceEditor from "./pages/admin/AdminAttendanceEditor";
 import AdminAttendancePrint from "./pages/admin/AdminAttendancePrint";
-import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminHolidayCalendar from "./pages/admin/AdminHolidayCalendar/HolidayCalendar/AdminHolidayCalendar";
 import AdminStaff from "./pages/admin/AdminStaff/AdminStaff";
 import AdminStaffAttendanceList from "./pages/admin/AdminStaffAttendanceList/AdminStaffAttendanceList";
@@ -20,7 +19,7 @@ import List from "./pages/List";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register";
 import Setting from "./pages/Setting";
-import AdminMasterLayout from "./stories/pages/admin/master/AdminMasterLayout";
+import AdminMasterLayout from "./pages/admin/AdminMasterLayout";
 
 const router = createBrowserRouter([
   {
@@ -32,16 +31,12 @@ const router = createBrowserRouter([
         element: <Register />,
       },
       {
-        path: "/register",
+        path: "register",
         element: <Register />,
       },
       {
         path: "attendance",
         children: [
-          {
-            index: true,
-            element: <List />,
-          },
           {
             path: "list",
             element: <List />,
@@ -50,10 +45,14 @@ const router = createBrowserRouter([
             path: ":targetWorkDate/edit",
             element: <AttendanceEdit />,
           },
+          {
+            path: "*",
+            element: <List />,
+          },
         ],
       },
       {
-        path: "/login",
+        path: "login",
         element: <Login />,
       },
       {
@@ -88,79 +87,77 @@ const router = createBrowserRouter([
         element: <Setting />,
       },
       {
-        path: "*",
-        element: <div>Not Found</div>,
-      },
-    ],
-  },
-  {
-    path: "/admin",
-    element: <Layout />,
-    children: [
-      {
-        index: true,
-        element: <AdminDashboard />,
-      },
-      {
-        path: "staff",
+        path: "/admin",
         children: [
           {
             index: true,
-            element: <AdminStaff />,
           },
           {
-            path: ":staffId",
+            path: "staff",
             children: [
               {
                 index: true,
                 element: <AdminStaff />,
               },
               {
-                path: "attendance",
-                element: <AdminStaffAttendanceList />,
+                path: ":staffId",
+                children: [
+                  {
+                    index: true,
+                    element: <AdminStaff />,
+                  },
+                  {
+                    path: "attendance",
+                    element: <AdminStaffAttendanceList />,
+                  },
+                  {
+                    path: "edit",
+                    element: <AdminStaffEditor />,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: "attendances",
+            children: [
+              {
+                index: true,
+                element: <AdminAttendance />,
               },
               {
-                path: "edit",
-                element: <AdminStaffEditor />,
+                path: "edit/:targetWorkDate/:staffId",
+                element: <AdminAttendanceEditor />,
+              },
+              {
+                path: "print",
+                element: <AdminAttendancePrint />,
+              },
+            ],
+          },
+          {
+            path: "master",
+            element: <AdminMasterLayout />,
+            children: [
+              {
+                index: true,
+                element: <JobTerm />,
+              },
+              {
+                path: "job_term",
+                element: <JobTerm />,
+              },
+              {
+                path: "holiday_calendar",
+                element: <AdminHolidayCalendar />,
               },
             ],
           },
         ],
       },
       {
-        path: "attendances",
-        children: [
-          {
-            index: true,
-            element: <AdminAttendance />,
-          },
-          {
-            path: "edit/:targetWorkDate/:staffId",
-            element: <AdminAttendanceEditor />,
-          },
-          {
-            path: "print",
-            element: <AdminAttendancePrint />,
-          },
-        ],
-      },
-      {
-        path: "master",
-        element: <AdminMasterLayout />,
-        children: [
-          {
-            index: true,
-            element: <JobTerm />,
-          },
-          {
-            path: "job_term",
-            element: <JobTerm />,
-          },
-          {
-            path: "holiday_calendar",
-            element: <AdminHolidayCalendar />,
-          },
-        ],
+        path: "*",
+        element: <div>Not Found</div>,
       },
     ],
   },

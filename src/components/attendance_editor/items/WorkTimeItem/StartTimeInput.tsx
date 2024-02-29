@@ -21,7 +21,7 @@ export default function StartTimeInput({
 
   const logger = new Logger(
     "StartTimeInput",
-    process.env.NODE_ENV === "development" ? "DEBUG" : "ERROR"
+    import.meta.env.DEV ? "DEBUG" : "ERROR"
   );
 
   return (
