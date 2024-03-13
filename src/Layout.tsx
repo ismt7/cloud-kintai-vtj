@@ -1,17 +1,39 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { Box, Stack } from "@mui/material";
+import { AmplifyUser, AuthEventData, AuthStatus } from "@aws-amplify/ui";
+import { Box, LinearProgress, Stack } from "@mui/material";
 import { Storage } from "aws-amplify";
-import { useEffect } from "react";
+import { createContext, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
 import SnackbarGroup from "./components/ snackbar/SnackbarGroup";
 import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
+import useCognitoUser, { CognitoUser } from "./hooks/useCognitoUser";
+import { StaffRole } from "./hooks/useStaffs/useStaffs";
+
+type AuthContextProps = {
+  signOut: (data?: AuthEventData | undefined) => void;
+  isCognitoUserRole: (role: StaffRole) => boolean;
+  user?: AmplifyUser;
+  authStatus?: AuthStatus;
+  cognitoUser?: CognitoUser | null;
+};
+
+export const AuthContext = createContext<AuthContextProps>({
+  signOut: () => {
+    console.log("The process is not implemented.");
+  },
+  isCognitoUserRole: () => false,
+});
 
 export default function Layout() {
   const navigate = useNavigate();
   const { user, signOut, authStatus } = useAuthenticator();
-  const cognitoUserId = user?.attributes?.sub;
+  const {
+    cognitoUser,
+    isCognitoUserRole,
+    loading: cognitoUserLoading,
+  } = useCognitoUser();
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -22,7 +44,7 @@ export default function Layout() {
       return;
     }
 
-    if (!cognitoUserId) return;
+    if (authStatus !== "authenticated") return;
 
     const isMailVerified = user?.attributes?.email_verified ? true : false;
     if (isMailVerified) return;
@@ -94,11 +116,21 @@ export default function Layout() {
     }, 1000 * 60 * 60);
   }, []);
 
+  if (cognitoUserLoading) {
+    return <LinearProgress />;
+  }
+
+  if (!cognitoUser) {
+    return null;
+  }
+
   return (
-    <>
+    <AuthContext.Provider
+      value={{ signOut, isCognitoUserRole, user, authStatus, cognitoUser }}
+    >
       <Stack sx={{ height: "100vh" }}>
         <Box>
-          <Header cognitoUserId={cognitoUserId} signOut={signOut} />
+          <Header />
         </Box>
         <Box sx={{ flexGrow: 2 }}>
           <Outlet />
@@ -108,6 +140,6 @@ export default function Layout() {
         </Box>
         <SnackbarGroup />
       </Stack>
-    </>
+    </AuthContext.Provider>
   );
 }

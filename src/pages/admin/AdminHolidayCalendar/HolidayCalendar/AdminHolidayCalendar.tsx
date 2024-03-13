@@ -153,8 +153,6 @@ function ExcelFilePicker({
 
 export default function AdminHolidayCalendar() {
   const dispatch = useAppDispatchV2();
-  const { route } = useAuthenticator();
-  const navigate = useNavigate();
   const {
     holidayCalendars,
     loading: holidayCalendarLoading,
@@ -171,12 +169,6 @@ export default function AdminHolidayCalendar() {
     deleteCompanyHolidayCalendar,
     bulkCreateCompanyHolidayCalendar,
   } = useCompanyHolidayCalendars();
-
-  useEffect(() => {
-    if (route !== "idle" && route !== "authenticated") {
-      navigate("/login");
-    }
-  }, [route]);
 
   if (holidayCalendarLoading || companyHolidayCalendarLoading) {
     return <LinearProgress />;

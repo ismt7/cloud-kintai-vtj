@@ -16,7 +16,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
 
@@ -26,7 +26,6 @@ import * as MESSAGE_CODE from "../../../errors";
 import addUserToGroup from "../../../hooks/common/addUserToGroup";
 import removeUserFromGroup from "../../../hooks/common/removeUserFromGroup";
 import updateCognitoUser from "../../../hooks/common/updateCognitoUser";
-import useCognitoUser from "../../../hooks/useCognitoUser";
 import { Staff } from "../../../hooks/useStaffs/common";
 import useStaffs, { StaffRole } from "../../../hooks/useStaffs/useStaffs";
 import {
@@ -34,6 +33,7 @@ import {
   setSnackbarSuccess,
 } from "../../../lib/reducers/snackbarReducer";
 import { ROLE_OPTIONS } from "../AdminStaff/CreateStaffDialog";
+import { AuthContext } from "../../../Layout";
 
 type Inputs = {
   staffId?: Staff["sub"];
@@ -56,12 +56,11 @@ const defaultValues: Inputs = {
 };
 
 export default function AdminStaffEditor() {
+  const { cognitoUser } = useContext(AuthContext);
   const dispatch = useAppDispatchV2();
   const { staffId } = useParams();
 
   const [saving, setSaving] = useState(false);
-
-  const { cognitoUser, loading: cognitoUserLoading } = useCognitoUser();
 
   const {
     staffs,
@@ -164,11 +163,11 @@ export default function AdminStaffEditor() {
     setValue("role", staff.role);
   }, [staffId, staffLoading]);
 
-  if (staffLoading || cognitoUserLoading) {
+  if (staffLoading) {
     return <LinearProgress />;
   }
 
-  if (staffError || cognitoUser === null) {
+  if (staffError) {
     dispatch(setSnackbarError(MESSAGE_CODE.E05001));
     return null;
   }

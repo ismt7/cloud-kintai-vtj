@@ -1,6 +1,6 @@
 import { Box, LinearProgress } from "@mui/material";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -19,8 +19,10 @@ import { AttendanceEditInputs, defaultValues } from "./common";
 import DesktopEditor from "./DesktopEditor/DesktopEditor";
 import sendChangeRequestMail from "./sendChangeRequestMail";
 import { MobileEditor } from "./MobileEditor/MobileEditor";
+import { AuthContext } from "../../Layout";
 
 export default function AttendanceEdit() {
+  const { cognitoUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const dispatch = useAppDispatchV2();
   const { targetWorkDate } = useParams();
@@ -29,7 +31,6 @@ export default function AttendanceEdit() {
   const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
 
   const { staffs, loading: staffsLoading, error: staffSError } = useStaffs();
-  const { cognitoUser, loading: cognitoUserLoading } = useCognitoUser();
   const { attendance, getAttendance, updateAttendance, createAttendance } =
     useAttendance();
 
@@ -188,7 +189,7 @@ export default function AttendanceEdit() {
     return null;
   }
 
-  if (staffsLoading || cognitoUserLoading) {
+  if (staffsLoading) {
     return <LinearProgress />;
   }
 
