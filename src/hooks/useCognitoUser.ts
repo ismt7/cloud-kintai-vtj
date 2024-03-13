@@ -20,7 +20,10 @@ export default function useCognitoUser() {
   >(undefined);
 
   useEffect(() => {
-    if (authStatus !== "authenticated") {
+    if (authStatus === "configuring") return;
+
+    if (authStatus === "unauthenticated") {
+      setLoading(false);
       return;
     }
 

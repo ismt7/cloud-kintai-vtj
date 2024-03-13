@@ -120,10 +120,6 @@ export default function Layout() {
     return <LinearProgress />;
   }
 
-  if (!cognitoUser) {
-    return null;
-  }
-
   return (
     <AuthContext.Provider
       value={{ signOut, isCognitoUserRole, user, authStatus, cognitoUser }}

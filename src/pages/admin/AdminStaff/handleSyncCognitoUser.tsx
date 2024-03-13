@@ -9,8 +9,8 @@ export async function handleSyncCognitoUser(
   createStaff: (input: CreateStaffInput) => Promise<void>,
   updateStaff: (input: UpdateStaffInput) => Promise<void>
 ) {
-  const cognitoUsers = await fetchCognitoUsers().catch(() => {
-    throw new Error(MESSAGE_CODE.E05005);
+  const cognitoUsers = await fetchCognitoUsers().catch((e) => {
+    throw e;
   });
 
   if (!cognitoUsers) {
@@ -40,6 +40,7 @@ export async function handleSyncCognitoUser(
         return;
       }
 
+      console.log(cognitoUser);
       await createStaff({
         cognitoUserId: cognitoUser.sub,
         familyName: cognitoUser.familyName,
@@ -50,7 +51,7 @@ export async function handleSyncCognitoUser(
         status: cognitoUser.status,
         owner: cognitoUser.owner,
       }).catch((e) => {
-        throw new Error(MESSAGE_CODE.E05003);
+        throw new Error(MESSAGE_CODE.E05002);
       });
     })
   )
