@@ -14,7 +14,7 @@ export async function handleSyncCognitoUser(
   });
 
   if (!cognitoUsers) {
-    throw new Error(MESSAGE_CODE.E05005);
+    throw new Error(MESSAGE_CODE.E05006);
   }
 
   await Promise.all(
@@ -60,6 +60,6 @@ export async function handleSyncCognitoUser(
       });
     })
     .catch(() => {
-      throw new Error(MESSAGE_CODE.E05005);
+      throw new Error(MESSAGE_CODE.E05007);
     });
 }
