@@ -63,8 +63,8 @@ export default function StaffCreateForm(props) {
   };
   const validations = {
     cognitoUserId: [{ type: "Required" }],
-    familyName: [{ type: "Required" }],
-    givenName: [{ type: "Required" }],
+    familyName: [],
+    givenName: [],
     mailAddress: [{ type: "Required" }],
     role: [{ type: "Required" }],
     enabled: [{ type: "Required" }],
@@ -191,7 +191,7 @@ export default function StaffCreateForm(props) {
       ></TextField>
       <TextField
         label="Family name"
-        isRequired={true}
+        isRequired={false}
         isReadOnly={false}
         value={familyName}
         onChange={(e) => {
@@ -222,7 +222,7 @@ export default function StaffCreateForm(props) {
       ></TextField>
       <TextField
         label="Given name"
-        isRequired={true}
+        isRequired={false}
         isReadOnly={false}
         value={givenName}
         onChange={(e) => {

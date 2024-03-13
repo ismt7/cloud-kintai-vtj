@@ -6,8 +6,8 @@ input AMPLIFY {
 type Staff @model @auth(rules: [{ allow: private }]) {
   id: ID!
   cognitoUserId: String!
-  familyName: String!
-  givenName: String!
+  familyName: String
+  givenName: String
   mailAddress: String!
   role: String!
   enabled: Boolean!

@@ -37,8 +37,8 @@ import { AuthContext } from "../../../Layout";
 
 type Inputs = {
   staffId?: Staff["sub"];
-  familyName?: Staff["familyName"];
-  givenName?: Staff["givenName"];
+  familyName?: Staff["familyName"] | null;
+  givenName?: Staff["givenName"] | null;
   mailAddress?: Staff["mailAddress"];
   owner: boolean;
   beforeRoles: StaffRole[];
@@ -47,8 +47,6 @@ type Inputs = {
 
 const defaultValues: Inputs = {
   staffId: undefined,
-  familyName: undefined,
-  givenName: undefined,
   mailAddress: undefined,
   owner: false,
   beforeRoles: [],
@@ -93,6 +91,7 @@ export default function AdminStaffEditor() {
     setSaving(true);
     updateCognitoUser(mailAddress, familyName, givenName, mailAddress, owner)
       .then(async () => {
+        // ロールが変更された場合、グループから削除して再登録
         if (beforeRoles.length >= 1 && beforeRoles[0] !== role) {
           const removeGroupsResponse = await Promise.all(
             beforeRoles.map(async (r) => {
@@ -112,28 +111,28 @@ export default function AdminStaffEditor() {
           await addUserToGroup(mailAddress, role).catch(() => {
             dispatch(setSnackbarError(MESSAGE_CODE.E05003));
           });
-
-          const staff = staffs.find((s) => s.cognitoUserId === staffId);
-          if (!staff) {
-            dispatch(setSnackbarError(MESSAGE_CODE.E05001));
-            return;
-          }
-
-          await updateStaff({
-            id: staff.id,
-            familyName,
-            givenName,
-            mailAddress,
-            owner,
-            role,
-          })
-            .then(() => {
-              dispatch(setSnackbarSuccess(MESSAGE_CODE.S05003));
-            })
-            .catch(() => {
-              dispatch(setSnackbarError(MESSAGE_CODE.E05003));
-            });
         }
+
+        const staff = staffs.find((s) => s.cognitoUserId === staffId);
+        if (!staff) {
+          dispatch(setSnackbarError(MESSAGE_CODE.E05001));
+          return;
+        }
+
+        await updateStaff({
+          id: staff.id,
+          familyName,
+          givenName,
+          mailAddress,
+          owner,
+          role,
+        })
+          .then(() => {
+            dispatch(setSnackbarSuccess(MESSAGE_CODE.S05003));
+          })
+          .catch(() => {
+            dispatch(setSnackbarError(MESSAGE_CODE.E05003));
+          });
       })
       .catch(() => {
         dispatch(setSnackbarError(MESSAGE_CODE.E05003));

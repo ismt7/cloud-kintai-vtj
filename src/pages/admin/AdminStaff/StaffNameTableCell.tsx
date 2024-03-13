@@ -3,7 +3,17 @@ import { StaffType } from "../../../hooks/useStaffs/useStaffs";
 
 export function StaffNameTableCell({ staff }: { staff: StaffType }) {
   const { familyName, givenName } = staff;
-  const fullName = `${familyName} ${givenName}`;
+  const fullName = (() => {
+    if (!familyName || !givenName) {
+      return null;
+    }
 
-  return <TableCell>{fullName}</TableCell>;
+    const names = [];
+    if (familyName) names.push(familyName);
+    if (givenName) names.push(givenName);
+
+    return names.join(" ");
+  })();
+
+  return <TableCell>{fullName || "(未設定)"}</TableCell>;
 }
