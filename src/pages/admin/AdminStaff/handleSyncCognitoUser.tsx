@@ -34,8 +34,8 @@ export async function handleSyncCognitoUser(
           enabled: cognitoUser.enabled,
           status: cognitoUser.status,
           owner: cognitoUser.owner,
-        }).catch((e) => {
-          throw e;
+        }).catch(() => {
+          throw new Error(MESSAGE_CODE.E05003);
         });
         return;
       }
@@ -50,7 +50,7 @@ export async function handleSyncCognitoUser(
         status: cognitoUser.status,
         owner: cognitoUser.owner,
       }).catch((e) => {
-        throw e;
+        throw new Error(MESSAGE_CODE.E05003);
       });
     })
   )
@@ -59,7 +59,7 @@ export async function handleSyncCognitoUser(
         throw new Error(MESSAGE_CODE.E05001);
       });
     })
-    .catch(() => {
-      throw new Error(MESSAGE_CODE.E05007);
+    .catch((e) => {
+      throw e;
     });
 }
