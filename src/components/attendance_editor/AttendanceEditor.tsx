@@ -321,7 +321,7 @@ export default function AttendanceEditor() {
         </Breadcrumbs>
       </Box>
       <Box>
-        <Title text="勤怠編集" />
+        <Title>勤怠編集</Title>
       </Box>
       <Stack spacing={2} sx={{ px: 30 }}>
         <Box>

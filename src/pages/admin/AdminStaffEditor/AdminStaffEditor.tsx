@@ -194,7 +194,7 @@ export default function AdminStaffEditor() {
           <Typography color="text.primary">{makeStaffName()}</Typography>
           <Typography color="text.primary">スタッフ編集</Typography>
         </Breadcrumbs>
-        <Title text="スタッフ編集" />
+        <Title>スタッフ編集</Title>
         <TableContainer>
           <Table>
             <TableBody>

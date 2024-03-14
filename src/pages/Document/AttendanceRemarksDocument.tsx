@@ -6,7 +6,7 @@ export default function AttendanceRemarksDocument() {
   return (
     <Stack spacing={2}>
       <Box>
-        <Title text="勤怠備考の記載方法について" />
+        <Title>勤怠備考の記載方法について</Title>
       </Box>
       <Box sx={{ p: 2 }}>
         <Typography variant="body1">

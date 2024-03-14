@@ -7,7 +7,7 @@ export default function WorkStartDocument() {
   return (
     <Stack spacing={2}>
       <Box>
-        <Title text="通常の勤務開始時の打刻について" />
+        <Title>通常の勤務開始時の打刻について</Title>
       </Box>
       <Box sx={{ p: 2 }}>
         <Typography variant="body1">
