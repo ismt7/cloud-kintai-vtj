@@ -39,7 +39,7 @@ export default function useAttendanceDaily() {
           givenName,
           familyName,
           attendance,
-        };
+        } as AttendanceDaily;
       })
     )
       .then((res) => {
