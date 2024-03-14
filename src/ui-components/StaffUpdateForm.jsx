@@ -84,8 +84,8 @@ export default function StaffUpdateForm(props) {
   React.useEffect(resetStateValues, [staffRecord]);
   const validations = {
     cognitoUserId: [{ type: "Required" }],
-    familyName: [{ type: "Required" }],
-    givenName: [{ type: "Required" }],
+    familyName: [],
+    givenName: [],
     mailAddress: [{ type: "Required" }],
     role: [{ type: "Required" }],
     enabled: [{ type: "Required" }],
@@ -119,8 +119,8 @@ export default function StaffUpdateForm(props) {
         event.preventDefault();
         let modelFields = {
           cognitoUserId,
-          familyName,
-          givenName,
+          familyName: familyName ?? null,
+          givenName: givenName ?? null,
           mailAddress,
           role,
           enabled,
@@ -210,7 +210,7 @@ export default function StaffUpdateForm(props) {
       ></TextField>
       <TextField
         label="Family name"
-        isRequired={true}
+        isRequired={false}
         isReadOnly={false}
         value={familyName}
         onChange={(e) => {
@@ -241,7 +241,7 @@ export default function StaffUpdateForm(props) {
       ></TextField>
       <TextField
         label="Given name"
-        isRequired={true}
+        isRequired={false}
         isReadOnly={false}
         value={givenName}
         onChange={(e) => {

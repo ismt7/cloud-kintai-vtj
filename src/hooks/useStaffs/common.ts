@@ -6,8 +6,8 @@ export interface Staff {
   sub: string;
   enabled: boolean;
   status: string;
-  givenName: string;
-  familyName: string;
+  givenName?: string;
+  familyName?: string;
   mailAddress: string;
   owner: boolean;
   roles: StaffRole[];

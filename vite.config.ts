@@ -1,6 +1,7 @@
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vite";
+import checker from "vite-plugin-checker";
 
 export default defineConfig({
   server: {
@@ -15,7 +16,12 @@ export default defineConfig({
   build: {
     outDir: "build",
   },
-  plugins: [react()],
+  plugins: [
+    react(),
+    checker({
+      typescript: true,
+    }),
+  ],
   assetsInclude: ["**/*.xlsx", "**/*.png"],
   define: {
     global: "window",

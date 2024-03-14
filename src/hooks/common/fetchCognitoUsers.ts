@@ -5,6 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { API, Auth } from "aws-amplify";
 import dayjs from "dayjs";
+import * as MESSAGE_CODE from "../../errors";
 
 import { Staff } from "../useStaffs/common";
 import { StaffRole } from "../useStaffs/useStaffs";
@@ -37,6 +38,42 @@ export default async function fetchCognitoUsers(): Promise<Staff[]> {
         }
       );
 
+      // 権限
+      if (!adminResponse.Groups || adminResponse.Groups.length === 0) {
+        throw new Error(MESSAGE_CODE.E05008);
+      }
+
+      const roles = adminResponse.Groups.map((group: any) => {
+        switch (group.GroupName as string) {
+          case "Admin":
+            return StaffRole.ADMIN;
+          case "StaffAdmin":
+            return StaffRole.STAFF_ADMIN;
+          case "Staff":
+            return StaffRole.STAFF;
+          case "Guest":
+            return StaffRole.GUEST;
+          default:
+            return StaffRole.NONE;
+        }
+      });
+
+      // オーナー権限
+      const ownerAttribute = user.Attributes.find(
+        (attr: any) => attr.Name === "custom:owner"
+      );
+      if (!ownerAttribute) {
+        throw new Error(MESSAGE_CODE.E05009);
+      }
+      const owner = (() => {
+        const flag = Number(ownerAttribute.Value);
+        if (Number.isNaN(flag)) {
+          throw new Error(MESSAGE_CODE.E05009);
+        }
+
+        return Boolean(flag);
+      })();
+
       return {
         sub,
         enabled: user.Enabled,
@@ -49,35 +86,11 @@ export default async function fetchCognitoUsers(): Promise<Staff[]> {
         )?.Value,
         mailAddress: user.Attributes.find((attr: any) => attr.Name === "email")
           ?.Value,
-        owner: (() => {
-          const owner = Number(
-            user.Attributes.find((attr: any) => attr.Name === "custom:owner")
-              ?.Value
-          );
-
-          if (Number.isNaN(owner)) {
-            return false;
-          }
-
-          return Boolean(owner);
-        })(),
-        roles: adminResponse.Groups.map((group: any) => {
-          switch (group.GroupName as string) {
-            case "Admin":
-              return StaffRole.ADMIN;
-            case "StaffAdmin":
-              return StaffRole.STAFF_ADMIN;
-            case "Staff":
-              return StaffRole.STAFF;
-            case "Guest":
-              return StaffRole.GUEST;
-            default:
-              return StaffRole.NONE;
-          }
-        }),
+        owner,
+        roles,
         createdAt: dayjs(user.UserCreateDate as string),
         updatedAt: dayjs(user.UserLastModifiedDate as string),
-      };
+      } as Staff;
     })
   );
 }
