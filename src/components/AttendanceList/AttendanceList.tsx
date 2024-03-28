@@ -78,7 +78,7 @@ export default function AttendanceTable() {
         </Breadcrumbs>
       </Box>
       <Box>
-        <Title text="勤怠一覧" />
+        <Title>勤怠一覧</Title>
       </Box>
       <DescriptionTypography variant="body1">
         今日から30日前までの勤怠情報を表示しています

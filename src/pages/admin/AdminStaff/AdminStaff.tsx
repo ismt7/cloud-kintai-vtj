@@ -65,7 +65,7 @@ export default function AdminStaff() {
               <Typography color="text.primary">スタッフ一覧</Typography>
             </Breadcrumbs>
           </Box>
-          <Title text="スタッフ一覧" />
+          <Title>スタッフ一覧</Title>
           <Stack direction="row" spacing={2}>
             <CreateStaffDialog
               staffs={staffs}

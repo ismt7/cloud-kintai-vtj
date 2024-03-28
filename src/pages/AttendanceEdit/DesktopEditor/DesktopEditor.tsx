@@ -97,7 +97,7 @@ export default function DesktopEditor({
       <DesktopContainer maxWidth="xl">
         <Stack direction="column" spacing={2}>
           <AttendanceEditBreadcrumb workDate={workDate} />
-          <Title text="勤怠編集" />
+          <Title>勤怠編集</Title>
           <ChangeRequestingAlert changeRequests={changeRequests} />
         </Stack>
       </DesktopContainer>
@@ -108,7 +108,7 @@ export default function DesktopEditor({
     <DesktopContainer maxWidth="xl">
       <Stack direction="column" spacing={2}>
         <AttendanceEditBreadcrumb workDate={workDate} />
-        <Title text="勤怠編集" />
+        <Title>勤怠編集</Title>
         <BodyStack spacing={2}>
           <NoDataAlert attendance={attendance} />
           <WorkDateItem workDate={workDate} />

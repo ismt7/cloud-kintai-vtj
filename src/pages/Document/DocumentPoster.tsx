@@ -85,7 +85,7 @@ export default function DocumentPoster() {
         </Link>
         <Typography color="text.primary">作成</Typography>
       </Breadcrumbs>
-      <Title text="ドキュメントの作成" />
+      <Title>ドキュメントの作成</Title>
       <Container maxWidth="md">
         <Stack direction="column" spacing={2}>
           <Box>

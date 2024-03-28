@@ -7,7 +7,7 @@ export default function RestEndDocument() {
   return (
     <Stack spacing={2}>
       <Box>
-        <Title text="休憩終了時の打刻について" />
+        <Title>休憩終了時の打刻について</Title>
       </Box>
       <Box sx={{ p: 2 }}>
         <Typography variant="body1">
