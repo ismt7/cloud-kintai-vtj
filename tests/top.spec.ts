@@ -1,7 +1,7 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('トップページの表示チェック', async ({ page }) => {
-  await page.goto('https://dev.kintai.virtualtech.jp');
-  
-  await expect(page.getByRole('heading', { name: '出勤前' })).toBeVisible();
+test("トップページの表示チェック", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page.getByRole("heading", { name: "出勤前" })).toBeVisible();
 });
