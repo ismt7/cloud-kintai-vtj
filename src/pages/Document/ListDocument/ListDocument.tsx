@@ -9,12 +9,13 @@ import {
   Link,
   Paper,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import { useState } from "react";
 
-import useDocuments from "../../hooks/useDocuments/useDocuments";
+import useDocuments from "../../../hooks/useDocuments/useDocuments";
+import { FilterGrid } from "./FilterGrid";
+import { SearchGrid } from "./SearchGrid";
 
 export default function ListDocument() {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -42,13 +43,8 @@ export default function ListDocument() {
         <Typography color="text.primary">ドキュメント一覧</Typography>
       </Breadcrumbs>
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <TextField
-            label="キーワード"
-            fullWidth
-            onChange={(e) => setSearchKeyword(e.target.value)}
-          />
-        </Grid>
+        <SearchGrid setSearchKeyword={setSearchKeyword} />
+        <FilterGrid />
         <Grid item xs={4}>
           <Link href="/docs/post">
             <Paper
