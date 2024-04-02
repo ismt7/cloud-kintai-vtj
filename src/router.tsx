@@ -14,12 +14,13 @@ import Document from "./pages/Document/Document";
 import DocumentEditor from "./pages/Document/DocumentEditor/DocumentEditor";
 import DocumentPoster from "./pages/Document/DocumentPoster";
 import DocumentView from "./pages/Document/DocumentView/DocumentView";
-import ListDocument from "./pages/Document/ListDocument";
+import ListDocument from "./pages/Document/ListDocument/ListDocument";
 import List from "./pages/List";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register";
 import Setting from "./pages/Setting";
 import AdminMasterLayout from "./pages/admin/AdminMasterLayout";
+import AdminLayout from "./pages/admin/AdminLayout";
 
 const router = createBrowserRouter([
   {
@@ -88,6 +89,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/admin",
+        element: <AdminLayout />,
         children: [
           {
             index: true,
