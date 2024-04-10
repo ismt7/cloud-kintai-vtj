@@ -1,7 +1,7 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import {
   IconButton,
+  LinearProgress,
   Stack,
   Table,
   TableBody,
@@ -11,31 +11,50 @@ import {
   TableRow,
 } from "@mui/material";
 import dayjs from "dayjs";
-import { useState } from "react";
 
-import { HolidayCalendar, UpdateHolidayCalendarInput } from "../../../../API";
-import { useAppDispatchV2 } from "../../../../app/hooks";
+import { CompanyHolidayCalendar, HolidayCalendar } from "../../../../API";
+import HolidayCalendarEdit from "./HolidayCalendarEdit";
+import { CSVFilePicker } from "./CSVFilePicker";
+import useHolidayCalendar from "../../../../hooks/useHolidayCalendars/useHolidayCalendars";
+import { setSnackbarError } from "../../../../lib/reducers/snackbarReducer";
 import * as MESSAGE_CODE from "../../../../errors";
-import {
-  setSnackbarError,
-  setSnackbarSuccess,
-} from "../../../../lib/reducers/snackbarReducer";
-import HolidayCalendarEditDialog from "./HolidayCalendarEditDialog";
+import { useAppDispatchV2 } from "../../../../app/hooks";
+import { AddHolidayCalendar } from "./AddHolidayCalendar";
 
-export default function HolidayCalendarList({
-  holidayCalendars,
-  updateHolidayCalendar,
-}: {
-  holidayCalendars: HolidayCalendar[];
-  updateHolidayCalendar: (
-    input: UpdateHolidayCalendarInput
-  ) => Promise<HolidayCalendar>;
-}) {
+export function sortCalendar(
+  a: HolidayCalendar | CompanyHolidayCalendar,
+  b: HolidayCalendar | CompanyHolidayCalendar
+) {
+  return dayjs(a.holidayDate).isBefore(dayjs(b.holidayDate)) ? 1 : -1;
+}
+
+export default function HolidayCalendarList() {
   const dispatch = useAppDispatchV2();
-  const [editRow, setEditRow] = useState<HolidayCalendar | null>(null);
+
+  const {
+    holidayCalendars,
+    loading: holidayCalendarLoading,
+    error: holidayCalendarError,
+    bulkCreateHolidayCalendar,
+    updateHolidayCalendar,
+    createHolidayCalendar,
+  } = useHolidayCalendar();
+
+  if (holidayCalendarLoading) {
+    return <LinearProgress />;
+  }
+
+  if (holidayCalendarError) {
+    dispatch(setSnackbarError(MESSAGE_CODE.E08001));
+    return null;
+  }
 
   return (
     <>
+      <Stack direction="row" spacing={1}>
+        <AddHolidayCalendar createHolidayCalendar={createHolidayCalendar} />
+        <CSVFilePicker bulkCreateHolidayCalendar={bulkCreateHolidayCalendar} />
+      </Stack>
       <TableContainer>
         <Table size="small">
           <TableHead>
@@ -49,20 +68,15 @@ export default function HolidayCalendarList({
           </TableHead>
           <TableBody>
             {holidayCalendars
-              .sort((a, b) =>
-                dayjs(a.holidayDate).isBefore(dayjs(b.holidayDate)) ? 1 : -1
-              )
+              .sort(sortCalendar)
               .map((holidayCalendar, index) => (
                 <TableRow key={index}>
                   <TableCell>
                     <Stack direction="row" spacing={0}>
-                      <IconButton
-                        onClick={() => {
-                          setEditRow(holidayCalendar);
-                        }}
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
+                      <HolidayCalendarEdit
+                        holidayCalendar={holidayCalendar}
+                        updateHolidayCalendar={updateHolidayCalendar}
+                      />
                       <IconButton>
                         <DeleteIcon fontSize="small" />
                       </IconButton>
@@ -87,27 +101,6 @@ export default function HolidayCalendarList({
           </TableBody>
         </Table>
       </TableContainer>
-      <HolidayCalendarEditDialog
-        editRow={editRow}
-        open={!!editRow}
-        onClose={() => setEditRow(null)}
-        onSubmit={(data) => {
-          if (!data.id || !data.holidayDate) return;
-
-          void updateHolidayCalendar({
-            id: data.id,
-            holidayDate: data.holidayDate.toISOString(),
-            name: data.name,
-          })
-            .then(() => {
-              dispatch(setSnackbarSuccess(MESSAGE_CODE.S07003));
-              setEditRow(null);
-            })
-            .catch(() => {
-              dispatch(setSnackbarError(MESSAGE_CODE.E07003));
-            });
-        }}
-      />
     </>
   );
 }
