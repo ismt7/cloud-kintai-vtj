@@ -27,6 +27,7 @@ export default async function createCognitoUser(
       userAttributes: [
         { Name: "family_name", Value: familyName },
         { Name: "given_name", Value: givenName },
+        { Name: "email_verified", Value: "true" },
       ],
     },
   };

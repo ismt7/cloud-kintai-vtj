@@ -69,11 +69,18 @@ function DeleteAccountMenuItem({
 
   const handleClick = async () => {
     setIsProcessing(true);
-    const { id, cognitoUserId } = staff;
+    const { id, cognitoUserId, familyName, givenName } = staff;
+
+    const deleteMessage = (() => {
+      const messages = [];
+      messages.push(`「${familyName} ${givenName}」のアカウントを削除します。`);
+      messages.push(
+        "削除すると元に戻せないことを理解した上で、削除処理を実行しますか?"
+      );
+      return messages.join("\n");
+    })();
     // eslint-disable-next-line no-alert
-    const result = window.confirm(
-      "削除すると元に戻せません。本当に削除しますか？"
-    );
+    const result = window.confirm(deleteMessage);
     if (!result) {
       return;
     }
