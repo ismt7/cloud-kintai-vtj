@@ -1,6 +1,7 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   IconButton,
+  LinearProgress,
   Stack,
   Table,
   TableBody,
@@ -11,23 +12,49 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 
-import { HolidayCalendar, UpdateHolidayCalendarInput } from "../../../../API";
+import { CompanyHolidayCalendar, HolidayCalendar } from "../../../../API";
 import HolidayCalendarEdit from "./HolidayCalendarEdit";
+import { CSVFilePicker } from "./CSVFilePicker";
+import useHolidayCalendar from "../../../../hooks/useHolidayCalendars/useHolidayCalendars";
+import { setSnackbarError } from "../../../../lib/reducers/snackbarReducer";
+import * as MESSAGE_CODE from "../../../../errors";
+import { useAppDispatchV2 } from "../../../../app/hooks";
+import { AddHolidayCalendar } from "./AddHolidayCalendar";
 
-export default function HolidayCalendarList({
-  holidayCalendars,
-  updateHolidayCalendar,
-}: {
-  holidayCalendars: HolidayCalendar[];
-  updateHolidayCalendar: (
-    input: UpdateHolidayCalendarInput
-  ) => Promise<HolidayCalendar>;
-}) {
-  const sortCalendar = (a: HolidayCalendar, b: HolidayCalendar) =>
-    dayjs(a.holidayDate).isBefore(dayjs(b.holidayDate)) ? 1 : -1;
+export function sortCalendar(
+  a: HolidayCalendar | CompanyHolidayCalendar,
+  b: HolidayCalendar | CompanyHolidayCalendar
+) {
+  return dayjs(a.holidayDate).isBefore(dayjs(b.holidayDate)) ? 1 : -1;
+}
+
+export default function HolidayCalendarList() {
+  const dispatch = useAppDispatchV2();
+
+  const {
+    holidayCalendars,
+    loading: holidayCalendarLoading,
+    error: holidayCalendarError,
+    bulkCreateHolidayCalendar,
+    updateHolidayCalendar,
+    createHolidayCalendar,
+  } = useHolidayCalendar();
+
+  if (holidayCalendarLoading) {
+    return <LinearProgress />;
+  }
+
+  if (holidayCalendarError) {
+    dispatch(setSnackbarError(MESSAGE_CODE.E08001));
+    return null;
+  }
 
   return (
     <>
+      <Stack direction="row" spacing={1}>
+        <AddHolidayCalendar createHolidayCalendar={createHolidayCalendar} />
+        <CSVFilePicker bulkCreateHolidayCalendar={bulkCreateHolidayCalendar} />
+      </Stack>
       <TableContainer>
         <Table size="small">
           <TableHead>

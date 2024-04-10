@@ -1,12 +1,24 @@
-import { Stack, TextField } from "@mui/material";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { DatePicker } from "@mui/x-date-pickers";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Stack,
+  TextField,
+} from "@mui/material";
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import { CreateHolidayCalendarInput, HolidayCalendar } from "../../../../API";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { DatePicker } from "@mui/x-date-pickers";
+import { useAppDispatchV2 } from "../../../../app/hooks";
+import {
+  setSnackbarError,
+  setSnackbarSuccess,
+} from "../../../../lib/reducers/snackbarReducer";
+import * as MESSAGE_CODE from "../../../../errors";
 
 type Inputs = {
   holidayDate: string;
@@ -18,15 +30,16 @@ const defaultValues: Inputs = {
   name: "",
 };
 
-export default function AddCompanyHolidayCalendarDialog({
-  open,
-  onClose,
-  onSubmit,
+export function AddHolidayCalendar({
+  createHolidayCalendar,
 }: {
-  open: boolean;
-  onClose: () => void;
-  onSubmit: (data: Inputs) => void;
+  createHolidayCalendar: (
+    input: CreateHolidayCalendarInput
+  ) => Promise<void | HolidayCalendar>;
 }) {
+  const dispatch = useAppDispatchV2();
+  const [open, setOpen] = useState(false);
+
   const {
     register,
     control,
@@ -38,13 +51,34 @@ export default function AddCompanyHolidayCalendarDialog({
     defaultValues,
   });
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const onSubmit = (data: Inputs) => {
+    createHolidayCalendar(data)
+      .then(() => {
+        dispatch(setSnackbarSuccess(MESSAGE_CODE.S08002));
+        setOpen(false);
+      })
+      .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E08002)));
+  };
+
   return (
     <>
+      <Button
+        variant="outlined"
+        size="medium"
+        startIcon={<AddCircleOutlineOutlinedIcon />}
+        onClick={() => setOpen(true)}
+      >
+        休日を追加
+      </Button>
       <Dialog
         open={open}
         onClose={() => {
           reset(defaultValues);
-          onClose();
+          handleClose();
         }}
       >
         <DialogTitle>会社休日を追加</DialogTitle>
@@ -84,7 +118,7 @@ export default function AddCompanyHolidayCalendarDialog({
           <Button
             onClick={() => {
               reset(defaultValues);
-              onClose();
+              handleClose();
             }}
           >
             キャンセル

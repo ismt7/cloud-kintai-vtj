@@ -1,9 +1,8 @@
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import {
   Button,
   IconButton,
+  LinearProgress,
   Stack,
   Table,
   TableBody,
@@ -14,42 +13,30 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 import { useState } from "react";
-
-import {
-  CompanyHolidayCalendar,
-  CreateCompanyHolidayCalendarInput,
-  DeleteCompanyHolidayCalendarInput,
-  UpdateCompanyHolidayCalendarInput,
-} from "../../../../API";
 import { useAppDispatchV2 } from "../../../../app/hooks";
 import * as MESSAGE_CODE from "../../../../errors";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../../../lib/reducers/snackbarReducer";
-import AddCompanyHolidayCalendarDialog from "./AddCompanyHolidayCalendarDialog";
+import AddCompanyHolidayCalendar from "./AddCompanyHolidayCalendar";
 import CompanyHolidayCalendarEdit from "./CompanyHolidayCalendarEdit";
+import { sortCalendar } from "../HolidayCalendar/HolidayCalendarList";
+import { ExcelFilePicker } from "../HolidayCalendar/ExcelFilePicker";
+import useCompanyHolidayCalendars from "../../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 
-export default function CompanyHolidayCalendarList({
-  companyHolidayCalendars,
-  createCompanyHolidayCalendar,
-  deleteCompanyHolidayCalendar,
-  updateCompanyHolidayCalendar,
-}: {
-  companyHolidayCalendars: CompanyHolidayCalendar[];
-  createCompanyHolidayCalendar: (
-    input: CreateCompanyHolidayCalendarInput
-  ) => Promise<CompanyHolidayCalendar>;
-  deleteCompanyHolidayCalendar: (
-    input: DeleteCompanyHolidayCalendarInput
-  ) => Promise<CompanyHolidayCalendar>;
-  updateCompanyHolidayCalendar: (
-    input: UpdateCompanyHolidayCalendarInput
-  ) => Promise<CompanyHolidayCalendar>;
-}) {
+export default function CompanyHolidayCalendarList() {
   const dispatch = useAppDispatchV2();
-  const [editRow, setEditRow] = useState<CompanyHolidayCalendar | null>(null);
-  const [addDialogOpen, setAddDialogOpen] = useState(false);
+
+  const {
+    companyHolidayCalendars,
+    loading: companyHolidayCalendarLoading,
+    error: companyHolidayCalendarError,
+    createCompanyHolidayCalendar,
+    updateCompanyHolidayCalendar,
+    deleteCompanyHolidayCalendar,
+    bulkCreateCompanyHolidayCalendar,
+  } = useCompanyHolidayCalendars();
 
   const handleDelete = (id: string) => {
     // eslint-disable-next-line no-alert
@@ -61,18 +48,25 @@ export default function CompanyHolidayCalendarList({
       .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E08004)));
   };
 
+  if (companyHolidayCalendarLoading) {
+    return <LinearProgress />;
+  }
+
+  if (companyHolidayCalendarError) {
+    dispatch(setSnackbarError(MESSAGE_CODE.E08001));
+    return null;
+  }
+
   return (
     <>
-      <Button
-        variant="outlined"
-        size="small"
-        startIcon={<AddCircleOutlineOutlinedIcon />}
-        onClick={() => {
-          setAddDialogOpen(true);
-        }}
-      >
-        休日を追加
-      </Button>
+      <Stack direction="row" spacing={1}>
+        <AddCompanyHolidayCalendar
+          createCompanyHolidayCalendar={createCompanyHolidayCalendar}
+        />
+        <ExcelFilePicker
+          bulkCreateCompanyHolidayCalendar={bulkCreateCompanyHolidayCalendar}
+        />
+      </Stack>
       <TableContainer>
         <Table size="small">
           <TableHead>
@@ -86,24 +80,19 @@ export default function CompanyHolidayCalendarList({
           </TableHead>
           <TableBody>
             {companyHolidayCalendars
-              .sort((a, b) =>
-                dayjs(a.holidayDate).isBefore(dayjs(b.holidayDate)) ? -1 : 1
-              )
+              .sort(sortCalendar)
               .map((holidayCalendar, index) => (
                 <TableRow key={index}>
                   <TableCell>
                     <Stack direction="row" spacing={0}>
+                      <CompanyHolidayCalendarEdit
+                        holidayCalendar={holidayCalendar}
+                        updateCompanyHolidayCalendar={
+                          updateCompanyHolidayCalendar
+                        }
+                      />
                       <IconButton
-                        onClick={() => {
-                          setEditRow(holidayCalendar);
-                        }}
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => {
-                          handleDelete(holidayCalendar.id);
-                        }}
+                        onClick={() => handleDelete(holidayCalendar.id)}
                       >
                         <DeleteIcon fontSize="small" />
                       </IconButton>
@@ -128,42 +117,6 @@ export default function CompanyHolidayCalendarList({
           </TableBody>
         </Table>
       </TableContainer>
-      <AddCompanyHolidayCalendarDialog
-        open={addDialogOpen}
-        onClose={() => {
-          setAddDialogOpen(false);
-        }}
-        onSubmit={(data) => {
-          createCompanyHolidayCalendar(data)
-            .then(() => {
-              dispatch(setSnackbarSuccess(MESSAGE_CODE.S08002));
-              setAddDialogOpen(false);
-            })
-            .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E08002)));
-        }}
-      />
-      <CompanyHolidayCalendarEdit
-        editRow={editRow}
-        open={!!editRow}
-        onClose={() => {
-          setEditRow(null);
-        }}
-        onSubmit={(data) => {
-          const { id, holidayDate } = data;
-          if (!id || !holidayDate) return;
-
-          updateCompanyHolidayCalendar({
-            id,
-            holidayDate: holidayDate.format("YYYY-MM-DD"),
-            name: data.name,
-          })
-            .then(() => {
-              dispatch(setSnackbarSuccess(MESSAGE_CODE.S08003));
-              setEditRow(null);
-            })
-            .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E08003)));
-        }}
-      />
     </>
   );
 }
