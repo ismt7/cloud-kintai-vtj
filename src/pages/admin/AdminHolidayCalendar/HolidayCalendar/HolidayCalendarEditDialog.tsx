@@ -1,4 +1,4 @@
-import { Stack, TextField } from "@mui/material";
+import { IconButton, Stack, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -7,10 +7,17 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import { HolidayCalendar } from "../../../../API";
+import { HolidayCalendar, UpdateHolidayCalendarInput } from "../../../../API";
+import { useAppDispatchV2 } from "../../../../app/hooks";
+import {
+  setSnackbarError,
+  setSnackbarSuccess,
+} from "../../../../lib/reducers/snackbarReducer";
+import * as MESSAGE_CODE from "../../../../errors";
+import EditIcon from "@mui/icons-material/Edit";
 
 type Inputs = {
   id: string | null;
@@ -24,17 +31,19 @@ const defaultValues: Inputs = {
   name: "",
 };
 
-export default function HolidayCalendarEditDialog({
-  editRow,
-  open,
-  onClose,
-  onSubmit,
+export default function HolidayCalendarEdit({
+  holidayCalendar,
+  updateHolidayCalendar,
 }: {
-  editRow: HolidayCalendar | null;
-  open: boolean;
-  onClose: () => void;
-  onSubmit: (data: Inputs) => void;
+  holidayCalendar: HolidayCalendar;
+  updateHolidayCalendar: (
+    input: UpdateHolidayCalendarInput
+  ) => Promise<HolidayCalendar>;
 }) {
+  const dispatch = useAppDispatchV2();
+
+  const [editRow, setEditRow] = useState<HolidayCalendar | null>(null);
+
   const {
     register,
     control,
@@ -55,10 +64,40 @@ export default function HolidayCalendarEditDialog({
     setValue("name", editRow.name);
   }, [editRow]);
 
+  const onClose = () => {
+    setEditRow(null);
+  };
+
+  const onSubmit = (data: Inputs) => {
+    const { id, holidayDate, name } = data;
+
+    if (!id || !holidayDate) return;
+
+    void updateHolidayCalendar({
+      id,
+      holidayDate: holidayDate.toISOString(),
+      name,
+    })
+      .then(() => {
+        dispatch(setSnackbarSuccess(MESSAGE_CODE.S07003));
+        onClose();
+      })
+      .catch(() => {
+        dispatch(setSnackbarError(MESSAGE_CODE.E07003));
+      });
+  };
+
   return (
     <>
+      <IconButton
+        onClick={() => {
+          setEditRow(holidayCalendar);
+        }}
+      >
+        <EditIcon fontSize="small" />
+      </IconButton>
       <Dialog
-        open={open}
+        open={Boolean(editRow)}
         onClose={() => {
           reset(defaultValues);
           onClose();

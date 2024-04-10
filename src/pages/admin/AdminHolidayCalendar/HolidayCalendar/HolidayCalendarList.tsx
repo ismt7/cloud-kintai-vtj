@@ -1,5 +1,4 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import {
   IconButton,
   Stack,
@@ -11,16 +10,9 @@ import {
   TableRow,
 } from "@mui/material";
 import dayjs from "dayjs";
-import { useState } from "react";
 
 import { HolidayCalendar, UpdateHolidayCalendarInput } from "../../../../API";
-import { useAppDispatchV2 } from "../../../../app/hooks";
-import * as MESSAGE_CODE from "../../../../errors";
-import {
-  setSnackbarError,
-  setSnackbarSuccess,
-} from "../../../../lib/reducers/snackbarReducer";
-import HolidayCalendarEditDialog from "./HolidayCalendarEditDialog";
+import HolidayCalendarEdit from "./HolidayCalendarEditDialog";
 
 export default function HolidayCalendarList({
   holidayCalendars,
@@ -31,8 +23,8 @@ export default function HolidayCalendarList({
     input: UpdateHolidayCalendarInput
   ) => Promise<HolidayCalendar>;
 }) {
-  const dispatch = useAppDispatchV2();
-  const [editRow, setEditRow] = useState<HolidayCalendar | null>(null);
+  const sortCalendar = (a: HolidayCalendar, b: HolidayCalendar) =>
+    dayjs(a.holidayDate).isBefore(dayjs(b.holidayDate)) ? 1 : -1;
 
   return (
     <>
@@ -49,20 +41,15 @@ export default function HolidayCalendarList({
           </TableHead>
           <TableBody>
             {holidayCalendars
-              .sort((a, b) =>
-                dayjs(a.holidayDate).isBefore(dayjs(b.holidayDate)) ? 1 : -1
-              )
+              .sort(sortCalendar)
               .map((holidayCalendar, index) => (
                 <TableRow key={index}>
                   <TableCell>
                     <Stack direction="row" spacing={0}>
-                      <IconButton
-                        onClick={() => {
-                          setEditRow(holidayCalendar);
-                        }}
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
+                      <HolidayCalendarEdit
+                        holidayCalendar={holidayCalendar}
+                        updateHolidayCalendar={updateHolidayCalendar}
+                      />
                       <IconButton>
                         <DeleteIcon fontSize="small" />
                       </IconButton>
@@ -87,27 +74,6 @@ export default function HolidayCalendarList({
           </TableBody>
         </Table>
       </TableContainer>
-      <HolidayCalendarEditDialog
-        editRow={editRow}
-        open={!!editRow}
-        onClose={() => setEditRow(null)}
-        onSubmit={(data) => {
-          if (!data.id || !data.holidayDate) return;
-
-          void updateHolidayCalendar({
-            id: data.id,
-            holidayDate: data.holidayDate.toISOString(),
-            name: data.name,
-          })
-            .then(() => {
-              dispatch(setSnackbarSuccess(MESSAGE_CODE.S07003));
-              setEditRow(null);
-            })
-            .catch(() => {
-              dispatch(setSnackbarError(MESSAGE_CODE.E07003));
-            });
-        }}
-      />
     </>
   );
 }
