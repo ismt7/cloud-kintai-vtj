@@ -12,7 +12,7 @@ import {
 import dayjs from "dayjs";
 
 import { HolidayCalendar, UpdateHolidayCalendarInput } from "../../../../API";
-import HolidayCalendarEdit from "./HolidayCalendarEditDialog";
+import HolidayCalendarEdit from "./HolidayCalendarEdit";
 
 export default function HolidayCalendarList({
   holidayCalendars,
