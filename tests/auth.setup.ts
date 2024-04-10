@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const adminAuthFile = "playwright/.auth/admin.json";
+export const adminAuthFile = "playwright/.auth/admin.json";
 
 setup("認証(管理者)", async ({ page }) => {
   await page.goto("/login");
@@ -20,7 +20,7 @@ setup("認証(管理者)", async ({ page }) => {
   await page.context().storageState({ path: adminAuthFile });
 });
 
-const userAuthFile = "playwright/.auth/user.json";
+export const userAuthFile = "playwright/.auth/user.json";
 
 setup("認証(スタッフ)", async ({ page }) => {
   await page.goto("/login");
@@ -39,7 +39,7 @@ setup("認証(スタッフ)", async ({ page }) => {
 
 async function inputPassword(page: Page, value: string | undefined) {
   if (value === undefined) {
-    throw new Error("PLAYWRIGHT_USER_PASSWORD is not defined in .env file");
+    throw new Error("PLAYWRIGHT_*_PASSWORD is not defined in .env file");
   }
 
   const locator = page.getByPlaceholder("パスワードを入力");
@@ -49,7 +49,7 @@ async function inputPassword(page: Page, value: string | undefined) {
 
 async function inputMailAddress(page: Page, value: string | undefined) {
   if (value === undefined) {
-    throw new Error("PLAYWRIGHT_USER_EMAIL is not defined in .env file");
+    throw new Error("PLAYWRIGHT_*_EMAIL is not defined in .env file");
   }
 
   const locator = page.getByPlaceholder("メールアドレスを入力");
