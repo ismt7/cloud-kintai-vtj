@@ -147,7 +147,7 @@ export default function DocumentEditor() {
           <Typography color="text.primary">編集</Typography>
         </Breadcrumbs>
       </Box>
-      <Title text="ドキュメント編集" />
+      <Title>ドキュメント編集</Title>
       <Container maxWidth="md">
         <Stack direction="column" spacing={2}>
           <Box>

@@ -7,7 +7,7 @@ export default function GoDirectDocument() {
   return (
     <Stack spacing={2}>
       <Box>
-        <Title text="直行直帰について" />
+        <Title>直行直帰について</Title>
       </Box>
       <Box>
         <Typography variant="body1">

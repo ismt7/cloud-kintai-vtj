@@ -66,7 +66,7 @@ export function MobileEditor({
   return (
     <Stack direction="column" spacing={1} sx={{ p: 1 }}>
       <AttendanceEditBreadcrumb workDate={workDate} />
-      <Title text="勤怠編集" />
+      <Title>勤怠編集</Title>
       <Stack direction="column" spacing={2} sx={{ p: 1 }}>
         <NoDataAlert attendance={attendance} />
 

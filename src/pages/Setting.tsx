@@ -31,7 +31,7 @@ export default function Setting() {
           </Link>
           <Typography color="text.primary">個人設定</Typography>
         </Breadcrumbs>
-        <Title text="個人設定" />
+        <Title>個人設定</Title>
         <TableContainer>
           <Table>
             <TableBody>

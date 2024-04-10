@@ -41,7 +41,8 @@
         "PKief.material-icon-theme",
         "tomoki1207.pdf",
         "bierner.markdown-mermaid",
-        "figma.figma-vscode-extension"
+        "figma.figma-vscode-extension",
+        "dotenv.dotenv-vscode"
       ]
     }
   }

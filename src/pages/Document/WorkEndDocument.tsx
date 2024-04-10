@@ -7,7 +7,7 @@ export default function WorkEndDocument() {
   return (
     <Stack spacing={2}>
       <Box>
-        <Title text="勤務終了時の打刻について" />
+        <Title>勤務終了時の打刻について</Title>
       </Box>
       <Box sx={{ p: 2 }}>
         <Typography variant="body1">

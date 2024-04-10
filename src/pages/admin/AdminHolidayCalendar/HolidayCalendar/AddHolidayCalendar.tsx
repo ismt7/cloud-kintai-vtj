@@ -1,70 +1,87 @@
-import { Stack, TextField } from "@mui/material";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { DatePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
-import { useEffect } from "react";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Stack,
+  TextField,
+} from "@mui/material";
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import { CreateHolidayCalendarInput, HolidayCalendar } from "../../../../API";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-
-import { CompanyHolidayCalendar } from "../../../../API";
+import { DatePicker } from "@mui/x-date-pickers";
+import { useAppDispatchV2 } from "../../../../app/hooks";
+import {
+  setSnackbarError,
+  setSnackbarSuccess,
+} from "../../../../lib/reducers/snackbarReducer";
+import * as MESSAGE_CODE from "../../../../errors";
 
 type Inputs = {
-  id: string | null;
-  holidayDate: dayjs.Dayjs | null;
+  holidayDate: string;
   name: string;
 };
 
 const defaultValues: Inputs = {
-  id: null,
-  holidayDate: null,
+  holidayDate: "",
   name: "",
 };
 
-export default function EditCompanyHolidayCalendarDialog({
-  editRow,
-  open,
-  onClose,
-  onSubmit,
+export function AddHolidayCalendar({
+  createHolidayCalendar,
 }: {
-  editRow: CompanyHolidayCalendar | null;
-  open: boolean;
-  onClose: () => void;
-  onSubmit: (data: Inputs) => void;
+  createHolidayCalendar: (
+    input: CreateHolidayCalendarInput
+  ) => Promise<void | HolidayCalendar>;
 }) {
+  const dispatch = useAppDispatchV2();
+  const [open, setOpen] = useState(false);
+
   const {
     register,
     control,
     handleSubmit,
     reset,
-    setValue,
     formState: { isValid, isDirty, isSubmitting },
   } = useForm<Inputs>({
     mode: "onChange",
     defaultValues,
   });
 
-  useEffect(() => {
-    if (!editRow) return;
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-    setValue("id", editRow.id);
-    setValue("holidayDate", dayjs(editRow.holidayDate));
-    setValue("name", editRow.name);
-  }, [editRow]);
+  const onSubmit = (data: Inputs) => {
+    createHolidayCalendar(data)
+      .then(() => {
+        dispatch(setSnackbarSuccess(MESSAGE_CODE.S08002));
+        setOpen(false);
+      })
+      .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E08002)));
+  };
 
   return (
     <>
+      <Button
+        variant="outlined"
+        size="medium"
+        startIcon={<AddCircleOutlineOutlinedIcon />}
+        onClick={() => setOpen(true)}
+      >
+        休日を追加
+      </Button>
       <Dialog
         open={open}
         onClose={() => {
           reset(defaultValues);
-          onClose();
+          handleClose();
         }}
       >
-        <DialogTitle>会社休日を編集</DialogTitle>
+        <DialogTitle>会社休日を追加</DialogTitle>
         <DialogContent>
           <Stack spacing={2}>
             <DialogContentText>
@@ -101,7 +118,7 @@ export default function EditCompanyHolidayCalendarDialog({
           <Button
             onClick={() => {
               reset(defaultValues);
-              onClose();
+              handleClose();
             }}
           >
             キャンセル
@@ -110,7 +127,7 @@ export default function EditCompanyHolidayCalendarDialog({
             disabled={!isValid || !isDirty || isSubmitting}
             onClick={handleSubmit(onSubmit)}
           >
-            更新
+            登録
           </Button>
         </DialogActions>
       </Dialog>

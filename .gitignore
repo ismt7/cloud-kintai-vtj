@@ -54,3 +54,9 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+playwright/.auth/
+test-results/
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
