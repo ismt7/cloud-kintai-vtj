@@ -24,7 +24,7 @@ const defaultValues: Inputs = {
   name: "",
 };
 
-export default function EditCompanyHolidayCalendarDialog({
+export default function CompanyHolidayCalendarEdit({
   editRow,
   open,
   onClose,

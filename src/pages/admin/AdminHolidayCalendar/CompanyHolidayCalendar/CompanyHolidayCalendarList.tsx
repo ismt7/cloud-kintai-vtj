@@ -28,7 +28,7 @@ import {
   setSnackbarSuccess,
 } from "../../../../lib/reducers/snackbarReducer";
 import AddCompanyHolidayCalendarDialog from "./AddCompanyHolidayCalendarDialog";
-import EditCompanyHolidayCalendarDialog from "./EditCompanyHolidayCalendarDialog";
+import CompanyHolidayCalendarEdit from "./CompanyHolidayCalendarEdit";
 
 export default function CompanyHolidayCalendarList({
   companyHolidayCalendars,
@@ -142,7 +142,7 @@ export default function CompanyHolidayCalendarList({
             .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E08002)));
         }}
       />
-      <EditCompanyHolidayCalendarDialog
+      <CompanyHolidayCalendarEdit
         editRow={editRow}
         open={!!editRow}
         onClose={() => {
