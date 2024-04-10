@@ -62,15 +62,9 @@ export default async function fetchCognitoUsers(): Promise<Staff[]> {
       const ownerAttribute = user.Attributes.find(
         (attr: any) => attr.Name === "custom:owner"
       );
-      if (!ownerAttribute) {
-        throw new Error(MESSAGE_CODE.E05009);
-      }
-      const owner = (() => {
-        const flag = Number(ownerAttribute.Value);
-        if (Number.isNaN(flag)) {
-          throw new Error(MESSAGE_CODE.E05009);
-        }
 
+      const owner = (() => {
+        const flag = ownerAttribute ? Number(ownerAttribute.Value) : 0;
         return Boolean(flag);
       })();
 
