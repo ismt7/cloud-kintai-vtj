@@ -57,9 +57,7 @@ export default function CompanyHolidayCalendarList({
     if (!confirm) return;
 
     deleteCompanyHolidayCalendar({ id })
-      .then(() => {
-        dispatch(setSnackbarSuccess(MESSAGE_CODE.S08004));
-      })
+      .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S08004)))
       .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E08004)));
   };
 
