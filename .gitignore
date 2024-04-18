@@ -33,6 +33,13 @@ yarn-error.log*
 
 /**/*.log
 
+playwright/.auth/
+test-results/
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
+
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*
@@ -54,9 +61,3 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
-playwright/.auth/
-test-results/
-.env*
-.flaskenv*
-!.env.project
-!.env.vault

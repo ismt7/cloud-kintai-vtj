@@ -7,7 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
-import { useContext, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { useAppDispatchV2 } from "../../../app/hooks";
@@ -21,7 +21,6 @@ import {
 } from "../../../lib/reducers/snackbarReducer";
 import { CreateStaffInput, UpdateStaffInput } from "../../../API";
 import { handleSyncCognitoUser } from "./handleSyncCognitoUser";
-import { AuthContext } from "../../../Layout";
 
 type Inputs = {
   familyName?: string;
@@ -53,10 +52,8 @@ export default function CreateStaffDialog({
   createStaff: (input: CreateStaffInput) => Promise<void>;
   updateStaff: (input: UpdateStaffInput) => Promise<void>;
 }) {
-  const { cognitoUser } = useContext(AuthContext);
   const dispatch = useAppDispatchV2();
   const [open, setOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -64,26 +61,24 @@ export default function CreateStaffDialog({
     handleSubmit,
     reset,
     setValue,
-    formState: { isDirty, isValid },
+    formState: { isDirty, isValid, isSubmitting, isSubmitSuccessful },
   } = useForm<Inputs>({
     mode: "onChange",
     defaultValues,
   });
 
   const handleClickOpen = () => {
+    reset();
     setOpen(true);
   };
 
   const handleClose = () => {
-    reset(defaultValues);
     setOpen(false);
   };
 
   const onSubmit = async (data: Inputs) => {
-    setIsSubmitting(true);
     const { familyName, givenName, mailAddress, role } = data;
     if (!familyName || !givenName || !mailAddress || !role) {
-      setIsSubmitting(false);
       throw new Error("Invalid data");
     }
 
@@ -104,7 +99,6 @@ export default function CreateStaffDialog({
       dispatch(setSnackbarError(MESSAGE_CODE.E10001));
     });
 
-    setIsSubmitting(false);
     dispatch(setSnackbarSuccess(MESSAGE_CODE.S10002));
     handleClose();
   };
