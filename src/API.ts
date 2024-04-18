@@ -26,6 +26,8 @@ export type ModelStaffConditionInput = {
   and?: Array< ModelStaffConditionInput | null > | null,
   or?: Array< ModelStaffConditionInput | null > | null,
   not?: ModelStaffConditionInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type ModelStringInput = {
@@ -118,6 +120,8 @@ export type ModelHolidayCalendarConditionInput = {
   and?: Array< ModelHolidayCalendarConditionInput | null > | null,
   or?: Array< ModelHolidayCalendarConditionInput | null > | null,
   not?: ModelHolidayCalendarConditionInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type HolidayCalendar = {
@@ -151,6 +155,8 @@ export type ModelCompanyHolidayCalendarConditionInput = {
   and?: Array< ModelCompanyHolidayCalendarConditionInput | null > | null,
   or?: Array< ModelCompanyHolidayCalendarConditionInput | null > | null,
   not?: ModelCompanyHolidayCalendarConditionInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type CompanyHolidayCalendar = {
@@ -186,6 +192,8 @@ export type ModelCloseDateConditionInput = {
   and?: Array< ModelCloseDateConditionInput | null > | null,
   or?: Array< ModelCloseDateConditionInput | null > | null,
   not?: ModelCloseDateConditionInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type CloseDate = {
@@ -269,6 +277,8 @@ export type ModelAttendanceConditionInput = {
   and?: Array< ModelAttendanceConditionInput | null > | null,
   or?: Array< ModelAttendanceConditionInput | null > | null,
   not?: ModelAttendanceConditionInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type ModelIntInput = {
@@ -374,6 +384,8 @@ export type ModelDocumentConditionInput = {
   and?: Array< ModelDocumentConditionInput | null > | null,
   or?: Array< ModelDocumentConditionInput | null > | null,
   not?: ModelDocumentConditionInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type Document = {
@@ -423,6 +435,8 @@ export type ModelStaffFilterInput = {
   enabled?: ModelBooleanInput | null,
   status?: ModelStringInput | null,
   owner?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelStaffFilterInput | null > | null,
   or?: Array< ModelStaffFilterInput | null > | null,
   not?: ModelStaffFilterInput | null,
@@ -454,6 +468,8 @@ export type ModelHolidayCalendarFilterInput = {
   id?: ModelIDInput | null,
   holidayDate?: ModelStringInput | null,
   name?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelHolidayCalendarFilterInput | null > | null,
   or?: Array< ModelHolidayCalendarFilterInput | null > | null,
   not?: ModelHolidayCalendarFilterInput | null,
@@ -469,6 +485,8 @@ export type ModelCompanyHolidayCalendarFilterInput = {
   id?: ModelIDInput | null,
   holidayDate?: ModelStringInput | null,
   name?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelCompanyHolidayCalendarFilterInput | null > | null,
   or?: Array< ModelCompanyHolidayCalendarFilterInput | null > | null,
   not?: ModelCompanyHolidayCalendarFilterInput | null,
@@ -485,6 +503,8 @@ export type ModelCloseDateFilterInput = {
   closeDate?: ModelStringInput | null,
   startDate?: ModelStringInput | null,
   endDate?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelCloseDateFilterInput | null > | null,
   or?: Array< ModelCloseDateFilterInput | null > | null,
   not?: ModelCloseDateFilterInput | null,
@@ -507,6 +527,8 @@ export type ModelAttendanceFilterInput = {
   remarks?: ModelStringInput | null,
   paidHolidayFlag?: ModelBooleanInput | null,
   revision?: ModelIntInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelAttendanceFilterInput | null > | null,
   or?: Array< ModelAttendanceFilterInput | null > | null,
   not?: ModelAttendanceFilterInput | null,
@@ -525,6 +547,8 @@ export type ModelDocumentFilterInput = {
   tag?: ModelStringInput | null,
   targetRole?: ModelStringInput | null,
   revision?: ModelIntInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelDocumentFilterInput | null > | null,
   or?: Array< ModelDocumentFilterInput | null > | null,
   not?: ModelDocumentFilterInput | null,
@@ -546,6 +570,8 @@ export type ModelSubscriptionStaffFilterInput = {
   enabled?: ModelSubscriptionBooleanInput | null,
   status?: ModelSubscriptionStringInput | null,
   owner?: ModelSubscriptionBooleanInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionStaffFilterInput | null > | null,
   or?: Array< ModelSubscriptionStaffFilterInput | null > | null,
 };
@@ -589,6 +615,8 @@ export type ModelSubscriptionHolidayCalendarFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   holidayDate?: ModelSubscriptionStringInput | null,
   name?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionHolidayCalendarFilterInput | null > | null,
   or?: Array< ModelSubscriptionHolidayCalendarFilterInput | null > | null,
 };
@@ -597,6 +625,8 @@ export type ModelSubscriptionCompanyHolidayCalendarFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   holidayDate?: ModelSubscriptionStringInput | null,
   name?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionCompanyHolidayCalendarFilterInput | null > | null,
   or?: Array< ModelSubscriptionCompanyHolidayCalendarFilterInput | null > | null,
 };
@@ -606,6 +636,8 @@ export type ModelSubscriptionCloseDateFilterInput = {
   closeDate?: ModelSubscriptionStringInput | null,
   startDate?: ModelSubscriptionStringInput | null,
   endDate?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionCloseDateFilterInput | null > | null,
   or?: Array< ModelSubscriptionCloseDateFilterInput | null > | null,
 };
@@ -621,6 +653,8 @@ export type ModelSubscriptionAttendanceFilterInput = {
   remarks?: ModelSubscriptionStringInput | null,
   paidHolidayFlag?: ModelSubscriptionBooleanInput | null,
   revision?: ModelSubscriptionIntInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionAttendanceFilterInput | null > | null,
   or?: Array< ModelSubscriptionAttendanceFilterInput | null > | null,
 };
@@ -644,6 +678,8 @@ export type ModelSubscriptionDocumentFilterInput = {
   tag?: ModelSubscriptionStringInput | null,
   targetRole?: ModelSubscriptionStringInput | null,
   revision?: ModelSubscriptionIntInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionDocumentFilterInput | null > | null,
   or?: Array< ModelSubscriptionDocumentFilterInput | null > | null,
 };

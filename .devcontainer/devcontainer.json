@@ -17,8 +17,8 @@
     "memory": "8gb",
     "storage": "32gb"
   },
-  "initializeCommand": ".devcontainer/initialize.sh",
-  "postCreateCommand": ".devcontainer/setup.sh",
+  // "initializeCommand": ".devcontainer/initialize.sh",
+  // "postCreateCommand": ".devcontainer/setup.sh",
   "customizations": {
     "vscode": {
       "extensions": [
