@@ -1,5 +1,5 @@
 setup:
-	npm install
+	./.devcontainer/setup.sh
 
 app-build:
 	npm isntall
