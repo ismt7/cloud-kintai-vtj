@@ -63,27 +63,8 @@ export default function Layout() {
   useEffect(() => {
     if (authStatus !== "authenticated") return;
 
-    void Storage.get("revision.json").then(async (fileUrl) => {
-      void fetch(fileUrl)
-        .then((res) => res.blob())
-        .then((blob) => new File([blob], "revision.json"))
-        .then(async (file) => file.text())
-        // eslint-disable-next-line max-len
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
-        .then((text) => JSON.parse(text).revision)
-        .then((revision) => {
-          if (!revision) return;
-
-          const currentRevision = localStorage.getItem("revision");
-          if (currentRevision === revision) return;
-
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-          localStorage.setItem("revision", revision);
-        });
-    });
-
-    setInterval(() => {
-      void Storage.get("revision.json").then(async (fileUrl) => {
+    void Storage.get("revision.json")
+      .then(async (fileUrl) => {
         void fetch(fileUrl)
           .then((res) => res.blob())
           .then((blob) => new File([blob], "revision.json"))
@@ -95,26 +76,59 @@ export default function Layout() {
             if (!revision) return;
 
             const currentRevision = localStorage.getItem("revision");
-
             if (currentRevision === revision) return;
-
-            if (currentRevision) {
-              // eslint-disable-next-line no-alert
-              const result = window.confirm(
-                "新しいバージョンがリリースされました、すぐに反映しますか？"
-              );
-
-              if (!result) return;
-
-              window.location.reload();
-            }
 
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             localStorage.setItem("revision", revision);
+          })
+          .catch((error) => {
+            console.error(error);
           });
+      })
+      .catch((error) => {
+        console.error(error);
       });
+
+    setInterval(() => {
+      void Storage.get("revision.json")
+        .then(async (fileUrl) => {
+          void fetch(fileUrl)
+            .then((res) => res.blob())
+            .then((blob) => new File([blob], "revision.json"))
+            .then(async (file) => file.text())
+            // eslint-disable-next-line max-len
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
+            .then((text) => JSON.parse(text).revision)
+            .then((revision) => {
+              if (!revision) return;
+
+              const currentRevision = localStorage.getItem("revision");
+              console.log(currentRevision, revision);
+              if (currentRevision === revision) return;
+
+              if (currentRevision) {
+                // eslint-disable-next-line no-alert
+                const result = window.confirm(
+                  "新しいバージョンがリリースされました、すぐに反映しますか？"
+                );
+
+                if (!result) return;
+
+                window.location.reload();
+              }
+
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+              localStorage.setItem("revision", revision);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }, 1000 * 60 * 60);
-  }, []);
+  }, [authStatus]);
 
   if (cognitoUserLoading) {
     return <LinearProgress />;
