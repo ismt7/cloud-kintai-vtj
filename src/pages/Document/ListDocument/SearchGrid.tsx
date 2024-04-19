@@ -10,6 +10,7 @@ export function SearchGrid({
       <TextField
         label="キーワード"
         fullWidth
+        size="small"
         onChange={(e) => setSearchKeyword(e.target.value)}
       />
     </Grid>

@@ -11,10 +11,15 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import HelpIcon from "@mui/icons-material/Help";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { theme } from "../../lib/theme";
+import { AuthContext } from "../../Layout";
 
-export default function MobileMenu() {
+export default function MobileMenu({ pathName }: { pathName: string }) {
+  const { signOut } = useContext(AuthContext);
   const navigate = useNavigate();
   const [state, setState] = useState(false);
 
@@ -31,7 +36,7 @@ export default function MobileMenu() {
       setState(open);
     };
 
-  const list = () => (
+  const MenuList = () => (
     <Box
       sx={{ width: 250 }}
       role="presentation"
@@ -51,10 +56,39 @@ export default function MobileMenu() {
             <ListItemText primary={"勤怠一覧"} />
           </ListItemButton>
         </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => {
+              navigate("/docs");
+            }}
+          >
+            <ListItemIcon>
+              <HelpIcon />
+            </ListItemIcon>
+            <ListItemText primary={"ドキュメント"} />
+          </ListItemButton>
+        </ListItem>
+        <Divider />
+        <ListItem disablePadding>
+          <ListItemButton
+            sx={{
+              backgroundColor: theme.palette.error.main,
+              color: theme.palette.error.contrastText,
+            }}
+            onClick={signOut}
+          >
+            <ListItemIcon>
+              <LogoutIcon sx={{ color: theme.palette.error.contrastText }} />
+            </ListItemIcon>
+            <ListItemText primary={"サインアウト"} />
+          </ListItemButton>
+        </ListItem>
       </List>
       <Divider />
     </Box>
   );
+
+  if (pathName === "/login") return null;
 
   return (
     <Box
@@ -72,7 +106,7 @@ export default function MobileMenu() {
         />
       </IconButton>
       <Drawer anchor={"right"} open={state} onClose={toggleDrawer(false)}>
-        {list()}
+        <MenuList />
       </Drawer>
     </Box>
   );

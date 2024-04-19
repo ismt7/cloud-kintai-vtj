@@ -13,6 +13,7 @@ import { StaffRole } from "./hooks/useStaffs/useStaffs";
 
 type AuthContextProps = {
   signOut: (data?: AuthEventData | undefined) => void;
+  signIn: () => void;
   isCognitoUserRole: (role: StaffRole) => boolean;
   user?: AmplifyUser;
   authStatus?: AuthStatus;
@@ -21,6 +22,9 @@ type AuthContextProps = {
 
 export const AuthContext = createContext<AuthContextProps>({
   signOut: () => {
+    console.log("The process is not implemented.");
+  },
+  signIn: () => {
     console.log("The process is not implemented.");
   },
   isCognitoUserRole: () => false,
@@ -134,9 +138,20 @@ export default function Layout() {
     return <LinearProgress />;
   }
 
+  const signIn = () => {
+    navigate("/login");
+  };
+
   return (
     <AuthContext.Provider
-      value={{ signOut, isCognitoUserRole, user, authStatus, cognitoUser }}
+      value={{
+        signOut,
+        signIn,
+        isCognitoUserRole,
+        user,
+        authStatus,
+        cognitoUser,
+      }}
     >
       <Stack sx={{ height: "100vh" }}>
         <Box>

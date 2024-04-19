@@ -129,73 +129,77 @@ export default function DocumentView() {
           <Typography color="text.primary">{document.title}</Typography>
         </Breadcrumbs>
       </Box>
-      <Container maxWidth="md">
-        <Stack direction="column" spacing={2}>
-          <Stack direction="column" spacing={0}>
-            <Box>
-              <Typography variant="h4">{document.title}</Typography>
-            </Box>
-            <Stack direction="row" spacing={1}>
-              <Box>
-                <Typography variant="body2">
-                  {`作成日： ${makeDate(dayjs(document.createdAt))}`}
-                </Typography>
-              </Box>
-              <Box>
-                <Typography variant="body2">/</Typography>
-              </Box>
-              <Box>
-                <Typography variant="body2">
-                  {`更新日： ${makeDate(dayjs(document.updatedAt))}`}
-                </Typography>
-              </Box>
-            </Stack>
-          </Stack>
+      <Stack
+        direction="column"
+        spacing={2}
+        sx={{
+          px: {
+            xs: 0,
+            md: 3,
+          },
+        }}
+      >
+        <Stack direction="column" spacing={0}>
+          <Box>
+            <Typography variant="h4">{document.title}</Typography>
+          </Box>
           <Stack direction="row" spacing={1}>
-            {document.targetRole ? (
-              (() => {
-                const targetRole = document.targetRole.filter(
-                  (item): item is NonNullable<typeof item> => item !== null
-                );
-
-                if (targetRole.length === 0) {
-                  return (
-                    <Chip
-                      label="すべて"
-                      icon={<PersonIcon fontSize="small" />}
-                    />
-                  );
-                }
-
-                return targetRole.map((role, i) => (
-                  <Chip
-                    label={role}
-                    key={i}
-                    icon={<PersonIcon fontSize="small" />}
-                  />
-                ));
-              })()
-            ) : (
-              <Chip label="すべて" icon={<PersonIcon fontSize="small" />} />
-            )}
+            <Box>
+              <Typography variant="body2">
+                {`作成日： ${makeDate(dayjs(document.createdAt))}`}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant="body2">/</Typography>
+            </Box>
+            <Box>
+              <Typography variant="body2">
+                {`更新日： ${makeDate(dayjs(document.updatedAt))}`}
+              </Typography>
+            </Box>
           </Stack>
-          <Box>
-            <Button
-              variant="contained"
-              size="medium"
-              startIcon={<EditIcon />}
-              onClick={() => navigate(`/docs/${document.id}/edit`)}
-            >
-              編集
-            </Button>
-          </Box>
-          <Box>
-            <Paper elevation={3}>
-              <ContentView content={document.content} />
-            </Paper>
-          </Box>
         </Stack>
-      </Container>
+        <Stack direction="row" spacing={1}>
+          {document.targetRole ? (
+            (() => {
+              const targetRole = document.targetRole.filter(
+                (item): item is NonNullable<typeof item> => item !== null
+              );
+
+              if (targetRole.length === 0) {
+                return (
+                  <Chip label="すべて" icon={<PersonIcon fontSize="small" />} />
+                );
+              }
+
+              return targetRole.map((role, i) => (
+                <Chip
+                  label={role}
+                  key={i}
+                  icon={<PersonIcon fontSize="small" />}
+                />
+              ));
+            })()
+          ) : (
+            <Chip label="すべて" icon={<PersonIcon fontSize="small" />} />
+          )}
+        </Stack>
+        <Box>
+          <Button
+            variant="contained"
+            size="medium"
+            startIcon={<EditIcon />}
+            onClick={() => navigate(`/docs/${document.id}/edit`)}
+          >
+            編集
+          </Button>
+        </Box>
+        <Box>
+          <Paper elevation={1} sx={{ pt: 2 }}>
+            <ContentView content={document.content} />
+          </Paper>
+        </Box>
+      </Stack>
     </>
   );
 }
