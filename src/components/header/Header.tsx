@@ -1,14 +1,13 @@
 import { Box, Button, Container, Stack, styled } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 import DesktopMenu from "./DesktopMenu";
 import Logo from "./Logo";
 import MobileMenu from "./MobileMenu";
-import StaffIcon from "./StaffIcon";
-import { AuthContext } from "../../Layout";
+import { SignInOutButton } from "./SignInOutButton";
+import { ExternalLinks } from "./ExternalLinks/ExternalLinks";
 
-const SignOutButton = styled(Button)(({ theme }) => ({
+export const SignOutButton = styled(Button)(({ theme }) => ({
   color: theme.palette.logout.contrastText,
   backgroundColor: theme.palette.logout.main,
   border: `3px solid ${theme.palette.logout.main}`,
@@ -21,7 +20,7 @@ const SignOutButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const SignInButton = styled(Button)(({ theme }) => ({
+export const SignInButton = styled(Button)(({ theme }) => ({
   color: theme.palette.login.contrastText,
   backgroundColor: theme.palette.login.main,
   whiteSpace: "nowrap",
@@ -34,9 +33,6 @@ const SignInButton = styled(Button)(({ theme }) => ({
 }));
 
 export default function Header() {
-  const navigate = useNavigate();
-  const { signOut, cognitoUser } = useContext(AuthContext);
-
   const [pathName, setPathName] = useState("/register");
 
   useEffect(() => {
@@ -45,52 +41,28 @@ export default function Header() {
     setPathName(name);
   }, [window.location.href]);
 
-  const signIn = () => {
-    navigate("/login");
-  };
-
   return (
     <header
       style={{
         backgroundColor: "#0FA85E",
       }}
     >
-      <Container maxWidth="xl">
+      <Container maxWidth="xl" sx={{ p: 0 }}>
         <Stack
           direction="row"
           alignItems="center"
           color="white"
           sx={{ p: 1, height: "50px", boxSizing: "border-box" }}
-          spacing={2}
+          spacing={{
+            xs: 0,
+            md: 2,
+          }}
         >
           <Logo />
           <DesktopMenu pathName={pathName} />
-          <MobileMenu />
-          {pathName !== "/login" && (
-            <Box
-              sx={{
-                display: {
-                  xs: "none",
-                  md: "block",
-                },
-              }}
-            >
-              <Stack direction="row" alignItems={"center"} spacing={1}>
-                <Box>
-                  {cognitoUser?.id ? (
-                    <SignOutButton onClick={signOut}>ログアウト</SignOutButton>
-                  ) : (
-                    <SignInButton onClick={signIn}>ログイン</SignInButton>
-                  )}
-                </Box>
-                {cognitoUser && (
-                  <Box>
-                    <StaffIcon name={cognitoUser.familyName} />
-                  </Box>
-                )}
-              </Stack>
-            </Box>
-          )}
+          <ExternalLinks pathName={pathName} />
+          <MobileMenu pathName={pathName} />
+          <SignInOutButton pathName={pathName} />
         </Stack>
       </Container>
     </header>

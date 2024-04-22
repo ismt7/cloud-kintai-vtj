@@ -19,6 +19,7 @@ import { SearchGrid } from "./SearchGrid";
 
 export default function ListDocument() {
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [selectedRole, setSelectedRole] = useState<string>("すべて");
 
   const {
     documents,
@@ -30,9 +31,7 @@ export default function ListDocument() {
     return <LinearProgress />;
   }
 
-  if (documentError) {
-    return null;
-  }
+  if (documentError) return null;
 
   return (
     <>
@@ -42,30 +41,22 @@ export default function ListDocument() {
         </Link>
         <Typography color="text.primary">ドキュメント一覧</Typography>
       </Breadcrumbs>
-      <Grid container spacing={2}>
+      <Grid container rowSpacing={{ xs: 2 }} columnSpacing={{ md: 2 }}>
         <SearchGrid setSearchKeyword={setSearchKeyword} />
-        <FilterGrid />
-        <Grid item xs={4}>
-          <Link href="/docs/post">
-            <Paper
-              elevation={3}
-              sx={{
-                p: 3,
-                height: 120,
-                textAlign: "center",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <AddCircleIcon fontSize="large" color="success" />
-            </Paper>
-          </Link>
-        </Grid>
+        <FilterGrid
+          selectedRole={selectedRole}
+          setSelectedRole={setSelectedRole}
+        />
+        <AddDocumentGrid />
         {documents
           .filter((document) => document.title.includes(searchKeyword))
+          .filter(
+            (document) =>
+              selectedRole === "すべて" ||
+              document.targetRole?.includes(selectedRole)
+          )
           .map((document, index) => (
-            <Grid item xs={4} key={index}>
+            <Grid item xs={12} md={4} key={index}>
               <Paper elevation={3} sx={{ p: 3 }}>
                 <Stack direction="column" spacing={2}>
                   <Link href={`/docs/${document.id}`}>
@@ -109,5 +100,30 @@ export default function ListDocument() {
           ))}
       </Grid>
     </>
+  );
+}
+
+function AddDocumentGrid() {
+  return (
+    <Grid item xs={12} md={4}>
+      <Link href="/docs/post">
+        <Paper
+          elevation={3}
+          sx={{
+            p: 3,
+            height: {
+              xs: 60,
+              md: 120,
+            },
+            textAlign: "center",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <AddCircleIcon fontSize="large" color="success" />
+        </Paper>
+      </Link>
+    </Grid>
   );
 }

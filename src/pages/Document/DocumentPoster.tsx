@@ -98,7 +98,7 @@ export default function DocumentPoster() {
               保存
             </Button>
           </Box>
-          <TextField label="タイトル" {...register("title")} />
+          <TextField label="タイトル" size="small" {...register("title")} />
           <Controller
             name="targetRole"
             control={control}
@@ -108,7 +108,7 @@ export default function DocumentPoster() {
                 multiple
                 options={["スタッフ", "管理者"]}
                 renderInput={(params) => (
-                  <TextField {...params} label="対象者" />
+                  <TextField {...params} label="対象者" size="small" />
                 )}
                 onChange={(_, data) => {
                   field.onChange(data);
