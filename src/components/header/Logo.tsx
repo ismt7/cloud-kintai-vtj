@@ -9,6 +9,10 @@ export default function Logo() {
         height: 1,
         justifyContent: "center",
         alignItems: "center",
+        flexGrow: {
+          xs: 1,
+          md: 0,
+        },
       }}
     >
       <Link href="/">

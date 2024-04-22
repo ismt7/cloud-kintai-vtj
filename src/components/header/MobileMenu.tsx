@@ -93,7 +93,6 @@ export default function MobileMenu({ pathName }: { pathName: string }) {
   return (
     <Box
       sx={{
-        flexGrow: 1,
         textAlign: "right",
         display: { xs: "block", md: "none" },
       }}

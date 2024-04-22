@@ -1,0 +1,65 @@
+import { Box, Grid, IconButton, Paper, useMediaQuery } from "@mui/material";
+import { useState } from "react";
+import { Unstable_Popup as BasePopup } from "@mui/base/Unstable_Popup";
+import AppsIcon from "@mui/icons-material/Apps";
+import { theme } from "../../../lib/theme";
+import { ClickAwayListener } from "@mui/base/ClickAwayListener";
+import { LinkGridItem } from "./LinkGridItem";
+
+export function ExternalLinks({ pathName }: { pathName: string }) {
+  const [anchor, setAnchor] = useState<null | HTMLElement>(null);
+
+  const isMobileSize = useMediaQuery(theme.breakpoints.down("md"));
+
+  if (pathName === "/login") return null;
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchor(anchor ? null : event.currentTarget);
+  };
+
+  const open = Boolean(anchor);
+  const id = open ? "external-links-popup" : undefined;
+
+  const handleClickAway = () => {
+    setAnchor(null);
+  };
+
+  return (
+    <ClickAwayListener onClickAway={handleClickAway}>
+      <Box>
+        <IconButton onClick={handleClick}>
+          <AppsIcon
+            sx={{
+              color: "white",
+            }}
+          />
+        </IconButton>
+        <BasePopup
+          id={id}
+          open={open}
+          anchor={anchor}
+          placement={(() => (isMobileSize ? "bottom-end" : "bottom"))()}
+        >
+          <Paper
+            elevation={3}
+            sx={{
+              width: "300px",
+              height: "400px",
+              m: 2,
+              p: 2,
+              border: `5px solid ${theme.palette.primary.main}`,
+            }}
+          >
+            <Grid container spacing={1}>
+              <LinkGridItem
+                url="http://ginjiro.office.begi.net:3021/"
+                title="交通費申請"
+                iconType="train"
+              />
+            </Grid>
+          </Paper>
+        </BasePopup>
+      </Box>
+    </ClickAwayListener>
+  );
+}
