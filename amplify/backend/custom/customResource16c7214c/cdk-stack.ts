@@ -25,7 +25,8 @@ export class cdkStack extends cdk.Stack {
     const keyAdmin = iam.User.fromUserName(
       this,
       "keyAdmin",
-      `amplify-backup-${AmplifyHelpers.getProjectInfo().envName}`
+      // `amplify-backup-${AmplifyHelpers.getProjectInfo().envName}`
+      "amplify-dev"
     );
     // The BackupAdminRole can below assumed principals in your account for which you give the right to assume them
     // via STS assume role. You'll need to adjust the assumedBy principals to reference roles or users in your account
