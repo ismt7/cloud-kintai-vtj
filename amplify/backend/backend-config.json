@@ -83,7 +83,7 @@
     }
   },
   "custom": {
-    "customResource16c7214c": {
+    "customResource1b080f88": {
       "providerPlugin": "awscloudformation",
       "service": "customCDK"
     }
@@ -114,6 +114,56 @@
     "amplifyhosting": {
       "service": "amplifyhosting",
       "type": "cicd"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_AdminQueriesf7a7d2e5_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AdminQueriesf7a7d2e5"
+        }
+      ]
+    },
+    "AMPLIFY_function_AdminQueriesf7a7d2e5_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AdminQueriesf7a7d2e5"
+        }
+      ]
+    },
+    "AMPLIFY_function_garakuSendMail_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "garakuSendMail"
+        }
+      ]
+    },
+    "AMPLIFY_function_garakuSendMail_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "garakuSendMail"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
     }
   },
   "storage": {
