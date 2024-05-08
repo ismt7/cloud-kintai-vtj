@@ -38,7 +38,7 @@ export class cdkStack extends cdk.Stack {
       iam.ManagedPolicy.fromAwsManagedPolicyName("AWSBackupFullAccess")
     );
 
-      const keyRole = iam.Role.fromRoleName(this, "RunUser", "ap-northeast-1_UvGocGkQJ_Full-access");
+    const keyRole = iam.Role.fromRoleName(this, "RunUser", "amplifyconsole-backend-role");
 
     const key = new kms.Key(
       this,
