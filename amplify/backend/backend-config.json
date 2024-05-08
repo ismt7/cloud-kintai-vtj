@@ -82,7 +82,12 @@
       "service": "Cognito"
     }
   },
-  "custom": {},
+  "custom": {
+    "customResource1b080f88": {
+      "providerPlugin": "awscloudformation",
+      "service": "customCDK"
+    }
+  },
   "function": {
     "AdminQueriesf7a7d2e5": {
       "build": true,
