@@ -11,6 +11,7 @@ export default function MoveDateItem({
   workDate: dayjs.Dayjs | null;
 }) {
   const navigate = useNavigate();
+  const today = dayjs();
 
   if (!workDate) {
     return null;
@@ -39,6 +40,7 @@ export default function MoveDateItem({
       />
       <Box>
         <IconButton
+          disabled={workDate.isSame(today, "day")}
           onClick={() => {
             const nextDate = workDate.add(1, "day");
             navigate(`/attendance/${nextDate.format("YYYYMMDD")}/edit`);
