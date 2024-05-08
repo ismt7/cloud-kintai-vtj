@@ -56,6 +56,11 @@ export function ExternalLinks({ pathName }: { pathName: string }) {
                 title="交通費申請"
                 iconType="train"
               />
+              <LinkGridItem
+                url="http://172.16.1.12:3020/"
+                title="休暇申請"
+                iconType="holiday"
+              />
             </Grid>
           </Paper>
         </BasePopup>

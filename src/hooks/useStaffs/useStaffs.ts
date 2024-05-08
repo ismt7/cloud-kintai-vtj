@@ -20,6 +20,14 @@ export enum StaffRole {
   NONE = "None",
 }
 
+export const roleLabelMap = new Map<StaffRole, string>([
+  [StaffRole.OWNER, "オーナー"],
+  [StaffRole.ADMIN, "管理者"],
+  [StaffRole.STAFF_ADMIN, "スタッフ管理者"],
+  [StaffRole.STAFF, "スタッフ"],
+  [StaffRole.GUEST, "ゲスト"],
+]);
+
 export type StaffType = {
   id: Staff["id"];
   cognitoUserId: Staff["cognitoUserId"];
@@ -32,9 +40,10 @@ export type StaffType = {
   status: Staff["status"];
   createdAt: Staff["createdAt"];
   updatedAt: Staff["updatedAt"];
+  usageStartDate?: Staff["usageStartDate"];
 };
 
-function mappingRole(role: Staff["role"]): StaffRole {
+export function mappingStaffRole(role: Staff["role"]): StaffRole {
   switch (role) {
     case StaffRole.ADMIN:
       return StaffRole.ADMIN;
@@ -67,9 +76,10 @@ export default function useStaffs() {
             givenName: staff.givenName,
             mailAddress: staff.mailAddress,
             owner: staff.owner ?? false,
-            role: mappingRole(staff.role),
+            role: mappingStaffRole(staff.role),
             enabled: staff.enabled,
             status: staff.status,
+            usageStartDate: staff.usageStartDate,
             createdAt: staff.createdAt,
             updatedAt: staff.updatedAt,
           }))
@@ -94,7 +104,7 @@ export default function useStaffs() {
             givenName: staff.givenName,
             mailAddress: staff.mailAddress,
             owner: staff.owner ?? false,
-            role: mappingRole(staff.role),
+            role: mappingStaffRole(staff.role),
             enabled: staff.enabled,
             status: staff.status,
             createdAt: staff.createdAt,
@@ -118,7 +128,7 @@ export default function useStaffs() {
             givenName: staff.givenName,
             mailAddress: staff.mailAddress,
             owner: staff.owner ?? false,
-            role: mappingRole(staff.role),
+            role: mappingStaffRole(staff.role),
             enabled: staff.enabled,
             status: staff.status,
             createdAt: staff.createdAt,
@@ -143,7 +153,7 @@ export default function useStaffs() {
                 givenName: staff.givenName,
                 mailAddress: staff.mailAddress,
                 owner: staff.owner ?? false,
-                role: mappingRole(staff.role),
+                role: mappingStaffRole(staff.role),
                 enabled: staff.enabled,
                 status: staff.status,
                 createdAt: staff.createdAt,

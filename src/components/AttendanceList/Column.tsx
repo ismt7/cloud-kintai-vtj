@@ -13,6 +13,7 @@ import {
   CompanyHolidayCalendar,
   HolidayCalendar,
   Rest,
+  Staff,
 } from "../../API";
 import {
   calcRestTotalTime,
@@ -38,7 +39,8 @@ export interface DataGridProps {
 export default function GetColumns(
   holidayCalendars: HolidayCalendar[],
   companyHolidayCalendars: CompanyHolidayCalendar[],
-  navigate: NavigateFunction
+  navigate: NavigateFunction,
+  staff: Staff | null | undefined
 ): GridColDef[] {
   return [
     {
@@ -61,7 +63,8 @@ export default function GetColumns(
           holidayCalendars,
           companyHolidayCalendars,
           paidHolidayFlag,
-          changeRequests
+          changeRequests,
+          staff
         );
       },
     },

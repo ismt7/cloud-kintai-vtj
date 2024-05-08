@@ -5,6 +5,7 @@ import {
   CompanyHolidayCalendar,
   HolidayCalendar,
   Rest,
+  Staff,
 } from "../../API";
 import getDayOfWeek from "./getDayOfWeek";
 
@@ -146,8 +147,12 @@ export function judgeStatus(
   holidayCalendars: HolidayCalendar[],
   companyHolidayCalendars: CompanyHolidayCalendar[],
   paidHolidayFlag: Attendance["paidHolidayFlag"],
-  changeRequests: Attendance["changeRequests"]
+  changeRequests: Attendance["changeRequests"],
+  staff: Staff | null | undefined
 ) {
+  if (!staff?.usageStartDate) return "";
+  if (dayjs(staff.usageStartDate).isAfter(dayjs(workDate))) return "";
+
   if (paidHolidayFlag) return "OK";
 
   const today = dayjs().format("YYYY-MM-DD");
