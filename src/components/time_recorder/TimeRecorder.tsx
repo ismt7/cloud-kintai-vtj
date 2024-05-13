@@ -102,9 +102,9 @@ export default function TimeRecorder() {
   useEffect(() => {
     if (!cognitoUser) return;
 
-    getAttendance(cognitoUser.id, today).catch(() =>
-      dispatch(setSnackbarError(MESSAGE_CODE.E01001))
-    );
+    getAttendance(cognitoUser.id, today).catch((e) => {
+      dispatch(setSnackbarError(MESSAGE_CODE.E01001));
+    });
 
     getAttendances(cognitoUser.id).catch(() =>
       dispatch(setSnackbarError(MESSAGE_CODE.E02001))
@@ -112,7 +112,10 @@ export default function TimeRecorder() {
 
     fetchStaff(cognitoUser.id)
       .then(setStaff)
-      .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E00001)));
+      .catch((e) => {
+        console.log(e);
+        dispatch(setSnackbarError(MESSAGE_CODE.E00001));
+      });
   }, [cognitoUser]);
 
   useEffect(() => {

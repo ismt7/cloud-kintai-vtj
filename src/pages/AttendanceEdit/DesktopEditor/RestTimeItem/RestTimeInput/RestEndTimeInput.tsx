@@ -4,24 +4,35 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { Box, Button, Chip, IconButton, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useState } from "react";
-import { Control, Controller, UseFormSetValue } from "react-hook-form";
+import { useEffect, useState } from "react";
+import {
+  Control,
+  Controller,
+  FieldArrayWithId,
+  UseFieldArrayUpdate,
+} from "react-hook-form";
 
 import { AttendanceEditInputs } from "../../../common";
 
 export default function RestEndTimeInput({
   workDate,
+  rest,
   index,
   control,
-  setValue,
+  restUpdate,
 }: {
   workDate: dayjs.Dayjs;
+  rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
   index: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditInputs>;
+  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
 }) {
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
+
+  useEffect(() => {
+    setEnableEndTime(!!rest.endTime);
+  }, [rest]);
 
   if (!enableEndTime) {
     return (
@@ -32,7 +43,6 @@ export default function RestEndTimeInput({
           onClick={() => {
             setEnableEndTime(true);
           }}
-          sx={{ my: 1.2 }}
         >
           終了時間を追加
         </Button>
@@ -48,56 +58,109 @@ export default function RestEndTimeInput({
           control={control}
           render={({ field }) => (
             <TimePicker
-              value={dayjs(field.value)}
+              value={rest.endTime ? dayjs(rest.endTime) : null}
               ampm={false}
               viewRenderers={{
                 hours: renderTimeViewClock,
                 minutes: renderTimeViewClock,
               }}
+              slotProps={{
+                textField: { size: "small" },
+              }}
               onChange={(newEndTime) => {
+                if (!newEndTime) {
+                  field.onChange(null);
+                  return;
+                }
+
+                if (!newEndTime.isValid()) {
+                  return;
+                }
+
                 const formattedEndTime = newEndTime
-                  ? newEndTime
-                      .year(workDate.year())
-                      .month(workDate.month())
-                      .date(workDate.date())
-                      .second(0)
-                      .millisecond(0)
-                      .toISOString()
-                  : null;
+                  .year(workDate.year())
+                  .month(workDate.month())
+                  .date(workDate.date())
+                  .second(0)
+                  .millisecond(0)
+                  .toISOString();
                 field.onChange(formattedEndTime);
               }}
             />
           )}
         />
         <Box>
-          <Chip
-            label="13:00"
-            variant="outlined"
-            color="success"
-            icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
-            onClick={() => {
-              const endTime = workDate
-                .hour(13)
-                .minute(0)
-                .second(0)
-                .millisecond(0)
-                .toISOString();
-              setValue(`rests.${index}.endTime`, endTime);
-            }}
+          <DefaultEndTimeChip
+            index={index}
+            workDate={workDate}
+            restUpdate={restUpdate}
+            rest={rest}
           />
         </Box>
       </Stack>
       <Box>
-        <IconButton
-          onClick={() => {
-            setValue(`rests.${index}.endTime`, null);
-            setEnableEndTime(false);
-          }}
-          sx={{ my: 1.2 }}
-        >
-          <ClearIcon />
-        </IconButton>
+        <ClearButton
+          index={index}
+          rest={rest}
+          restUpdate={restUpdate}
+          setEnableEndTime={setEnableEndTime}
+        />
       </Box>
     </Stack>
+  );
+}
+
+function DefaultEndTimeChip({
+  index,
+  workDate,
+  restUpdate,
+  rest,
+}: {
+  index: number;
+  workDate: dayjs.Dayjs;
+  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
+  rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
+}) {
+  const clickHandler = () => {
+    const endTime = workDate
+      .hour(13)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString();
+    restUpdate(index, { ...rest, endTime });
+  };
+
+  return (
+    <Chip
+      label="13:00"
+      variant="outlined"
+      color="success"
+      icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
+      onClick={clickHandler}
+    />
+  );
+}
+
+function ClearButton({
+  index,
+  rest,
+  restUpdate,
+  setEnableEndTime,
+}: {
+  index: number;
+  rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
+  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
+  setEnableEndTime: (enable: boolean) => void;
+}) {
+  const handleClick = () => {
+    restUpdate(index, { ...rest, endTime: null });
+    setEnableEndTime(false);
+  };
+
+  return (
+    <IconButton onClick={handleClick}>
+      <ClearIcon />
+    </IconButton>
   );
 }

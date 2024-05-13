@@ -10,15 +10,18 @@ import { AttendanceEditInputs } from "../../common";
 import { Label } from "../Label";
 import StartTimeInput from "../../DesktopEditor/WorkTimeInput/StartTimeInput";
 import EndTimeInput from "./EndTimeInput";
+import { Attendance } from "../../../../API";
 
 export function WorkTimeInput({
   workDate,
+  attendance,
   control,
   setValue,
   getValues,
   watch,
 }: {
   workDate: dayjs.Dayjs;
+  attendance: Attendance | null | undefined;
   control: Control<AttendanceEditInputs, any>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
   getValues: UseFormGetValues<AttendanceEditInputs>;
@@ -32,6 +35,7 @@ export function WorkTimeInput({
       </Typography>
       <StartTimeInput
         workDate={workDate}
+        attendance={attendance}
         control={control}
         setValue={setValue}
       />

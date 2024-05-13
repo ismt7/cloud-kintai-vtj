@@ -5,6 +5,7 @@ import {
   FieldArrayMethodProps,
   FieldArrayWithId,
   UseFieldArrayRemove,
+  UseFieldArrayUpdate,
   UseFormGetValues,
   UseFormHandleSubmit,
   UseFormRegister,
@@ -67,6 +68,7 @@ export default function DesktopEditor({
   restFields,
   restRemove,
   restAppend,
+  restUpdate,
   totalProductionTime,
   register,
   handleSubmit,
@@ -87,6 +89,7 @@ export default function DesktopEditor({
     value: RestInputs | RestInputs[],
     options?: FieldArrayMethodProps | undefined
   ) => void;
+  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
   totalProductionTime: number;
   register: UseFormRegister<AttendanceEditInputs>;
   handleSubmit: UseFormHandleSubmit<AttendanceEditInputs, undefined>;
@@ -118,10 +121,9 @@ export default function DesktopEditor({
           <ReturnDirectlyFlagInput control={control} />
           <WorkTimeInput
             targetWorkDate={workDate}
+            attendance={attendance}
             control={control}
-            watch={watch}
             setValue={setValue}
-            getValues={getValues}
           />
           <RestTimeItem
             restFields={restFields}
@@ -129,8 +131,8 @@ export default function DesktopEditor({
             watch={watch}
             restRemove={restRemove}
             control={control}
-            setValue={setValue}
             restAppend={restAppend}
+            restUpdate={restUpdate}
           />
           <ProductionTimeItem time={totalProductionTime} />
           <RemarksInput register={register} />

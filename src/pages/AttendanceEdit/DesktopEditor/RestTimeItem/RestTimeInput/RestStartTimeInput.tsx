@@ -2,22 +2,31 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import { Box, Chip, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { Control, Controller, UseFormSetValue } from "react-hook-form";
+import {
+  Control,
+  Controller,
+  FieldArrayWithId,
+  UseFieldArrayUpdate,
+} from "react-hook-form";
 
 import { AttendanceEditInputs } from "../../../common";
 
-export default function RestStartTimeInput({
-  workDate,
-  index,
-  control,
-  setValue,
-}: {
+type RestStartTimeInputProp = {
   workDate: dayjs.Dayjs;
+  rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
   index: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditInputs>;
-}) {
+  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
+};
+
+export default function RestStartTimeInput({
+  workDate,
+  rest,
+  index,
+  control,
+  restUpdate,
+}: RestStartTimeInputProp) {
   return (
     <Stack spacing={1}>
       <Controller
@@ -25,22 +34,29 @@ export default function RestStartTimeInput({
         control={control}
         render={({ field }) => (
           <TimePicker
-            value={dayjs(field.value)}
+            value={rest.startTime ? dayjs(rest.startTime) : null}
             ampm={false}
             viewRenderers={{
               hours: renderTimeViewClock,
               minutes: renderTimeViewClock,
             }}
+            slotProps={{
+              textField: { size: "small" },
+            }}
             onChange={(newStartTime) => {
+              if (!newStartTime) return null;
+
+              if (!newStartTime.isValid()) {
+                return;
+              }
+
               const formattedStartTime = newStartTime
-                ? newStartTime
-                    .year(workDate.year())
-                    .month(workDate.month())
-                    .date(workDate.date())
-                    .second(0)
-                    .millisecond(0)
-                    .toISOString()
-                : null;
+                .year(workDate.year())
+                .month(workDate.month())
+                .date(workDate.date())
+                .second(0)
+                .millisecond(0)
+                .toISOString();
               field.onChange(formattedStartTime);
             }}
           />
@@ -59,7 +75,7 @@ export default function RestStartTimeInput({
               .second(0)
               .millisecond(0)
               .toISOString();
-            setValue(`rests.${index}.startTime`, startTime);
+            restUpdate(index, { ...rest, startTime });
           }}
         />
       </Box>

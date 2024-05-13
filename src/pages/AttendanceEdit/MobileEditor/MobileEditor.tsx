@@ -12,6 +12,7 @@ import {
   FieldArrayMethodProps,
   FieldArrayWithId,
   UseFieldArrayRemove,
+  UseFieldArrayUpdate,
   UseFormGetValues,
   UseFormHandleSubmit,
   UseFormRegister,
@@ -41,6 +42,7 @@ type AttendanceEditProps = {
     options?: FieldArrayMethodProps | undefined
   ) => void;
   restRemove: UseFieldArrayRemove;
+  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
   register: UseFormRegister<AttendanceEditInputs>;
   handleSubmit: UseFormHandleSubmit<AttendanceEditInputs, undefined>;
   onSubmit: (data: AttendanceEditInputs) => Promise<void>;
@@ -57,6 +59,7 @@ export function MobileEditor({
   restFields,
   restAppend,
   restRemove,
+  restUpdate,
   register,
   handleSubmit,
   onSubmit,
@@ -88,6 +91,7 @@ export function MobileEditor({
         {/* 勤務時間 */}
         <WorkTimeInput
           workDate={workDate}
+          attendance={attendance}
           control={control}
           setValue={setValue}
           getValues={getValues}
@@ -102,6 +106,7 @@ export function MobileEditor({
           setValue={setValue}
           restAppend={restAppend}
           restRemove={restRemove}
+          restUpdate={restUpdate}
         />
 
         {/* 備考 */}

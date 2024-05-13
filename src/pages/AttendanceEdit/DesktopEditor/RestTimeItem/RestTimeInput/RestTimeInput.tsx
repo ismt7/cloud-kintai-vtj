@@ -2,11 +2,18 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { Control, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import {
+  Control,
+  FieldArrayWithId,
+  UseFieldArrayUpdate,
+  UseFormSetValue,
+  UseFormWatch,
+} from "react-hook-form";
 
 import { AttendanceEditInputs } from "../../../common";
 import RestEndTimeInput from "./RestEndTimeInput";
 import RestStartTimeInput from "./RestStartTimeInput";
+import { Attendance } from "../../../../../API";
 
 export function calcTotalRestTime(
   startTime: string | null | undefined,
@@ -21,19 +28,21 @@ export function calcTotalRestTime(
 
 export function RestTimeInput({
   targetWorkDate,
+  rest,
   index,
   watch,
   remove,
   control,
-  setValue,
+  restUpdate,
 }: {
   targetWorkDate: dayjs.Dayjs | null;
+  rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
   index: number;
   watch: UseFormWatch<AttendanceEditInputs>;
   remove: (index?: number | number[] | undefined) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditInputs>;
+  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
 }) {
   const [totalRestTime, setTotalRestTime] = useState<number>(0);
 
@@ -56,27 +65,29 @@ export function RestTimeInput({
   return (
     <Box>
       <Stack direction="row" spacing={1}>
-        <Box sx={{ py: 1 }}>
+        <Box>
           <IconButton aria-label="staff-search" onClick={() => remove(index)}>
             <DeleteIcon />
           </IconButton>
         </Box>
         <RestStartTimeInput
           workDate={targetWorkDate}
+          rest={rest}
           index={index}
           control={control}
-          setValue={setValue}
+          restUpdate={restUpdate}
         />
         <Box>
-          <Typography variant="body1" sx={{ my: 2 }}>
+          <Typography variant="body1" sx={{ my: 1 }}>
             ～
           </Typography>
         </Box>
         <RestEndTimeInput
           workDate={targetWorkDate}
+          rest={rest}
           index={index}
           control={control}
-          setValue={setValue}
+          restUpdate={restUpdate}
         />
         <Box sx={{ flexGrow: 1 }} textAlign={"right"}>
           {`${totalRestTime.toFixed(1)} 時間`}

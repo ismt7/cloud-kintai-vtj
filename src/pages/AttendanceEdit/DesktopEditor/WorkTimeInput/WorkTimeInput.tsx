@@ -1,16 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import {
-  Control,
-  UseFormGetValues,
-  UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
+import { Control, UseFormSetValue } from "react-hook-form";
 
 import { AttendanceEditInputs } from "../../common";
 import EndTimeInput from "./EndTimeInput";
 import StartTimeInput from "./StartTimeInput";
+import { Attendance } from "../../../../API";
 
 export function calcTotalWorkTime(
   startTime: string | null | undefined,
@@ -26,26 +22,24 @@ export function calcTotalWorkTime(
 
 export function WorkTimeInput({
   targetWorkDate,
+  attendance,
   control,
-  watch,
   setValue,
-  getValues,
 }: {
   targetWorkDate: dayjs.Dayjs | null;
+  attendance: Attendance | null | undefined;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
-  watch: UseFormWatch<AttendanceEditInputs>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
-  getValues: UseFormGetValues<AttendanceEditInputs>;
 }) {
   const [totalWorkTime, setTotalWorkTime] = useState<number>(0);
 
   useEffect(() => {
-    watch((data) => {
-      const diff = calcTotalWorkTime(data.startTime, data.endTime);
-      setTotalWorkTime(diff);
-    });
-  }, [watch]);
+    if (!attendance) return;
+
+    const diff = calcTotalWorkTime(attendance.startTime, attendance.endTime);
+    setTotalWorkTime(diff);
+  }, [targetWorkDate]);
 
   if (!targetWorkDate) {
     return null;
@@ -66,22 +60,22 @@ export function WorkTimeInput({
               <Box>
                 <StartTimeInput
                   workDate={targetWorkDate}
+                  attendance={attendance}
                   control={control}
                   setValue={setValue}
                 />
               </Box>
               <Box>
-                <Typography variant="body1" sx={{ py: 2 }}>
+                <Typography variant="body1" sx={{ py: 1 }}>
                   ～
                 </Typography>
               </Box>
               <Box>
                 <EndTimeInput
                   workDate={targetWorkDate}
+                  attendance={attendance}
                   control={control}
                   setValue={setValue}
-                  getValues={getValues}
-                  watch={watch}
                 />
               </Box>
             </Stack>

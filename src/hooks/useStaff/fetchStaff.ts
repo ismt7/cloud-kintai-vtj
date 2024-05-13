@@ -20,6 +20,6 @@ export default async function fetchStaff(
     throw new Error("スタッフが見つかりませんでした。");
   }
 
-  const staff = response.data.listStaff.items[0];
+  const staff = response.data.listStaff.items[0] as Staff;
   return staff;
 }

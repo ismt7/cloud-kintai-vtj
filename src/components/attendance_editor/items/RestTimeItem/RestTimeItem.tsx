@@ -4,6 +4,8 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import {
   Control,
+  FieldArrayWithId,
+  UseFieldArrayUpdate,
   UseFormGetValues,
   UseFormSetValue,
   UseFormWatch,
@@ -24,68 +26,72 @@ export function calcTotalRestTime(
   return diff;
 }
 
-export function RestTimeItem({
-  targetWorkDate,
-  index,
-  watch,
-  remove,
-  control,
-  setValue,
-  getValues,
-}: {
+type RestTimeItemProps = {
   targetWorkDate: dayjs.Dayjs | null;
+  rest: FieldArrayWithId<AttendanceEditorInputs, "rests", "id">;
   index: number;
   watch: UseFormWatch<AttendanceEditorInputs>;
-  remove: (index?: number | number[] | undefined) => void;
+  restRemove: (index?: number | number[] | undefined) => void;
+  restUpdate: UseFieldArrayUpdate<AttendanceEditorInputs, "rests">;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditorInputs, any>;
   setValue: UseFormSetValue<AttendanceEditorInputs>;
   getValues: UseFormGetValues<AttendanceEditorInputs>;
-}) {
+};
+
+export function RestTimeItem({
+  targetWorkDate,
+  rest,
+  index,
+  watch,
+  restRemove,
+  restUpdate,
+  control,
+  setValue,
+  getValues,
+}: RestTimeItemProps) {
   const [totalRestTime, setTotalRestTime] = useState<number>(0);
-
-  useEffect(() => {
-    watch((data) => {
-      if (!data.rests) return;
-
-      const rest = data.rests[index];
-      if (!rest) return;
-
-      const diff = calcTotalRestTime(rest.startTime, rest.endTime);
-      setTotalRestTime(diff);
-    });
-  }, [watch]);
 
   if (!targetWorkDate) {
     return null;
   }
 
+  useEffect(() => {
+    const diff = calcTotalRestTime(rest.startTime, rest.endTime);
+    setTotalRestTime(diff);
+  }, [rest]);
+
   return (
     <Box>
       <Stack direction="row" spacing={1}>
-        <Box sx={{ py: 1 }}>
-          <IconButton aria-label="staff-search" onClick={() => remove(index)}>
+        <Box>
+          <IconButton
+            aria-label="staff-search"
+            onClick={() => restRemove(index)}
+          >
             <DeleteIcon />
           </IconButton>
         </Box>
         <RestStartTimeInput
           index={index}
           workDate={dayjs(targetWorkDate)}
+          rest={rest}
           control={control}
-          setValue={setValue}
+          restUpdate={restUpdate}
         />
         <Box>
-          <Typography variant="body1" sx={{ my: 2 }}>
+          <Typography variant="body1" sx={{ my: 1 }}>
             ～
           </Typography>
         </Box>
         <RestEndTimeInput
           index={index}
           workDate={targetWorkDate}
+          rest={rest}
           control={control}
-          setValue={setValue}
           getValues={getValues}
           watch={watch}
+          restUpdate={restUpdate}
         />
         <Box sx={{ flexGrow: 1 }} textAlign={"right"}>
           {`${totalRestTime.toFixed(1)} 時間`}
