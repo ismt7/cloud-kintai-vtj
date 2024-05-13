@@ -48,7 +48,21 @@ export default function EndTimeInput({
     import.meta.env.DEV ? "DEBUG" : "ERROR"
   );
 
-  return enableEndTime ? (
+  if (!enableEndTime) {
+    return (
+      <Button
+        variant="outlined"
+        startIcon={<AddCircleOutlineIcon />}
+        onClick={() => {
+          setEnableEndTime(true);
+        }}
+      >
+        終了時間を追加
+      </Button>
+    );
+  }
+
+  return (
     <Stack direction="row" spacing={1}>
       <Stack spacing={1}>
         <Controller
@@ -69,6 +83,9 @@ export default function EndTimeInput({
               viewRenderers={{
                 hours: renderTimeViewClock,
                 minutes: renderTimeViewClock,
+              }}
+              slotProps={{
+                textField: { size: "small" },
               }}
               onChange={(value) => {
                 field.onChange(
@@ -116,16 +133,5 @@ export default function EndTimeInput({
         </IconButton>
       </Box>
     </Stack>
-  ) : (
-    <Button
-      variant="outlined"
-      startIcon={<AddCircleOutlineIcon />}
-      onClick={() => {
-        setEnableEndTime(true);
-      }}
-      sx={{ my: 1.4 }}
-    >
-      終了時間を追加
-    </Button>
   );
 }

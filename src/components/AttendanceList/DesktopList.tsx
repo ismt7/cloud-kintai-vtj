@@ -3,7 +3,12 @@ import { DataGrid } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { NavigateFunction } from "react-router-dom";
 
-import { Attendance, CompanyHolidayCalendar, HolidayCalendar } from "../../API";
+import {
+  Attendance,
+  CompanyHolidayCalendar,
+  HolidayCalendar,
+  Staff,
+} from "../../API";
 import GetColumns from "./Column";
 import getDayOfWeek, { DayOfWeek } from "./getDayOfWeek";
 
@@ -19,11 +24,13 @@ export default function DesktopList({
   holidayCalendars,
   companyHolidayCalendars,
   navigate,
+  staff,
 }: {
   attendances: Attendance[];
   holidayCalendars: HolidayCalendar[];
   companyHolidayCalendars: CompanyHolidayCalendar[];
   navigate: NavigateFunction;
+  staff: Staff | null | undefined;
 }) {
   return (
     <DesktopBox>
@@ -32,7 +39,8 @@ export default function DesktopList({
         columns={GetColumns(
           holidayCalendars,
           companyHolidayCalendars,
-          navigate
+          navigate,
+          staff
         )}
         autoHeight
         hideFooter={true}

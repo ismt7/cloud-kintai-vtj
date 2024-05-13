@@ -30,6 +30,7 @@ export declare type StaffCreateFormInputValues = {
     enabled?: boolean;
     status?: string;
     owner?: boolean;
+    usageStartDate?: string;
 };
 export declare type StaffCreateFormValidationValues = {
     cognitoUserId?: ValidationFunction<string>;
@@ -40,6 +41,7 @@ export declare type StaffCreateFormValidationValues = {
     enabled?: ValidationFunction<boolean>;
     status?: ValidationFunction<string>;
     owner?: ValidationFunction<boolean>;
+    usageStartDate?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type StaffCreateFormOverridesProps = {
@@ -52,6 +54,7 @@ export declare type StaffCreateFormOverridesProps = {
     enabled?: PrimitiveOverrideProps<SwitchFieldProps>;
     status?: PrimitiveOverrideProps<TextFieldProps>;
     owner?: PrimitiveOverrideProps<SwitchFieldProps>;
+    usageStartDate?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type StaffCreateFormProps = React.PropsWithChildren<{
     overrides?: StaffCreateFormOverridesProps | undefined | null;

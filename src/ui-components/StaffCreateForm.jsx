@@ -36,6 +36,7 @@ export default function StaffCreateForm(props) {
     enabled: false,
     status: "",
     owner: false,
+    usageStartDate: "",
   };
   const [cognitoUserId, setCognitoUserId] = React.useState(
     initialValues.cognitoUserId
@@ -49,6 +50,9 @@ export default function StaffCreateForm(props) {
   const [enabled, setEnabled] = React.useState(initialValues.enabled);
   const [status, setStatus] = React.useState(initialValues.status);
   const [owner, setOwner] = React.useState(initialValues.owner);
+  const [usageStartDate, setUsageStartDate] = React.useState(
+    initialValues.usageStartDate
+  );
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setCognitoUserId(initialValues.cognitoUserId);
@@ -59,6 +63,7 @@ export default function StaffCreateForm(props) {
     setEnabled(initialValues.enabled);
     setStatus(initialValues.status);
     setOwner(initialValues.owner);
+    setUsageStartDate(initialValues.usageStartDate);
     setErrors({});
   };
   const validations = {
@@ -70,6 +75,7 @@ export default function StaffCreateForm(props) {
     enabled: [{ type: "Required" }],
     status: [{ type: "Required" }],
     owner: [],
+    usageStartDate: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -105,6 +111,7 @@ export default function StaffCreateForm(props) {
           enabled,
           status,
           owner,
+          usageStartDate,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -175,6 +182,7 @@ export default function StaffCreateForm(props) {
               enabled,
               status,
               owner,
+              usageStartDate,
             };
             const result = onChange(modelFields);
             value = result?.cognitoUserId ?? value;
@@ -206,6 +214,7 @@ export default function StaffCreateForm(props) {
               enabled,
               status,
               owner,
+              usageStartDate,
             };
             const result = onChange(modelFields);
             value = result?.familyName ?? value;
@@ -237,6 +246,7 @@ export default function StaffCreateForm(props) {
               enabled,
               status,
               owner,
+              usageStartDate,
             };
             const result = onChange(modelFields);
             value = result?.givenName ?? value;
@@ -268,6 +278,7 @@ export default function StaffCreateForm(props) {
               enabled,
               status,
               owner,
+              usageStartDate,
             };
             const result = onChange(modelFields);
             value = result?.mailAddress ?? value;
@@ -299,6 +310,7 @@ export default function StaffCreateForm(props) {
               enabled,
               status,
               owner,
+              usageStartDate,
             };
             const result = onChange(modelFields);
             value = result?.role ?? value;
@@ -330,6 +342,7 @@ export default function StaffCreateForm(props) {
               enabled: value,
               status,
               owner,
+              usageStartDate,
             };
             const result = onChange(modelFields);
             value = result?.enabled ?? value;
@@ -361,6 +374,7 @@ export default function StaffCreateForm(props) {
               enabled,
               status: value,
               owner,
+              usageStartDate,
             };
             const result = onChange(modelFields);
             value = result?.status ?? value;
@@ -392,6 +406,7 @@ export default function StaffCreateForm(props) {
               enabled,
               status,
               owner: value,
+              usageStartDate,
             };
             const result = onChange(modelFields);
             value = result?.owner ?? value;
@@ -406,6 +421,38 @@ export default function StaffCreateForm(props) {
         hasError={errors.owner?.hasError}
         {...getOverrideProps(overrides, "owner")}
       ></SwitchField>
+      <TextField
+        label="Usage start date"
+        isRequired={false}
+        isReadOnly={false}
+        value={usageStartDate}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              cognitoUserId,
+              familyName,
+              givenName,
+              mailAddress,
+              role,
+              enabled,
+              status,
+              owner,
+              usageStartDate: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.usageStartDate ?? value;
+          }
+          if (errors.usageStartDate?.hasError) {
+            runValidationTasks("usageStartDate", value);
+          }
+          setUsageStartDate(value);
+        }}
+        onBlur={() => runValidationTasks("usageStartDate", usageStartDate)}
+        errorMessage={errors.usageStartDate?.errorMessage}
+        hasError={errors.usageStartDate?.hasError}
+        {...getOverrideProps(overrides, "usageStartDate")}
+      ></TextField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}

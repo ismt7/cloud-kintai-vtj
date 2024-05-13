@@ -71,7 +71,7 @@ export function WorkTimeItem({
                 />
               </Box>
               <Box>
-                <Typography variant="body1" sx={{ py: 2 }}>
+                <Typography variant="body1" sx={{ py: 1 }}>
                   ～
                 </Typography>
               </Box>

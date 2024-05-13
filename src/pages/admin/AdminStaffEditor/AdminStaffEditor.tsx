@@ -34,6 +34,8 @@ import {
 } from "../../../lib/reducers/snackbarReducer";
 import { ROLE_OPTIONS } from "../AdminStaff/CreateStaffDialog";
 import { AuthContext } from "../../../Layout";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 type Inputs = {
   staffId?: Staff["sub"];
@@ -43,6 +45,7 @@ type Inputs = {
   owner: boolean;
   beforeRoles: StaffRole[];
   role: string;
+  usageStartDate?: Staff["usageStartDate"];
 };
 
 const defaultValues: Inputs = {
@@ -80,8 +83,15 @@ export default function AdminStaffEditor() {
   });
 
   const onSubmit = (data: Inputs) => {
-    const { familyName, givenName, mailAddress, beforeRoles, role, owner } =
-      data;
+    const {
+      familyName,
+      givenName,
+      mailAddress,
+      beforeRoles,
+      role,
+      owner,
+      usageStartDate,
+    } = data;
 
     if (!familyName || !givenName || !mailAddress || !role) {
       dispatch(setSnackbarError(MESSAGE_CODE.E05003));
@@ -126,6 +136,7 @@ export default function AdminStaffEditor() {
           mailAddress,
           owner,
           role,
+          usageStartDate: usageStartDate?.toISOString() || null,
         })
           .then(() => {
             dispatch(setSnackbarSuccess(MESSAGE_CODE.S05003));
@@ -160,6 +171,12 @@ export default function AdminStaffEditor() {
     setValue("owner", staff.owner || false);
     setValue("beforeRoles", [staff.role]);
     setValue("role", staff.role);
+    setValue(
+      "usageStartDate",
+      staff.usageStartDate
+        ? dayjs(staff.usageStartDate)
+        : dayjs(staff.createdAt)
+    );
   }, [staffId, staffLoading]);
 
   if (staffLoading) {
@@ -285,6 +302,24 @@ export default function AdminStaffEditor() {
                   </TableCell>
                 </TableRow>
               )}
+              <TableRow>
+                <TableCell>利用開始日</TableCell>
+                <TableCell>
+                  <Typography variant="body1">
+                    <Controller
+                      name="usageStartDate"
+                      control={control}
+                      render={({ field }) => (
+                        <DatePicker
+                          {...field}
+                          value={field.value}
+                          format="YYYY/M/D"
+                        />
+                      )}
+                    />
+                  </Typography>
+                </TableCell>
+              </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
