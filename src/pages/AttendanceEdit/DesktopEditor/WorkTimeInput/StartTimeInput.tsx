@@ -9,19 +9,15 @@ import { Attendance } from "../../../../API";
 
 export default function StartTimeInput({
   workDate,
-  attendance,
   control,
   setValue,
 }: {
   workDate: dayjs.Dayjs | null;
-  attendance: Attendance | null | undefined;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
 }) {
   if (!workDate) return null;
-
-  const startTime = attendance?.startTime ? dayjs(attendance.startTime) : null;
 
   return (
     <Stack spacing={1}>
@@ -31,7 +27,7 @@ export default function StartTimeInput({
         render={({ field }) => (
           <TimePicker
             ampm={false}
-            value={startTime}
+            value={field.value ? dayjs(field.value) : null}
             viewRenderers={{
               hours: renderTimeViewClock,
               minutes: renderTimeViewClock,

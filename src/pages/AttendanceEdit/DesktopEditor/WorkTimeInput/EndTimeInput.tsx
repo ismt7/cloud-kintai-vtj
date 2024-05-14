@@ -27,18 +27,8 @@ export default function EndTimeInput({
   if (!workDate) return null;
 
   useEffect(() => {
-    if (!attendance) return;
-
-    const endTime = attendance.endTime;
-    setEnableEndTime(!!endTime);
-  }, [workDate]);
-
-  useEffect(() => {
-    if (!attendance) return;
-    setEnableEndTime(!!attendance.endTime);
+    setEnableEndTime(!!attendance?.endTime);
   }, [attendance]);
-
-  const endTime = attendance?.endTime ? dayjs(attendance.endTime) : null;
 
   if (!enableEndTime) {
     return (
@@ -62,7 +52,7 @@ export default function EndTimeInput({
           control={control}
           render={({ field }) => (
             <TimePicker
-              value={endTime}
+              value={field.value ? dayjs(field.value) : null}
               ampm={false}
               viewRenderers={{
                 hours: renderTimeViewClock,

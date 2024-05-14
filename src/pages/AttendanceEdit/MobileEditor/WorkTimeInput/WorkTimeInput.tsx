@@ -35,7 +35,6 @@ export function WorkTimeInput({
       </Typography>
       <StartTimeInput
         workDate={workDate}
-        attendance={attendance}
         control={control}
         setValue={setValue}
       />
