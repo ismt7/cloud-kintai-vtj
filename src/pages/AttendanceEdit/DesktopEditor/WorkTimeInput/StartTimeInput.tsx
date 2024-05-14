@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 import { Control, Controller, UseFormSetValue } from "react-hook-form";
 
 import { AttendanceEditInputs } from "../../common";
-import { Attendance } from "../../../../API";
 
 export default function StartTimeInput({
   workDate,
