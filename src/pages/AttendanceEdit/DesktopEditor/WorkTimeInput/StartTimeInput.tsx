@@ -16,9 +16,7 @@ export default function StartTimeInput({
   control: Control<AttendanceEditInputs, any>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
 }) {
-  if (!workDate) {
-    return null;
-  }
+  if (!workDate) return null;
 
   return (
     <Stack spacing={1}>
@@ -33,18 +31,23 @@ export default function StartTimeInput({
               hours: renderTimeViewClock,
               minutes: renderTimeViewClock,
             }}
+            slotProps={{
+              textField: { size: "small" },
+            }}
             onChange={(value) => {
-              field.onChange(
-                value && value.isValid()
-                  ? value
-                      .year(workDate.year())
-                      .month(workDate.month())
-                      .date(workDate.date())
-                      .second(0)
-                      .millisecond(0)
-                      .toISOString()
-                  : null
-              );
+              if (!value) return;
+
+              if (!value.isValid()) {
+                return;
+              }
+              const formattedStartTime = value
+                .year(workDate.year())
+                .month(workDate.month())
+                .date(workDate.date())
+                .second(0)
+                .millisecond(0)
+                .toISOString();
+              field.onChange(formattedStartTime);
             }}
           />
         )}

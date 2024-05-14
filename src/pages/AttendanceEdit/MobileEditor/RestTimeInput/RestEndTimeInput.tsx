@@ -5,7 +5,13 @@ import { Box, Button, Chip, Stack, styled } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { Control, Controller, UseFormSetValue } from "react-hook-form";
+import {
+  Control,
+  Controller,
+  FieldArrayWithId,
+  UseFieldArrayUpdate,
+  UseFormSetValue,
+} from "react-hook-form";
 import { AttendanceEditInputs } from "../../common";
 
 const ClearButton = styled(Button)(({ theme }) => ({
@@ -19,18 +25,24 @@ const ClearButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-export default function RestEndTimeInput({
-  workDate,
-  index,
-  control,
-  setValue,
-}: {
+type RestEndTimeInputProps = {
   workDate: dayjs.Dayjs;
+  rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
   index: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
-}) {
+  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
+};
+
+export default function RestEndTimeInput({
+  workDate,
+  rest,
+  index,
+  control,
+  setValue,
+  restUpdate,
+}: RestEndTimeInputProps) {
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
 
   if (!enableEndTime) {
@@ -80,20 +92,11 @@ export default function RestEndTimeInput({
           )}
         />
         <Box>
-          <Chip
-            label="13:00"
-            variant="outlined"
-            color="success"
-            icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
-            onClick={() => {
-              const endTime = workDate
-                .hour(13)
-                .minute(0)
-                .second(0)
-                .millisecond(0)
-                .toISOString();
-              setValue(`rests.${index}.endTime`, endTime);
-            }}
+          <DefaultEndTimeChip
+            index={index}
+            workDate={workDate}
+            restUpdate={restUpdate}
+            rest={rest}
           />
         </Box>
       </Stack>
@@ -103,7 +106,7 @@ export default function RestEndTimeInput({
           size="small"
           startIcon={<ClearIcon />}
           onClick={() => {
-            setValue(`rests.${index}.endTime`, null);
+            restUpdate(index, { ...rest, endTime: null });
             setEnableEndTime(false);
           }}
         >
@@ -111,5 +114,35 @@ export default function RestEndTimeInput({
         </ClearButton>
       </Box>
     </Stack>
+  );
+}
+
+function DefaultEndTimeChip({
+  index,
+  workDate,
+  restUpdate,
+  rest,
+}: {
+  index: number;
+  workDate: dayjs.Dayjs;
+  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
+  rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
+}): JSX.Element {
+  return (
+    <Chip
+      label="13:00"
+      variant="outlined"
+      color="success"
+      icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
+      onClick={() => {
+        const endTime = workDate
+          .hour(13)
+          .minute(0)
+          .second(0)
+          .millisecond(0)
+          .toISOString();
+        restUpdate(index, { ...rest, endTime });
+      }}
+    />
   );
 }

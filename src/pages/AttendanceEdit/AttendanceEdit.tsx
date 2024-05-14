@@ -34,7 +34,7 @@ export default function AttendanceEdit() {
   const { attendance, getAttendance, updateAttendance, createAttendance } =
     useAttendance();
 
-  const { register, control, setValue, getValues, watch, handleSubmit } =
+  const { register, control, setValue, getValues, watch, handleSubmit, reset } =
     useForm<AttendanceEditInputs>({
       mode: "onChange",
       defaultValues,
@@ -44,6 +44,7 @@ export default function AttendanceEdit() {
     fields: restFields,
     append: restAppend,
     remove: restRemove,
+    update: restUpdate,
   } = useFieldArray({
     control,
     name: "rests",
@@ -130,6 +131,8 @@ export default function AttendanceEdit() {
 
   useEffect(() => {
     if (!staff || !targetWorkDate) return;
+
+    reset();
 
     getAttendance(
       staff.cognitoUserId,
@@ -218,6 +221,7 @@ export default function AttendanceEdit() {
           restFields={restFields}
           restAppend={restAppend}
           restRemove={restRemove}
+          restUpdate={restUpdate}
           register={register}
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
@@ -236,6 +240,7 @@ export default function AttendanceEdit() {
           restFields={restFields}
           restRemove={restRemove}
           restAppend={restAppend}
+          restUpdate={restUpdate}
           totalProductionTime={totalProductionTime}
           register={register}
           handleSubmit={handleSubmit}

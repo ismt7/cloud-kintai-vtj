@@ -5,46 +5,46 @@ import { Box, Button, Chip, IconButton, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import {
-  Control,
-  Controller,
-  UseFormGetValues,
-  UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
+import { Control, Controller, UseFormSetValue } from "react-hook-form";
 
 import { AttendanceEditInputs } from "../../common";
+import { Attendance } from "../../../../API";
 
 export default function EndTimeInput({
   workDate,
+  attendance,
   control,
   setValue,
-  getValues,
-  watch,
 }: {
   workDate: dayjs.Dayjs | null;
+  attendance: Attendance | null | undefined;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
-  getValues: UseFormGetValues<AttendanceEditInputs>;
-  watch: UseFormWatch<AttendanceEditInputs>;
 }) {
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
 
+  if (!workDate) return null;
+
   useEffect(() => {
-    const endTime = getValues("endTime");
-    setEnableEndTime(!!endTime);
+    setEnableEndTime(!!attendance?.endTime);
+  }, [attendance]);
 
-    watch((data) => {
-      setEnableEndTime(!!data.endTime);
-    });
-  }, [watch]);
-
-  if (!workDate) {
-    return null;
+  if (!enableEndTime) {
+    return (
+      <Button
+        variant="outlined"
+        startIcon={<AddCircleOutlineIcon />}
+        onClick={() => {
+          setEnableEndTime(true);
+        }}
+      >
+        終了時間を追加
+      </Button>
+    );
   }
 
-  return enableEndTime ? (
+  return (
     <Stack direction="row" spacing={1}>
       <Stack spacing={1}>
         <Controller
@@ -58,18 +58,21 @@ export default function EndTimeInput({
                 hours: renderTimeViewClock,
                 minutes: renderTimeViewClock,
               }}
+              slotProps={{
+                textField: { size: "small" },
+              }}
               onChange={(value) => {
-                field.onChange(
-                  value && value.isValid()
-                    ? value
-                        .year(workDate.year())
-                        .month(workDate.month())
-                        .date(workDate.date())
-                        .second(0)
-                        .millisecond(0)
-                        .toISOString()
-                    : null
-                );
+                if (!value) return null;
+                if (!value.isValid()) return;
+
+                const formattedEndTime = value
+                  .year(workDate.year())
+                  .month(workDate.month())
+                  .date(workDate.date())
+                  .second(0)
+                  .millisecond(0)
+                  .toISOString();
+                field.onChange(formattedEndTime);
               }}
             />
           )}
@@ -94,7 +97,6 @@ export default function EndTimeInput({
       </Stack>
       <Box>
         <IconButton
-          sx={{ my: 1 }}
           onClick={() => {
             setValue("endTime", null);
             setEnableEndTime(false);
@@ -104,16 +106,5 @@ export default function EndTimeInput({
         </IconButton>
       </Box>
     </Stack>
-  ) : (
-    <Button
-      variant="outlined"
-      startIcon={<AddCircleOutlineIcon />}
-      onClick={() => {
-        setEnableEndTime(true);
-      }}
-      sx={{ my: 1.4 }}
-    >
-      終了時間を追加
-    </Button>
   );
 }

@@ -2,6 +2,8 @@ import {
   Alert,
   AlertTitle,
   Box,
+  Button,
+  IconButton,
   LinearProgress,
   Stack,
   Typography,
@@ -33,6 +35,14 @@ import sendClockInMail from "./sendClockInMail";
 import sendClockOutMail from "./sendClockOutMail";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
 import { AuthContext } from "../../Layout";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import { useNavigate } from "react-router-dom";
+import useAttendances from "../../hooks/useAttendances/useAttendances";
+import { judgeStatus } from "../AttendanceList/common";
+import useHolidayCalendars from "../../hooks/useHolidayCalendars/useHolidayCalendars";
+import useCompanyHolidayCalendars from "../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
+import { Staff } from "../../API";
+import fetchStaff from "../../hooks/useStaff/fetchStaff";
 
 export default function TimeRecorder() {
   const { cognitoUser } = useContext(AuthContext);
@@ -47,9 +57,23 @@ export default function TimeRecorder() {
     restEnd,
     updateRemarks,
   } = useAttendance();
+  const { attendances, getAttendances } = useAttendances();
+  const {
+    holidayCalendars,
+    loading: holidayCalendarLoading,
+    error: holidayCalendarError,
+  } = useHolidayCalendars();
+  const {
+    companyHolidayCalendars,
+    loading: companyHolidayCalendarLoading,
+    error: companyHolidayCalendarError,
+  } = useCompanyHolidayCalendars();
+
   const [workStatus, setWorkStatus] = useState<WorkStatus | null | undefined>(
     undefined
   );
+  const [staff, setStaff] = useState<Staff | null | undefined>(undefined);
+  const [isAttendanceError, setIsAttendanceError] = useState(false);
 
   const today = dayjs().format("YYYY-MM-DD");
   const logger = new Logger(
@@ -78,10 +102,55 @@ export default function TimeRecorder() {
   useEffect(() => {
     if (!cognitoUser) return;
 
-    getAttendance(cognitoUser.id, today).catch(() =>
-      dispatch(setSnackbarError(MESSAGE_CODE.E01001))
+    getAttendance(cognitoUser.id, today).catch((e) => {
+      dispatch(setSnackbarError(MESSAGE_CODE.E01001));
+    });
+
+    getAttendances(cognitoUser.id).catch(() =>
+      dispatch(setSnackbarError(MESSAGE_CODE.E02001))
     );
+
+    fetchStaff(cognitoUser.id)
+      .then(setStaff)
+      .catch((e) => {
+        console.log(e);
+        dispatch(setSnackbarError(MESSAGE_CODE.E00001));
+      });
   }, [cognitoUser]);
+
+  useEffect(() => {
+    if (
+      !attendances ||
+      holidayCalendarLoading ||
+      companyHolidayCalendarLoading
+    ) {
+      return;
+    }
+
+    const errorCount = attendances
+      .map((attendance) => {
+        const {
+          workDate,
+          startTime,
+          endTime,
+          paidHolidayFlag,
+          changeRequests,
+        } = attendance;
+        return judgeStatus(
+          workDate,
+          startTime,
+          endTime,
+          holidayCalendars,
+          companyHolidayCalendars,
+          paidHolidayFlag,
+          changeRequests,
+          staff
+        );
+      })
+      .filter((status) => status === "エラー").length;
+
+    setIsAttendanceError(errorCount > 0);
+  }, [attendances]);
 
   useEffect(() => {
     setWorkStatus(getWorkStatus(attendance));
@@ -99,22 +168,11 @@ export default function TimeRecorder() {
   return (
     <Box
       sx={{
-        width: {
-          xs: "100%",
-          md: "400px",
-        },
-        mx: {
-          xs: 3,
-          md: 0,
-        },
+        width: { xs: "100%", md: "400px" },
+        mx: { xs: 3, md: 0 },
       }}
     >
-      <Stack
-        spacing={{
-          xs: 2,
-          md: 3,
-        }}
-      >
+      <Stack spacing={{ xs: 2, md: 3 }}>
         <Box>
           <Typography variant="h6" textAlign="center">
             {workStatus.text || "読み込み中..."}
@@ -267,6 +325,24 @@ export default function TimeRecorder() {
           }}
         />
       </Stack>
+      {isAttendanceError && (
+        <Alert
+          severity="error"
+          sx={{ mt: 2 }}
+          action={
+            <IconButton
+              onClick={() => window.open("/attendance/list", "_blank")}
+            >
+              <OpenInNewIcon />
+            </IconButton>
+          }
+        >
+          <AlertTitle>勤怠打刻エラー</AlertTitle>
+          <Typography variant="body2">
+            打刻エラーがあります。勤怠一覧を確認してください。
+          </Typography>
+        </Alert>
+      )}
       <Alert severity="info" sx={{ mt: 2 }}>
         <AlertTitle>昼休憩は退勤時に自動打刻されます</AlertTitle>
         <Typography variant="body2">

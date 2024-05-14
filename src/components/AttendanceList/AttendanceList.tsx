@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Logger } from "aws-amplify";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useAppDispatchV2 } from "../../app/hooks";
@@ -20,6 +20,8 @@ import Title from "../Title/Title";
 import DesktopList from "./DesktopList";
 import MobileList from "./MobileList/MobileList";
 import { AuthContext } from "../../Layout";
+import { Staff } from "../../API";
+import fetchStaff from "../../hooks/useStaff/fetchStaff";
 
 const DescriptionTypography = styled(Typography)(({ theme }) => ({
   padding: "0px 40px",
@@ -44,6 +46,8 @@ export default function AttendanceTable() {
     error: companyHolidayCalendarError,
   } = useCompanyHolidayCalendars();
 
+  const [staff, setStaff] = useState<Staff | null | undefined>(undefined);
+
   const logger = new Logger(
     "AttendanceList",
     import.meta.env.DEV ? "DEBUG" : "ERROR"
@@ -56,6 +60,15 @@ export default function AttendanceTable() {
       logger.debug(error);
       dispatch(setSnackbarError(MESSAGE_CODE.E02001));
     });
+
+    fetchStaff(cognitoUser.id)
+      .then((res) => {
+        setStaff(res);
+      })
+      .catch((error) => {
+        logger.debug(error);
+        dispatch(setSnackbarError(MESSAGE_CODE.E00001));
+      });
   }, [cognitoUser]);
 
   if (holidayCalendarLoading || companyHolidayCalendarLoading) {
@@ -88,11 +101,13 @@ export default function AttendanceTable() {
         holidayCalendars={holidayCalendars}
         companyHolidayCalendars={companyHolidayCalendars}
         navigate={navigate}
+        staff={staff}
       />
       <MobileList
         attendances={attendances}
         holidayCalendars={holidayCalendars}
         companyHolidayCalendars={companyHolidayCalendars}
+        staff={staff}
       />
     </Stack>
   );

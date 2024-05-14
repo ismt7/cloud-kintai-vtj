@@ -6,6 +6,7 @@ import {
   FieldArrayMethodProps,
   FieldArrayWithId,
   UseFieldArrayRemove,
+  UseFieldArrayUpdate,
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
@@ -13,6 +14,7 @@ import {
 import { AttendanceEditInputs, RestInputs } from "../../common";
 import NoRestTimeMessage from "./NoRestTimeMessage";
 import { RestTimeInput } from "./RestTimeInput/RestTimeInput";
+import { Attendance } from "../../../../API";
 
 const Label = styled(Typography)(() => ({
   width: "150px",
@@ -25,8 +27,8 @@ export default function RestTimeItem({
   watch,
   restRemove,
   control,
-  setValue,
   restAppend,
+  restUpdate,
 }: {
   restFields: FieldArrayWithId<AttendanceEditInputs, "rests", "id">[];
   workDate: dayjs.Dayjs | null;
@@ -34,11 +36,11 @@ export default function RestTimeItem({
   restRemove: UseFieldArrayRemove;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditInputs>;
   restAppend: (
     value: RestInputs | RestInputs[],
     options?: FieldArrayMethodProps | undefined
   ) => void;
+  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
 }) {
   return (
     <Stack direction="row">
@@ -47,15 +49,16 @@ export default function RestTimeItem({
       </Label>
       <Stack spacing={1} sx={{ flexGrow: 2 }}>
         <NoRestTimeMessage restFields={restFields} />
-        {restFields.map((_, index) => (
+        {restFields.map((rest, index) => (
           <RestTimeInput
             key={index}
             targetWorkDate={workDate}
+            rest={rest}
             index={index}
             watch={watch}
             remove={restRemove}
             control={control}
-            setValue={setValue}
+            restUpdate={restUpdate}
           />
         ))}
         <Box>

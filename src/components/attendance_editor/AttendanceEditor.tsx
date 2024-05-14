@@ -94,13 +94,20 @@ export default function AttendanceEditor() {
     setValue,
     getValues,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<AttendanceEditorInputs>({
     mode: "onChange",
     defaultValues,
   });
 
-  const { fields, remove, append } = useFieldArray({
+  const {
+    fields: restFields,
+    remove: restRemove,
+    append: restAppend,
+    replace: restReplace,
+    update: restUpdate,
+  } = useFieldArray({
     control,
     name: "rests",
   });
@@ -113,6 +120,8 @@ export default function AttendanceEditor() {
 
   useEffect(() => {
     if (!staff || !targetStaffId || !targetWorkDate) return;
+
+    reset();
 
     setWorkDate(dayjs(targetWorkDate));
 
@@ -260,7 +269,7 @@ export default function AttendanceEditor() {
           startTime: item.startTime,
           endTime: item.endTime,
         }));
-      setValue("rests", rests);
+      restReplace(rests);
     }
 
     if (attendance.histories) {
@@ -353,7 +362,7 @@ export default function AttendanceEditor() {
                   color="inherit"
                   size="small"
                   onClick={() => {
-                    append({
+                    restAppend({
                       startTime: dayjs(targetWorkDate)
                         .hour(12)
                         .minute(0)
@@ -426,7 +435,7 @@ export default function AttendanceEditor() {
         <Stack direction="row">
           <Box sx={{ fontWeight: "bold", width: "150px" }}>休憩時間</Box>
           <Stack spacing={1} sx={{ flexGrow: 2 }}>
-            {fields.length === 0 && (
+            {restFields.length === 0 && (
               <Box>
                 <Typography variant="body1">休憩時間はありません</Typography>
                 <Typography variant="body1">
@@ -434,13 +443,15 @@ export default function AttendanceEditor() {
                 </Typography>
               </Box>
             )}
-            {fields.map((_, index) => (
+            {restFields.map((rest, index) => (
               <RestTimeItem
                 key={index}
                 targetWorkDate={workDate}
+                rest={rest}
                 index={index}
                 watch={watch}
-                remove={remove}
+                restRemove={restRemove}
+                restUpdate={restUpdate}
                 control={control}
                 setValue={setValue}
                 getValues={getValues}
@@ -450,7 +461,7 @@ export default function AttendanceEditor() {
               <IconButton
                 aria-label="staff-search"
                 onClick={() =>
-                  append({
+                  restAppend({
                     startTime: null,
                     endTime: null,
                   })

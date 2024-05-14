@@ -27,6 +27,7 @@ export const getStaff = /* GraphQL */ `query GetStaff($id: ID!) {
     enabled
     status
     owner
+    usageStartDate
     createdAt
     updatedAt
     __typename
@@ -49,6 +50,7 @@ export const listStaff = /* GraphQL */ `query ListStaff(
       enabled
       status
       owner
+      usageStartDate
       createdAt
       updatedAt
       __typename

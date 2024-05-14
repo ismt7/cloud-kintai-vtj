@@ -19,6 +19,7 @@ export const onCreateStaff = /* GraphQL */ `subscription OnCreateStaff($filter: 
     enabled
     status
     owner
+    usageStartDate
     createdAt
     updatedAt
     __typename
@@ -39,6 +40,7 @@ export const onUpdateStaff = /* GraphQL */ `subscription OnUpdateStaff($filter: 
     enabled
     status
     owner
+    usageStartDate
     createdAt
     updatedAt
     __typename
@@ -59,6 +61,7 @@ export const onDeleteStaff = /* GraphQL */ `subscription OnDeleteStaff($filter: 
     enabled
     status
     owner
+    usageStartDate
     createdAt
     updatedAt
     __typename

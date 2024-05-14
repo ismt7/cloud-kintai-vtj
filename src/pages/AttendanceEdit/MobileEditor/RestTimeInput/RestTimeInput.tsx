@@ -12,6 +12,7 @@ import {
   FieldArrayMethodProps,
   FieldArrayWithId,
   UseFieldArrayRemove,
+  UseFieldArrayUpdate,
   UseFormSetValue,
 } from "react-hook-form";
 import { AttendanceEditInputs, RestInputs } from "../../common";
@@ -21,14 +22,7 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import RestEndTimeInput from "./RestEndTimeInput";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-export function RestTimeInput({
-  restFields,
-  workDate,
-  control,
-  setValue,
-  restAppend,
-  restRemove,
-}: {
+type RestTimeInputProps = {
   restFields: FieldArrayWithId<AttendanceEditInputs, "rests", "id">[];
   workDate: dayjs.Dayjs;
   control: Control<AttendanceEditInputs, any>;
@@ -38,11 +32,22 @@ export function RestTimeInput({
     options?: FieldArrayMethodProps | undefined
   ) => void;
   restRemove: UseFieldArrayRemove;
-}) {
+  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
+};
+
+export function RestTimeInput({
+  restFields,
+  workDate,
+  control,
+  setValue,
+  restAppend,
+  restRemove,
+  restUpdate,
+}: RestTimeInputProps) {
   return (
     <>
       <Label>休憩時間</Label>
-      {restFields.map((_, index) => (
+      {restFields.map((rest, index) => (
         <Paper elevation={2} key={index} sx={{ p: 2 }}>
           <Stack direction="column" spacing={1}>
             <Stack direction="row" spacing={0} alignItems={"center"}>
@@ -61,9 +66,10 @@ export function RestTimeInput({
             </Stack>
             <RestStartTimeInput
               workDate={workDate}
+              rest={rest}
               index={index}
               control={control}
-              setValue={setValue}
+              restUpdate={restUpdate}
             />
             <Divider />
             <Typography variant="body1" sx={{ fontWeight: "bold" }}>
@@ -71,9 +77,11 @@ export function RestTimeInput({
             </Typography>
             <RestEndTimeInput
               workDate={workDate}
+              rest={rest}
               index={index}
               control={control}
               setValue={setValue}
+              restUpdate={restUpdate}
             />
           </Stack>
         </Paper>

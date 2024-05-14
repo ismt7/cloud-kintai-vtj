@@ -11,6 +11,7 @@ export interface Staff {
   mailAddress: string;
   owner: boolean;
   roles: StaffRole[];
+  usageStartDate?: dayjs.Dayjs;
   createdAt: dayjs.Dayjs;
   updatedAt: dayjs.Dayjs;
 }

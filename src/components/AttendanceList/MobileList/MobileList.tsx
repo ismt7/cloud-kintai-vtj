@@ -13,6 +13,7 @@ import {
   Attendance,
   CompanyHolidayCalendar,
   HolidayCalendar,
+  Staff,
 } from "../../../API";
 import TableBodyRow from "./TableBodyRow";
 
@@ -27,10 +28,12 @@ export default function MobileList({
   attendances,
   holidayCalendars,
   companyHolidayCalendars,
+  staff,
 }: {
   attendances: Attendance[];
   holidayCalendars: HolidayCalendar[];
   companyHolidayCalendars: CompanyHolidayCalendar[];
+  staff: Staff | null | undefined;
 }) {
   return (
     <MobileBox>
@@ -55,6 +58,7 @@ export default function MobileList({
                 attendance={attendance}
                 holidayCalendars={holidayCalendars}
                 companyHolidayCalendars={companyHolidayCalendars}
+                staff={staff}
               />
             ))}
           </TableBody>

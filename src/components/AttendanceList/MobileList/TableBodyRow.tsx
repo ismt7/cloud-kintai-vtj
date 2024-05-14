@@ -8,6 +8,7 @@ import {
   Attendance,
   CompanyHolidayCalendar,
   HolidayCalendar,
+  Staff,
 } from "../../../API";
 import {
   calcRestTotalTime,
@@ -60,10 +61,12 @@ export default function TableBodyRow({
   attendance,
   holidayCalendars,
   companyHolidayCalendars,
+  staff,
 }: {
   attendance: Attendance;
   holidayCalendars: HolidayCalendar[];
   companyHolidayCalendars: CompanyHolidayCalendar[];
+  staff: Staff | null | undefined;
 }) {
   const navigate = useNavigate();
 
@@ -108,7 +111,8 @@ export default function TableBodyRow({
           holidayCalendars,
           companyHolidayCalendars,
           paidHolidayFlag,
-          changeRequests
+          changeRequests,
+          staff
         )}
       </TableCell>
       <TableCell className="table-td-body-date">

@@ -141,6 +141,22 @@
         }
       ]
     },
+    "AMPLIFY_function_garakuSendMail_emailFrom": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "garakuSendMail"
+        }
+      ]
+    },
+    "AMPLIFY_function_garakuSendMail_region": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "garakuSendMail"
+        }
+      ]
+    },
     "AMPLIFY_function_garakuSendMail_s3Key": {
       "usedBy": [
         {

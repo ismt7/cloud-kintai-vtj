@@ -45,6 +45,9 @@ export default function StartTimeInput({
               hours: renderTimeViewClock,
               minutes: renderTimeViewClock,
             }}
+            slotProps={{
+              textField: { size: "small" },
+            }}
             onChange={(value) => {
               field.onChange(
                 value && value.isValid()

@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import {
   Control,
   Controller,
+  FieldArrayWithId,
+  UseFieldArrayUpdate,
   UseFormGetValues,
   UseFormSetValue,
   UseFormWatch,
@@ -15,22 +17,26 @@ import {
 
 import { AttendanceEditorInputs } from "../../common";
 
+type RestEndTimeInputProps = {
+  index: number;
+  workDate: dayjs.Dayjs;
+  rest: FieldArrayWithId<AttendanceEditorInputs, "rests", "id">;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  control: Control<AttendanceEditorInputs, any>;
+  watch: UseFormWatch<AttendanceEditorInputs>;
+  getValues: UseFormGetValues<AttendanceEditorInputs>;
+  restUpdate: UseFieldArrayUpdate<AttendanceEditorInputs, "rests">;
+};
+
 export default function RestEndTimeInput({
   index,
   workDate,
+  rest,
   control,
-  setValue,
   watch,
   getValues,
-}: {
-  index: number;
-  workDate: dayjs.Dayjs;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<AttendanceEditorInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditorInputs>;
-  watch: UseFormWatch<AttendanceEditorInputs>;
-  getValues: UseFormGetValues<AttendanceEditorInputs>;
-}) {
+  restUpdate,
+}: RestEndTimeInputProps) {
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
 
   useEffect(() => {
@@ -56,7 +62,6 @@ export default function RestEndTimeInput({
           onClick={() => {
             setEnableEndTime(true);
           }}
-          sx={{ my: 1.2 }}
         >
           終了時間を追加
         </Button>
@@ -72,22 +77,26 @@ export default function RestEndTimeInput({
           control={control}
           render={({ field }) => (
             <TimePicker
-              value={field.value ? dayjs(field.value) : null}
+              value={rest.endTime ? dayjs(rest.endTime) : null}
               ampm={false}
               viewRenderers={{
                 hours: renderTimeViewClock,
                 minutes: renderTimeViewClock,
               }}
+              slotProps={{
+                textField: { size: "small" },
+              }}
               onChange={(newEndTime) => {
+                if (!newEndTime) return field.onChange(null);
+                if (!newEndTime.isValid()) return;
+
                 const formattedEndTime = newEndTime
-                  ? newEndTime
-                      .year(workDate.year())
-                      .month(workDate.month())
-                      .date(workDate.date())
-                      .second(0)
-                      .millisecond(0)
-                      .toISOString()
-                  : null;
+                  .year(workDate.year())
+                  .month(workDate.month())
+                  .date(workDate.date())
+                  .second(0)
+                  .millisecond(0)
+                  .toISOString();
                 field.onChange(formattedEndTime);
               }}
             />
@@ -106,7 +115,7 @@ export default function RestEndTimeInput({
                 .second(0)
                 .millisecond(0)
                 .toISOString();
-              setValue(`rests.${index}.endTime`, endTime);
+              restUpdate(index, { ...rest, endTime });
             }}
           />
         </Box>
@@ -114,7 +123,7 @@ export default function RestEndTimeInput({
       <Box>
         <IconButton
           onClick={() => {
-            setValue(`rests.${index}.endTime`, null);
+            restUpdate(index, { ...rest, endTime: null });
             setEnableEndTime(false);
           }}
         >

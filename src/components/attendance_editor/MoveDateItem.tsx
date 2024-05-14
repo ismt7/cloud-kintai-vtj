@@ -37,6 +37,9 @@ export default function MoveDateItem({
       <DatePicker
         value={workDate}
         format="YYYY/MM/DD"
+        slotProps={{
+          textField: { size: "small" },
+        }}
         onChange={(date) => {
           if (date) {
             navigate(
