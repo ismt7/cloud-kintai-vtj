@@ -15,6 +15,12 @@
     },
     "s3Key": {
       "Type": "String"
+    },
+    "region": {
+      "Type": "String"
+    },
+    "emailFrom": {
+      "Type": "String"
     }
   },
   "Conditions": {
@@ -68,7 +74,10 @@
               "Ref": "env"
             },
             "REGION": {
-              "Ref": "AWS::Region"
+              "Ref": "region"
+            },
+            "EMAIL_FROM": {
+              "Ref": "emailFrom"
             }
           }
         },

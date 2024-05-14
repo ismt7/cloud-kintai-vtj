@@ -32,7 +32,9 @@
         },
         "garakuSendMail": {
           "deploymentBucketName": "amplify-garakufrontend-dev-24913-deployment",
-          "s3Key": "amplify-builds/garakuSendMail-774e6a484256685a346c-build.zip"
+          "s3Key": "amplify-builds/garakuSendMail-566f4165677a59584a54-build.zip",
+          "region": "ap-northeast-1",
+          "emailFrom": "Cloud Kintai dev <noreply@dev.kintai.virtualtech.jp>"
         },
         "garakufrontendbfa3456a": {}
       },

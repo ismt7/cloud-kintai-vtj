@@ -4,8 +4,6 @@
 Amplify Params - DO NOT EDIT */
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
-const FROM_ADDRESS = "Cloud Kintai dev <noreply@kintai.virtualtech.jp>";
-
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
@@ -17,7 +15,7 @@ export async function handler(event) {
   const body = event.arguments.data.body;
 
   const sesClient = new SESClient({
-    region: "ap-northeast-1",
+    region: process.env.REGION,
   });
 
   if (!to) {
@@ -42,7 +40,7 @@ export async function handler(event) {
   }
 
   const sendEmailCommandInput = {
-    Source: FROM_ADDRESS,
+    Source: process.env.EMAIL_FROM,
     Destination: {
       ToAddresses: to,
     },
