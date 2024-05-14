@@ -34,7 +34,7 @@ export default function AttendanceEdit() {
   const { attendance, getAttendance, updateAttendance, createAttendance } =
     useAttendance();
 
-  const { register, control, setValue, getValues, watch, handleSubmit } =
+  const { register, control, setValue, getValues, watch, handleSubmit, reset } =
     useForm<AttendanceEditInputs>({
       mode: "onChange",
       defaultValues,
@@ -131,6 +131,8 @@ export default function AttendanceEdit() {
 
   useEffect(() => {
     if (!staff || !targetWorkDate) return;
+
+    reset();
 
     getAttendance(
       staff.cognitoUserId,
