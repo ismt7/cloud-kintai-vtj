@@ -94,6 +94,7 @@ export default function AttendanceEditor() {
     setValue,
     getValues,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<AttendanceEditorInputs>({
     mode: "onChange",
@@ -119,6 +120,8 @@ export default function AttendanceEditor() {
 
   useEffect(() => {
     if (!staff || !targetStaffId || !targetWorkDate) return;
+
+    reset();
 
     setWorkDate(dayjs(targetWorkDate));
 
