@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { Control, UseFormSetValue } from "react-hook-form";
+import { Control, UseFormSetValue, UseFormWatch } from "react-hook-form";
 
 import { AttendanceEditInputs } from "../../common";
 import EndTimeInput from "./EndTimeInput";
@@ -25,21 +25,29 @@ export function WorkTimeInput({
   attendance,
   control,
   setValue,
+  watch,
 }: {
   targetWorkDate: dayjs.Dayjs | null;
   attendance: Attendance | null | undefined;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
+  watch: UseFormWatch<AttendanceEditInputs>;
 }) {
   const [totalWorkTime, setTotalWorkTime] = useState<number>(0);
 
   useEffect(() => {
-    if (!attendance) return;
+    watch((data) => {
+      const { startTime, endTime } = data;
+      if (!startTime || !endTime) {
+        setTotalWorkTime(0);
+        return;
+      }
 
-    const diff = calcTotalWorkTime(attendance.startTime, attendance.endTime);
-    setTotalWorkTime(diff);
-  }, [targetWorkDate]);
+      const diff = calcTotalWorkTime(startTime, endTime);
+      setTotalWorkTime(diff);
+    });
+  }, [watch]);
 
   if (!targetWorkDate) {
     return null;
@@ -60,7 +68,6 @@ export function WorkTimeInput({
               <Box>
                 <StartTimeInput
                   workDate={targetWorkDate}
-                  attendance={attendance}
                   control={control}
                   setValue={setValue}
                 />

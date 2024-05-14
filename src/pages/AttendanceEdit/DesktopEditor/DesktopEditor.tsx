@@ -124,6 +124,7 @@ export default function DesktopEditor({
             attendance={attendance}
             control={control}
             setValue={setValue}
+            watch={watch}
           />
           <RestTimeItem
             restFields={restFields}
