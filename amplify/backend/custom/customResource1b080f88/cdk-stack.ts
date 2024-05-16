@@ -28,6 +28,8 @@ export class cdkStack extends cdk.Stack {
       // `amplify-backup-${AmplifyHelpers.getProjectInfo().envName}`
       "amplify-dev"
     );
+
+    const root = new iam.AccountRootPrincipal();
     // The BackupAdminRole can below assumed principals in your account for which you give the right to assume them
     // via STS assume role. You'll need to adjust the assumedBy principals to reference roles or users in your account
     // and this role can then administer restore points
@@ -53,14 +55,14 @@ export class cdkStack extends cdk.Stack {
         description:
           "KMS key for encrypting the objects in your AWS Backup Vault",
         enableKeyRotation: false,
-        admins: [backupAdmin, keyAdmin],
+          admins: [backupAdmin, keyAdmin, root],
         policy: new iam.PolicyDocument({
             statements: [
             new iam.PolicyStatement({
                 actions: [
                     "kms:*"
                 ],
-                principals: [keyAdmin],
+                principals: [keyAdmin, root],
                 resources: ["*"],
             }),
             new iam.PolicyStatement({
