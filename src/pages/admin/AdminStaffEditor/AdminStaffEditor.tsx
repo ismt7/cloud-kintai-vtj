@@ -101,7 +101,6 @@ export default function AdminStaffEditor() {
     setSaving(true);
     updateCognitoUser(mailAddress, familyName, givenName, mailAddress, owner)
       .then(async () => {
-        // ロールが変更された場合、グループから削除して再登録
         if (beforeRoles.length >= 1 && beforeRoles[0] !== role) {
           const removeGroupsResponse = await Promise.all(
             beforeRoles.map(async (r) => {
@@ -189,8 +188,12 @@ export default function AdminStaffEditor() {
   }
 
   const makeStaffName = () => {
-    const { familyName, givenName } = getValues();
+    const staff = staffs.find((s) => s.cognitoUserId === staffId);
+    if (!staff) {
+      return "(未設定)";
+    }
 
+    const { familyName, givenName } = staff;
     if (!familyName || !givenName) {
       return "(未設定)";
     }

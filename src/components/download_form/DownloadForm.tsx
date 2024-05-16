@@ -3,6 +3,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  Checkbox,
   Chip,
   CircularProgress,
   Stack,
@@ -18,6 +19,11 @@ import useCloseDates from "../../hooks/useCloseDates/useCloseDates";
 import useStaffs, { StaffType } from "../../hooks/useStaffs/useStaffs";
 import { calcTotalRestTime } from "../attendance_editor/items/RestTimeItem/RestTimeItem";
 import downloadAttendances from "./downloadAttendances";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 type Inputs = {
   startDate: dayjs.Dayjs | undefined;
@@ -192,7 +198,9 @@ export default function DownloadForm() {
                         {...field}
                         label="開始日"
                         format="YYYY/MM/DD"
-                        slotProps={{ textField: { variant: "outlined" } }}
+                        slotProps={{
+                          textField: { variant: "outlined", size: "small" },
+                        }}
                       />
                     )}
                   />
@@ -207,40 +215,40 @@ export default function DownloadForm() {
                         {...field}
                         label="終了日"
                         format="YYYY/MM/DD"
-                        slotProps={{ textField: { variant: "outlined" } }}
+                        slotProps={{
+                          textField: { variant: "outlined", size: "small" },
+                        }}
                       />
                     )}
                   />
                 </Box>
               </Stack>
-              {closeDates.length > 0 && (
-                <Stack spacing={2} sx={{ maxWidth: 500, overflowX: "auto" }}>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Box sx={{ whiteSpace: "nowrap" }}>集計対象月から:</Box>
+              <Stack spacing={2} sx={{ maxWidth: 500, overflowX: "auto" }}>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <Box sx={{ whiteSpace: "nowrap" }}>集計対象月から:</Box>
+                  <Chip
+                    icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
+                    label="新規"
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      navigate("/admin/master/job_term");
+                    }}
+                  />
+                  {closeDates.map((closeDate, index) => (
                     <Chip
-                      icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
-                      label="新規"
+                      key={index}
+                      label={dayjs(closeDate.closeDate).format("YYYY/MM")}
                       variant="outlined"
                       color="primary"
                       onClick={() => {
-                        navigate("/admin/master/job_term");
+                        setValue("startDate", dayjs(closeDate.startDate));
+                        setValue("endDate", dayjs(closeDate.endDate));
                       }}
                     />
-                    {closeDates.map((closeDate, index) => (
-                      <Chip
-                        key={index}
-                        label={dayjs(closeDate.closeDate).format("YYYY/MM")}
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => {
-                          setValue("startDate", dayjs(closeDate.startDate));
-                          setValue("endDate", dayjs(closeDate.endDate));
-                        }}
-                      />
-                    ))}
-                  </Stack>
+                  ))}
                 </Stack>
-              )}
+              </Stack>
             </Stack>
           </Box>
           <Box>
@@ -260,11 +268,23 @@ export default function DownloadForm() {
                     `${option?.familyName || ""} ${option?.givenName || ""}`
                   }
                   defaultValue={[]}
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        style={{ marginRight: 8 }}
+                        checked={selected}
+                      />
+                      {`${option?.familyName || ""} ${option?.givenName || ""}`}
+                    </li>
+                  )}
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       label="対象者"
                       placeholder="対象者を入力..."
+                      size="small"
                     />
                   )}
                   sx={{ width: "500px" }}
