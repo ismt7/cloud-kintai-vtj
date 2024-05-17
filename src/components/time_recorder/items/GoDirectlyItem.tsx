@@ -4,12 +4,18 @@ import { useEffect, useState } from "react";
 import { WorkStatus, WorkStatusCodes } from "../common";
 
 const GoDirectlyButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.clock_in.main,
+  color: theme.palette.clock_in.contrastText,
+  backgroundColor: theme.palette.clock_in.main,
+  border: `3px solid ${theme.palette.clock_in.main}`,
+  width: 120,
+  height: 120,
+  borderRadius: 100,
   "&:hover": {
-    color: theme.palette.clock_in.contrastText,
-    backgroundColor: theme.palette.clock_in.main,
+    color: theme.palette.clock_in.main,
+    backgroundColor: theme.palette.clock_in.contrastText,
   },
   "&:disabled": {
+    border: "3px solid #E0E0E0",
     backgroundColor: "#E0E0E0",
   },
 }));

@@ -12,21 +12,29 @@ module.exports = {
     "airbnb-base",
     "airbnb-typescript",
   ],
-  overrides: [],
+  overrides: [
+    {
+      env: {
+        node: true,
+      },
+      files: [".eslintrc.{js,cjs}"],
+      parserOptions: {
+        sourceType: "script",
+      },
+    },
+  ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
-    project: "./tsconfig.eslint.json",
-    tsconfigRootDir: __dirname,
   },
-  ignorePatterns: ["dist", "src/api", "src/ui-components"],
+  ignorePatterns: ["dist", "src/api", "src/ui-components/*"],
   plugins: [
-    "react",
     "@typescript-eslint",
-    "unused-imports",
+    "react",
     "import",
     "simple-import-sort",
+    "unused-imports",
   ],
   rules: {
     "react/jsx-uses-react": "off",
@@ -49,7 +57,21 @@ module.exports = {
     "no-continue": "off",
     "@typescript-eslint/no-misused-promises": "off",
     "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-duplicates": "error",
+    "@typescript-eslint/no-unused-vars": "error",
     "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        vars: "all",
+        varsIgnorePattern: "^_",
+        args: "after-used",
+        argsIgnorePattern: "^_",
+      },
+    ],
   },
   settings: {
     react: {
