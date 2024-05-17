@@ -1,3 +1,4 @@
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 import {
   Box,
   Button,
@@ -11,14 +12,14 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 import { useState } from "react";
+
 import { CreateHolidayCalendarInput, HolidayCalendar } from "../../../../API";
 import { useAppDispatchV2 } from "../../../../app/hooks";
+import * as MESSAGE_CODE from "../../../../errors";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../../../lib/reducers/snackbarReducer";
-import * as MESSAGE_CODE from "../../../../errors";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
 
 export function CSVFilePicker({
   bulkCreateHolidayCalendar,
@@ -73,6 +74,7 @@ export function CSVFilePicker({
           onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const formJson = Object.fromEntries((formData as any).entries());
             const email = formJson.email;
             console.log(email);

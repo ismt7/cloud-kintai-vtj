@@ -9,17 +9,16 @@ import { calcTotalRestTime } from "../../components/attendance_editor/items/Rest
 import { calcTotalWorkTime } from "../../components/attendance_editor/items/WorkTimeItem/WorkTimeItem";
 import * as MESSAGE_CODE from "../../errors";
 import useAttendance from "../../hooks/useAttendance/useAttendance";
-import useCognitoUser from "../../hooks/useCognitoUser";
 import useStaffs, { StaffType } from "../../hooks/useStaffs/useStaffs";
+import { AuthContext } from "../../Layout";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
 import { AttendanceEditInputs, defaultValues } from "./common";
 import DesktopEditor from "./DesktopEditor/DesktopEditor";
-import sendChangeRequestMail from "./sendChangeRequestMail";
 import { MobileEditor } from "./MobileEditor/MobileEditor";
-import { AuthContext } from "../../Layout";
+import sendChangeRequestMail from "./sendChangeRequestMail";
 
 export default function AttendanceEdit() {
   const { cognitoUser } = useContext(AuthContext);
@@ -236,7 +235,6 @@ export default function AttendanceEdit() {
           control={control}
           watch={watch}
           setValue={setValue}
-          getValues={getValues}
           restFields={restFields}
           restRemove={restRemove}
           restAppend={restAppend}

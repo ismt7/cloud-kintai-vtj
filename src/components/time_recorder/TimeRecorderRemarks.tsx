@@ -35,7 +35,7 @@ export default function TimeRecorderRemarks({
           minRows={2}
           fullWidth
           value={formState ?? undefined}
-          placeholder="備考欄：客先名やイベント名などを記載"
+          placeholder="労務担当より指示された時のみ(例：客先名やイベント名など)"
           onChange={(event) => {
             setFormState(event.target.value);
           }}

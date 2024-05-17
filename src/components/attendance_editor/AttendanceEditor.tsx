@@ -453,7 +453,6 @@ export default function AttendanceEditor() {
                 restRemove={restRemove}
                 restUpdate={restUpdate}
                 control={control}
-                setValue={setValue}
                 getValues={getValues}
               />
             ))}

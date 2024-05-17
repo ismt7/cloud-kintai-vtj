@@ -1,7 +1,7 @@
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import ClearIcon from "@mui/icons-material/Clear";
-import { Box, Button, Chip, IconButton, Stack, styled } from "@mui/material";
+import { Box, Button, Chip, Stack, styled } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -12,6 +12,7 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
+
 import { AttendanceEditInputs } from "../../common";
 
 const ClearButton = styled(Button)(({ theme }) => ({

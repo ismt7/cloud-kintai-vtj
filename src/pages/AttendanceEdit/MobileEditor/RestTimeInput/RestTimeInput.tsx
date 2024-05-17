@@ -1,3 +1,5 @@
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Button,
   Divider,
@@ -13,20 +15,18 @@ import {
   FieldArrayWithId,
   UseFieldArrayRemove,
   UseFieldArrayUpdate,
-  UseFormSetValue,
 } from "react-hook-form";
+
 import { AttendanceEditInputs, RestInputs } from "../../common";
-import { Label } from "../Label";
 import RestStartTimeInput from "../../DesktopEditor/RestTimeItem/RestTimeInput/RestStartTimeInput";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import { Label } from "../Label";
 import RestEndTimeInput from "./RestEndTimeInput";
-import DeleteIcon from "@mui/icons-material/Delete";
 
 type RestTimeInputProps = {
   restFields: FieldArrayWithId<AttendanceEditInputs, "rests", "id">[];
   workDate: dayjs.Dayjs;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditInputs>;
   restAppend: (
     value: RestInputs | RestInputs[],
     options?: FieldArrayMethodProps | undefined
@@ -39,7 +39,6 @@ export function RestTimeInput({
   restFields,
   workDate,
   control,
-  setValue,
   restAppend,
   restRemove,
   restUpdate,
@@ -80,7 +79,6 @@ export function RestTimeInput({
               rest={rest}
               index={index}
               control={control}
-              setValue={setValue}
               restUpdate={restUpdate}
             />
           </Stack>

@@ -6,14 +6,12 @@ import {
   Control,
   FieldArrayWithId,
   UseFieldArrayUpdate,
-  UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
 
 import { AttendanceEditInputs } from "../../../common";
 import RestEndTimeInput from "./RestEndTimeInput";
 import RestStartTimeInput from "./RestStartTimeInput";
-import { Attendance } from "../../../../../API";
 
 export function calcTotalRestTime(
   startTime: string | null | undefined,

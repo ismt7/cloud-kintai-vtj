@@ -1,11 +1,11 @@
-import { Box, Button, Container, Stack, styled } from "@mui/material";
+import { Button, Container, Stack, styled } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import DesktopMenu from "./DesktopMenu";
+import { ExternalLinks } from "./ExternalLinks/ExternalLinks";
 import Logo from "./Logo";
 import MobileMenu from "./MobileMenu";
 import { SignInOutButton } from "./SignInOutButton";
-import { ExternalLinks } from "./ExternalLinks/ExternalLinks";
 
 export const SignOutButton = styled(Button)(({ theme }) => ({
   color: theme.palette.logout.contrastText,

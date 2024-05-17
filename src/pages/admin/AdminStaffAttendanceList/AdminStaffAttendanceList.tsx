@@ -1,3 +1,6 @@
+import "./styles.scss";
+
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Alert,
   AlertTitle,
@@ -16,33 +19,29 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { GridRowModesModel } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
+import { Attendance } from "../../../API";
 import { useAppDispatchV2 } from "../../../app/hooks";
+import getDayOfWeek, {
+  DayOfWeek,
+} from "../../../components/AttendanceList/getDayOfWeek";
 import * as MESSAGE_CODE from "../../../errors";
 import useAttendances from "../../../hooks/useAttendances/useAttendances";
 import useCompanyHolidayCalendars from "../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 import useHolidayCalendars from "../../../hooks/useHolidayCalendars/useHolidayCalendars";
 import useStaffs, { StaffType } from "../../../hooks/useStaffs/useStaffs";
 import { setSnackbarError } from "../../../lib/reducers/snackbarReducer";
-import EditIcon from "@mui/icons-material/Edit";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import { WorkDateTableCell } from "./WorkDateTableCell";
-import { StartTimeTableCell } from "./StartTimeTableCell";
-import { EndTimeTableCell } from "./EndTimeTableCell";
-import { RestStartTimeTableCell } from "./RestStartTimeTableCell";
-import { RestEndTimeTableCell } from "./RestEndTimeTableCell";
 import { CreatedAtTableCell } from "./CreatedAtTableCell";
-import { UpdatedAtTableCell } from "./UpdatedAtTableCell";
+import { EndTimeTableCell } from "./EndTimeTableCell";
+import { RestEndTimeTableCell } from "./RestEndTimeTableCell";
+import { RestStartTimeTableCell } from "./RestStartTimeTableCell";
+import { StartTimeTableCell } from "./StartTimeTableCell";
 import { SummaryTableCell } from "./SummaryTableCell";
-import "./styles.scss";
-import getDayOfWeek, {
-  DayOfWeek,
-} from "../../../components/AttendanceList/getDayOfWeek";
-import { Attendance } from "../../../API";
+import { UpdatedAtTableCell } from "./UpdatedAtTableCell";
+import { WorkDateTableCell } from "./WorkDateTableCell";
 
 export default function AdminStaffAttendanceList() {
   const { staffId } = useParams();
@@ -78,8 +77,6 @@ export default function AdminStaffAttendanceList() {
     loading: holidayCalendarLoading,
     error: holidayCalendarError,
   } = useHolidayCalendars();
-
-  const [rowModelsModel, setRowModelsModel] = useState<GridRowModesModel>({});
 
   if (staffLoading || holidayCalendarLoading || companyHolidayCalendarLoading) {
     return (

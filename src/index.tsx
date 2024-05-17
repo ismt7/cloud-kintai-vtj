@@ -11,11 +11,11 @@ import { Provider } from "react-redux";
 import { RouterProvider } from "react-router-dom";
 
 import { store } from "./app/store";
+import config from "./aws-exports";
 import { theme } from "./lib/theme";
 import reportWebVitals from "./reportWebVitals";
 import router from "./router";
 import vocabularies from "./vocabularies";
-import config from "./aws-exports";
 
 Amplify.configure(config);
 

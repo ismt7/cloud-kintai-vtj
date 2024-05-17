@@ -6,7 +6,6 @@ import {
   FieldArrayWithId,
   UseFieldArrayRemove,
   UseFieldArrayUpdate,
-  UseFormGetValues,
   UseFormHandleSubmit,
   UseFormRegister,
   UseFormSetValue,
@@ -18,8 +17,8 @@ import ProductionTimeItem from "../../../components/attendance_editor/items/Prod
 import StaffNameItem from "../../../components/attendance_editor/items/StaffNameItem";
 import Title from "../../../components/Title/Title";
 import { StaffType } from "../../../hooks/useStaffs/useStaffs";
-import { AttendanceEditInputs, RestInputs } from "../common";
 import AttendanceEditBreadcrumb from "../AttendanceEditBreadcrumb";
+import { AttendanceEditInputs, RestInputs } from "../common";
 import ChangeRequestingAlert from "./ChangeRequestingMessage";
 import GoDirectlyFlagInput from "./GoDirectlyFlagInput";
 import NoDataAlert from "./NoDataAlert";
@@ -64,7 +63,6 @@ export default function DesktopEditor({
   control,
   watch,
   setValue,
-  getValues,
   restFields,
   restRemove,
   restAppend,
@@ -82,7 +80,6 @@ export default function DesktopEditor({
   control: Control<AttendanceEditInputs, any>;
   watch: UseFormWatch<AttendanceEditInputs>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
-  getValues: UseFormGetValues<AttendanceEditInputs>;
   restFields: FieldArrayWithId<AttendanceEditInputs, "rests", "id">[];
   restRemove: UseFieldArrayRemove;
   restAppend: (

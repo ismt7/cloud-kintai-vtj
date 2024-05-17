@@ -29,6 +29,7 @@ export default function RestEndItem({
 
   return (
     <RestEndButton
+      fullWidth
       onClick={() => {
         setDisabled(true);
         onClick();

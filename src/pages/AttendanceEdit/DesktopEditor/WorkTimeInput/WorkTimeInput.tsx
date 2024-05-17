@@ -3,10 +3,10 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Control, UseFormSetValue, UseFormWatch } from "react-hook-form";
 
+import { Attendance } from "../../../../API";
 import { AttendanceEditInputs } from "../../common";
 import EndTimeInput from "./EndTimeInput";
 import StartTimeInput from "./StartTimeInput";
-import { Attendance } from "../../../../API";
 
 export function calcTotalWorkTime(
   startTime: string | null | undefined,

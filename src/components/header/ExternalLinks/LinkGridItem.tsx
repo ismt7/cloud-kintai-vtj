@@ -1,7 +1,7 @@
-import { Grid, Link, Stack, Typography } from "@mui/material";
+import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import LinkIcon from "@mui/icons-material/Link";
 import TrainIcon from "@mui/icons-material/Train";
-import BeachAccessIcon from "@mui/icons-material/BeachAccess";
+import { Grid, Link, Stack, Typography } from "@mui/material";
 
 export function LinkGridItem({
   url,
@@ -13,9 +13,9 @@ export function LinkGridItem({
   iconType: string;
 }) {
   const IconMap = new Map<string, JSX.Element>([
-    ["link", <LinkIcon fontSize="large" />],
-    ["train", <TrainIcon fontSize="large" />],
-    ["holiday", <BeachAccessIcon fontSize="large" />],
+    ["link", <LinkIcon key="link" fontSize="large" />],
+    ["train", <TrainIcon key="train" fontSize="large" />],
+    ["holiday", <BeachAccessIcon key="holiday" fontSize="large" />],
   ]);
 
   return (

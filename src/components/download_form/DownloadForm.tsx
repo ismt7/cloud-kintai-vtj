@@ -1,4 +1,6 @@
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import {
   Autocomplete,
   Box,
@@ -19,8 +21,6 @@ import useCloseDates from "../../hooks/useCloseDates/useCloseDates";
 import useStaffs, { StaffType } from "../../hooks/useStaffs/useStaffs";
 import { calcTotalRestTime } from "../attendance_editor/items/RestTimeItem/RestTimeItem";
 import downloadAttendances from "./downloadAttendances";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -264,6 +264,7 @@ export default function DownloadForm() {
                   id="multiple-limit-tags"
                   options={staffs}
                   filterSelectedOptions
+                  disableCloseOnSelect
                   getOptionLabel={(option) =>
                     `${option?.familyName || ""} ${option?.givenName || ""}`
                   }

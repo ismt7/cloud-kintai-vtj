@@ -7,7 +7,6 @@ import {
   FieldArrayWithId,
   UseFieldArrayUpdate,
   UseFormGetValues,
-  UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
 
@@ -35,7 +34,6 @@ type RestTimeItemProps = {
   restUpdate: UseFieldArrayUpdate<AttendanceEditorInputs, "rests">;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditorInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditorInputs>;
   getValues: UseFormGetValues<AttendanceEditorInputs>;
 };
 
@@ -47,7 +45,6 @@ export function RestTimeItem({
   restRemove,
   restUpdate,
   control,
-  setValue,
   getValues,
 }: RestTimeItemProps) {
   const [totalRestTime, setTotalRestTime] = useState<number>(0);

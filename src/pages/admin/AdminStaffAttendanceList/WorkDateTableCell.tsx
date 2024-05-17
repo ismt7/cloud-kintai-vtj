@@ -1,5 +1,6 @@
-import { TableCell as MuiTableCell, styled } from "@mui/material";
+import { styled,TableCell as MuiTableCell } from "@mui/material";
 import dayjs from "dayjs";
+
 import { Attendance, HolidayCalendar } from "../../../API";
 import getDayOfWeek from "../../../components/AttendanceList/getDayOfWeek";
 

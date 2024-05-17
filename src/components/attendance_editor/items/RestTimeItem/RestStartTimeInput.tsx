@@ -7,7 +7,6 @@ import {
   Controller,
   FieldArrayWithId,
   UseFieldArrayUpdate,
-  UseFormSetValue,
 } from "react-hook-form";
 
 import { AttendanceEditorInputs } from "../../common";

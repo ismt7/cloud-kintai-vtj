@@ -1,12 +1,5 @@
 import { Button, Stack } from "@mui/material";
-import Title from "../../../components/Title/Title";
-import AttendanceEditBreadcrumb from "../AttendanceEditBreadcrumb";
 import dayjs from "dayjs";
-import { Attendance } from "../../../API";
-import NoDataAlert from "../DesktopEditor/NoDataAlert";
-import { StaffType } from "../../../hooks/useStaffs/useStaffs";
-import { WorkDateItem } from "./WorkDateItem";
-import { StaffNameItem } from "./StaffNameItem";
 import {
   Control,
   FieldArrayMethodProps,
@@ -19,19 +12,28 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
+
+import { Attendance } from "../../../API";
+import Title from "../../../components/Title/Title";
+import { StaffType } from "../../../hooks/useStaffs/useStaffs";
+import AttendanceEditBreadcrumb from "../AttendanceEditBreadcrumb";
 import { AttendanceEditInputs, RestInputs } from "../common";
-import { PaidHolidayFlagInput } from "./PaidHolidayFlagInput";
+import NoDataAlert from "../DesktopEditor/NoDataAlert";
 import { GoDirectlyFlagInput } from "./GoDirectlyFlagInput";
-import { ReturnDirectlyFlagInput } from "./ReturnDirectlyFlagInput";
-import { WorkTimeInput } from "./WorkTimeInput/WorkTimeInput";
-import { RestTimeInput } from "./RestTimeInput/RestTimeInput";
 import { Label } from "./Label";
+import { PaidHolidayFlagInput } from "./PaidHolidayFlagInput";
 import RemarksInput from "./RemarksInput";
+import { RestTimeInput } from "./RestTimeInput/RestTimeInput";
+import { ReturnDirectlyFlagInput } from "./ReturnDirectlyFlagInput";
+import { StaffNameItem } from "./StaffNameItem";
+import { WorkDateItem } from "./WorkDateItem";
+import { WorkTimeInput } from "./WorkTimeInput/WorkTimeInput";
 
 type AttendanceEditProps = {
   workDate: dayjs.Dayjs;
   attendance: Attendance | null | undefined;
   staff: StaffType | undefined | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
   getValues: UseFormGetValues<AttendanceEditInputs>;
@@ -91,7 +93,6 @@ export function MobileEditor({
         {/* 勤務時間 */}
         <WorkTimeInput
           workDate={workDate}
-          attendance={attendance}
           control={control}
           setValue={setValue}
           getValues={getValues}
@@ -103,7 +104,6 @@ export function MobileEditor({
           restFields={restFields}
           workDate={workDate}
           control={control}
-          setValue={setValue}
           restAppend={restAppend}
           restRemove={restRemove}
           restUpdate={restUpdate}

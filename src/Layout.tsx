@@ -1,5 +1,5 @@
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import { AmplifyUser, AuthEventData, AuthStatus } from "@aws-amplify/ui";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Box, LinearProgress, Stack } from "@mui/material";
 import { Storage } from "aws-amplify";
 import { createContext, useEffect } from "react";

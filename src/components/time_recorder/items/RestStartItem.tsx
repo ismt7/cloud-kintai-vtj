@@ -29,6 +29,7 @@ export default function RestStartItem({
 
   return (
     <RestStartButton
+      fullWidth
       onClick={() => {
         setDisabled(true);
         onClick();
