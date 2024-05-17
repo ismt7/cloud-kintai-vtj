@@ -15,6 +15,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { Storage } from "aws-amplify";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
@@ -71,6 +72,28 @@ export default function DocumentPoster() {
   const editor: BlockNoteEditor = useBlockNote({
     onEditorContentChange(e) {
       setValue("content", JSON.stringify(e.topLevelBlocks));
+    },
+    uploadFile: async (file): Promise<string> => {
+      const fileExtension = file.name.split(".").pop();
+
+      if (!fileExtension) {
+        throw new Error("ファイルの拡張子が取得できませんでした");
+      }
+
+      const fileBuffer = await file.arrayBuffer();
+      const hashBuffer = await window.crypto.subtle.digest("SHA-1", fileBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray
+        .map((a) => a.toString(16).padStart(2, "0"))
+        .join("");
+      const fileName = `${hashHex}.${fileExtension}`;
+      await Storage.put(fileName, file, {
+        contentType: file.type,
+      }).catch((err) => {
+        throw err;
+      });
+
+      return Storage.get(fileName);
     },
   });
 
