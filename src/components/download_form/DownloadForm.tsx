@@ -264,6 +264,7 @@ export default function DownloadForm() {
                   id="multiple-limit-tags"
                   options={staffs}
                   filterSelectedOptions
+                  disableCloseOnSelect
                   getOptionLabel={(option) =>
                     `${option?.familyName || ""} ${option?.givenName || ""}`
                   }
