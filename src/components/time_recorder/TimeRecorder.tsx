@@ -222,15 +222,17 @@ export default function TimeRecorder() {
       });
   };
 
-  const handleGoDirectly = (selectedTime: dayjs.Dayjs) => {
+  const handleGoDirectly = () => {
     if (!cognitoUser) return;
 
-    clockIn(
-      cognitoUser.id,
-      today,
-      selectedTime.toISOString(),
-      GoDirectlyFlag.YES
-    )
+    const now = dayjs()
+      .hour(9)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString();
+
+    clockIn(cognitoUser.id, today, now, GoDirectlyFlag.YES)
       .then((res) => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S01003));
         sendClockInMail(cognitoUser, res);
@@ -241,15 +243,17 @@ export default function TimeRecorder() {
       });
   };
 
-  const handleReturnDirectly = (selectedTime: dayjs.Dayjs) => {
+  const handleReturnDirectly = () => {
     if (!cognitoUser) return;
 
-    clockOut(
-      cognitoUser.id,
-      today,
-      selectedTime.toISOString(),
-      ReturnDirectlyFlag.YES
-    )
+    const now = dayjs()
+      .hour(18)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString();
+
+    clockOut(cognitoUser.id, today, now, ReturnDirectlyFlag.YES)
       .then((res) => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S01004));
         sendClockOutMail(cognitoUser, res);
