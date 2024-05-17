@@ -11,24 +11,15 @@
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
   "editor.formatOnSave": true,
-  "editor.rulers": [
-    80,
-    100,
-    120
-  ],
+  "editor.rulers": [80, 100, 120],
   "eslint.format.enable": true,
-  "eslint.workingDirectories": [
-    "./src"
-  ],
+  "eslint.workingDirectories": ["./src"],
   "diffEditor.wordWrap": "off",
   "workbench.startupEditor": "readme",
   "workbench.panel.defaultLocation": "right",
   "git.branchPrefix": "feature/",
   "git.autoStash": true,
-  "git.branchProtection": [
-    "main",
-    "develop"
-  ],
+  "git.branchProtection": ["main", "develop"],
   "[javascript]": {
     "editor.tabSize": 2,
     "editor.insertSpaces": true,
@@ -38,16 +29,16 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": "explicit"
-    },
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
   },
   "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": "explicit"
-    },
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -57,24 +48,10 @@
   "git.confirmSync": false,
   "circleci.ssh.privateKey.github": "/workspaces/garaku-frontend/.devcontainer/.ssh/id_github",
   "markdown.extension.toc.levels": "2..6",
+  "git.branchRandomName.enable": true,
   "editor.inlineSuggest.enabled": true,
   "files.readonlyInclude": {
     "node_modules/**/*": true
   },
-  "git.branchRandomName.enable": true,
-  "githubPullRequests.queries": [
-    {
-      "label": "自分のレビュー待ち",
-      "query": "is:open review-requested:${user}"
-    },
-    {
-      "label": "自分に割り当て済み",
-      "query": "is:open assignee:${user}"
-    },
-    {
-      "label": "自分が作成",
-      "query": "is:open author:${user}"
-    }
-  ],
   "testing.openTesting": "neverOpen"
 }
