@@ -10,17 +10,17 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import dayjs from "dayjs";
+import { useContext, useEffect, useState } from "react";
 
 import Title from "../components/Title/Title";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../Layout";
+import fetchStaff from "../hooks/useStaff/fetchStaff";
 import {
   mappingStaffRole,
   roleLabelMap,
   StaffType,
 } from "../hooks/useStaffs/useStaffs";
-import fetchStaff from "../hooks/useStaff/fetchStaff";
-import dayjs from "dayjs";
+import { AuthContext } from "../Layout";
 
 export default function Setting() {
   const { cognitoUser } = useContext(AuthContext);

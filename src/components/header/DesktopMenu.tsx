@@ -1,10 +1,10 @@
+import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Box, Stack } from "@mui/material";
+import { useContext } from "react";
 
 import { StaffRole } from "../../hooks/useStaffs/useStaffs";
-import Link from "../link/Link";
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import { useContext } from "react";
 import { AuthContext } from "../../Layout";
+import Link from "../link/Link";
 
 export default function DesktopMenu({ pathName }: { pathName: string }) {
   const { isCognitoUserRole } = useContext(AuthContext);

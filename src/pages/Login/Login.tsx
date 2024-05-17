@@ -1,13 +1,13 @@
 import "@aws-amplify/ui-react/styles.css";
 import "./styles.scss";
 
-import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
+import { Authenticator } from "@aws-amplify/ui-react";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import logo from "./logo_large.png";
 import { AuthContext } from "../../Layout";
+import logo from "./logo_large.png";
 
 export default function Login() {
   const { user, authStatus } = useContext(AuthContext);
@@ -44,14 +44,14 @@ export default function Login() {
         <img src={logo} height={200} />
       </Box>
       <Authenticator hideSignUp>
-        {(props) => {
-          if (props.signOut) {
+        {({ signOut }) => {
+          if (signOut) {
             return (
               <Stack direction="column" spacing={2}>
                 <Typography variant="body1">
                   画面が切り替わらない場合は、再度、ログインしてください。
                 </Typography>
-                <Button variant="text" size="medium" onClick={props.signOut}>
+                <Button variant="text" size="medium" onClick={signOut}>
                   ログアウト
                 </Button>
               </Stack>

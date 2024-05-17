@@ -1,4 +1,5 @@
-import useAttendanceDaily from "../../hooks/useAttendanceDaily/useAttendanceDaily";
+import "./styles.scss";
+
 import {
   Table,
   TableBody,
@@ -7,10 +8,11 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+
+import useAttendanceDaily from "../../hooks/useAttendanceDaily/useAttendanceDaily";
 import { ActionsTableCell } from "./ActionsTableCell";
-import { StartTimeTableCell } from "./StartTimeTableCell";
 import { EndTimeTableCell } from "./EndTimeTableCell";
-import "./styles.scss";
+import { StartTimeTableCell } from "./StartTimeTableCell";
 
 export default function AttendanceDailyList() {
   const { attendanceDailyList } = useAttendanceDaily();

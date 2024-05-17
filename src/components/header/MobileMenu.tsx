@@ -1,3 +1,5 @@
+import HelpIcon from "@mui/icons-material/Help";
+import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import {
@@ -13,10 +15,9 @@ import {
 } from "@mui/material";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import HelpIcon from "@mui/icons-material/Help";
-import LogoutIcon from "@mui/icons-material/Logout";
-import { theme } from "../../lib/theme";
+
 import { AuthContext } from "../../Layout";
+import { theme } from "../../lib/theme";
 
 export default function MobileMenu({ pathName }: { pathName: string }) {
   const { signOut } = useContext(AuthContext);

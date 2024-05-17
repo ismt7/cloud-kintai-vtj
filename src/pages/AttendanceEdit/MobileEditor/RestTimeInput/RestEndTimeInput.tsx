@@ -10,8 +10,8 @@ import {
   Controller,
   FieldArrayWithId,
   UseFieldArrayUpdate,
-  UseFormSetValue,
 } from "react-hook-form";
+
 import { AttendanceEditInputs } from "../../common";
 
 const ClearButton = styled(Button)(({ theme }) => ({
@@ -31,7 +31,6 @@ type RestEndTimeInputProps = {
   index: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditInputs>;
   restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
 };
 
@@ -40,7 +39,6 @@ export default function RestEndTimeInput({
   rest,
   index,
   control,
-  setValue,
   restUpdate,
 }: RestEndTimeInputProps) {
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);

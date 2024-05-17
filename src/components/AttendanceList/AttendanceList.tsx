@@ -10,18 +10,18 @@ import { Logger } from "aws-amplify";
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import { Staff } from "../../API";
 import { useAppDispatchV2 } from "../../app/hooks";
 import * as MESSAGE_CODE from "../../errors";
 import useAttendances from "../../hooks/useAttendances/useAttendances";
 import useCompanyHolidayCalendars from "../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 import useHolidayCalendars from "../../hooks/useHolidayCalendars/useHolidayCalendars";
+import fetchStaff from "../../hooks/useStaff/fetchStaff";
+import { AuthContext } from "../../Layout";
 import { setSnackbarError } from "../../lib/reducers/snackbarReducer";
 import Title from "../Title/Title";
 import DesktopList from "./DesktopList";
 import MobileList from "./MobileList/MobileList";
-import { AuthContext } from "../../Layout";
-import { Staff } from "../../API";
-import fetchStaff from "../../hooks/useStaff/fetchStaff";
 
 const DescriptionTypography = styled(Typography)(({ theme }) => ({
   padding: "0px 40px",

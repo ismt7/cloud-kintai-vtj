@@ -1,3 +1,4 @@
+// cspell:ignore BlockNote, BlockNoteEditor
 import "@blocknote/core/style.css";
 
 import { BlockNoteEditor } from "@blocknote/core";
@@ -25,7 +26,6 @@ import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
-import { useAuthenticator } from "@aws-amplify/ui-react";
 
 type Inputs = {
   title: string | null | undefined;

@@ -1,5 +1,5 @@
 import PersonIcon from "@mui/icons-material/Person";
-import { Chip, Grid, Stack, Typography } from "@mui/material";
+import { Chip, Grid, Stack } from "@mui/material";
 
 export function FilterGrid({
   selectedRole,

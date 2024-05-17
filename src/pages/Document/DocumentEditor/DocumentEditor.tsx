@@ -25,7 +25,6 @@ import {
 } from "../../../lib/reducers/snackbarReducer";
 import { defaultValues, DocumentInputs } from "./common";
 import ContentBlockNoteEditor from "./ContentBlockNoteEditor";
-import { useAuthenticator } from "@aws-amplify/ui-react";
 
 async function updateImageUrl(content: string) {
   // eslint-disable-next-line max-len

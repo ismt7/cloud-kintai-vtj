@@ -1,11 +1,12 @@
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { IconButton, Menu } from "@mui/material";
 import { useState } from "react";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { StaffType } from "../../../../hooks/useStaffs/useStaffs";
+
 import { DeleteStaffInput, UpdateStaffInput } from "../../../../API";
+import { StaffType } from "../../../../hooks/useStaffs/useStaffs";
+import { DeleteAccountMenuItem } from "./DeleteAccountMenuItem";
 import { DisableAccountMenuItem } from "./DisableAccountMenuItem";
 import { EnableAccountMenuItem } from "./EnableAccountMenuItem";
-import { DeleteAccountMenuItem } from "./DeleteAccountMenuItem";
 
 export function MoreActionButton({
   staff,
