@@ -53,5 +53,6 @@
   "files.readonlyInclude": {
     "node_modules/**/*": true
   },
-  "testing.openTesting": "neverOpen"
+  "testing.openTesting": "neverOpen",
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
