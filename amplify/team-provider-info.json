@@ -18,11 +18,11 @@
       "function": {
         "AdminQueriesf7a7d2e5": {
           "deploymentBucketName": "amplify-garakufrontend-main-82846-deployment",
-          "s3Key": "amplify-builds/AdminQueriesf7a7d2e5-6e52387656484b595857-build.zip"
+          "s3Key": "amplify-builds/AdminQueriesf7a7d2e5-415567705a306b566634-build.zip"
         },
         "garakuSendMail": {
           "deploymentBucketName": "amplify-garakufrontend-main-82846-deployment",
-          "s3Key": "amplify-builds/garakuSendMail-774e6a484256685a346c-build.zip",
+          "s3Key": "amplify-builds/garakuSendMail-566f4165677a59584a54-build.zip",
           "region": "ap-northeast-1",
           "emailFrom": "Cloud Kintai <noreply@kintai.virtualtech.jp>"
         },
