@@ -1,12 +1,8 @@
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import {
-  Alert,
-  AlertTitle,
   Box,
   FormControlLabel,
-  IconButton,
+  Grid,
   LinearProgress,
-  Stack,
   styled,
   Switch,
   Typography,
@@ -34,6 +30,7 @@ import {
 } from "../../lib/reducers/snackbarReducer";
 import { judgeStatus } from "../AttendanceList/common";
 import Clock from "../clock/Clock";
+import { AttendanceErrorAlert } from "./AttendanceErrorAlert";
 import { WorkStatus } from "./common";
 import ClockInItem from "./items/ClockInItem";
 import ClockOutItem from "./items/ClockOutItem";
@@ -41,6 +38,7 @@ import GoDirectlyItem from "./items/GoDirectlyItem";
 import RestEndItem from "./items/RestEndItem";
 import RestStartItem from "./items/RestStartItem";
 import ReturnDirectly from "./items/ReturnDirectlyItem";
+import { RestTimeMessage } from "./RestTimeMessage";
 import sendClockInMail from "./sendClockInMail";
 import sendClockOutMail from "./sendClockOutMail";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
@@ -224,16 +222,15 @@ export default function TimeRecorder() {
       });
   };
 
-  const handleGoDirectly = () => {
+  const handleGoDirectly = (selectedTime: dayjs.Dayjs) => {
     if (!cognitoUser) return;
 
-    const now = dayjs()
-      .hour(9)
-      .minute(0)
-      .second(0)
-      .millisecond(0)
-      .toISOString();
-    clockIn(cognitoUser.id, today, now, GoDirectlyFlag.YES)
+    clockIn(
+      cognitoUser.id,
+      today,
+      selectedTime.toISOString(),
+      GoDirectlyFlag.YES
+    )
       .then((res) => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S01003));
         sendClockInMail(cognitoUser, res);
@@ -244,16 +241,15 @@ export default function TimeRecorder() {
       });
   };
 
-  const handleReturnDirectly = () => {
+  const handleReturnDirectly = (selectedTime: dayjs.Dayjs) => {
     if (!cognitoUser) return;
 
-    const now = dayjs()
-      .hour(18)
-      .minute(0)
-      .second(0)
-      .millisecond(0)
-      .toISOString();
-    clockOut(cognitoUser.id, today, now, ReturnDirectlyFlag.YES)
+    clockOut(
+      cognitoUser.id,
+      today,
+      selectedTime.toISOString(),
+      ReturnDirectlyFlag.YES
+    )
       .then((res) => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S01004));
         sendClockOutMail(cognitoUser, res);
@@ -264,6 +260,30 @@ export default function TimeRecorder() {
       });
   };
 
+  const handleRestStart = () => {
+    if (!cognitoUser) return;
+
+    const now = dayjs().second(0).millisecond(0).toISOString();
+    restStart(cognitoUser.id, today, now)
+      .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S01005)))
+      .catch((e) => {
+        logger.debug(e);
+        dispatch(setSnackbarError(MESSAGE_CODE.E01003));
+      });
+  };
+
+  const handleRestEnd = () => {
+    if (!cognitoUser) return;
+
+    const now = dayjs().second(0).millisecond(0).toISOString();
+    restEnd(cognitoUser.id, today, now)
+      .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S01006)))
+      .catch((e) => {
+        logger.debug(e);
+        dispatch(setSnackbarError(MESSAGE_CODE.E01004));
+      });
+  };
+
   return (
     <Box
       sx={{
@@ -271,137 +291,78 @@ export default function TimeRecorder() {
         mx: { xs: 3, md: 0 },
       }}
     >
-      <Stack spacing={{ xs: 2, md: 3 }}>
-        <Box>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
           <Typography variant="h6" textAlign="center">
             {workStatus.text || "読み込み中..."}
           </Typography>
-        </Box>
-        <Clock />
-        <Box>
+        </Grid>
+        <Grid item xs={12}>
+          <Clock />
+        </Grid>
+        <Grid item xs={12}>
           <FormControlLabel
             control={
               <DirectSwitch onChange={() => setDirectMode(!directMode)} />
             }
             label="直行/直帰モード"
           />
-        </Box>
-        <Stack
-          direction="row"
-          spacing={{
-            xs: 2,
-            md: 10,
-          }}
-          alignItems="flex-start"
-          justifyContent="space-evenly"
-        >
+        </Grid>
+        <Grid item xs={6} sx={{ display: "flex", justifyContent: "center" }}>
           {directMode ? (
-            <>
-              <GoDirectlyItem
-                workStatus={workStatus}
-                onClick={handleGoDirectly}
-              />
-              <ReturnDirectly
-                workStatus={workStatus}
-                onClick={handleReturnDirectly}
-              />
-            </>
+            <GoDirectlyItem
+              workStatus={workStatus}
+              onClick={handleGoDirectly}
+            />
           ) : (
-            <>
-              <ClockInItem workStatus={workStatus} onClick={handleClockIn} />
-              <ClockOutItem workStatus={workStatus} onClick={handleClockOut} />
-            </>
+            <ClockInItem workStatus={workStatus} onClick={handleClockIn} />
           )}
-        </Stack>
-        <Stack direction="row" spacing={1}></Stack>
-        <Stack
-          direction="row"
-          spacing={{
-            xs: 2,
-            md: 5,
-          }}
-          alignItems="flex-start"
-          justifyContent="center"
-        >
-          <Stack direction="row" spacing={1}>
-            <RestStartItem
+        </Grid>
+        <Grid item xs={6} sx={{ display: "flex", justifyContent: "center" }}>
+          {directMode ? (
+            <ReturnDirectly
               workStatus={workStatus}
-              onClick={() => {
-                if (!cognitoUser) return;
-
-                const now = dayjs().second(0).millisecond(0).toISOString();
-                restStart(cognitoUser.id, today, now)
-                  .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S01005)))
-                  .catch((e) => {
-                    logger.debug(e);
-                    dispatch(setSnackbarError(MESSAGE_CODE.E01003));
-                  });
-              }}
+              onClick={handleReturnDirectly}
             />
-            <RestEndItem
-              workStatus={workStatus}
-              onClick={() => {
-                if (!cognitoUser) return;
+          ) : (
+            <ClockOutItem workStatus={workStatus} onClick={handleClockOut} />
+          )}
+        </Grid>
 
-                const now = dayjs().second(0).millisecond(0).toISOString();
-                restEnd(cognitoUser.id, today, now)
-                  .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S01006)))
-                  .catch((e) => {
-                    logger.debug(e);
-                    dispatch(setSnackbarError(MESSAGE_CODE.E01004));
-                  });
-              }}
-            />
-          </Stack>
-        </Stack>
-        <TimeRecorderRemarks
-          attendance={attendance}
-          onSave={(remarks) => {
-            if (!cognitoUser) return;
+        {/* 休憩 */}
+        <Grid item xs={6}>
+          <RestStartItem workStatus={workStatus} onClick={handleRestStart} />
+        </Grid>
+        <Grid item xs={6}>
+          <RestEndItem workStatus={workStatus} onClick={handleRestEnd} />
+        </Grid>
 
-            updateRemarks(cognitoUser.id, today, remarks || "")
-              .then(() => {
-                dispatch(setSnackbarSuccess(MESSAGE_CODE.S02003));
-              })
-              .catch((e) => {
-                logger.debug(e);
-                dispatch(setSnackbarError(MESSAGE_CODE.E02003));
-              });
-          }}
-        />
-      </Stack>
-      {isAttendanceError && <AttendanceErrorAlert />}
-      <RestTimeMessage />
+        <Grid item xs={12}>
+          <TimeRecorderRemarks
+            attendance={attendance}
+            onSave={(remarks) => {
+              if (!cognitoUser) return;
+
+              updateRemarks(cognitoUser.id, today, remarks || "")
+                .then(() => {
+                  dispatch(setSnackbarSuccess(MESSAGE_CODE.S02003));
+                })
+                .catch((e) => {
+                  logger.debug(e);
+                  dispatch(setSnackbarError(MESSAGE_CODE.E02003));
+                });
+            }}
+          />
+        </Grid>
+        {isAttendanceError && (
+          <Grid item xs={12}>
+            <AttendanceErrorAlert />
+          </Grid>
+        )}
+        <Grid item xs={12}>
+          <RestTimeMessage />
+        </Grid>
+      </Grid>
     </Box>
-  );
-}
-
-function RestTimeMessage() {
-  return (
-    <Alert severity="info" sx={{ mt: 2 }}>
-      <AlertTitle>昼休憩は退勤時に自動打刻されます</AlertTitle>
-      <Typography variant="body2">
-        修正する際は、変更リクエストまたは、管理者へ問い合わせてください。
-      </Typography>
-    </Alert>
-  );
-}
-
-function AttendanceErrorAlert() {
-  return (
-    <Alert
-      severity="error"
-      sx={{ mt: 2 }}
-      action={
-        <IconButton onClick={() => window.open("/attendance/list", "_blank")}>
-          <OpenInNewIcon />
-        </IconButton>
-      }
-    >
-      <AlertTitle>勤怠打刻エラー</AlertTitle>
-      <Typography variant="body2">
-        打刻エラーがあります。勤怠一覧を確認してください。
-      </Typography>
-    </Alert>
   );
 }

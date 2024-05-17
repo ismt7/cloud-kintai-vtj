@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { WorkStatus, WorkStatusCodes } from "../common";
 
 const RestStartButton = styled(Button)(({ theme }) => ({
-  width: 200,
   color: theme.palette.rest.main,
   "&:hover": {
     color: theme.palette.rest.contrastText,
@@ -30,6 +29,7 @@ export default function RestStartItem({
 
   return (
     <RestStartButton
+      fullWidth
       onClick={() => {
         setDisabled(true);
         onClick();
