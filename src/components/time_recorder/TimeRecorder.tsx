@@ -1,17 +1,21 @@
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import {
   Alert,
   AlertTitle,
   Box,
-  Button,
+  FormControlLabel,
   IconButton,
   LinearProgress,
   Stack,
+  styled,
+  Switch,
   Typography,
 } from "@mui/material";
 import { Cache, Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 
+import { Staff } from "../../API";
 import { useAppDispatchV2 } from "../../app/hooks";
 import * as MESSAGE_CODE from "../../errors";
 import useAttendance, {
@@ -19,10 +23,16 @@ import useAttendance, {
   ReturnDirectlyFlag,
 } from "../../hooks/useAttendance/useAttendance";
 import { getWorkStatus } from "../../hooks/useAttendance/WorkStatus";
+import useAttendances from "../../hooks/useAttendances/useAttendances";
+import useCompanyHolidayCalendars from "../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
+import useHolidayCalendars from "../../hooks/useHolidayCalendars/useHolidayCalendars";
+import fetchStaff from "../../hooks/useStaff/fetchStaff";
+import { AuthContext } from "../../Layout";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
+import { judgeStatus } from "../AttendanceList/common";
 import Clock from "../clock/Clock";
 import { WorkStatus } from "./common";
 import ClockInItem from "./items/ClockInItem";
@@ -34,15 +44,39 @@ import ReturnDirectly from "./items/ReturnDirectlyItem";
 import sendClockInMail from "./sendClockInMail";
 import sendClockOutMail from "./sendClockOutMail";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
-import { AuthContext } from "../../Layout";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import { useNavigate } from "react-router-dom";
-import useAttendances from "../../hooks/useAttendances/useAttendances";
-import { judgeStatus } from "../AttendanceList/common";
-import useHolidayCalendars from "../../hooks/useHolidayCalendars/useHolidayCalendars";
-import useCompanyHolidayCalendars from "../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
-import { Staff } from "../../API";
-import fetchStaff from "../../hooks/useStaff/fetchStaff";
+
+const DirectSwitch = styled(Switch)(({ theme }) => ({
+  padding: 8,
+  "& .MuiSwitch-track": {
+    borderRadius: 22 / 2,
+    "&::before, &::after": {
+      content: '""',
+      position: "absolute",
+      top: "50%",
+      transform: "translateY(-50%)",
+      width: 16,
+      height: 16,
+    },
+    "&::before": {
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        theme.palette.getContrastText(theme.palette.primary.main)
+      )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
+      left: 12,
+    },
+    "&::after": {
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        theme.palette.getContrastText(theme.palette.primary.main)
+      )}" d="M19,13H5V11H19V13Z" /></svg>')`,
+      right: 12,
+    },
+  },
+  "& .MuiSwitch-thumb": {
+    boxShadow: "none",
+    width: 16,
+    height: 16,
+    margin: 2,
+  },
+}));
 
 export default function TimeRecorder() {
   const { cognitoUser } = useContext(AuthContext);
@@ -58,22 +92,17 @@ export default function TimeRecorder() {
     updateRemarks,
   } = useAttendance();
   const { attendances, getAttendances } = useAttendances();
-  const {
-    holidayCalendars,
-    loading: holidayCalendarLoading,
-    error: holidayCalendarError,
-  } = useHolidayCalendars();
-  const {
-    companyHolidayCalendars,
-    loading: companyHolidayCalendarLoading,
-    error: companyHolidayCalendarError,
-  } = useCompanyHolidayCalendars();
+  const { holidayCalendars, loading: holidayCalendarLoading } =
+    useHolidayCalendars();
+  const { companyHolidayCalendars, loading: companyHolidayCalendarLoading } =
+    useCompanyHolidayCalendars();
 
   const [workStatus, setWorkStatus] = useState<WorkStatus | null | undefined>(
     undefined
   );
   const [staff, setStaff] = useState<Staff | null | undefined>(undefined);
   const [isAttendanceError, setIsAttendanceError] = useState(false);
+  const [directMode, setDirectMode] = useState(false);
 
   const today = dayjs().format("YYYY-MM-DD");
   const logger = new Logger(
@@ -165,6 +194,76 @@ export default function TimeRecorder() {
     return null;
   }
 
+  const handleClockIn = () => {
+    if (!cognitoUser) return;
+
+    const now = dayjs().second(0).millisecond(0).toISOString();
+    clockIn(cognitoUser.id, today, now)
+      .then((res) => {
+        dispatch(setSnackbarSuccess(MESSAGE_CODE.S01001));
+        sendClockInMail(cognitoUser, res);
+      })
+      .catch((e) => {
+        logger.debug(e);
+        dispatch(setSnackbarError(MESSAGE_CODE.E01001));
+      });
+  };
+
+  const handleClockOut = () => {
+    if (!cognitoUser) return;
+
+    const now = dayjs().second(0).millisecond(0).toISOString();
+    clockOut(cognitoUser.id, today, now)
+      .then((res) => {
+        dispatch(setSnackbarSuccess(MESSAGE_CODE.S01002));
+        sendClockOutMail(cognitoUser, res);
+      })
+      .catch((e) => {
+        logger.debug(e);
+        dispatch(setSnackbarError(MESSAGE_CODE.E01002));
+      });
+  };
+
+  const handleGoDirectly = () => {
+    if (!cognitoUser) return;
+
+    const now = dayjs()
+      .hour(9)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString();
+    clockIn(cognitoUser.id, today, now, GoDirectlyFlag.YES)
+      .then((res) => {
+        dispatch(setSnackbarSuccess(MESSAGE_CODE.S01003));
+        sendClockInMail(cognitoUser, res);
+      })
+      .catch((e) => {
+        logger.debug(e);
+        dispatch(setSnackbarError(MESSAGE_CODE.E01005));
+      });
+  };
+
+  const handleReturnDirectly = () => {
+    if (!cognitoUser) return;
+
+    const now = dayjs()
+      .hour(18)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString();
+    clockOut(cognitoUser.id, today, now, ReturnDirectlyFlag.YES)
+      .then((res) => {
+        dispatch(setSnackbarSuccess(MESSAGE_CODE.S01004));
+        sendClockOutMail(cognitoUser, res);
+      })
+      .catch((e) => {
+        logger.debug(e);
+        dispatch(setSnackbarError(MESSAGE_CODE.E01006));
+      });
+  };
+
   return (
     <Box
       sx={{
@@ -179,6 +278,14 @@ export default function TimeRecorder() {
           </Typography>
         </Box>
         <Clock />
+        <Box>
+          <FormControlLabel
+            control={
+              <DirectSwitch onChange={() => setDirectMode(!directMode)} />
+            }
+            label="直行/直帰モード"
+          />
+        </Box>
         <Stack
           direction="row"
           spacing={{
@@ -188,41 +295,25 @@ export default function TimeRecorder() {
           alignItems="flex-start"
           justifyContent="space-evenly"
         >
-          <ClockInItem
-            workStatus={workStatus}
-            onClick={() => {
-              if (!cognitoUser) return;
-
-              const now = dayjs().second(0).millisecond(0).toISOString();
-              clockIn(cognitoUser.id, today, now)
-                .then((res) => {
-                  dispatch(setSnackbarSuccess(MESSAGE_CODE.S01001));
-                  sendClockInMail(cognitoUser, res);
-                })
-                .catch((e) => {
-                  logger.debug(e);
-                  dispatch(setSnackbarError(MESSAGE_CODE.E01001));
-                });
-            }}
-          />
-          <ClockOutItem
-            workStatus={workStatus}
-            onClick={() => {
-              if (!cognitoUser) return;
-
-              const now = dayjs().second(0).millisecond(0).toISOString();
-              clockOut(cognitoUser.id, today, now)
-                .then((res) => {
-                  dispatch(setSnackbarSuccess(MESSAGE_CODE.S01002));
-                  sendClockOutMail(cognitoUser, res);
-                })
-                .catch((e) => {
-                  logger.debug(e);
-                  dispatch(setSnackbarError(MESSAGE_CODE.E01002));
-                });
-            }}
-          />
+          {directMode ? (
+            <>
+              <GoDirectlyItem
+                workStatus={workStatus}
+                onClick={handleGoDirectly}
+              />
+              <ReturnDirectly
+                workStatus={workStatus}
+                onClick={handleReturnDirectly}
+              />
+            </>
+          ) : (
+            <>
+              <ClockInItem workStatus={workStatus} onClick={handleClockIn} />
+              <ClockOutItem workStatus={workStatus} onClick={handleClockOut} />
+            </>
+          )}
         </Stack>
+        <Stack direction="row" spacing={1}></Stack>
         <Stack
           direction="row"
           spacing={{
@@ -232,52 +323,6 @@ export default function TimeRecorder() {
           alignItems="flex-start"
           justifyContent="center"
         >
-          <Stack direction="row" spacing={1}>
-            <GoDirectlyItem
-              workStatus={workStatus}
-              onClick={() => {
-                if (!cognitoUser) return;
-
-                const now = dayjs()
-                  .hour(9)
-                  .minute(0)
-                  .second(0)
-                  .millisecond(0)
-                  .toISOString();
-                clockIn(cognitoUser.id, today, now, GoDirectlyFlag.YES)
-                  .then((res) => {
-                    dispatch(setSnackbarSuccess(MESSAGE_CODE.S01003));
-                    sendClockInMail(cognitoUser, res);
-                  })
-                  .catch((e) => {
-                    logger.debug(e);
-                    dispatch(setSnackbarError(MESSAGE_CODE.E01005));
-                  });
-              }}
-            />
-            <ReturnDirectly
-              workStatus={workStatus}
-              onClick={() => {
-                if (!cognitoUser) return;
-
-                const now = dayjs()
-                  .hour(18)
-                  .minute(0)
-                  .second(0)
-                  .millisecond(0)
-                  .toISOString();
-                clockOut(cognitoUser.id, today, now, ReturnDirectlyFlag.YES)
-                  .then((res) => {
-                    dispatch(setSnackbarSuccess(MESSAGE_CODE.S01004));
-                    sendClockOutMail(cognitoUser, res);
-                  })
-                  .catch((e) => {
-                    logger.debug(e);
-                    dispatch(setSnackbarError(MESSAGE_CODE.E01006));
-                  });
-              }}
-            />
-          </Stack>
           <Stack direction="row" spacing={1}>
             <RestStartItem
               workStatus={workStatus}
@@ -325,30 +370,38 @@ export default function TimeRecorder() {
           }}
         />
       </Stack>
-      {isAttendanceError && (
-        <Alert
-          severity="error"
-          sx={{ mt: 2 }}
-          action={
-            <IconButton
-              onClick={() => window.open("/attendance/list", "_blank")}
-            >
-              <OpenInNewIcon />
-            </IconButton>
-          }
-        >
-          <AlertTitle>勤怠打刻エラー</AlertTitle>
-          <Typography variant="body2">
-            打刻エラーがあります。勤怠一覧を確認してください。
-          </Typography>
-        </Alert>
-      )}
-      <Alert severity="info" sx={{ mt: 2 }}>
-        <AlertTitle>昼休憩は退勤時に自動打刻されます</AlertTitle>
-        <Typography variant="body2">
-          修正する際は、変更リクエストまたは、管理者へ問い合わせてください。
-        </Typography>
-      </Alert>
+      {isAttendanceError && <AttendanceErrorAlert />}
+      <RestTimeMessage />
     </Box>
+  );
+}
+
+function RestTimeMessage() {
+  return (
+    <Alert severity="info" sx={{ mt: 2 }}>
+      <AlertTitle>昼休憩は退勤時に自動打刻されます</AlertTitle>
+      <Typography variant="body2">
+        修正する際は、変更リクエストまたは、管理者へ問い合わせてください。
+      </Typography>
+    </Alert>
+  );
+}
+
+function AttendanceErrorAlert() {
+  return (
+    <Alert
+      severity="error"
+      sx={{ mt: 2 }}
+      action={
+        <IconButton onClick={() => window.open("/attendance/list", "_blank")}>
+          <OpenInNewIcon />
+        </IconButton>
+      }
+    >
+      <AlertTitle>勤怠打刻エラー</AlertTitle>
+      <Typography variant="body2">
+        打刻エラーがあります。勤怠一覧を確認してください。
+      </Typography>
+    </Alert>
   );
 }
