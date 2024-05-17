@@ -5,13 +5,14 @@ import {
   ListItemText,
   MenuItem,
 } from "@mui/material";
-import { StaffType } from "../../../../hooks/useStaffs/useStaffs";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setSnackbarSuccess } from "../../../../lib/reducers/snackbarReducer";
+
+import { UpdateStaffInput } from "../../../../API";
 import * as MESSAGE_CODE from "../../../../errors";
 import disableStaff from "../../../../hooks/common/disableStaff";
-import { UpdateStaffInput } from "../../../../API";
-import { useState } from "react";
+import { StaffType } from "../../../../hooks/useStaffs/useStaffs";
+import { setSnackbarSuccess } from "../../../../lib/reducers/snackbarReducer";
 
 export function DisableAccountMenuItem({
   staff,

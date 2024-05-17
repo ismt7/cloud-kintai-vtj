@@ -1,6 +1,7 @@
-import { AttendanceDaily } from "../../hooks/useAttendanceDaily/useAttendanceDaily";
 import { TableCell } from "@mui/material";
 import dayjs from "dayjs";
+
+import { AttendanceDaily } from "../../hooks/useAttendanceDaily/useAttendanceDaily";
 
 export function EndTimeTableCell({ row }: { row: AttendanceDaily }) {
   if (!row.attendance) return <TableCell></TableCell>;

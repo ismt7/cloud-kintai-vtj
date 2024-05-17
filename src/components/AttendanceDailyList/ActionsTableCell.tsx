@@ -1,9 +1,10 @@
-import { useNavigate } from "react-router-dom";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import { AttendanceDaily } from "../../hooks/useAttendanceDaily/useAttendanceDaily";
 import { Badge, IconButton, TableCell } from "@mui/material";
-import useAttendances from "../../hooks/useAttendances/useAttendances";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { AttendanceDaily } from "../../hooks/useAttendanceDaily/useAttendanceDaily";
+import useAttendances from "../../hooks/useAttendances/useAttendances";
 
 export function ActionsTableCell({ row }: { row: AttendanceDaily }) {
   const navigate = useNavigate();

@@ -7,9 +7,10 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+import { CreateStaffInput, UpdateStaffInput } from "../../../API";
 import { useAppDispatchV2 } from "../../../app/hooks";
 import * as MESSAGE_CODE from "../../../errors";
 import addUserToGroup from "../../../hooks/common/addUserToGroup";
@@ -19,7 +20,6 @@ import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../../lib/reducers/snackbarReducer";
-import { CreateStaffInput, UpdateStaffInput } from "../../../API";
 import { handleSyncCognitoUser } from "./handleSyncCognitoUser";
 
 type Inputs = {
@@ -61,7 +61,7 @@ export default function CreateStaffDialog({
     handleSubmit,
     reset,
     setValue,
-    formState: { isDirty, isValid, isSubmitting, isSubmitSuccessful },
+    formState: { isDirty, isValid, isSubmitting },
   } = useForm<Inputs>({
     mode: "onChange",
     defaultValues,

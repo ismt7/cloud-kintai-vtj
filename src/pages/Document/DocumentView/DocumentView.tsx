@@ -5,7 +5,6 @@ import {
   Breadcrumbs,
   Button,
   Chip,
-  Container,
   Paper,
   Stack,
   Typography,
@@ -21,7 +20,6 @@ import * as MESSAGE_CODE from "../../../errors";
 import fetchDocument from "../../../hooks/useDocuments/fetchDocument";
 import { setSnackbarError } from "../../../lib/reducers/snackbarReducer";
 import ContentView from "./ContentView";
-import { useAuthenticator } from "@aws-amplify/ui-react";
 
 async function updateImageUrl(content: string) {
   // eslint-disable-next-line max-len

@@ -7,14 +7,12 @@ import {
   FieldArrayWithId,
   UseFieldArrayRemove,
   UseFieldArrayUpdate,
-  UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
 
 import { AttendanceEditInputs, RestInputs } from "../../common";
 import NoRestTimeMessage from "./NoRestTimeMessage";
 import { RestTimeInput } from "./RestTimeInput/RestTimeInput";
-import { Attendance } from "../../../../API";
 
 const Label = styled(Typography)(() => ({
   width: "150px",

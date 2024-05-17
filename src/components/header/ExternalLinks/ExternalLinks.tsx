@@ -1,9 +1,10 @@
-import { Box, Grid, IconButton, Paper, useMediaQuery } from "@mui/material";
-import { useState } from "react";
+import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { Unstable_Popup as BasePopup } from "@mui/base/Unstable_Popup";
 import AppsIcon from "@mui/icons-material/Apps";
+import { Box, Grid, IconButton, Paper, useMediaQuery } from "@mui/material";
+import { useState } from "react";
+
 import { theme } from "../../../lib/theme";
-import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { LinkGridItem } from "./LinkGridItem";
 
 export function ExternalLinks({ pathName }: { pathName: string }) {

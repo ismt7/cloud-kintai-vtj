@@ -1,3 +1,5 @@
+import "./styles.scss";
+
 import {
   Box,
   Breadcrumbs,
@@ -19,17 +21,16 @@ import Title from "../../../components/Title/Title";
 import * as MESSAGE_CODE from "../../../errors";
 import useStaffs from "../../../hooks/useStaffs/useStaffs";
 import { setSnackbarError } from "../../../lib/reducers/snackbarReducer";
-import CreateStaffDialog from "./CreateStaffDialog";
-import SyncCognitoUser from "./SyncCognitoUser";
-import { StaffNameTableCell } from "./StaffNameTableCell";
 import { AccountStatusTableCell } from "./AccountStatusTableCell";
-import { StatusTableCell } from "./StatusTableCell";
-import { RoleTableCell } from "./RoleTableCell";
 import { CreatedAtTableCell } from "./CreatedAtTableCell";
-import { UpdatedAtTableCell } from "./UpdatedAtTableCell";
+import CreateStaffDialog from "./CreateStaffDialog";
 import { EditButton } from "./EditButton";
 import { MoreActionButton } from "./MoreActionButton/MoreActionButton";
-import "./styles.scss";
+import { RoleTableCell } from "./RoleTableCell";
+import { StaffNameTableCell } from "./StaffNameTableCell";
+import { StatusTableCell } from "./StatusTableCell";
+import SyncCognitoUser from "./SyncCognitoUser";
+import { UpdatedAtTableCell } from "./UpdatedAtTableCell";
 
 export default function AdminStaff() {
   const dispatch = useAppDispatchV2();

@@ -131,7 +131,7 @@ export default function TimeRecorder() {
   useEffect(() => {
     if (!cognitoUser) return;
 
-    getAttendance(cognitoUser.id, today).catch((e) => {
+    getAttendance(cognitoUser.id, today).catch(() => {
       dispatch(setSnackbarError(MESSAGE_CODE.E01001));
     });
 

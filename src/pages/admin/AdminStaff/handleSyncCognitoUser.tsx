@@ -50,7 +50,7 @@ export async function handleSyncCognitoUser(
         enabled: cognitoUser.enabled,
         status: cognitoUser.status,
         owner: cognitoUser.owner,
-      }).catch((e) => {
+      }).catch(() => {
         throw new Error(MESSAGE_CODE.E05002);
       });
     })

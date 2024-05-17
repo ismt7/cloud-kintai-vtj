@@ -1,6 +1,7 @@
 import EditIcon from "@mui/icons-material/Edit";
 import { IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+
 import { StaffType } from "../../../hooks/useStaffs/useStaffs";
 
 export function EditButton({ staff }: { staff: StaffType }) {

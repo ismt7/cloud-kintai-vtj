@@ -5,6 +5,8 @@ import AdminAttendance from "./pages/admin/AdminAttendance";
 import AdminAttendanceEditor from "./pages/admin/AdminAttendanceEditor";
 import AdminAttendancePrint from "./pages/admin/AdminAttendancePrint";
 import AdminHolidayCalendar from "./pages/admin/AdminHolidayCalendar/HolidayCalendar/AdminHolidayCalendar";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminMasterLayout from "./pages/admin/AdminMasterLayout";
 import AdminStaff from "./pages/admin/AdminStaff/AdminStaff";
 import AdminStaffAttendanceList from "./pages/admin/AdminStaffAttendanceList/AdminStaffAttendanceList";
 import AdminStaffEditor from "./pages/admin/AdminStaffEditor/AdminStaffEditor";
@@ -19,8 +21,6 @@ import List from "./pages/List";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register";
 import Setting from "./pages/Setting";
-import AdminMasterLayout from "./pages/admin/AdminMasterLayout";
-import AdminLayout from "./pages/admin/AdminLayout";
 
 const router = createBrowserRouter([
   {

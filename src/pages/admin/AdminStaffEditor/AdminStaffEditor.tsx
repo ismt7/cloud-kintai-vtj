@@ -16,6 +16,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
@@ -28,14 +30,12 @@ import removeUserFromGroup from "../../../hooks/common/removeUserFromGroup";
 import updateCognitoUser from "../../../hooks/common/updateCognitoUser";
 import { Staff } from "../../../hooks/useStaffs/common";
 import useStaffs, { StaffRole } from "../../../hooks/useStaffs/useStaffs";
+import { AuthContext } from "../../../Layout";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../../lib/reducers/snackbarReducer";
 import { ROLE_OPTIONS } from "../AdminStaff/CreateStaffDialog";
-import { AuthContext } from "../../../Layout";
-import { DatePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
 
 type Inputs = {
   staffId?: Staff["sub"];

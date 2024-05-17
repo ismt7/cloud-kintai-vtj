@@ -1,4 +1,5 @@
-import { TableCell, styled } from "@mui/material";
+import {TableCell } from "@mui/material";
+
 import {
   Attendance,
   CompanyHolidayCalendar,

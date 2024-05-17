@@ -1,6 +1,6 @@
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { Box, Chip, Stack, styled, TextField, Typography } from "@mui/material";
 import { UseFormRegister, UseFormSetValue } from "react-hook-form";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 
 import { AttendanceEditInputs } from "../common";
 

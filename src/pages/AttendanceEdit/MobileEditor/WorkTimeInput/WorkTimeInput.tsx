@@ -6,22 +6,21 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
+
 import { AttendanceEditInputs } from "../../common";
-import { Label } from "../Label";
 import StartTimeInput from "../../DesktopEditor/WorkTimeInput/StartTimeInput";
+import { Label } from "../Label";
 import EndTimeInput from "./EndTimeInput";
-import { Attendance } from "../../../../API";
 
 export function WorkTimeInput({
   workDate,
-  attendance,
   control,
   setValue,
   getValues,
   watch,
 }: {
   workDate: dayjs.Dayjs;
-  attendance: Attendance | null | undefined;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
   getValues: UseFormGetValues<AttendanceEditInputs>;
