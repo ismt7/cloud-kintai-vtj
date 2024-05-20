@@ -34,6 +34,7 @@ export default async function fetchCognitoUsers(): Promise<Staff[]> {
 
       let adminResponse;
       // TODO: 暫定措置
+      // 偶発的にエラーが発生するためリトライ処理を追加
       for (let i = 0; i < 3; i++) {
         try {
           adminResponse = await API.get("AdminQueries", "/listGroupsForUser", {
@@ -48,6 +49,7 @@ export default async function fetchCognitoUsers(): Promise<Staff[]> {
             throw new Error(MESSAGE_CODE.E05008);
           }
         }
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
 
       // 権限
