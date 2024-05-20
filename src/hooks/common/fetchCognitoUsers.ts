@@ -22,11 +22,16 @@ export default async function fetchCognitoUsers(): Promise<Staff[]> {
 
   const response = await API.get("AdminQueries", "/listUsers", params);
 
-  return Promise.all(
+  return await Promise.all(
     response.Users.map(async (user: any) => {
       const sub = user.Attributes.find(
         (attr: any) => attr.Name === "sub"
       )?.Value;
+
+      if (!sub) {
+        throw new Error(MESSAGE_CODE.E05007);
+      }
+
       const adminResponse = await API.get(
         "AdminQueries",
         "/listGroupsForUser",
