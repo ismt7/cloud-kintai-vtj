@@ -32,16 +32,19 @@ export default async function fetchCognitoUsers(): Promise<Staff[]> {
         throw new Error(MESSAGE_CODE.E05007);
       }
 
-      const adminResponse = await API.get(
-        "AdminQueries",
-        "/listGroupsForUser",
-        {
+      console.log("sub:", sub);
+      let adminResponse;
+      try {
+        adminResponse = await API.get("AdminQueries", "/listGroupsForUser", {
           ...params,
           queryStringParameters: {
             username: sub,
           },
-        }
-      );
+        });
+      } catch (error) {
+        console.log(error);
+        throw new Error(MESSAGE_CODE.E05008);
+      }
 
       // 権限
       if (!adminResponse.Groups || adminResponse.Groups.length === 0) {
