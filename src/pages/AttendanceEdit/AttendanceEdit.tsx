@@ -33,17 +33,26 @@ export default function AttendanceEdit() {
   const { attendance, getAttendance, updateAttendance, createAttendance } =
     useAttendance();
 
-  const { register, control, setValue, getValues, watch, handleSubmit, reset } =
-    useForm<AttendanceEditInputs>({
-      mode: "onChange",
-      defaultValues,
-    });
+  const {
+    register,
+    control,
+    setValue,
+    getValues,
+    watch,
+    handleSubmit,
+    reset,
+    formState: { isDirty, isValid, isSubmitting },
+  } = useForm<AttendanceEditInputs>({
+    mode: "onChange",
+    defaultValues,
+  });
 
   const {
     fields: restFields,
     append: restAppend,
     remove: restRemove,
     update: restUpdate,
+    replace: restReplace,
   } = useFieldArray({
     control,
     name: "rests",
@@ -51,7 +60,7 @@ export default function AttendanceEdit() {
 
   const onSubmit = async (data: AttendanceEditInputs) => {
     if (attendance) {
-      updateAttendance({
+      await updateAttendance({
         id: attendance.id,
         changeRequests: [
           {
@@ -71,7 +80,7 @@ export default function AttendanceEdit() {
           if (!cognitoUser) return;
 
           try {
-            sendChangeRequestMail(
+            void sendChangeRequestMail(
               cognitoUser,
               dayjs(attendance.workDate),
               staffs,
@@ -89,7 +98,7 @@ export default function AttendanceEdit() {
     } else {
       if (!staff || !targetWorkDate) return;
 
-      createAttendance({
+      await createAttendance({
         staffId: staff.cognitoUserId,
         workDate: dayjs(targetWorkDate).format("YYYY-MM-DD"),
         changeRequests: [
@@ -109,7 +118,7 @@ export default function AttendanceEdit() {
           dispatch(setSnackbarSuccess(MESSAGE_CODE.S02005));
 
           if (!cognitoUser) return;
-          sendChangeRequestMail(
+          void sendChangeRequestMail(
             cognitoUser,
             dayjs(targetWorkDate),
             staffs,
@@ -146,8 +155,7 @@ export default function AttendanceEdit() {
         setValue("goDirectlyFlag", res.goDirectlyFlag || false);
         setValue("returnDirectlyFlag", res.returnDirectlyFlag || false);
         setValue("remarks", res.remarks);
-        setValue(
-          "rests",
+        restReplace(
           res.rests
             ? res.rests
                 .filter(
@@ -224,6 +232,9 @@ export default function AttendanceEdit() {
           register={register}
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
+          isDirty={isDirty}
+          isValid={isValid}
+          isSubmitting={isSubmitting}
         />
       </Box>
       <Box sx={{ display: { xs: "none", md: "block" } }}>
@@ -243,6 +254,9 @@ export default function AttendanceEdit() {
           register={register}
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
+          isDirty={isDirty}
+          isValid={isValid}
+          isSubmitting={isSubmitting}
         />
       </Box>
     </>

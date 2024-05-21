@@ -1,4 +1,4 @@
-import { Button, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import dayjs from "dayjs";
 import {
   Control,
@@ -23,6 +23,7 @@ import { GoDirectlyFlagInput } from "./GoDirectlyFlagInput";
 import { Label } from "./Label";
 import { PaidHolidayFlagInput } from "./PaidHolidayFlagInput";
 import RemarksInput from "./RemarksInput";
+import { RequestButtonItem } from "./RequestButtonItem";
 import { RestTimeInput } from "./RestTimeInput/RestTimeInput";
 import { ReturnDirectlyFlagInput } from "./ReturnDirectlyFlagInput";
 import { StaffNameItem } from "./StaffNameItem";
@@ -48,6 +49,9 @@ type AttendanceEditProps = {
   register: UseFormRegister<AttendanceEditInputs>;
   handleSubmit: UseFormHandleSubmit<AttendanceEditInputs, undefined>;
   onSubmit: (data: AttendanceEditInputs) => Promise<void>;
+  isDirty: boolean;
+  isValid: boolean;
+  isSubmitting: boolean;
 };
 
 export function MobileEditor({
@@ -65,6 +69,9 @@ export function MobileEditor({
   register,
   handleSubmit,
   onSubmit,
+  isDirty,
+  isValid,
+  isSubmitting,
 }: AttendanceEditProps) {
   if (!staff) return null;
 
@@ -114,22 +121,14 @@ export function MobileEditor({
         <RemarksInput register={register} />
 
         {/* 申請ボタン */}
-        <RequestButtonItem handleSubmit={handleSubmit} onSubmit={onSubmit} />
+        <RequestButtonItem
+          handleSubmit={handleSubmit}
+          onSubmit={onSubmit}
+          isDirty={isDirty}
+          isValid={isValid}
+          isSubmitting={isSubmitting}
+        />
       </Stack>
     </Stack>
-  );
-}
-
-function RequestButtonItem({
-  handleSubmit,
-  onSubmit,
-}: {
-  handleSubmit: UseFormHandleSubmit<AttendanceEditInputs, undefined>;
-  onSubmit: (data: AttendanceEditInputs) => Promise<void>;
-}) {
-  return (
-    <Button variant="contained" size="medium" onClick={handleSubmit(onSubmit)}>
-      申請
-    </Button>
   );
 }
