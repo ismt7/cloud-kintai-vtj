@@ -150,8 +150,12 @@ export function judgeStatus(
   changeRequests: Attendance["changeRequests"],
   staff: Staff | null | undefined
 ) {
-  if (!staff?.usageStartDate) return "";
-  if (dayjs(staff.usageStartDate).isAfter(dayjs(workDate))) return "";
+  if (
+    staff?.usageStartDate &&
+    dayjs(staff.usageStartDate).isAfter(dayjs(workDate), "date")
+  ) {
+    return "";
+  }
 
   if (paidHolidayFlag) return "OK";
 

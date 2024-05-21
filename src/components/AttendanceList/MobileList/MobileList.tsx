@@ -44,14 +44,14 @@ export default function MobileList({
           <TableHead>
             <TableRow>
               <TableCell />
-              <TableCell>勤務日</TableCell>
-              <TableCell>勤務時間</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>勤務日</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>勤務時間</TableCell>
               <TableCell sx={{ whiteSpace: "nowrap" }}>
                 休憩時間(直近)
               </TableCell>
-              <TableCell>摘要</TableCell>
-              <TableCell>作成日時</TableCell>
-              <TableCell>更新日時</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>摘要</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>作成日時</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>更新日時</TableCell>
               <TableCell />
             </TableRow>
           </TableHead>
