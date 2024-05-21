@@ -1,13 +1,15 @@
 import "./styles.scss";
 
 import {
+  Box,
+  styled,
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
-} from "@aws-amplify/ui-react";
-import { Box, styled, TableContainer } from "@mui/material";
+} from "@mui/material";
 
 import {
   Attendance,
@@ -38,17 +40,19 @@ export default function MobileList({
   return (
     <MobileBox>
       <TableContainer>
-        <Table size="small" className="amplify-table">
+        <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell />
+              <TableCell>勤務日</TableCell>
+              <TableCell>勤務時間</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>
+                休憩時間(直近)
+              </TableCell>
+              <TableCell>摘要</TableCell>
+              <TableCell>作成日時</TableCell>
+              <TableCell>更新日時</TableCell>
               <TableCell />
-              <TableCell className="table-td-head">日付</TableCell>
-              <TableCell className="table-td-head">出勤時間</TableCell>
-              <TableCell className="table-td-head">退勤時間</TableCell>
-              <TableCell className="table-td-head">休憩時間</TableCell>
-              <TableCell className="table-td-head">勤務時間</TableCell>
-              <TableCell className="table-td-description">備考</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

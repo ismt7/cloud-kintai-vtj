@@ -1,4 +1,4 @@
-import { styled,TableCell as MuiTableCell } from "@mui/material";
+import { styled, TableCell as MuiTableCell } from "@mui/material";
 import dayjs from "dayjs";
 
 import { Attendance } from "../../../API";
@@ -16,7 +16,7 @@ export function RestEndTimeTableCell({
   rests: Attendance["rests"];
   paidHolidayFlag: Attendance["paidHolidayFlag"];
 }) {
-  const time = (() => {
+  const formattedRestEndTime = (() => {
     if (paidHolidayFlag) return "13:00";
     if (!rests) return "";
 
@@ -34,5 +34,5 @@ export function RestEndTimeTableCell({
     return date.format("H:mm");
   })();
 
-  return <TableCell>{time}</TableCell>;
+  return <TableCell>{formattedRestEndTime}</TableCell>;
 }

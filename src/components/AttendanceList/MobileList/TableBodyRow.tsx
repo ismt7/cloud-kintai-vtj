@@ -1,6 +1,11 @@
-import { TableCell as MuiTableCell, TableRow } from "@aws-amplify/ui-react";
 import EditIcon from "@mui/icons-material/Edit";
-import { IconButton } from "@mui/material";
+import {
+  IconButton,
+  Stack,
+  TableCell as MuiTableCell,
+  TableCell,
+  TableRow,
+} from "@mui/material";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 
@@ -9,53 +14,16 @@ import {
   CompanyHolidayCalendar,
   HolidayCalendar,
   Staff,
-} from "../../../API";
-import {
-  calcRestTotalTime,
-  calcWorkTimeTotal,
-  judgeStatus,
-  makeRemarks,
-  makeWorkDate,
-} from "../common";
-import getDayOfWeek, { DayOfWeek } from "../getDayOfWeek";
-import TableCell from "./TableCell";
+} from "@/API";
+import { getTableRowClassName } from "@/pages/admin/AdminStaffAttendanceList/AdminStaffAttendanceList";
+import { CreatedAtTableCell } from "@/pages/admin/AdminStaffAttendanceList/CreatedAtTableCell";
+import { RestTimeTableCell } from "@/pages/admin/AdminStaffAttendanceList/RestTimeTableCell";
+import { SummaryTableCell } from "@/pages/admin/AdminStaffAttendanceList/SummaryTableCell";
+import { UpdatedAtTableCell } from "@/pages/admin/AdminStaffAttendanceList/UpdatedAtTableCell";
+import { WorkDateTableCell } from "@/pages/admin/AdminStaffAttendanceList/WorkDateTableCell";
+import { WorkTimeTableCell } from "@/pages/admin/AdminStaffAttendanceList/WorkTimeTableCell";
 
-function formatTime(time: string | null | undefined) {
-  return time ? dayjs(time).format("HH:mm") : "";
-}
-
-function selectClassName(
-  workDate: string,
-  holidayCalendars: HolidayCalendar[],
-  companyHolidayCalendars: CompanyHolidayCalendar[]
-) {
-  const today = dayjs().format("YYYY-MM-DD");
-  if (workDate === today) {
-    return "table-tr-today";
-  }
-
-  const isHoliday = holidayCalendars?.find(
-    (holidayCalendar) => holidayCalendar.holidayDate === workDate
-  );
-
-  const isCompanyHoliday = companyHolidayCalendars?.find(
-    (companyHolidayCalendar) => companyHolidayCalendar.holidayDate === workDate
-  );
-
-  if (isHoliday || isCompanyHoliday) {
-    return "table-tr-sunday";
-  }
-
-  const dayOfWeek = getDayOfWeek(workDate);
-  switch (dayOfWeek) {
-    case DayOfWeek.Sat:
-      return "table-tr-saturday";
-    case DayOfWeek.Sun:
-      return "table-tr-sunday";
-    default:
-      return "table-tr";
-  }
-}
+import { AttendanceStatus } from "../AttendanceStatus";
 
 export default function TableBodyRow({
   attendance,
@@ -70,81 +38,58 @@ export default function TableBodyRow({
 }) {
   const navigate = useNavigate();
 
-  const {
-    workDate,
-    startTime,
-    endTime,
-    paidHolidayFlag,
-    remarks,
-    changeRequests,
-  } = attendance;
-
-  const rests = attendance.rests
-    ? attendance.rests.filter(
-        (item): item is NonNullable<typeof item> => !!item
-      )
-    : [];
-
   const handleEdit = () => {
+    const { workDate } = attendance;
     const formattedWorkDate = dayjs(workDate).format("YYYYMMDD");
     navigate(`/attendance/${formattedWorkDate}/edit`);
   };
 
   return (
     <TableRow
-      className={selectClassName(
-        workDate,
+      className={getTableRowClassName(
+        attendance,
         holidayCalendars,
         companyHolidayCalendars
       )}
     >
       <MuiTableCell>
-        <IconButton onClick={handleEdit}>
-          <EditIcon fontSize="small" />
-        </IconButton>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <AttendanceStatus
+            staff={staff}
+            attendance={attendance}
+            holidayCalendars={holidayCalendars}
+            companyHolidayCalendars={companyHolidayCalendars}
+          />
+          <IconButton onClick={handleEdit}>
+            <EditIcon fontSize="small" />
+          </IconButton>
+        </Stack>
       </MuiTableCell>
-      <TableCell className="table-td-body">
-        {judgeStatus(
-          workDate,
-          startTime,
-          endTime,
-          holidayCalendars,
-          companyHolidayCalendars,
-          paidHolidayFlag,
-          changeRequests,
-          staff
-        )}
-      </TableCell>
-      <TableCell className="table-td-body-date">
-        {makeWorkDate(workDate, holidayCalendars)}
-      </TableCell>
-      <TableCell className="table-td-body-time">
-        {formatTime(startTime)}
-      </TableCell>
-      <TableCell className="table-td-body-time">
-        {formatTime(endTime)}
-      </TableCell>
-      <TableCell className="table-td-body-time">
-        {calcRestTotalTime(startTime, endTime, paidHolidayFlag, rests)}
-      </TableCell>
-      <TableCell className="table-td-body-time">
-        {calcWorkTimeTotal(
-          workDate,
-          startTime,
-          endTime,
-          paidHolidayFlag,
-          rests
-        )}
-      </TableCell>
-      <TableCell className="table-td-description">
-        {makeRemarks(
-          workDate,
-          paidHolidayFlag,
-          remarks,
-          holidayCalendars,
-          companyHolidayCalendars
-        )}
-      </TableCell>
+      {/* 勤務日 */}
+      <WorkDateTableCell
+        workDate={attendance.workDate}
+        holidayCalendars={holidayCalendars}
+        companyHolidayCalendars={companyHolidayCalendars}
+      />
+      {/* 勤務時間 */}
+      <WorkTimeTableCell attendance={attendance} />
+
+      {/* 休憩時間(最近) */}
+      <RestTimeTableCell attendance={attendance} />
+
+      {/* 摘要 */}
+      <SummaryTableCell
+        paidHolidayFlag={attendance.paidHolidayFlag}
+        remarks={attendance.remarks}
+      />
+
+      {/* 作成日時 */}
+      <CreatedAtTableCell createdAt={attendance.createdAt} />
+
+      {/* 更新日時 */}
+      <UpdatedAtTableCell updatedAt={attendance.updatedAt} />
+
+      <TableCell sx={{ width: 1 }} />
     </TableRow>
   );
 }
