@@ -1,7 +1,14 @@
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
-import { Badge, IconButton, Stack, TableCell, Tooltip } from "@mui/material";
+import {
+  Badge,
+  Box,
+  IconButton,
+  Stack,
+  TableCell,
+  Tooltip,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -114,7 +121,12 @@ export function ActionsTableCell({ row }: { row: AttendanceDaily }) {
     holidayCalendarError ||
     companyHolidayCalendarError
   )
-    return null;
+    return (
+      <TableCell>
+        <Box sx={{ width: 24, height: 24 }} />
+        <Box sx={{ width: 24, height: 24 }} />
+      </TableCell>
+    );
 
   return (
     <TableCell sx={{ width: 50, minWidth: 50 }}>
