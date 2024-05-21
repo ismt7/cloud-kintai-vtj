@@ -30,6 +30,7 @@ import {
 } from "../../lib/reducers/snackbarReducer";
 import { judgeStatus } from "../AttendanceList/common";
 import Clock from "../clock/Clock";
+import { AdminMailSender } from "./AdminMailSender";
 import { AttendanceErrorAlert } from "./AttendanceErrorAlert";
 import { WorkStatus } from "./common";
 import ClockInItem from "./items/ClockInItem";
@@ -39,8 +40,7 @@ import RestEndItem from "./items/RestEndItem";
 import RestStartItem from "./items/RestStartItem";
 import ReturnDirectly from "./items/ReturnDirectlyItem";
 import { RestTimeMessage } from "./RestTimeMessage";
-import sendClockInMail from "./sendClockInMail";
-import sendClockOutMail from "./sendClockOutMail";
+import { StaffMailSender } from "./StaffMailSender";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
 
 const DirectSwitch = styled(Switch)(({ theme }) => ({
@@ -199,7 +199,8 @@ export default function TimeRecorder() {
     clockIn(cognitoUser.id, today, now)
       .then((res) => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S01001));
-        sendClockInMail(cognitoUser, res);
+        new StaffMailSender(cognitoUser, res).clockIn();
+        new AdminMailSender(cognitoUser, res).clockIn();
       })
       .catch((e) => {
         logger.debug(e);
@@ -214,7 +215,8 @@ export default function TimeRecorder() {
     clockOut(cognitoUser.id, today, now)
       .then((res) => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S01002));
-        sendClockOutMail(cognitoUser, res);
+        new StaffMailSender(cognitoUser, res).clockOut();
+        new AdminMailSender(cognitoUser, res).clockOut();
       })
       .catch((e) => {
         logger.debug(e);
@@ -235,7 +237,8 @@ export default function TimeRecorder() {
     clockIn(cognitoUser.id, today, now, GoDirectlyFlag.YES)
       .then((res) => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S01003));
-        sendClockInMail(cognitoUser, res);
+        new StaffMailSender(cognitoUser, res).clockIn();
+        new AdminMailSender(cognitoUser, res).clockIn();
       })
       .catch((e) => {
         logger.debug(e);
@@ -256,7 +259,8 @@ export default function TimeRecorder() {
     clockOut(cognitoUser.id, today, now, ReturnDirectlyFlag.YES)
       .then((res) => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S01004));
-        sendClockOutMail(cognitoUser, res);
+        new StaffMailSender(cognitoUser, res).clockOut();
+        new AdminMailSender(cognitoUser, res).clockOut();
       })
       .catch((e) => {
         logger.debug(e);
