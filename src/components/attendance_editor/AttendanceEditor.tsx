@@ -5,6 +5,7 @@ import {
   Box,
   Breadcrumbs,
   Button,
+  CircularProgress,
   FormControlLabel,
   IconButton,
   LinearProgress,
@@ -95,7 +96,7 @@ export default function AttendanceEditor() {
     getValues,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty, isValid, isSubmitting },
   } = useForm<AttendanceEditorInputs>({
     mode: "onChange",
     defaultValues,
@@ -208,7 +209,7 @@ export default function AttendanceEditor() {
 
     if (!targetStaffId || !targetWorkDate) return;
 
-    createAttendance({
+    await createAttendance({
       staffId: targetStaffId,
       workDate: dayjs(targetWorkDate).format("YYYY-MM-DD"),
       startTime: data.startTime,
@@ -496,27 +497,22 @@ export default function AttendanceEditor() {
             </Box>
           </Stack>
         </Box>
-        {/* <Box>
-          <hr />
-        </Box> */}
-        {/* <Box>
-          <ReasonRevisionItem />
-        </Box> */}
-        {/* <Box>
-          <ReasonRemarksItem />
-        </Box> */}
-        <Box>
-          <Stack
-            direction="row"
-            alignItems={"center"}
-            justifyContent={"center"}
-            spacing={3}
-          >
-            <Box>
-              <SaveButton onClick={handleSubmit(onSubmit)}>保存</SaveButton>
-            </Box>
-          </Stack>
-        </Box>
+        <Stack
+          direction="row"
+          alignItems={"center"}
+          justifyContent={"center"}
+          spacing={3}
+        >
+          <Box>
+            <SaveButton
+              onClick={handleSubmit(onSubmit)}
+              disabled={!isValid || !isDirty || isSubmitting}
+              startIcon={isSubmitting ? <CircularProgress size={"24"} /> : null}
+            >
+              保存
+            </SaveButton>
+          </Box>
+        </Stack>
       </Stack>
       <ChangeRequestDialog
         attendance={attendance}
