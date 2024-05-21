@@ -1,6 +1,7 @@
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
+import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 import {
   Badge,
   Box,
@@ -52,8 +53,8 @@ function AttendanceTotalStatus({
   companyHolidayCalendars: CompanyHolidayCalendar[];
   staff: Staff | null | undefined;
 }) {
-  const errorCount = attendances
-    .map(({ workDate, startTime, endTime, paidHolidayFlag, changeRequests }) =>
+  const judgedStatus = attendances.map(
+    ({ workDate, startTime, endTime, paidHolidayFlag, changeRequests }) =>
       judgeStatus(
         workDate,
         startTime,
@@ -64,12 +65,26 @@ function AttendanceTotalStatus({
         changeRequests,
         staff
       )
-    )
-    .filter((item) => item !== "").length;
+  );
 
-  return errorCount === 0 ? (
-    <CheckCircleIcon color="success" />
-  ) : (
+  const validDataCount = judgedStatus.filter((status) => status !== "").length;
+
+  const statusOkCount = judgedStatus.filter((status) =>
+    ["OK", "勤務中"].includes(status)
+  ).length;
+  if (statusOkCount === validDataCount) {
+    return <CheckCircleIcon color="success" />;
+  }
+
+  if (judgedStatus.includes("申請中")) {
+    return (
+      <Tooltip title="申請中です。承認されるまで反映されません">
+        <HourglassTopIcon color="warning" />
+      </Tooltip>
+    );
+  }
+
+  return (
     <Tooltip title="勤怠に不備があります">
       <ErrorIcon color="error" />
     </Tooltip>

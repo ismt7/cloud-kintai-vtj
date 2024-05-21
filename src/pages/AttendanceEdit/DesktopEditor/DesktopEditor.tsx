@@ -1,4 +1,12 @@
-import { Box, Button, Container, Divider, Stack, styled } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Divider,
+  Stack,
+  styled,
+} from "@mui/material";
 import dayjs from "dayjs";
 import {
   Control,
@@ -55,23 +63,7 @@ const RequestButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-export default function DesktopEditor({
-  workDate,
-  changeRequests,
-  attendance,
-  staff,
-  control,
-  watch,
-  setValue,
-  restFields,
-  restRemove,
-  restAppend,
-  restUpdate,
-  totalProductionTime,
-  register,
-  handleSubmit,
-  onSubmit,
-}: {
+type DesktopEditorProps = {
   workDate: dayjs.Dayjs;
   changeRequests: AttendanceChangeRequest[];
   attendance: Attendance | null | undefined;
@@ -91,7 +83,31 @@ export default function DesktopEditor({
   register: UseFormRegister<AttendanceEditInputs>;
   handleSubmit: UseFormHandleSubmit<AttendanceEditInputs, undefined>;
   onSubmit: (data: AttendanceEditInputs) => Promise<void>;
-}) {
+  isDirty: boolean;
+  isValid: boolean;
+  isSubmitting: boolean;
+};
+
+export default function DesktopEditor({
+  workDate,
+  changeRequests,
+  attendance,
+  staff,
+  control,
+  watch,
+  setValue,
+  restFields,
+  restRemove,
+  restAppend,
+  restUpdate,
+  totalProductionTime,
+  register,
+  handleSubmit,
+  onSubmit,
+  isDirty,
+  isValid,
+  isSubmitting,
+}: DesktopEditorProps) {
   if (changeRequests.length > 0) {
     return (
       <DesktopContainer maxWidth="xl">
@@ -144,7 +160,13 @@ export default function DesktopEditor({
               spacing={3}
             >
               <Box>
-                <RequestButton onClick={handleSubmit(onSubmit)}>
+                <RequestButton
+                  onClick={handleSubmit(onSubmit)}
+                  disabled={!isDirty || !isValid || isSubmitting}
+                  startIcon={
+                    isSubmitting ? <CircularProgress size={20} /> : null
+                  }
+                >
                   申請
                 </RequestButton>
               </Box>
