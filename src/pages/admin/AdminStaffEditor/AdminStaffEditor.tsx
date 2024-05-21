@@ -45,7 +45,7 @@ type Inputs = {
   owner: boolean;
   beforeRoles: StaffRole[];
   role: string;
-  usageStartDate?: Staff["usageStartDate"];
+  usageStartDate?: Staff["usageStartDate"] | null;
 };
 
 const defaultValues: Inputs = {
@@ -172,9 +172,7 @@ export default function AdminStaffEditor() {
     setValue("role", staff.role);
     setValue(
       "usageStartDate",
-      staff.usageStartDate
-        ? dayjs(staff.usageStartDate)
-        : dayjs(staff.createdAt)
+      staff.usageStartDate ? dayjs(staff.usageStartDate) : null
     );
   }, [staffId, staffLoading]);
 

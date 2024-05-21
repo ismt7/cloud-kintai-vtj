@@ -30,7 +30,7 @@ export function WorkTimeTableCell({ attendance }: { attendance: Attendance }) {
       ? `(${goDirectlyFlag}${returnDirectlyFlag})`
       : "";
 
-  if (!formattedStartTime || !formattedEndTime) {
+  if (!formattedStartTime && !formattedEndTime) {
     return <TableCell />;
   }
 
