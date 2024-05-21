@@ -9,13 +9,22 @@ export function SummaryTableCell({
   paidHolidayFlag: Attendance["paidHolidayFlag"];
   remarks: Attendance["remarks"];
 }) {
-  const summaryText = (() => {
+  return (
+    <TableCell sx={{ whiteSpace: "nowrap" }}>
+      {getSummaryText(paidHolidayFlag, remarks)}
+    </TableCell>
+  );
+}
+
+function getSummaryText(
+  paidHolidayFlag: boolean | null | undefined,
+  remarks: string | null | undefined
+) {
+  return (() => {
     const summaryMessage = [];
     if (paidHolidayFlag) summaryMessage.push("有給休暇");
     if (remarks) summaryMessage.push(remarks);
 
     return summaryMessage.join(" ");
   })();
-
-  return <TableCell sx={{ whiteSpace: "nowrap" }}>{summaryText}</TableCell>;
 }
