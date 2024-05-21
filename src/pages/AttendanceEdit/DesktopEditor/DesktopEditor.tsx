@@ -162,7 +162,7 @@ export default function DesktopEditor({
               <Box>
                 <RequestButton
                   onClick={handleSubmit(onSubmit)}
-                  disabled={!isDirty || !isValid || isSubmitting}
+                  // disabled={!isDirty || !isValid || isSubmitting}
                   startIcon={
                     isSubmitting ? <CircularProgress size={20} /> : null
                   }

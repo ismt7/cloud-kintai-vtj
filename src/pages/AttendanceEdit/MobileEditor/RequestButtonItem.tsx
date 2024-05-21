@@ -21,7 +21,7 @@ export function RequestButtonItem({
       variant="contained"
       size="medium"
       onClick={handleSubmit(onSubmit)}
-      disabled={!isDirty || !isValid || isSubmitting}
+      // disabled={!isDirty || !isValid || isSubmitting}
       startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
     >
       申請
