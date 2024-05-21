@@ -1,7 +1,26 @@
-import { Box, styled } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { TableHead } from "@aws-amplify/ui-react";
+import EditIcon from "@mui/icons-material/Edit";
+import {
+  Box,
+  IconButton,
+  Stack,
+  styled,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@mui/material";
 import dayjs from "dayjs";
 import { NavigateFunction } from "react-router-dom";
+
+import { getTableRowClassName } from "@/pages/admin/AdminStaffAttendanceList/AdminStaffAttendanceList";
+import { CreatedAtTableCell } from "@/pages/admin/AdminStaffAttendanceList/CreatedAtTableCell";
+import { RestTimeTableCell } from "@/pages/admin/AdminStaffAttendanceList/RestTimeTableCell";
+import { SummaryTableCell } from "@/pages/admin/AdminStaffAttendanceList/SummaryTableCell";
+import { UpdatedAtTableCell } from "@/pages/admin/AdminStaffAttendanceList/UpdatedAtTableCell";
+import { WorkDateTableCell } from "@/pages/admin/AdminStaffAttendanceList/WorkDateTableCell";
+import { WorkTimeTableCell } from "@/pages/admin/AdminStaffAttendanceList/WorkTimeTableCell";
 
 import {
   Attendance,
@@ -9,8 +28,7 @@ import {
   HolidayCalendar,
   Staff,
 } from "../../API";
-import GetColumns from "./Column";
-import getDayOfWeek, { DayOfWeek } from "./getDayOfWeek";
+import { AttendanceStatus } from "./AttendanceStatus";
 
 const DesktopBox = styled(Box)(({ theme }) => ({
   padding: "0px 40px 40px 40px",
@@ -21,75 +39,95 @@ const DesktopBox = styled(Box)(({ theme }) => ({
 
 export default function DesktopList({
   attendances,
+  staff,
   holidayCalendars,
   companyHolidayCalendars,
   navigate,
-  staff,
 }: {
   attendances: Attendance[];
+  staff: Staff | null | undefined;
   holidayCalendars: HolidayCalendar[];
   companyHolidayCalendars: CompanyHolidayCalendar[];
   navigate: NavigateFunction;
-  staff: Staff | null | undefined;
 }) {
+  const handleEdit = (attendance: Attendance) => {
+    const { workDate } = attendance;
+    const formattedWorkDate = dayjs(workDate).format("YYYYMMDD");
+    navigate(`/attendance/${formattedWorkDate}/edit`);
+  };
   return (
     <DesktopBox>
-      <DataGrid
-        rows={attendances ?? []}
-        columns={GetColumns(
-          holidayCalendars,
-          companyHolidayCalendars,
-          navigate,
-          staff
-        )}
-        autoHeight
-        hideFooter={true}
-        getRowId={(row) => row.workDate}
-        getRowClassName={(params: {
-          row: { workDate: Attendance["workDate"] };
-        }) => {
-          const today = dayjs().format("YYYY-MM-DD");
-          if (params.row.workDate === today) {
-            return "super-app-theme--today";
-          }
+      <TableContainer>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell>勤務日</TableCell>
+              <TableCell>勤務時間</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>
+                休憩時間(直近)
+              </TableCell>
+              <TableCell>摘要</TableCell>
+              <TableCell>作成日時</TableCell>
+              <TableCell>更新日時</TableCell>
+              <TableCell />
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {attendances.map((attendance, index) => (
+              <TableRow
+                key={index}
+                className={getTableRowClassName(
+                  attendance,
+                  holidayCalendars,
+                  companyHolidayCalendars
+                )}
+              >
+                <TableCell>
+                  <Stack direction="row" spacing={0} alignItems="center">
+                    <AttendanceStatus
+                      staff={staff}
+                      attendance={attendance}
+                      holidayCalendars={holidayCalendars}
+                      companyHolidayCalendars={companyHolidayCalendars}
+                    />
+                    <IconButton onClick={() => handleEdit(attendance)}>
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </Stack>
+                </TableCell>
 
-          const isHoliday = holidayCalendars?.find(
-            (holidayCalendar) =>
-              holidayCalendar.holidayDate === params.row.workDate
-          );
+                {/* 勤務日 */}
+                <WorkDateTableCell
+                  workDate={attendance.workDate}
+                  holidayCalendars={holidayCalendars}
+                  companyHolidayCalendars={companyHolidayCalendars}
+                />
 
-          const isCompanyHoliday = companyHolidayCalendars?.find(
-            (companyHolidayCalendar) =>
-              companyHolidayCalendar.holidayDate === params.row.workDate
-          );
+                {/* 勤務時間 */}
+                <WorkTimeTableCell attendance={attendance} />
 
-          if (isHoliday || isCompanyHoliday) {
-            return "super-app-theme--sunday";
-          }
+                {/* 休憩時間(最近) */}
+                <RestTimeTableCell attendance={attendance} />
 
-          const dayOfWeek = getDayOfWeek(params.row.workDate);
-          switch (dayOfWeek) {
-            case DayOfWeek.Sat:
-              return "super-app-theme--saturday";
-            case DayOfWeek.Sun:
-              return "super-app-theme--sunday";
-            default:
-              return "super-app-theme--default";
-          }
-        }}
-        sx={{
-          "& .super-app-theme--saturday": {
-            backgroundColor: "#93FFFF",
-          },
-          "& .super-app-theme--sunday": {
-            backgroundColor: "#FF9393",
-          },
-          "& .super-app-theme--today": {
-            backgroundColor: "#FFFF93",
-            fontWeight: "bold",
-          },
-        }}
-      />
+                {/* 摘要 */}
+                <SummaryTableCell
+                  paidHolidayFlag={attendance.paidHolidayFlag}
+                  remarks={attendance.remarks}
+                />
+
+                {/* 作成日時 */}
+                <CreatedAtTableCell createdAt={attendance.createdAt} />
+
+                {/* 更新日時 */}
+                <UpdatedAtTableCell updatedAt={attendance.updatedAt} />
+
+                <TableCell sx={{ width: 1 }} />
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </DesktopBox>
   );
 }

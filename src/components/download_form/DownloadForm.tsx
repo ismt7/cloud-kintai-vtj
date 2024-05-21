@@ -71,7 +71,7 @@ export default function DownloadForm() {
       }))
     ).then((res) => {
       const exportData = [
-        "営業日,従業員コード,名前,休憩時間,出勤打刻,退勤打刻,直行,直帰,有給休暇",
+        "営業日,従業員コード,名前,休憩時間,出勤打刻,退勤打刻,直行,直帰,有給休暇,摘要",
         ...selectedStaff.map((staff) => {
           const attendances = res.filter(
             (attendance) => attendance.staffId === staff.cognitoUserId
@@ -92,6 +92,7 @@ export default function DownloadForm() {
                   returnDirectlyFlag,
                   paidHolidayFlag,
                   rests,
+                  remarks,
                 } = matchAttendance;
 
                 const totalRestTime =
@@ -115,6 +116,7 @@ export default function DownloadForm() {
                   goDirectlyFlag ? 1 : 0,
                   returnDirectlyFlag ? 1 : 0,
                   paidHolidayFlag ? 1 : 0,
+                  remarks,
                 ].join(",");
               }
 
@@ -122,6 +124,7 @@ export default function DownloadForm() {
                 dayjs(workDate).format("YYYY/MM/DD"),
                 staff.cognitoUserId,
                 `${staff.familyName} ${staff.givenName}`,
+                "",
                 "",
                 "",
                 "",
@@ -263,7 +266,6 @@ export default function DownloadForm() {
                   limitTags={2}
                   id="multiple-limit-tags"
                   options={staffs}
-                  filterSelectedOptions
                   disableCloseOnSelect
                   getOptionLabel={(option) =>
                     `${option?.familyName || ""} ${option?.givenName || ""}`

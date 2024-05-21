@@ -10,6 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
 import {
@@ -69,9 +70,17 @@ export default function ChangeRequestDialog({
     setOpen(false);
   };
 
+  const getWorkDate = () => {
+    if (!attendance) return "";
+    const { workDate } = attendance;
+    if (!dayjs(workDate).isValid()) return "";
+
+    return dayjs(workDate).format("YYYY/MM/DD");
+  };
+
   return (
     <Dialog onClose={handleClose} open={open} fullWidth maxWidth="md">
-      <DialogTitle>変更リクエスト</DialogTitle>
+      <DialogTitle>変更リクエスト(勤務日: {getWorkDate()})</DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
           <Typography variant="body1" sx={{ mb: 2 }}>

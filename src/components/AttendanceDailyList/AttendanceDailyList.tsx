@@ -42,7 +42,7 @@ export default function AttendanceDailyList() {
               <TableCell>{`${row.familyName} ${row.givenName}`}</TableCell>
               <StartTimeTableCell row={row} />
               <EndTimeTableCell row={row} />
-              <TableCell />
+              <TableCell sx={{ whiteSpace: "nowrap" }} />
             </TableRow>
           ))}
         </TableBody>

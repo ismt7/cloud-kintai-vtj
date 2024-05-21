@@ -2,8 +2,6 @@ import "./styles.scss";
 
 import EditIcon from "@mui/icons-material/Edit";
 import {
-  Alert,
-  AlertTitle,
   Badge,
   Box,
   Breadcrumbs,
@@ -23,7 +21,15 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-import { Attendance } from "../../../API";
+import {
+  Attendance,
+  CompanyHolidayCalendar,
+  HolidayCalendar,
+  Staff,
+} from "@/API";
+import { AttendanceStatus } from "@/components/AttendanceList/AttendanceStatus";
+import fetchStaff from "@/hooks/useStaff/fetchStaff";
+
 import { useAppDispatchV2 } from "../../../app/hooks";
 import getDayOfWeek, {
   DayOfWeek,
@@ -32,44 +38,75 @@ import * as MESSAGE_CODE from "../../../errors";
 import useAttendances from "../../../hooks/useAttendances/useAttendances";
 import useCompanyHolidayCalendars from "../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 import useHolidayCalendars from "../../../hooks/useHolidayCalendars/useHolidayCalendars";
-import useStaffs, { StaffType } from "../../../hooks/useStaffs/useStaffs";
 import { setSnackbarError } from "../../../lib/reducers/snackbarReducer";
+import { ApprovalPendingMessage } from "./ApprovalPendingMessage";
 import { CreatedAtTableCell } from "./CreatedAtTableCell";
-import { EndTimeTableCell } from "./EndTimeTableCell";
-import { RestEndTimeTableCell } from "./RestEndTimeTableCell";
-import { RestStartTimeTableCell } from "./RestStartTimeTableCell";
-import { StartTimeTableCell } from "./StartTimeTableCell";
+import { RestTimeTableCell } from "./RestTimeTableCell";
 import { SummaryTableCell } from "./SummaryTableCell";
 import { UpdatedAtTableCell } from "./UpdatedAtTableCell";
 import { WorkDateTableCell } from "./WorkDateTableCell";
+import { WorkTimeTableCell } from "./WorkTimeTableCell";
+
+export function getTableRowClassName(
+  attendance: Attendance,
+  holidayCalendars: HolidayCalendar[],
+  companyHolidayCalendars: CompanyHolidayCalendar[]
+) {
+  const { workDate } = attendance;
+  const today = dayjs().format("YYYY-MM-DD");
+  if (workDate === today) {
+    return "table-row--today";
+  }
+
+  const isHoliday = holidayCalendars?.find(
+    (holidayCalendar) => holidayCalendar.holidayDate === workDate
+  );
+
+  const isCompanyHoliday = companyHolidayCalendars?.find(
+    (companyHolidayCalendar) => companyHolidayCalendar.holidayDate === workDate
+  );
+
+  if (isHoliday || isCompanyHoliday) {
+    return "table-row--sunday";
+  }
+
+  const dayOfWeek = getDayOfWeek(workDate);
+  switch (dayOfWeek) {
+    case DayOfWeek.Sat:
+      return "table-row--saturday";
+    case DayOfWeek.Sun:
+      return "table-row--sunday";
+    default:
+      return "table-row--default";
+  }
+}
 
 export default function AdminStaffAttendanceList() {
   const { staffId } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatchV2();
 
+  const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
+
   const { attendances, getAttendances } = useAttendances();
-  const { staffs, loading: staffLoading, error: staffError } = useStaffs();
   const {
     companyHolidayCalendars,
     loading: companyHolidayCalendarLoading,
     error: companyHolidayCalendarError,
   } = useCompanyHolidayCalendars();
 
-  const [staff, setStaff] = useState<StaffType | undefined | null>(undefined);
-
-  useEffect(() => {
-    if (!staffId || staffLoading) return;
-
-    const matchStaff = staffs.find((item) => item.cognitoUserId === staffId);
-    setStaff(matchStaff);
-  }, [staffId, staffLoading]);
-
   useEffect(() => {
     if (!staffId) return;
     getAttendances(staffId).catch(() =>
       dispatch(setSnackbarError(MESSAGE_CODE.E02001))
     );
+
+    fetchStaff(staffId)
+      .then(setStaff)
+      .catch((e) => {
+        console.log(e);
+        dispatch(setSnackbarError(MESSAGE_CODE.E00001));
+      });
   }, [staffId]);
 
   const {
@@ -78,7 +115,7 @@ export default function AdminStaffAttendanceList() {
     error: holidayCalendarError,
   } = useHolidayCalendars();
 
-  if (staffLoading || holidayCalendarLoading || companyHolidayCalendarLoading) {
+  if (holidayCalendarLoading || companyHolidayCalendarLoading) {
     return (
       <Container maxWidth="xl" sx={{ pt: 2 }}>
         <LinearProgress />
@@ -94,7 +131,7 @@ export default function AdminStaffAttendanceList() {
     );
   }
 
-  if (staff === null || staffError || !staffId) {
+  if (staff === null || !staffId) {
     return (
       <Container maxWidth="xl" sx={{ pt: 2 }}>
         <Typography>データ取得中に何らかの問題が発生しました</Typography>
@@ -104,6 +141,18 @@ export default function AdminStaffAttendanceList() {
 
   const handleEdit = (workDate: string) => {
     navigate(`/admin/attendances/edit/${workDate}/${staffId}`);
+  };
+
+  const getBadgeContent = (attendance: Attendance) => {
+    const { changeRequests } = attendance;
+    if (!changeRequests) return 0;
+
+    // 未承認の変更申請の数をカウント
+    const count = changeRequests
+      .filter((item): item is NonNullable<typeof item> => item !== null)
+      .filter((changeRequest) => !changeRequest.completed).length;
+
+    return count;
   };
 
   return (
@@ -129,113 +178,71 @@ export default function AdminStaffAttendanceList() {
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ width: 100, minWidth: 100 }} />
+                  <TableCell />
                   <TableCell>勤務日</TableCell>
-                  <TableCell>出勤時間</TableCell>
-                  <TableCell>退勤時間</TableCell>
-                  <TableCell>休憩開始(最近)</TableCell>
-                  <TableCell>休憩終了(最近)</TableCell>
+                  <TableCell>勤務時間</TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    休憩時間(直近)
+                  </TableCell>
+                  <TableCell>摘要</TableCell>
                   <TableCell>作成日時</TableCell>
                   <TableCell>更新日時</TableCell>
-                  <TableCell>摘要</TableCell>
+                  <TableCell />
                 </TableRow>
               </TableHead>
               <TableBody>
                 {attendances.map((attendance, index) => (
                   <TableRow
                     key={index}
-                    className={(() => {
-                      const { workDate } = attendance;
-                      const today = dayjs().format("YYYY-MM-DD");
-                      if (workDate === today) {
-                        return "table-row--today";
-                      }
-
-                      const isHoliday = holidayCalendars?.find(
-                        (holidayCalendar) =>
-                          holidayCalendar.holidayDate === workDate
-                      );
-
-                      const isCompanyHoliday = companyHolidayCalendars?.find(
-                        (companyHolidayCalendar) =>
-                          companyHolidayCalendar.holidayDate === workDate
-                      );
-
-                      if (isHoliday || isCompanyHoliday) {
-                        return "table-row--sunday";
-                      }
-
-                      const dayOfWeek = getDayOfWeek(workDate);
-                      switch (dayOfWeek) {
-                        case DayOfWeek.Sat:
-                          return "table-row--saturday";
-                        case DayOfWeek.Sun:
-                          return "table-row--sunday";
-                        default:
-                          return "table-row--default";
-                      }
-                    })()}
+                    className={getTableRowClassName(
+                      attendance,
+                      holidayCalendars,
+                      companyHolidayCalendars
+                    )}
                   >
                     <TableCell>
-                      <IconButton
-                        onClick={() =>
-                          handleEdit(
-                            dayjs(attendance.workDate).format("YYYYMMDD")
-                          )
-                        }
-                      >
-                        <Badge
-                          badgeContent={(() => {
-                            const { changeRequests } = attendance;
-                            if (!changeRequests) return 0;
-
-                            // 未承認の変更申請の数をカウント
-                            const count = changeRequests
-                              .filter(
-                                (item): item is NonNullable<typeof item> =>
-                                  item !== null
-                              )
-                              .filter(
-                                (changeRequest) => !changeRequest.completed
-                              ).length;
-
-                            return count;
-                          })()}
-                          color="primary"
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <AttendanceStatus
+                          staff={staff}
+                          attendance={attendance}
+                          holidayCalendars={holidayCalendars}
+                          companyHolidayCalendars={companyHolidayCalendars}
+                        />
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            handleEdit(
+                              dayjs(attendance.workDate).format("YYYYMMDD")
+                            )
+                          }
                         >
-                          <EditIcon />
-                        </Badge>
-                      </IconButton>
+                          <Badge
+                            badgeContent={getBadgeContent(attendance)}
+                            color="primary"
+                          >
+                            <EditIcon fontSize="small" />
+                          </Badge>
+                        </IconButton>
+                      </Stack>
                     </TableCell>
 
                     {/* 勤務日 */}
                     <WorkDateTableCell
                       workDate={attendance.workDate}
                       holidayCalendars={holidayCalendars}
+                      companyHolidayCalendars={companyHolidayCalendars}
                     />
 
-                    {/* 出勤時間 */}
-                    <StartTimeTableCell
-                      startTime={attendance.startTime}
-                      paidHolidayFlag={attendance.paidHolidayFlag}
-                    />
+                    {/* 勤務時間 */}
+                    <WorkTimeTableCell attendance={attendance} />
 
-                    {/* 退勤時間 */}
-                    <EndTimeTableCell
-                      endTime={attendance.endTime}
-                      paidHolidayFlag={attendance.paidHolidayFlag}
-                    />
+                    {/* 休憩時間(最近) */}
+                    <RestTimeTableCell attendance={attendance} />
 
-                    {/* 休憩開始(最近) */}
-                    <RestStartTimeTableCell
-                      rests={attendance.rests}
+                    {/* 摘要 */}
+                    <SummaryTableCell
                       paidHolidayFlag={attendance.paidHolidayFlag}
-                    />
-
-                    {/* 休憩終了(最近) */}
-                    <RestEndTimeTableCell
-                      rests={attendance.rests}
-                      paidHolidayFlag={attendance.paidHolidayFlag}
+                      remarks={attendance.remarks}
                     />
 
                     {/* 作成日時 */}
@@ -244,14 +251,7 @@ export default function AdminStaffAttendanceList() {
                     {/* 更新日時 */}
                     <UpdatedAtTableCell updatedAt={attendance.updatedAt} />
 
-                    {/* 摘要 */}
-                    <SummaryTableCell
-                      workDate={attendance.workDate}
-                      paidHolidayFlag={attendance.paidHolidayFlag}
-                      remarks={attendance.remarks}
-                      holidayCalendars={holidayCalendars}
-                      companyHolidayCalendars={companyHolidayCalendars}
-                    />
+                    <TableCell sx={{ width: 1 }} />
                   </TableRow>
                 ))}
               </TableBody>
@@ -260,24 +260,5 @@ export default function AdminStaffAttendanceList() {
         </Box>
       </Stack>
     </Container>
-  );
-}
-
-function ApprovalPendingMessage({
-  attendances,
-}: {
-  attendances: Attendance[];
-}) {
-  const hasApprovalPending = attendances.some((attendance) =>
-    attendance.changeRequests?.some((item) => !item?.completed)
-  );
-
-  if (!hasApprovalPending) return null;
-
-  return (
-    <Alert severity="warning">
-      <AlertTitle sx={{ fontWeight: "bold" }}>確認してください</AlertTitle>
-      未承認の変更リクエストがあります
-    </Alert>
   );
 }

@@ -1,5 +1,4 @@
-import { TableCell as MuiTableCell } from "@aws-amplify/ui-react";
-import { Typography } from "@mui/material";
+import { TableCell as MuiTableCell, Typography } from "@mui/material";
 
 export default function TableCell({
   children,
