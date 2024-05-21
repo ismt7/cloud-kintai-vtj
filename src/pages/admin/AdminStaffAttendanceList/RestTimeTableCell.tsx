@@ -1,5 +1,6 @@
 import { TableCell } from "@mui/material";
 import dayjs from "dayjs";
+
 import { Attendance } from "@/API";
 
 export function RestTimeTableCell({ attendance }: { attendance: Attendance }) {
