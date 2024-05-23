@@ -189,7 +189,15 @@ export default function TimeRecorder() {
   }, [attendance]);
 
   if (attendanceLoading || workStatus === undefined) {
-    return <LinearProgress />;
+    return (
+      <Box
+        sx={{
+          width: { xs: "100%", md: "400px" },
+        }}
+      >
+        <LinearProgress />
+      </Box>
+    );
   }
 
   if (workStatus === null) {

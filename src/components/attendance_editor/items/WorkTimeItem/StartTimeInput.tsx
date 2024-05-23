@@ -1,7 +1,6 @@
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { Box, Chip, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
-import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { Control, Controller, UseFormSetValue } from "react-hook-form";
 
@@ -19,11 +18,6 @@ export default function StartTimeInput({
 }) {
   if (!workDate) return null;
 
-  const logger = new Logger(
-    "StartTimeInput",
-    import.meta.env.DEV ? "DEBUG" : "ERROR"
-  );
-
   return (
     <Stack spacing={1}>
       <Controller
@@ -32,15 +26,7 @@ export default function StartTimeInput({
         render={({ field }) => (
           <TimePicker
             ampm={false}
-            value={(() => {
-              logger.debug(
-                "startTime:",
-                field.value
-                  ? dayjs(field.value).format("YYYY/MM/DD HH:mm:ss")
-                  : field.value
-              );
-              return field.value ? dayjs(field.value) : null;
-            })()}
+            value={(() => (field.value ? dayjs(field.value) : null))()}
             viewRenderers={{
               hours: renderTimeViewClock,
               minutes: renderTimeViewClock,

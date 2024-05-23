@@ -238,18 +238,20 @@ export default function DownloadForm() {
                       navigate("/admin/master/job_term");
                     }}
                   />
-                  {closeDates.map((closeDate, index) => (
-                    <Chip
-                      key={index}
-                      label={dayjs(closeDate.closeDate).format("YYYY/MM")}
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => {
-                        setValue("startDate", dayjs(closeDate.startDate));
-                        setValue("endDate", dayjs(closeDate.endDate));
-                      }}
-                    />
-                  ))}
+                  {closeDates
+                    .sort((a, b) => dayjs(b.closeDate).diff(dayjs(a.closeDate)))
+                    .map((closeDate, index) => (
+                      <Chip
+                        key={index}
+                        label={dayjs(closeDate.closeDate).format("YYYY/MM")}
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => {
+                          setValue("startDate", dayjs(closeDate.startDate));
+                          setValue("endDate", dayjs(closeDate.endDate));
+                        }}
+                      />
+                    ))}
                 </Stack>
               </Stack>
             </Stack>

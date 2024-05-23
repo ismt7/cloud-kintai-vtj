@@ -1,23 +1,10 @@
 import { Stack } from "@mui/material";
-import dayjs from "dayjs";
-import {
-  Control,
-  FieldArrayMethodProps,
-  FieldArrayWithId,
-  UseFieldArrayRemove,
-  UseFieldArrayUpdate,
-  UseFormGetValues,
-  UseFormHandleSubmit,
-  UseFormRegister,
-  UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
+import { useContext } from "react";
 
-import { Attendance } from "../../../API";
 import Title from "../../../components/Title/Title";
-import { StaffType } from "../../../hooks/useStaffs/useStaffs";
 import AttendanceEditBreadcrumb from "../AttendanceEditBreadcrumb";
-import { AttendanceEditInputs, RestInputs } from "../common";
+import { AttendanceEditContext } from "../AttendanceEditProvider";
+import ChangeRequestingAlert from "../DesktopEditor/ChangeRequestingMessage";
 import NoDataAlert from "../DesktopEditor/NoDataAlert";
 import { GoDirectlyFlagInput } from "./GoDirectlyFlagInput";
 import { Label } from "./Label";
@@ -30,86 +17,79 @@ import { StaffNameItem } from "./StaffNameItem";
 import { WorkDateItem } from "./WorkDateItem";
 import { WorkTimeInput } from "./WorkTimeInput/WorkTimeInput";
 
-type AttendanceEditProps = {
-  workDate: dayjs.Dayjs;
-  attendance: Attendance | null | undefined;
-  staff: StaffType | undefined | null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<AttendanceEditInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditInputs>;
-  getValues: UseFormGetValues<AttendanceEditInputs>;
-  watch: UseFormWatch<AttendanceEditInputs>;
-  restFields: FieldArrayWithId<AttendanceEditInputs, "rests", "id">[];
-  restAppend: (
-    value: RestInputs | RestInputs[],
-    options?: FieldArrayMethodProps | undefined
-  ) => void;
-  restRemove: UseFieldArrayRemove;
-  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
-  register: UseFormRegister<AttendanceEditInputs>;
-  handleSubmit: UseFormHandleSubmit<AttendanceEditInputs, undefined>;
-  onSubmit: (data: AttendanceEditInputs) => Promise<void>;
-  isDirty: boolean;
-  isValid: boolean;
-  isSubmitting: boolean;
-};
+export function MobileEditor() {
+  const {
+    staff,
+    onSubmit,
+    control,
+    setValue,
+    getValues,
+    watch,
+    register,
+    handleSubmit,
+    isDirty,
+    isValid,
+    isSubmitting,
+    restFields,
+    restAppend,
+    restRemove,
+    restUpdate,
+    changeRequests,
+  } = useContext(AttendanceEditContext);
 
-export function MobileEditor({
-  workDate,
-  attendance,
-  staff,
-  control,
-  setValue,
-  getValues,
-  watch,
-  restFields,
-  restAppend,
-  restRemove,
-  restUpdate,
-  register,
-  handleSubmit,
-  onSubmit,
-  isDirty,
-  isValid,
-  isSubmitting,
-}: AttendanceEditProps) {
-  if (!staff) return null;
+  if (changeRequests.length > 0) {
+    return (
+      <Stack direction="column" spacing={1} sx={{ p: 1 }}>
+        <AttendanceEditBreadcrumb />
+        <Title>勤怠編集</Title>
+        <ChangeRequestingAlert changeRequests={changeRequests} />
+      </Stack>
+    );
+  }
+
+  if (
+    !staff ||
+    !control ||
+    !setValue ||
+    !watch ||
+    !getValues ||
+    !handleSubmit ||
+    !register ||
+    !restAppend ||
+    !restRemove ||
+    !restUpdate
+  ) {
+    return null;
+  }
 
   return (
     <Stack direction="column" spacing={1} sx={{ p: 1 }}>
-      <AttendanceEditBreadcrumb workDate={workDate} />
+      <AttendanceEditBreadcrumb />
       <Title>勤怠編集</Title>
       <Stack direction="column" spacing={2} sx={{ p: 1 }}>
-        <NoDataAlert attendance={attendance} />
+        <NoDataAlert />
 
         {/* 勤務日 */}
-        <WorkDateItem workDate={workDate} />
+        <WorkDateItem />
 
         {/* スタッフ */}
-        <StaffNameItem staff={staff} />
+        <StaffNameItem />
 
         {/* 有給休暇 */}
-        <PaidHolidayFlagInput control={control} />
+        <PaidHolidayFlagInput />
 
         {/* 直行 */}
-        <GoDirectlyFlagInput control={control} />
+        <GoDirectlyFlagInput />
 
         {/* 直帰 */}
         <ReturnDirectlyFlagInput control={control} />
 
         {/* 勤務時間 */}
-        <WorkTimeInput
-          workDate={workDate}
-          control={control}
-          setValue={setValue}
-          getValues={getValues}
-          watch={watch}
-        />
+        <WorkTimeInput />
 
         {/* 休憩時間 */}
         <RestTimeInput
           restFields={restFields}
-          workDate={workDate}
           control={control}
           restAppend={restAppend}
           restRemove={restRemove}

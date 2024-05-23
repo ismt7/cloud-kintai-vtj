@@ -1,16 +1,8 @@
 import AddAlarmIcon from "@mui/icons-material/AddAlarm";
 import { Box, IconButton, Stack, styled, Typography } from "@mui/material";
-import dayjs from "dayjs";
-import {
-  Control,
-  FieldArrayMethodProps,
-  FieldArrayWithId,
-  UseFieldArrayRemove,
-  UseFieldArrayUpdate,
-  UseFormWatch,
-} from "react-hook-form";
+import { useContext } from "react";
 
-import { AttendanceEditInputs, RestInputs } from "../../common";
+import { AttendanceEditContext } from "../../AttendanceEditProvider";
 import NoRestTimeMessage from "./NoRestTimeMessage";
 import { RestTimeInput } from "./RestTimeInput/RestTimeInput";
 
@@ -19,27 +11,28 @@ const Label = styled(Typography)(() => ({
   fontWeight: "bold",
 }));
 
-export default function RestTimeItem({
-  restFields,
-  workDate,
-  watch,
-  restRemove,
-  control,
-  restAppend,
-  restUpdate,
-}: {
-  restFields: FieldArrayWithId<AttendanceEditInputs, "rests", "id">[];
-  workDate: dayjs.Dayjs | null;
-  watch: UseFormWatch<AttendanceEditInputs>;
-  restRemove: UseFieldArrayRemove;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<AttendanceEditInputs, any>;
-  restAppend: (
-    value: RestInputs | RestInputs[],
-    options?: FieldArrayMethodProps | undefined
-  ) => void;
-  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
-}) {
+export default function RestTimeItem() {
+  const {
+    workDate,
+    control,
+    watch,
+    restFields,
+    restAppend,
+    restUpdate,
+    restRemove,
+  } = useContext(AttendanceEditContext);
+
+  if (
+    !workDate ||
+    !control ||
+    !watch ||
+    !restAppend ||
+    !restUpdate ||
+    !restRemove
+  ) {
+    return null;
+  }
+
   return (
     <Stack direction="row">
       <Label variant="body1" sx={{ fontWeight: "bold", width: "150px" }}>

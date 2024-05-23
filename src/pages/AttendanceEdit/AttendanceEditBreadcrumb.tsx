@@ -1,11 +1,14 @@
 import { Breadcrumbs, Link, Typography } from "@mui/material";
 import dayjs from "dayjs";
+import { useContext } from "react";
 
-export default function AttendanceEditBreadcrumb({
-  workDate,
-}: {
-  workDate: dayjs.Dayjs;
-}) {
+import { AttendanceEditContext } from "./AttendanceEditProvider";
+
+export default function AttendanceEditBreadcrumb() {
+  const { workDate } = useContext(AttendanceEditContext);
+
+  if (!workDate) return null;
+
   return (
     <Breadcrumbs>
       <Link href="/" color="inherit">

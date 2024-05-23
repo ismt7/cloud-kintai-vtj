@@ -1,15 +1,17 @@
 import { Switch } from "@mui/material";
-import { Control, Controller } from "react-hook-form";
+import { useContext } from "react";
+import { Controller } from "react-hook-form";
 
-import { AttendanceEditInputs } from "../common";
+import { AttendanceEditContext } from "../AttendanceEditProvider";
 import { Label } from "./Label";
 
-export function GoDirectlyFlagInput({
-  control,
-}: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<AttendanceEditInputs, any>;
-}) {
+export function GoDirectlyFlagInput() {
+  const { control } = useContext(AttendanceEditContext);
+
+  if (!control) {
+    return null;
+  }
+
   return (
     <>
       <Label variant="body1">直行</Label>
