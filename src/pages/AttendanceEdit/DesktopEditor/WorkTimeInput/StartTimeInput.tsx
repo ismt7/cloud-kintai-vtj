@@ -35,11 +35,10 @@ export default function StartTimeInput({
               textField: { size: "small" },
             }}
             onChange={(value) => {
-              if (!value) return;
-
-              if (!value.isValid()) {
+              if (!value || !value.isValid()) {
                 return;
               }
+
               const formattedStartTime = value
                 .year(workDate.year())
                 .month(workDate.month())
@@ -65,7 +64,7 @@ export default function StartTimeInput({
               .second(0)
               .millisecond(0)
               .toISOString();
-            setValue("startTime", startTime);
+            setValue("startTime", startTime, { shouldDirty: true });
           }}
         />
       </Box>

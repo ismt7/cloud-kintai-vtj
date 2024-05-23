@@ -8,7 +8,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import dayjs from "dayjs";
+import { useContext } from "react";
 import {
   Control,
   FieldArrayMethodProps,
@@ -17,6 +17,7 @@ import {
   UseFieldArrayUpdate,
 } from "react-hook-form";
 
+import { AttendanceEditContext } from "../../AttendanceEditProvider";
 import { AttendanceEditInputs, RestInputs } from "../../common";
 import RestStartTimeInput from "../../DesktopEditor/RestTimeItem/RestTimeInput/RestStartTimeInput";
 import { Label } from "../Label";
@@ -24,7 +25,6 @@ import RestEndTimeInput from "./RestEndTimeInput";
 
 type RestTimeInputProps = {
   restFields: FieldArrayWithId<AttendanceEditInputs, "rests", "id">[];
-  workDate: dayjs.Dayjs;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
   restAppend: (
@@ -37,12 +37,15 @@ type RestTimeInputProps = {
 
 export function RestTimeInput({
   restFields,
-  workDate,
   control,
   restAppend,
   restRemove,
   restUpdate,
 }: RestTimeInputProps) {
+  const { workDate } = useContext(AttendanceEditContext);
+
+  if (!workDate) return null;
+
   return (
     <>
       <Label>休憩時間</Label>

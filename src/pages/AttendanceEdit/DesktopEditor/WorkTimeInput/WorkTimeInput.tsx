@@ -1,10 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import { Control, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { useContext, useEffect, useState } from "react";
 
-import { Attendance } from "../../../../API";
-import { AttendanceEditInputs } from "../../common";
+import { AttendanceEditContext } from "../../AttendanceEditProvider";
 import EndTimeInput from "./EndTimeInput";
 import StartTimeInput from "./StartTimeInput";
 
@@ -20,23 +18,19 @@ export function calcTotalWorkTime(
   return diff;
 }
 
-export function WorkTimeInput({
-  targetWorkDate,
-  attendance,
-  control,
-  setValue,
-  watch,
-}: {
-  targetWorkDate: dayjs.Dayjs | null;
-  attendance: Attendance | null | undefined;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<AttendanceEditInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditInputs>;
-  watch: UseFormWatch<AttendanceEditInputs>;
-}) {
+export function WorkTimeInput() {
+  const {
+    workDate: targetWorkDate,
+    attendance,
+    watch,
+    control,
+    setValue,
+  } = useContext(AttendanceEditContext);
   const [totalWorkTime, setTotalWorkTime] = useState<number>(0);
 
   useEffect(() => {
+    if (!watch) return;
+
     watch((data) => {
       const { startTime, endTime } = data;
       if (!startTime || !endTime) {
@@ -49,7 +43,7 @@ export function WorkTimeInput({
     });
   }, [watch]);
 
-  if (!targetWorkDate) {
+  if (!targetWorkDate || !control || !setValue) {
     return null;
   }
 

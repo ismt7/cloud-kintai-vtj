@@ -162,6 +162,8 @@ export default function AttendanceEditor() {
   }, [watch]);
 
   const onSubmit = async (data: AttendanceEditorInputs) => {
+    console.log("data.rests", data.rests);
+
     if (attendance) {
       await updateAttendance({
         id: attendance.id,
@@ -172,7 +174,10 @@ export default function AttendanceEditor() {
         goDirectlyFlag: data.goDirectlyFlag,
         returnDirectlyFlag: data.returnDirectlyFlag,
         remarks: data.remarks,
-        rests: data.rests,
+        rests: data.rests.map((rest) => ({
+          startTime: rest.startTime,
+          endTime: rest.endTime,
+        })),
         paidHolidayFlag: data.paidHolidayFlag,
         revision: data.revision,
       })
@@ -207,7 +212,10 @@ export default function AttendanceEditor() {
       return;
     }
 
-    if (!targetStaffId || !targetWorkDate) return;
+    if (!targetStaffId || !targetWorkDate) {
+      dispatch(setSnackbarError(MESSAGE_CODE.E04001));
+      return;
+    }
 
     await createAttendance({
       staffId: targetStaffId,
@@ -221,16 +229,18 @@ export default function AttendanceEditor() {
       paidHolidayFlag: data.paidHolidayFlag,
     })
       .then((res) => {
-        dispatch(setSnackbarSuccess(MESSAGE_CODE.S04001));
-
-        if (!staff || !res.histories) return;
+        if (!staff) {
+          return;
+        }
 
         const latestHistory = res.histories
-          .filter((item): item is NonNullable<typeof item> => item !== null)
-          .sort((a, b) => {
-            if (a.createdAt === b.createdAt) return 0;
-            return a.createdAt < b.createdAt ? 1 : -1;
-          })[0];
+          ? res.histories
+              .filter((item): item is NonNullable<typeof item> => item !== null)
+              .sort((a, b) => {
+                if (a.createdAt === b.createdAt) return 0;
+                return a.createdAt < b.createdAt ? 1 : -1;
+              })[0]
+          : null;
 
         if (enabledSendMail) {
           const toMailAddresses = [staff.mailAddress];
@@ -242,9 +252,10 @@ export default function AttendanceEditor() {
             latestHistory
           );
         }
+
+        dispatch(setSnackbarSuccess(MESSAGE_CODE.S04001));
       })
-      .catch((e: Error) => {
-        logger.error(e);
+      .catch(() => {
         dispatch(setSnackbarError(MESSAGE_CODE.E04001));
       });
   };
@@ -392,7 +403,7 @@ export default function AttendanceEditor() {
           <WorkDateItem staffId={targetStaffId} workDate={workDate} />
         </Box>
         <Box>
-          <StaffNameItem staff={staff} />
+          <StaffNameItem />
         </Box>
         <Box>
           <Stack direction="row" alignItems={"center"}>

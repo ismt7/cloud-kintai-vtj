@@ -118,7 +118,12 @@ export default function TimeRecorder() {
     setInterval(() => {
       if (!Cache.getItem("reloadTimer")) {
         // eslint-disable-next-line no-alert
-        alert("ページの有効期限が切れました。リロードしてください。");
+        const confirm = window.confirm(
+          "ページの有効期限が切れました。リロードしてください。"
+        );
+        if (confirm) {
+          window.location.reload();
+        }
         Cache.setItem("reloadTimer", true, {
           expires: dayjs().add(10, "minute").toDate().getTime(),
         });
@@ -184,7 +189,15 @@ export default function TimeRecorder() {
   }, [attendance]);
 
   if (attendanceLoading || workStatus === undefined) {
-    return <LinearProgress />;
+    return (
+      <Box
+        sx={{
+          width: { xs: "100%", md: "400px" },
+        }}
+      >
+        <LinearProgress />
+      </Box>
+    );
   }
 
   if (workStatus === null) {

@@ -90,7 +90,7 @@ export default function EndTimeInput({
                 .second(0)
                 .millisecond(0)
                 .toISOString();
-              setValue("endTime", endTime);
+              setValue("endTime", endTime, { shouldDirty: true });
             }}
           />
         </Box>
@@ -98,7 +98,7 @@ export default function EndTimeInput({
       <Box>
         <IconButton
           onClick={() => {
-            setValue("endTime", null);
+            setValue("endTime", null, { shouldDirty: true });
             setEnableEndTime(false);
           }}
         >

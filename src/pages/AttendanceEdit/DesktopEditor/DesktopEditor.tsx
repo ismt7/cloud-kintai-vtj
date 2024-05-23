@@ -7,36 +7,27 @@ import {
   Stack,
   styled,
 } from "@mui/material";
-import dayjs from "dayjs";
-import {
-  Control,
-  FieldArrayMethodProps,
-  FieldArrayWithId,
-  UseFieldArrayRemove,
-  UseFieldArrayUpdate,
-  UseFormHandleSubmit,
-  UseFormRegister,
-  UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
+import { useContext, useEffect, useState } from "react";
 
-import { Attendance, AttendanceChangeRequest } from "../../../API";
 import ProductionTimeItem from "../../../components/attendance_editor/items/ProductionTimeItem";
 import StaffNameItem from "../../../components/attendance_editor/items/StaffNameItem";
 import Title from "../../../components/Title/Title";
-import { StaffType } from "../../../hooks/useStaffs/useStaffs";
 import AttendanceEditBreadcrumb from "../AttendanceEditBreadcrumb";
-import { AttendanceEditInputs, RestInputs } from "../common";
+import { AttendanceEditContext } from "../AttendanceEditProvider";
 import ChangeRequestingAlert from "./ChangeRequestingMessage";
 import GoDirectlyFlagInput from "./GoDirectlyFlagInput";
 import NoDataAlert from "./NoDataAlert";
 import PaidHolidayFlagInput from "./PaidHolidayFlagInput";
 import RemarksInput from "./RemarksInput";
+import { calcTotalRestTime } from "./RestTimeItem/RestTimeInput/RestTimeInput";
 import RestTimeItem from "./RestTimeItem/RestTimeItem";
 import ReturnDirectlyFlagInput from "./ReturnDirectlyFlagInput";
 import StaffCommentInput from "./StaffCommentInput";
 import WorkDateItem from "./WorkDateItem";
-import { WorkTimeInput } from "./WorkTimeInput/WorkTimeInput";
+import {
+  calcTotalWorkTime,
+  WorkTimeInput,
+} from "./WorkTimeInput/WorkTimeInput";
 
 const DesktopContainer = styled(Container)(() => ({
   pt: 1,
@@ -63,56 +54,46 @@ const RequestButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-type DesktopEditorProps = {
-  workDate: dayjs.Dayjs;
-  changeRequests: AttendanceChangeRequest[];
-  attendance: Attendance | null | undefined;
-  staff: StaffType | null | undefined;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<AttendanceEditInputs, any>;
-  watch: UseFormWatch<AttendanceEditInputs>;
-  setValue: UseFormSetValue<AttendanceEditInputs>;
-  restFields: FieldArrayWithId<AttendanceEditInputs, "rests", "id">[];
-  restRemove: UseFieldArrayRemove;
-  restAppend: (
-    value: RestInputs | RestInputs[],
-    options?: FieldArrayMethodProps | undefined
-  ) => void;
-  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
-  totalProductionTime: number;
-  register: UseFormRegister<AttendanceEditInputs>;
-  handleSubmit: UseFormHandleSubmit<AttendanceEditInputs, undefined>;
-  onSubmit: (data: AttendanceEditInputs) => Promise<void>;
-  isDirty: boolean;
-  isValid: boolean;
-  isSubmitting: boolean;
-};
+export default function DesktopEditor() {
+  const {
+    staff,
+    onSubmit,
+    register,
+    control,
+    setValue,
+    watch,
+    handleSubmit,
+    isDirty,
+    isValid,
+    isSubmitting,
+    changeRequests,
+  } = useContext(AttendanceEditContext);
+  const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
 
-export default function DesktopEditor({
-  workDate,
-  changeRequests,
-  attendance,
-  staff,
-  control,
-  watch,
-  setValue,
-  restFields,
-  restRemove,
-  restAppend,
-  restUpdate,
-  totalProductionTime,
-  register,
-  handleSubmit,
-  onSubmit,
-  isDirty,
-  isValid,
-  isSubmitting,
-}: DesktopEditorProps) {
+  useEffect(() => {
+    if (!watch) return;
+
+    watch((data) => {
+      const totalWorkTime = calcTotalWorkTime(data.startTime, data.endTime);
+
+      const totalRestTime =
+        data.rests?.reduce((acc, rest) => {
+          if (!rest) return acc;
+
+          const diff = calcTotalRestTime(rest.startTime, rest.endTime);
+          return acc + diff;
+        }, 0) ?? 0;
+
+      const totalTime = totalWorkTime - totalRestTime;
+      setTotalProductionTime(totalTime);
+    });
+  }, [watch]);
+
   if (changeRequests.length > 0) {
     return (
       <DesktopContainer maxWidth="xl">
         <Stack direction="column" spacing={2}>
-          <AttendanceEditBreadcrumb workDate={workDate} />
+          <AttendanceEditBreadcrumb />
           <Title>勤怠編集</Title>
           <ChangeRequestingAlert changeRequests={changeRequests} />
         </Stack>
@@ -120,36 +101,26 @@ export default function DesktopEditor({
     );
   }
 
+  if (!staff || !control || !setValue || !watch || !handleSubmit || !register) {
+    return null;
+  }
+
   return (
     <DesktopContainer maxWidth="xl">
       <Stack direction="column" spacing={2}>
-        <AttendanceEditBreadcrumb workDate={workDate} />
+        <AttendanceEditBreadcrumb />
         <Title>勤怠編集</Title>
         <BodyStack spacing={2}>
-          <NoDataAlert attendance={attendance} />
-          <WorkDateItem workDate={workDate} />
-          <StaffNameItem staff={staff} />
-          <PaidHolidayFlagInput control={control} />
-          <GoDirectlyFlagInput control={control} />
-          <ReturnDirectlyFlagInput control={control} />
-          <WorkTimeInput
-            targetWorkDate={workDate}
-            attendance={attendance}
-            control={control}
-            setValue={setValue}
-            watch={watch}
-          />
-          <RestTimeItem
-            restFields={restFields}
-            workDate={workDate}
-            watch={watch}
-            restRemove={restRemove}
-            control={control}
-            restAppend={restAppend}
-            restUpdate={restUpdate}
-          />
+          <NoDataAlert />
+          <WorkDateItem />
+          <StaffNameItem />
+          <PaidHolidayFlagInput />
+          <GoDirectlyFlagInput />
+          <ReturnDirectlyFlagInput />
+          <WorkTimeInput />
+          <RestTimeItem />
           <ProductionTimeItem time={totalProductionTime} />
-          <RemarksInput register={register} />
+          <RemarksInput />
           <Divider />
           <StaffCommentInput register={register} setValue={setValue} />
           <Box>
@@ -162,7 +133,7 @@ export default function DesktopEditor({
               <Box>
                 <RequestButton
                   onClick={handleSubmit(onSubmit)}
-                  // disabled={!isDirty || !isValid || isSubmitting}
+                  disabled={!isDirty || !isValid || isSubmitting}
                   startIcon={
                     isSubmitting ? <CircularProgress size={20} /> : null
                   }

@@ -1,9 +1,16 @@
 import { Typography } from "@mui/material";
+import { useContext } from "react";
 
-import { StaffType } from "../../../hooks/useStaffs/useStaffs";
+import { AttendanceEditContext } from "../AttendanceEditProvider";
 import { Label } from "./Label";
 
-export function StaffNameItem({ staff }: { staff: StaffType }) {
+export function StaffNameItem() {
+  const { staff } = useContext(AttendanceEditContext);
+
+  if (!staff) {
+    return null;
+  }
+
   return (
     <>
       <Label variant="body1">スタッフ</Label>

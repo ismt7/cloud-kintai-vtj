@@ -1,18 +1,20 @@
 import { Box, Stack, styled, TextField, Typography } from "@mui/material";
-import { UseFormRegister } from "react-hook-form";
+import { useContext } from "react";
 
-import { AttendanceEditInputs } from "../common";
+import { AttendanceEditContext } from "../AttendanceEditProvider";
 
 const Label = styled(Typography)(() => ({
   width: "150px",
   fontWeight: "bold",
 }));
 
-export default function RemarksInput({
-  register,
-}: {
-  register: UseFormRegister<AttendanceEditInputs>;
-}) {
+export default function RemarksInput() {
+  const { register } = useContext(AttendanceEditContext);
+
+  if (!register) {
+    return null;
+  }
+
   return (
     <Stack direction="row" alignItems={"center"}>
       <Label>備考</Label>

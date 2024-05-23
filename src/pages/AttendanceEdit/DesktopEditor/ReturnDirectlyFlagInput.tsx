@@ -1,19 +1,21 @@
 import { Checkbox, Stack, styled, Typography } from "@mui/material";
-import { Control, Controller } from "react-hook-form";
+import { useContext } from "react";
+import { Controller } from "react-hook-form";
 
-import { AttendanceEditInputs } from "../common";
+import { AttendanceEditContext } from "../AttendanceEditProvider";
 
 const Label = styled(Typography)(() => ({
   width: "150px",
   fontWeight: "bold",
 }));
 
-export default function ReturnDirectlyFlagInput({
-  control,
-}: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<AttendanceEditInputs, any>;
-}) {
+export default function ReturnDirectlyFlagInput() {
+  const { control } = useContext(AttendanceEditContext);
+
+  if (!control) {
+    return null;
+  }
+
   return (
     <Stack direction="row" alignItems={"center"}>
       <Label variant="body1" sx={{ fontWeight: "bold", width: "150px" }}>
