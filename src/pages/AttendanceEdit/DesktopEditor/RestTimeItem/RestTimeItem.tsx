@@ -12,24 +12,11 @@ const Label = styled(Typography)(() => ({
 }));
 
 export default function RestTimeItem() {
-  const {
-    workDate,
-    control,
-    watch,
-    restFields,
-    restAppend,
-    restUpdate,
-    restRemove,
-  } = useContext(AttendanceEditContext);
+  const { restFields, restAppend, changeRequests } = useContext(
+    AttendanceEditContext
+  );
 
-  if (
-    !workDate ||
-    !control ||
-    !watch ||
-    !restAppend ||
-    !restUpdate ||
-    !restRemove
-  ) {
+  if (!restAppend) {
     return null;
   }
 
@@ -41,20 +28,12 @@ export default function RestTimeItem() {
       <Stack spacing={1} sx={{ flexGrow: 2 }}>
         <NoRestTimeMessage restFields={restFields} />
         {restFields.map((rest, index) => (
-          <RestTimeInput
-            key={index}
-            targetWorkDate={workDate}
-            rest={rest}
-            index={index}
-            watch={watch}
-            remove={restRemove}
-            control={control}
-            restUpdate={restUpdate}
-          />
+          <RestTimeInput key={index} rest={rest} index={index} />
         ))}
         <Box>
           <IconButton
             aria-label="staff-search"
+            disabled={changeRequests.length > 0}
             onClick={() =>
               restAppend({
                 startTime: null,

@@ -19,13 +19,7 @@ export function calcTotalWorkTime(
 }
 
 export function WorkTimeInput() {
-  const {
-    workDate: targetWorkDate,
-    attendance,
-    watch,
-    control,
-    setValue,
-  } = useContext(AttendanceEditContext);
+  const { workDate: targetWorkDate, watch } = useContext(AttendanceEditContext);
   const [totalWorkTime, setTotalWorkTime] = useState<number>(0);
 
   useEffect(() => {
@@ -43,7 +37,7 @@ export function WorkTimeInput() {
     });
   }, [watch]);
 
-  if (!targetWorkDate || !control || !setValue) {
+  if (!targetWorkDate) {
     return null;
   }
 
@@ -60,11 +54,7 @@ export function WorkTimeInput() {
           <Box>
             <Stack direction="row" spacing={1}>
               <Box>
-                <StartTimeInput
-                  workDate={targetWorkDate}
-                  control={control}
-                  setValue={setValue}
-                />
+                <StartTimeInput />
               </Box>
               <Box>
                 <Typography variant="body1" sx={{ py: 1 }}>
@@ -72,12 +62,7 @@ export function WorkTimeInput() {
                 </Typography>
               </Box>
               <Box>
-                <EndTimeInput
-                  workDate={targetWorkDate}
-                  attendance={attendance}
-                  control={control}
-                  setValue={setValue}
-                />
+                <EndTimeInput />
               </Box>
             </Stack>
           </Box>

@@ -4,31 +4,21 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { Box, Button, Chip, IconButton, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import { Control, Controller, UseFormSetValue } from "react-hook-form";
+import { useContext, useEffect, useState } from "react";
+import { Controller } from "react-hook-form";
 
-import { Attendance } from "../../../../API";
-import { AttendanceEditInputs } from "../../common";
+import { AttendanceEditContext } from "../../AttendanceEditProvider";
 
-export default function EndTimeInput({
-  workDate,
-  attendance,
-  control,
-  setValue,
-}: {
-  workDate: dayjs.Dayjs | null;
-  attendance: Attendance | null | undefined;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<AttendanceEditInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditInputs>;
-}) {
+export default function EndTimeInput() {
+  const { workDate, attendance, control, setValue, changeRequests } =
+    useContext(AttendanceEditContext);
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
-
-  if (!workDate) return null;
 
   useEffect(() => {
     setEnableEndTime(!!attendance?.endTime);
   }, [attendance]);
+
+  if (!workDate || !control || !setValue) return null;
 
   if (!enableEndTime) {
     return (
@@ -54,6 +44,7 @@ export default function EndTimeInput({
             <TimePicker
               value={field.value ? dayjs(field.value) : null}
               ampm={false}
+              disabled={changeRequests.length > 0}
               viewRenderers={{
                 hours: renderTimeViewClock,
                 minutes: renderTimeViewClock,
@@ -83,6 +74,7 @@ export default function EndTimeInput({
             color="success"
             variant="outlined"
             icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
+            disabled={changeRequests.length > 0}
             onClick={() => {
               const endTime = workDate
                 .hour(18)
@@ -97,6 +89,7 @@ export default function EndTimeInput({
       </Stack>
       <Box>
         <IconButton
+          disabled={changeRequests.length > 0}
           onClick={() => {
             setValue("endTime", null, { shouldDirty: true });
             setEnableEndTime(false);

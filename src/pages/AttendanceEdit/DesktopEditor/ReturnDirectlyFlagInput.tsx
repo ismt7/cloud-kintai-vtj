@@ -10,7 +10,7 @@ const Label = styled(Typography)(() => ({
 }));
 
 export default function ReturnDirectlyFlagInput() {
-  const { control } = useContext(AttendanceEditContext);
+  const { control, changeRequests } = useContext(AttendanceEditContext);
 
   if (!control) {
     return null;
@@ -24,6 +24,7 @@ export default function ReturnDirectlyFlagInput() {
       <Controller
         name="returnDirectlyFlag"
         control={control}
+        disabled={changeRequests.length > 0}
         render={({ field }) => (
           <Checkbox checked={field.value || false} {...field} />
         )}

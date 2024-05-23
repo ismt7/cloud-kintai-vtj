@@ -4,30 +4,23 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { Box, Button, Chip, IconButton, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import {
-  Control,
-  Controller,
-  FieldArrayWithId,
-  UseFieldArrayUpdate,
-} from "react-hook-form";
+import { useContext, useEffect, useState } from "react";
+import { Controller, FieldArrayWithId } from "react-hook-form";
+
+import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 
 import { AttendanceEditInputs } from "../../../common";
 
 export default function RestEndTimeInput({
-  workDate,
   rest,
   index,
-  control,
-  restUpdate,
 }: {
-  workDate: dayjs.Dayjs;
   rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
   index: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<AttendanceEditInputs, any>;
-  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
 }) {
+  const { workDate, control, restUpdate, changeRequests } = useContext(
+    AttendanceEditContext
+  );
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
 
   useEffect(() => {
@@ -50,6 +43,8 @@ export default function RestEndTimeInput({
     );
   }
 
+  if (!workDate || !control || !restUpdate) return null;
+
   return (
     <Stack direction="row" spacing={1}>
       <Stack spacing={1}>
@@ -60,6 +55,7 @@ export default function RestEndTimeInput({
             <TimePicker
               value={rest.endTime ? dayjs(rest.endTime) : null}
               ampm={false}
+              disabled={changeRequests.length > 0}
               viewRenderers={{
                 hours: renderTimeViewClock,
                 minutes: renderTimeViewClock,
@@ -90,19 +86,13 @@ export default function RestEndTimeInput({
           )}
         />
         <Box>
-          <DefaultEndTimeChip
-            index={index}
-            workDate={workDate}
-            restUpdate={restUpdate}
-            rest={rest}
-          />
+          <DefaultEndTimeChip index={index} rest={rest} />
         </Box>
       </Stack>
       <Box>
         <ClearButton
           index={index}
           rest={rest}
-          restUpdate={restUpdate}
           setEnableEndTime={setEnableEndTime}
         />
       </Box>
@@ -112,15 +102,17 @@ export default function RestEndTimeInput({
 
 function DefaultEndTimeChip({
   index,
-  workDate,
-  restUpdate,
   rest,
 }: {
   index: number;
-  workDate: dayjs.Dayjs;
-  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
   rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
 }) {
+  const { workDate, restUpdate, changeRequests } = useContext(
+    AttendanceEditContext
+  );
+
+  if (!workDate || !restUpdate) return null;
+
   const clickHandler = () => {
     const endTime = workDate
       .hour(13)
@@ -136,6 +128,7 @@ function DefaultEndTimeChip({
       label="13:00"
       variant="outlined"
       color="success"
+      disabled={changeRequests.length > 0}
       icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
       onClick={clickHandler}
     />
@@ -145,21 +138,23 @@ function DefaultEndTimeChip({
 function ClearButton({
   index,
   rest,
-  restUpdate,
   setEnableEndTime,
 }: {
   index: number;
   rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
-  restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
   setEnableEndTime: (enable: boolean) => void;
 }) {
+  const { restUpdate, changeRequests } = useContext(AttendanceEditContext);
+
+  if (!restUpdate) return null;
+
   const handleClick = () => {
     restUpdate(index, { ...rest, endTime: null });
     setEnableEndTime(false);
   };
 
   return (
-    <IconButton onClick={handleClick}>
+    <IconButton onClick={handleClick} disabled={changeRequests.length > 0}>
       <ClearIcon />
     </IconButton>
   );
