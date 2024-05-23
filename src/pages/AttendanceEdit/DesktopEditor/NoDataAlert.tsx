@@ -1,13 +1,12 @@
 import { Alert, AlertTitle, Box } from "@mui/material";
+import { useContext } from "react";
 
-import { Attendance } from "../../../API";
+import { AttendanceEditContext } from "../AttendanceEditProvider";
 
-export default function NoDataAlert({
-  attendance,
-}: {
-  attendance: Attendance | null | undefined;
-}) {
-  if (attendance) {
+export default function NoDataAlert() {
+  const { attendance } = useContext(AttendanceEditContext);
+
+  if (attendance !== null) {
     return null;
   }
 

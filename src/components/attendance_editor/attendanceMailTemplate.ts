@@ -37,8 +37,13 @@ function showWorkDate(attendance: Attendance) {
 // --------------------------------------------------
 function showPaidHolidayFlag(
   attendance: Attendance,
-  history: AttendanceHistory
+  history: AttendanceHistory | null
 ) {
+  if (!history) {
+    const { paidHolidayFlag } = attendance;
+    return `有給休暇：*** → ${paidHolidayFlag ? "有" : "無"}`;
+  }
+
   const result = (() => {
     const { paidHolidayFlag } = attendance;
     if (
@@ -63,8 +68,13 @@ function showPaidHolidayFlag(
 // --------------------------------------------------
 function showGoDirectlyFlag(
   attendance: Attendance,
-  history: AttendanceHistory
+  history: AttendanceHistory | null
 ) {
+  if (!history) {
+    const { goDirectlyFlag } = attendance;
+    return `直行：*** → ${goDirectlyFlag ? "有" : "無"}`;
+  }
+
   const result = (() => {
     const { goDirectlyFlag } = attendance;
     if (
@@ -89,8 +99,13 @@ function showGoDirectlyFlag(
 // --------------------------------------------------
 function showReturnDirectlyFlag(
   attendance: Attendance,
-  history: AttendanceHistory
+  history: AttendanceHistory | null
 ) {
+  if (!history) {
+    const { returnDirectlyFlag } = attendance;
+    return `直帰：*** → ${returnDirectlyFlag ? "有" : "無"}`;
+  }
+
   const result = (() => {
     const { returnDirectlyFlag } = attendance;
     if (
@@ -113,7 +128,22 @@ function showReturnDirectlyFlag(
 // --------------------------------------------------
 //  勤務時間
 // --------------------------------------------------
-function showWorkTime(attendance: Attendance, history: AttendanceHistory) {
+function showWorkTime(
+  attendance: Attendance,
+  history: AttendanceHistory | null
+) {
+  if (!history) {
+    const { startTime, endTime } = attendance;
+    const TIME_FORMAT = "HH:mm";
+    const NOT_SET = "--:--";
+    const afterStartTime = startTime
+      ? dayjs(startTime).format(TIME_FORMAT)
+      : NOT_SET;
+    const afterEndTime = endTime ? dayjs(endTime).format(TIME_FORMAT) : NOT_SET;
+
+    return `勤務時間：${NOT_SET} ~ ${NOT_SET} → ${afterStartTime} ~ ${afterEndTime}`;
+  }
+
   const result = (() => {
     const { startTime, endTime } = attendance;
     if (startTime === history.startTime && endTime === history.endTime) {
@@ -146,11 +176,31 @@ function showWorkTime(attendance: Attendance, history: AttendanceHistory) {
 // --------------------------------------------------
 //  休憩時間
 // --------------------------------------------------
-function showRestTime(attendance: Attendance, history: AttendanceHistory) {
+function showRestTime(
+  attendance: Attendance,
+  history: AttendanceHistory | null
+) {
   const { rests } = attendance;
   const afterRests = rests
     ? rests.filter((item): item is NonNullable<typeof item> => item !== null)
     : [];
+
+  if (!history) {
+    const attendanceResults = afterRests.map((rest) => {
+      const startTime = rest.startTime
+        ? dayjs(rest.startTime).format("HH:mm")
+        : "--:--";
+      const endTime = rest.endTime
+        ? dayjs(rest.endTime).format("HH:mm")
+        : "--:--";
+      return `${startTime} ~ ${endTime}`;
+    });
+
+    return [
+      `休憩時間：${attendanceResults.length === 0 ? "変更なし" : ""}`,
+      ...attendanceResults.map((item) => `  ${item}`),
+    ].join("\n");
+  }
 
   const beforeRests = history.rests
     ? history.rests.filter(
@@ -161,7 +211,7 @@ function showRestTime(attendance: Attendance, history: AttendanceHistory) {
   const afterRestsLength = afterRests.length;
   const beforeRestsLength = beforeRests.length;
 
-  const result: string[] = [];
+  const attendanceResults: string[] = [];
   for (let i = 0; i < Math.max(afterRestsLength, beforeRestsLength); i += 1) {
     const afterRest = afterRests[i];
     const beforeRest = beforeRests[i];
@@ -178,7 +228,9 @@ function showRestTime(attendance: Attendance, history: AttendanceHistory) {
         ? dayjs(beforeRest.endTime).format(TIME_FORMAT)
         : NOT_SET;
 
-      result.push(`[削除]${beforeRestStartTime} ~ ${beforeRestEndTime}`);
+      attendanceResults.push(
+        `[削除]${beforeRestStartTime} ~ ${beforeRestEndTime}`
+      );
       continue;
     }
 
@@ -191,7 +243,9 @@ function showRestTime(attendance: Attendance, history: AttendanceHistory) {
         ? dayjs(afterRest.endTime).format(TIME_FORMAT)
         : NOT_SET;
 
-      result.push(`[追加]${afterRestStartTime} ~ ${afterRestEndTime}`);
+      attendanceResults.push(
+        `[追加]${afterRestStartTime} ~ ${afterRestEndTime}`
+      );
       continue;
     }
 
@@ -211,7 +265,7 @@ function showRestTime(attendance: Attendance, history: AttendanceHistory) {
         ? dayjs(afterRest.endTime).format(TIME_FORMAT)
         : NOT_SET;
 
-      result.push(
+      attendanceResults.push(
         beforeRestStartTime === afterRestStartTime &&
           beforeRestEndTime === afterRestEndTime
           ? `[なし]${beforeRestStartTime} ~ ${beforeRestEndTime}`
@@ -224,15 +278,23 @@ function showRestTime(attendance: Attendance, history: AttendanceHistory) {
   }
 
   return [
-    `休憩時間：${result.length === 0 ? "変更なし" : ""}`,
-    ...result.map((item) => `  ${item}`),
+    `休憩時間：${attendanceResults.length === 0 ? "変更なし" : ""}`,
+    ...attendanceResults.map((item) => `  ${item}`),
   ].join("\n");
 }
 
 // --------------------------------------------------
 //  備考
 // --------------------------------------------------
-function showRemarks(attendance: Attendance, history: AttendanceHistory) {
+function showRemarks(
+  attendance: Attendance,
+  history: AttendanceHistory | null
+) {
+  if (!history) {
+    const { remarks } = attendance;
+    return `備考：${remarks || "変更なし"}`;
+  }
+
   const result = (() => {
     const { remarks } = attendance;
     if (
@@ -258,7 +320,7 @@ function showLastMessage() {
 export default function getAttendanceMailBody(
   staff: StaffType,
   attendance: Attendance,
-  history: AttendanceHistory
+  history: AttendanceHistory | null
 ) {
   return [
     showHelloStaffName(staff),

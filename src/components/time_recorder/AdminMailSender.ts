@@ -72,7 +72,6 @@ export class AdminMailSender extends MailSender {
     const { endTime, returnDirectlyFlag } = this.attendance;
     const subject = `[退勤]勤怠連絡(${this.getStaffName()}) - ${this.getWorkDate()}`;
     const body = [
-      this.getStaffName(),
       "管理者 各位",
       "",
       `${this.getStaffName()}が退勤しました。`,

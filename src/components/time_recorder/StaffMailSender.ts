@@ -13,14 +13,14 @@ export class StaffMailSender extends MailSender {
   private getStaffName() {
     const { familyName, givenName } = this.cognitoUser;
     if (!familyName && !givenName) {
-      return "おはようございます。";
+      return null;
     }
 
     if (familyName && givenName) {
-      return `おはようございます、${familyName} ${givenName} さん`;
+      return `${familyName} ${givenName} さん`;
     }
 
-    return `おはようございます、${familyName || givenName} さん`;
+    return `${familyName || givenName} さん`;
   }
 
   clockIn() {
@@ -29,7 +29,7 @@ export class StaffMailSender extends MailSender {
 
     const subject = `[出勤]勤怠連絡 - ${this.getWorkDate()}`;
     const body = [
-      this.getStaffName(),
+      `おはようございます。${this.getStaffName()}`,
       "",
       "出勤処理が完了しました。",
       "",
@@ -50,7 +50,7 @@ export class StaffMailSender extends MailSender {
     const { endTime, returnDirectlyFlag } = this.attendance;
     const subject = `[退勤]勤怠連絡 - ${this.getWorkDate()}`;
     const body = [
-      this.getStaffName(),
+      `お疲れ様でした。${this.getStaffName()}`,
       "",
       "退勤処理が完了しました。",
       "",

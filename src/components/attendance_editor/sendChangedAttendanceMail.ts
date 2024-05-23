@@ -12,7 +12,7 @@ export default function sendChangedAttendanceMail(
   workDate: dayjs.Dayjs,
   staff: StaffType,
   attendance: Attendance,
-  latestHistory: AttendanceHistory
+  latestHistory: AttendanceHistory | null
 ) {
   const mailParams = {
     query: sendMail,

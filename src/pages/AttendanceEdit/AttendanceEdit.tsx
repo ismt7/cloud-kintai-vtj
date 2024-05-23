@@ -5,8 +5,6 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useAppDispatchV2 } from "../../app/hooks";
-import { calcTotalRestTime } from "../../components/attendance_editor/items/RestTimeItem/RestTimeItem";
-import { calcTotalWorkTime } from "../../components/attendance_editor/items/WorkTimeItem/WorkTimeItem";
 import * as MESSAGE_CODE from "../../errors";
 import useAttendance from "../../hooks/useAttendance/useAttendance";
 import useStaffs, { StaffType } from "../../hooks/useStaffs/useStaffs";
@@ -15,6 +13,7 @@ import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
+import AttendanceEditProvider from "./AttendanceEditProvider";
 import { AttendanceEditInputs, defaultValues } from "./common";
 import DesktopEditor from "./DesktopEditor/DesktopEditor";
 import { MobileEditor } from "./MobileEditor/MobileEditor";
@@ -27,7 +26,6 @@ export default function AttendanceEdit() {
   const { targetWorkDate } = useParams();
 
   const [staff, setStaff] = useState<StaffType | undefined | null>(undefined);
-  const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
 
   const { staffs, loading: staffsLoading, error: staffSError } = useStaffs();
   const { attendance, getAttendance, updateAttendance, createAttendance } =
@@ -52,7 +50,6 @@ export default function AttendanceEdit() {
     append: restAppend,
     remove: restRemove,
     update: restUpdate,
-    replace: restReplace,
   } = useFieldArray({
     control,
     name: "rests",
@@ -155,7 +152,8 @@ export default function AttendanceEdit() {
         setValue("goDirectlyFlag", res.goDirectlyFlag || false);
         setValue("returnDirectlyFlag", res.returnDirectlyFlag || false);
         setValue("remarks", res.remarks);
-        restReplace(
+        setValue(
+          "rests",
           res.rests
             ? res.rests
                 .filter(
@@ -173,27 +171,11 @@ export default function AttendanceEdit() {
       });
   }, [staff, targetWorkDate]);
 
-  useEffect(() => {
-    if (!attendance) return;
-    setValue("paidHolidayFlag", attendance.paidHolidayFlag);
-  }, [attendance]);
-
-  useEffect(() => {
-    watch((data) => {
-      const totalWorkTime = calcTotalWorkTime(data.startTime, data.endTime);
-
-      const totalRestTime =
-        data.rests?.reduce((acc, rest) => {
-          if (!rest) return acc;
-
-          const diff = calcTotalRestTime(rest.startTime, rest.endTime);
-          return acc + diff;
-        }, 0) ?? 0;
-
-      const totalTime = totalWorkTime - totalRestTime;
-      setTotalProductionTime(totalTime);
-    });
-  }, [watch]);
+  const changeRequests = attendance?.changeRequests
+    ? attendance.changeRequests
+        .filter((item): item is NonNullable<typeof item> => item !== null)
+        .filter((item) => !item.completed)
+    : [];
 
   if (!targetWorkDate) {
     return null;
@@ -208,57 +190,35 @@ export default function AttendanceEdit() {
     return null;
   }
 
-  const changeRequests = attendance?.changeRequests
-    ? attendance.changeRequests
-        .filter((item): item is NonNullable<typeof item> => item !== null)
-        .filter((item) => !item.completed)
-    : [];
-
   return (
-    <>
+    <AttendanceEditProvider
+      value={{
+        workDate: dayjs(targetWorkDate),
+        attendance,
+        staff,
+        onSubmit,
+        register,
+        control,
+        setValue,
+        getValues,
+        watch,
+        handleSubmit,
+        isDirty,
+        isValid,
+        isSubmitting,
+        restFields,
+        restAppend,
+        restRemove,
+        restUpdate,
+        changeRequests,
+      }}
+    >
       <Box sx={{ display: { xs: "block", md: "none" } }}>
-        <MobileEditor
-          workDate={dayjs(targetWorkDate)}
-          attendance={attendance}
-          staff={staff}
-          control={control}
-          setValue={setValue}
-          getValues={getValues}
-          watch={watch}
-          restFields={restFields}
-          restAppend={restAppend}
-          restRemove={restRemove}
-          restUpdate={restUpdate}
-          register={register}
-          handleSubmit={handleSubmit}
-          onSubmit={onSubmit}
-          isDirty={isDirty}
-          isValid={isValid}
-          isSubmitting={isSubmitting}
-        />
+        <MobileEditor />
       </Box>
       <Box sx={{ display: { xs: "none", md: "block" } }}>
-        <DesktopEditor
-          workDate={dayjs(targetWorkDate)}
-          changeRequests={changeRequests}
-          attendance={attendance}
-          staff={staff}
-          control={control}
-          watch={watch}
-          setValue={setValue}
-          restFields={restFields}
-          restRemove={restRemove}
-          restAppend={restAppend}
-          restUpdate={restUpdate}
-          totalProductionTime={totalProductionTime}
-          register={register}
-          handleSubmit={handleSubmit}
-          onSubmit={onSubmit}
-          isDirty={isDirty}
-          isValid={isValid}
-          isSubmitting={isSubmitting}
-        />
+        <DesktopEditor />
       </Box>
-    </>
+    </AttendanceEditProvider>
   );
 }

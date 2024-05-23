@@ -1,12 +1,11 @@
 import { Stack, Typography } from "@mui/material";
+import { useContext } from "react";
 
-import { StaffType } from "../../../hooks/useStaffs/useStaffs";
+import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 
-interface StaffNameItemProps {
-  staff: StaffType | undefined | null;
-}
+export default function StaffNameItem() {
+  const { staff } = useContext(AttendanceEditContext);
 
-export default function StaffNameItem({ staff }: StaffNameItemProps) {
   if (!staff || (!staff.familyName && !staff.givenName)) return null;
 
   return (

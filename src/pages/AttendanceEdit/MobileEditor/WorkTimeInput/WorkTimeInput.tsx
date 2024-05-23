@@ -1,31 +1,20 @@
 import { Divider, Typography } from "@mui/material";
-import dayjs from "dayjs";
-import {
-  Control,
-  UseFormGetValues,
-  UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
+import { useContext } from "react";
 
-import { AttendanceEditInputs } from "../../common";
+import { AttendanceEditContext } from "../../AttendanceEditProvider";
 import StartTimeInput from "../../DesktopEditor/WorkTimeInput/StartTimeInput";
 import { Label } from "../Label";
 import EndTimeInput from "./EndTimeInput";
 
-export function WorkTimeInput({
-  workDate,
-  control,
-  setValue,
-  getValues,
-  watch,
-}: {
-  workDate: dayjs.Dayjs;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<AttendanceEditInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditInputs>;
-  getValues: UseFormGetValues<AttendanceEditInputs>;
-  watch: UseFormWatch<AttendanceEditInputs>;
-}) {
+export function WorkTimeInput() {
+  const { workDate, control, setValue, getValues, watch } = useContext(
+    AttendanceEditContext
+  );
+
+  if (!workDate || !control || !setValue || !getValues || !watch) {
+    return null;
+  }
+
   return (
     <>
       <Label>勤務時間</Label>

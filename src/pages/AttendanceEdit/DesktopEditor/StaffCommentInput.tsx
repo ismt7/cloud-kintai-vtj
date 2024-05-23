@@ -40,7 +40,9 @@ export default function StaffCommentInput({
               variant="outlined"
               color="primary"
               icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
-              onClick={() => setValue("staffComment", "打刻忘れ")}
+              onClick={() =>
+                setValue("staffComment", "打刻忘れ", { shouldDirty: true })
+              }
             />
           </Stack>
         </Box>

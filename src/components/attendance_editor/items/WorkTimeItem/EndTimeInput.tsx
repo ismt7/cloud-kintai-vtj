@@ -70,15 +70,7 @@ export default function EndTimeInput({
           control={control}
           render={({ field }) => (
             <TimePicker
-              value={(() => {
-                logger.debug(
-                  "endTime:",
-                  field.value
-                    ? dayjs(field.value).format("YYYY/MM/DD HH:mm:ss")
-                    : field.value
-                );
-                return field.value ? dayjs(field.value) : null;
-              })()}
+              value={(() => (field.value ? dayjs(field.value) : null))()}
               ampm={false}
               viewRenderers={{
                 hours: renderTimeViewClock,
