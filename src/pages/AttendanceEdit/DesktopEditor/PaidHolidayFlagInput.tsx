@@ -10,7 +10,7 @@ const Label = styled(Typography)(() => ({
 }));
 
 export default function PaidHolidayFlagInput() {
-  const { control } = useContext(AttendanceEditContext);
+  const { control, changeRequests } = useContext(AttendanceEditContext);
 
   if (!control) {
     return null;
@@ -22,6 +22,7 @@ export default function PaidHolidayFlagInput() {
       <Controller
         name="paidHolidayFlag"
         control={control}
+        disabled={changeRequests.length > 0}
         render={({ field }) => (
           <Checkbox {...field} checked={field.value || false} />
         )}

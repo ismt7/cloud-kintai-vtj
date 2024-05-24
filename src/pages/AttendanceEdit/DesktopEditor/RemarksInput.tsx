@@ -9,7 +9,7 @@ const Label = styled(Typography)(() => ({
 }));
 
 export default function RemarksInput() {
-  const { register } = useContext(AttendanceEditContext);
+  const { register, changeRequests } = useContext(AttendanceEditContext);
 
   if (!register) {
     return null;
@@ -25,6 +25,7 @@ export default function RemarksInput() {
           fullWidth
           placeholder="備考欄：客先名やイベント名などを記載"
           sx={{ width: 1 }}
+          disabled={changeRequests.length > 0}
           {...register("remarks")}
         />
       </Box>

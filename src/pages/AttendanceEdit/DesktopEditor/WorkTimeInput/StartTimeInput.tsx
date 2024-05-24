@@ -2,21 +2,17 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import { Box, Chip, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { Control, Controller, UseFormSetValue } from "react-hook-form";
+import { useContext } from "react";
+import { Controller } from "react-hook-form";
 
-import { AttendanceEditInputs } from "../../common";
+import { AttendanceEditContext } from "../../AttendanceEditProvider";
 
-export default function StartTimeInput({
-  workDate,
-  control,
-  setValue,
-}: {
-  workDate: dayjs.Dayjs | null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<AttendanceEditInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditInputs>;
-}) {
-  if (!workDate) return null;
+export default function StartTimeInput() {
+  const { workDate, control, setValue, changeRequests } = useContext(
+    AttendanceEditContext
+  );
+
+  if (!workDate || !control || !setValue) return null;
 
   return (
     <Stack spacing={1}>
@@ -27,6 +23,7 @@ export default function StartTimeInput({
           <TimePicker
             ampm={false}
             value={field.value ? dayjs(field.value) : null}
+            disabled={changeRequests.length > 0}
             viewRenderers={{
               hours: renderTimeViewClock,
               minutes: renderTimeViewClock,
@@ -57,6 +54,7 @@ export default function StartTimeInput({
           color="success"
           variant="outlined"
           icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
+          disabled={changeRequests.length > 0}
           onClick={() => {
             const startTime = workDate
               .hour(9)
