@@ -89,18 +89,6 @@ export default function DesktopEditor() {
     });
   }, [watch]);
 
-  if (changeRequests.length > 0) {
-    return (
-      <DesktopContainer maxWidth="xl">
-        <Stack direction="column" spacing={2}>
-          <AttendanceEditBreadcrumb />
-          <Title>勤怠編集</Title>
-          <ChangeRequestingAlert changeRequests={changeRequests} />
-        </Stack>
-      </DesktopContainer>
-    );
-  }
-
   if (!staff || !control || !setValue || !watch || !handleSubmit || !register) {
     return null;
   }
@@ -109,8 +97,12 @@ export default function DesktopEditor() {
     <DesktopContainer maxWidth="xl">
       <Stack direction="column" spacing={2}>
         <AttendanceEditBreadcrumb />
-        <Title>勤怠編集</Title>
         <BodyStack spacing={2}>
+          <Title>勤怠編集</Title>
+          <Stack direction="column" spacing={2}>
+            <AttendanceEditBreadcrumb />
+            <ChangeRequestingAlert changeRequests={changeRequests} />
+          </Stack>
           <NoDataAlert />
           <WorkDateItem />
           <StaffNameItem />
@@ -133,7 +125,12 @@ export default function DesktopEditor() {
               <Box>
                 <RequestButton
                   onClick={handleSubmit(onSubmit)}
-                  disabled={!isDirty || !isValid || isSubmitting}
+                  disabled={
+                    !isDirty ||
+                    !isValid ||
+                    isSubmitting ||
+                    changeRequests.length > 0
+                  }
                   startIcon={
                     isSubmitting ? <CircularProgress size={20} /> : null
                   }

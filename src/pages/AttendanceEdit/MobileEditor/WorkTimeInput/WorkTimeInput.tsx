@@ -21,11 +21,7 @@ export function WorkTimeInput() {
       <Typography variant="body1" sx={{ fontWeight: "bold" }}>
         開始時刻
       </Typography>
-      <StartTimeInput
-        workDate={workDate}
-        control={control}
-        setValue={setValue}
-      />
+      <StartTimeInput />
       <Divider />
       <Typography variant="body1" sx={{ fontWeight: "bold" }}>
         終了時刻

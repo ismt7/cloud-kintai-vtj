@@ -66,13 +66,7 @@ export function RestTimeInput({
                 <DeleteIcon />
               </IconButton>
             </Stack>
-            <RestStartTimeInput
-              workDate={workDate}
-              rest={rest}
-              index={index}
-              control={control}
-              restUpdate={restUpdate}
-            />
+            <RestStartTimeInput rest={rest} index={index} />
             <Divider />
             <Typography variant="body1" sx={{ fontWeight: "bold" }}>
               終了時間
