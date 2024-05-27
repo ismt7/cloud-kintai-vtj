@@ -104,7 +104,6 @@ export default function AdminStaffAttendanceList() {
     fetchStaff(staffId)
       .then(setStaff)
       .catch((e) => {
-        console.log(e);
         dispatch(setSnackbarError(MESSAGE_CODE.E00001));
       });
   }, [staffId]);

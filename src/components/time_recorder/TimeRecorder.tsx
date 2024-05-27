@@ -24,13 +24,13 @@ import useCompanyHolidayCalendars from "../../hooks/useCompanyHolidayCalendars/u
 import useHolidayCalendars from "../../hooks/useHolidayCalendars/useHolidayCalendars";
 import fetchStaff from "../../hooks/useStaff/fetchStaff";
 import { AuthContext } from "../../Layout";
+import { TimeRecordMailSender } from "../../lib/mail/TimeRecordMailSender";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
 import { judgeStatus } from "../AttendanceList/common";
 import Clock from "../clock/Clock";
-import { AdminMailSender } from "./AdminMailSender";
 import { AttendanceErrorAlert } from "./AttendanceErrorAlert";
 import { WorkStatus } from "./common";
 import ClockInItem from "./items/ClockInItem";
@@ -40,7 +40,6 @@ import RestEndItem from "./items/RestEndItem";
 import RestStartItem from "./items/RestStartItem";
 import ReturnDirectly from "./items/ReturnDirectlyItem";
 import { RestTimeMessage } from "./RestTimeMessage";
-import { StaffMailSender } from "./StaffMailSender";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
 
 const DirectSwitch = styled(Switch)(({ theme }) => ({
@@ -144,10 +143,7 @@ export default function TimeRecorder() {
 
     fetchStaff(cognitoUser.id)
       .then(setStaff)
-      .catch((e) => {
-        console.log(e);
-        dispatch(setSnackbarError(MESSAGE_CODE.E00001));
-      });
+      .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E00001)));
   }, [cognitoUser]);
 
   useEffect(() => {
@@ -212,8 +208,7 @@ export default function TimeRecorder() {
     clockIn(cognitoUser.id, today, now)
       .then((res) => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S01001));
-        new StaffMailSender(cognitoUser, res).clockIn();
-        new AdminMailSender(cognitoUser, res).clockIn();
+        new TimeRecordMailSender(cognitoUser, res).clockIn();
       })
       .catch((e) => {
         logger.debug(e);
@@ -228,8 +223,7 @@ export default function TimeRecorder() {
     clockOut(cognitoUser.id, today, now)
       .then((res) => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S01002));
-        new StaffMailSender(cognitoUser, res).clockOut();
-        new AdminMailSender(cognitoUser, res).clockOut();
+        new TimeRecordMailSender(cognitoUser, res).clockOut();
       })
       .catch((e) => {
         logger.debug(e);
@@ -250,8 +244,7 @@ export default function TimeRecorder() {
     clockIn(cognitoUser.id, today, now, GoDirectlyFlag.YES)
       .then((res) => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S01003));
-        new StaffMailSender(cognitoUser, res).clockIn();
-        new AdminMailSender(cognitoUser, res).clockIn();
+        new TimeRecordMailSender(cognitoUser, res).clockIn();
       })
       .catch((e) => {
         logger.debug(e);
@@ -272,8 +265,7 @@ export default function TimeRecorder() {
     clockOut(cognitoUser.id, today, now, ReturnDirectlyFlag.YES)
       .then((res) => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S01004));
-        new StaffMailSender(cognitoUser, res).clockOut();
-        new AdminMailSender(cognitoUser, res).clockOut();
+        new TimeRecordMailSender(cognitoUser, res).clockOut();
       })
       .catch((e) => {
         logger.debug(e);

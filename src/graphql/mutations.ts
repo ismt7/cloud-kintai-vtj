@@ -23,6 +23,11 @@ export const createStaff = /* GraphQL */ `mutation CreateStaff(
     status
     owner
     usageStartDate
+    notifications {
+      workStart
+      workEnd
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -47,6 +52,11 @@ export const updateStaff = /* GraphQL */ `mutation UpdateStaff(
     status
     owner
     usageStartDate
+    notifications {
+      workStart
+      workEnd
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -71,6 +81,11 @@ export const deleteStaff = /* GraphQL */ `mutation DeleteStaff(
     status
     owner
     usageStartDate
+    notifications {
+      workStart
+      workEnd
+      __typename
+    }
     createdAt
     updatedAt
     __typename

@@ -5,8 +5,6 @@ import { CreateStaffInput, CreateStaffMutation, Staff } from "../../API";
 import { createStaff } from "../../graphql/mutations";
 
 export default async function createStaffData(input: CreateStaffInput) {
-  console.log(input);
-
   const response = (await API.graphql({
     query: createStaff,
     variables: { input },

@@ -13,6 +13,12 @@ export type CreateStaffInput = {
   status: string,
   owner?: boolean | null,
   usageStartDate?: string | null,
+  notifications?: NotificationInput | null,
+};
+
+export type NotificationInput = {
+  workStart?: boolean | null,
+  workEnd?: boolean | null,
 };
 
 export type ModelStaffConditionInput = {
@@ -91,8 +97,15 @@ export type Staff = {
   status: string,
   owner?: boolean | null,
   usageStartDate?: string | null,
+  notifications?: Notification | null,
   createdAt: string,
   updatedAt: string,
+};
+
+export type Notification = {
+  __typename: "Notification",
+  workStart?: boolean | null,
+  workEnd?: boolean | null,
 };
 
 export type UpdateStaffInput = {
@@ -106,6 +119,7 @@ export type UpdateStaffInput = {
   status?: string | null,
   owner?: boolean | null,
   usageStartDate?: string | null,
+  notifications?: NotificationInput | null,
 };
 
 export type DeleteStaffInput = {
@@ -708,6 +722,11 @@ export type CreateStaffMutation = {
     status: string,
     owner?: boolean | null,
     usageStartDate?: string | null,
+    notifications?:  {
+      __typename: "Notification",
+      workStart?: boolean | null,
+      workEnd?: boolean | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -731,6 +750,11 @@ export type UpdateStaffMutation = {
     status: string,
     owner?: boolean | null,
     usageStartDate?: string | null,
+    notifications?:  {
+      __typename: "Notification",
+      workStart?: boolean | null,
+      workEnd?: boolean | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -754,6 +778,11 @@ export type DeleteStaffMutation = {
     status: string,
     owner?: boolean | null,
     usageStartDate?: string | null,
+    notifications?:  {
+      __typename: "Notification",
+      workStart?: boolean | null,
+      workEnd?: boolean | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1178,6 +1207,11 @@ export type GetStaffQuery = {
     status: string,
     owner?: boolean | null,
     usageStartDate?: string | null,
+    notifications?:  {
+      __typename: "Notification",
+      workStart?: boolean | null,
+      workEnd?: boolean | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1204,6 +1238,11 @@ export type ListStaffQuery = {
       status: string,
       owner?: boolean | null,
       usageStartDate?: string | null,
+      notifications?:  {
+        __typename: "Notification",
+        workStart?: boolean | null,
+        workEnd?: boolean | null,
+      } | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -1508,6 +1547,11 @@ export type OnCreateStaffSubscription = {
     status: string,
     owner?: boolean | null,
     usageStartDate?: string | null,
+    notifications?:  {
+      __typename: "Notification",
+      workStart?: boolean | null,
+      workEnd?: boolean | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1530,6 +1574,11 @@ export type OnUpdateStaffSubscription = {
     status: string,
     owner?: boolean | null,
     usageStartDate?: string | null,
+    notifications?:  {
+      __typename: "Notification",
+      workStart?: boolean | null,
+      workEnd?: boolean | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1552,6 +1601,11 @@ export type OnDeleteStaffSubscription = {
     status: string,
     owner?: boolean | null,
     usageStartDate?: string | null,
+    notifications?:  {
+      __typename: "Notification",
+      workStart?: boolean | null,
+      workEnd?: boolean | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
