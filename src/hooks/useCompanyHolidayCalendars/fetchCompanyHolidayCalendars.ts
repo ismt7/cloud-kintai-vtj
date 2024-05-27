@@ -8,23 +8,36 @@ import {
 import { listCompanyHolidayCalendars } from "../../graphql/queries";
 
 export default async function fetchCompanyHolidayCalendars() {
-  const response = (await API.graphql({
-    query: listCompanyHolidayCalendars,
-    variables: { limit: 1000 },
-    authMode: "AMAZON_COGNITO_USER_POOLS",
-  })) as GraphQLResult<ListCompanyHolidayCalendarsQuery>;
+  const companyHolidayCalendars: CompanyHolidayCalendar[] = [];
+  const nextToken: string | null = null;
+  const isLooping = true;
+  while (isLooping) {
+    const response = (await API.graphql({
+      query: listCompanyHolidayCalendars,
+      variables: { nextToken },
+      authMode: "AMAZON_COGNITO_USER_POOLS",
+    })) as GraphQLResult<ListCompanyHolidayCalendarsQuery>;
 
-  if (response.errors) {
-    throw new Error(response.errors[0].message);
-  }
+    if (response.errors) {
+      throw new Error(response.errors[0].message);
+    }
 
-  if (!response.data?.listCompanyHolidayCalendars) {
-    return [];
-  }
+    if (!response.data?.listCompanyHolidayCalendars) {
+      return [];
+    }
 
-  const companyHolidayCalendars: CompanyHolidayCalendar[] =
-    response.data.listCompanyHolidayCalendars.items.filter(
-      (item): item is NonNullable<typeof item> => item !== null
+    companyHolidayCalendars.push(
+      ...response.data.listCompanyHolidayCalendars.items.filter(
+        (item): item is NonNullable<typeof item> => item !== null
+      )
     );
+
+    if (response.data.listCompanyHolidayCalendars.nextToken) {
+      continue;
+    }
+
+    break;
+  }
+
   return companyHolidayCalendars;
 }

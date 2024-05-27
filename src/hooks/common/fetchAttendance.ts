@@ -8,32 +8,47 @@ export default async function fetchAttendance(
   staffId: string,
   workDate: string
 ) {
-  const response = (await API.graphql({
-    query: listAttendances,
-    variables: {
-      filter: {
-        staffId: {
-          eq: staffId,
+  const attendances: Attendance[] = [];
+  let nextToken: string | null = null;
+  const isLooping = true;
+  while (isLooping) {
+    const response = (await API.graphql({
+      query: listAttendances,
+      variables: {
+        filter: {
+          staffId: {
+            eq: staffId,
+          },
+          workDate: {
+            eq: workDate,
+          },
         },
-        workDate: {
-          eq: workDate,
-        },
+        nextToken,
       },
-    },
-    authMode: "AMAZON_COGNITO_USER_POOLS",
-  })) as GraphQLResult<ListAttendancesQuery>;
+      authMode: "AMAZON_COGNITO_USER_POOLS",
+    })) as GraphQLResult<ListAttendancesQuery>;
 
-  if (response.errors) {
-    throw new Error(response.errors[0].message);
+    if (response.errors) {
+      throw new Error(response.errors[0].message);
+    }
+
+    if (!response.data?.listAttendances) {
+      throw new Error("Failed to fetch attendance");
+    }
+
+    attendances.push(
+      ...response.data.listAttendances.items.filter(
+        (item): item is NonNullable<typeof item> => item !== null
+      )
+    );
+
+    if (response.data.listAttendances.nextToken) {
+      nextToken = response.data.listAttendances.nextToken;
+      continue;
+    }
+
+    break;
   }
-
-  if (!response.data?.listAttendances) {
-    throw new Error("Failed to fetch attendance");
-  }
-
-  const attendances: Attendance[] = response.data.listAttendances.items.filter(
-    (item): item is NonNullable<typeof item> => item !== null
-  );
 
   if (attendances.length === 0) {
     return null;
