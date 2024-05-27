@@ -28,6 +28,11 @@ export const getStaff = /* GraphQL */ `query GetStaff($id: ID!) {
     status
     owner
     usageStartDate
+    notifications {
+      workStart
+      workEnd
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -51,6 +56,11 @@ export const listStaff = /* GraphQL */ `query ListStaff(
       status
       owner
       usageStartDate
+      notifications {
+        workStart
+        workEnd
+        __typename
+      }
       createdAt
       updatedAt
       __typename

@@ -14,6 +14,12 @@ type Staff @model @auth(rules: [{ allow: private }]) {
   status: String!
   owner: Boolean
   usageStartDate: String
+  notifications: Notification
+}
+
+type Notification {
+  workStart: Boolean
+  workEnd: Boolean
 }
 
 type HolidayCalendar @model @auth(rules: [{ allow: private }]) {
