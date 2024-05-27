@@ -20,10 +20,14 @@ import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
 
+import { Staff } from "@/API";
+import fetchStaff from "@/hooks/useStaff/fetchStaff";
+import { AttendanceEditMailSender } from "@/lib/mail/AttendanceEditMailSender";
+
 import { useAppDispatchV2 } from "../../app/hooks";
 import * as MESSAGE_CODE from "../../errors";
 import useAttendance from "../../hooks/useAttendance/useAttendance";
-import useStaffs, { StaffType } from "../../hooks/useStaffs/useStaffs";
+import useStaffs from "../../hooks/useStaffs/useStaffs";
 import {
   setSnackbarError,
   setSnackbarSuccess,
@@ -52,7 +56,6 @@ import {
 } from "./items/WorkTimeItem/WorkTimeItem";
 import PaidHolidayFlagInput from "./PaidHolidayFlagInput";
 import ReturnDirectlyFlagInput from "./ReturnDirectlyFlagInput";
-import sendChangedAttendanceMail from "./sendChangedAttendanceMail";
 
 const SaveButton = styled(Button)(({ theme }) => ({
   width: 150,
@@ -77,7 +80,7 @@ export default function AttendanceEditor() {
   const { staffs, loading: staffsLoading, error: staffSError } = useStaffs();
   const { attendance, getAttendance, updateAttendance, createAttendance } =
     useAttendance();
-  const [staff, setStaff] = useState<StaffType | undefined | null>(undefined);
+  const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
   const [workDate, setWorkDate] = useState<dayjs.Dayjs | null>(null);
   const [enabledSendMail, setEnabledSendMail] = useState<boolean>(true);
   const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
@@ -115,8 +118,10 @@ export default function AttendanceEditor() {
 
   useEffect(() => {
     if (!targetStaffId) return;
-    const matchStaff = staffs.find((s) => s.cognitoUserId === targetStaffId);
-    setStaff(matchStaff || null);
+
+    fetchStaff(targetStaffId)
+      .then(setStaff)
+      .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E02001)));
   }, [staffs, targetStaffId]);
 
   useEffect(() => {
@@ -162,8 +167,6 @@ export default function AttendanceEditor() {
   }, [watch]);
 
   const onSubmit = async (data: AttendanceEditorInputs) => {
-    console.log("data.rests", data.rests);
-
     if (attendance) {
       await updateAttendance({
         id: attendance.id,
@@ -186,22 +189,8 @@ export default function AttendanceEditor() {
 
           if (!staff || !res.histories) return;
 
-          const latestHistory = res.histories
-            .filter((item): item is NonNullable<typeof item> => item !== null)
-            .sort((a, b) => {
-              if (a.createdAt === b.createdAt) return 0;
-              return a.createdAt < b.createdAt ? 1 : -1;
-            })[0];
-
           if (enabledSendMail) {
-            const toMailAddresses = [staff.mailAddress];
-            void sendChangedAttendanceMail(
-              toMailAddresses,
-              dayjs(res.workDate),
-              staff,
-              res,
-              latestHistory
-            );
+            new AttendanceEditMailSender(staff, res).changeRequest();
           }
         })
         .catch((e: Error) => {
@@ -229,28 +218,12 @@ export default function AttendanceEditor() {
       paidHolidayFlag: data.paidHolidayFlag,
     })
       .then((res) => {
-        if (!staff) {
+        if (!staff || !res.histories) {
           return;
         }
 
-        const latestHistory = res.histories
-          ? res.histories
-              .filter((item): item is NonNullable<typeof item> => item !== null)
-              .sort((a, b) => {
-                if (a.createdAt === b.createdAt) return 0;
-                return a.createdAt < b.createdAt ? 1 : -1;
-              })[0]
-          : null;
-
         if (enabledSendMail) {
-          const toMailAddresses = [staff.mailAddress];
-          void sendChangedAttendanceMail(
-            toMailAddresses,
-            dayjs(res.workDate),
-            staff,
-            res,
-            latestHistory
-          );
+          new AttendanceEditMailSender(staff, res).changeRequest();
         }
 
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S04001));

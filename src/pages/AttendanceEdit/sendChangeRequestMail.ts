@@ -19,7 +19,6 @@ export default function sendChangeRequestMail(
       staff.role === StaffRole.ADMIN || staff.role === StaffRole.STAFF_ADMIN
   );
 
-  console.log("adminStaffs", adminStaffs);
   if (adminStaffs.length === 0) {
     throw new Error(MESSAGE_CODE.E00002);
   }

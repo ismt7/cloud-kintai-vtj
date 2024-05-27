@@ -95,6 +95,8 @@ export default function AttendanceEdit() {
     } else {
       if (!staff || !targetWorkDate) return;
 
+      console.log(data);
+
       await createAttendance({
         staffId: staff.cognitoUserId,
         workDate: dayjs(targetWorkDate).format("YYYY-MM-DD"),
@@ -104,7 +106,10 @@ export default function AttendanceEdit() {
             endTime: data.endTime,
             goDirectlyFlag: data.goDirectlyFlag,
             returnDirectlyFlag: data.returnDirectlyFlag,
-            rests: data.rests,
+            rests: data.rests.map((rest) => ({
+              startTime: rest.startTime,
+              endTime: rest.endTime,
+            })),
             remarks: data.remarks,
             paidHolidayFlag: data.paidHolidayFlag,
             staffComment: data.staffComment,
@@ -123,7 +128,10 @@ export default function AttendanceEdit() {
           );
           navigate("/attendance/list");
         })
-        .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E02005)));
+        .catch((e) => {
+          console.log("error", e);
+          dispatch(setSnackbarError(MESSAGE_CODE.E02005));
+        });
     }
   };
 

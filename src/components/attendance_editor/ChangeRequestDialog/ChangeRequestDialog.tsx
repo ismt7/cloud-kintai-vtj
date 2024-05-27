@@ -13,14 +13,16 @@ import {
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
+import { GenericMailSender } from "@/lib/mail/GenericMailSender";
+
 import {
   Attendance,
   AttendanceChangeRequest,
+  Staff,
   UpdateAttendanceInput,
 } from "../../../API";
 import { useAppDispatchV2 } from "../../../app/hooks";
 import * as MESSAGE_CODE from "../../../errors";
-import { StaffType } from "../../../hooks/useStaffs/useStaffs";
 import {
   setSnackbarError,
   setSnackbarSuccess,
@@ -29,8 +31,6 @@ import AfterCard from "./AfterCard/AfterCard";
 import BeforeCard from "./BeforeCard/BeforeCard";
 import handleApproveChangeRequest from "./handleApproveChangeRequest";
 import handleRejectChangeRequest from "./handleRejectChangeRequest";
-import sendApprovedChangeRequest from "./sendApprovedChangeRequest";
-import sendRejectedChangeRequestMail from "./sendRejectedChangeRequestMail";
 
 export default function ChangeRequestDialog({
   attendance,
@@ -39,7 +39,7 @@ export default function ChangeRequestDialog({
 }: {
   attendance: Attendance | null;
   updateAttendance: (input: UpdateAttendanceInput) => Promise<Attendance>;
-  staff: StaffType | null | undefined;
+  staff: Staff | null | undefined;
 }) {
   const dispatch = useAppDispatchV2();
   const [open, setOpen] = useState(false);
@@ -128,8 +128,15 @@ export default function ChangeRequestDialog({
           onClick={() => {
             handleRejectChangeRequest(attendance, updateAttendance, comment)
               .then(() => {
+                if (!staff || !attendance) {
+                  throw new Error(MESSAGE_CODE.E00002);
+                }
+
+                new GenericMailSender(staff, attendance).rejectChangeRequest(
+                  comment
+                );
+
                 dispatch(setSnackbarSuccess(MESSAGE_CODE.S04007));
-                sendRejectedChangeRequestMail(staff, attendance, comment);
                 handleClose();
               })
               .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E04007)));
@@ -144,8 +151,14 @@ export default function ChangeRequestDialog({
           onClick={() => {
             handleApproveChangeRequest(attendance, updateAttendance, comment)
               .then(() => {
+                if (!staff || !attendance) {
+                  throw new Error(MESSAGE_CODE.E00002);
+                }
+
+                new GenericMailSender(staff, attendance).approveChangeRequest(
+                  comment
+                );
                 dispatch(setSnackbarSuccess(MESSAGE_CODE.S04006));
-                sendApprovedChangeRequest(staff, attendance, comment);
                 handleClose();
               })
               .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E04006)));

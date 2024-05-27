@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 
-import { Attendance, AttendanceHistory } from "../../API";
-import { StaffType } from "../../hooks/useStaffs/useStaffs";
+import { Attendance, AttendanceHistory, Staff } from "../../API";
 
 function showBlankLine(): string {
   return "";
@@ -11,7 +10,7 @@ function showSeparateLine(): string {
   return "----";
 }
 
-function showHelloStaffName(staff: StaffType) {
+function showHelloStaffName(staff: Staff) {
   const { familyName, givenName } = staff;
   if (!familyName && !givenName) return "こんにちは。";
 
@@ -318,7 +317,7 @@ function showLastMessage() {
 }
 
 export default function getAttendanceMailBody(
-  staff: StaffType,
+  staff: Staff,
   attendance: Attendance,
   history: AttendanceHistory | null
 ) {
