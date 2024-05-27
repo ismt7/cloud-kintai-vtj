@@ -75,7 +75,7 @@
       "function": {
         "AdminQueriesf7a7d2e5": {
           "deploymentBucketName": "amplify-garakufrontend-dev-24913-deployment",
-          "s3Key": "amplify-builds/AdminQueriesf7a7d2e5-6e52387656484b595857-build.zip"
+          "s3Key": "amplify-builds/AdminQueriesf7a7d2e5-415567705a306b566634-build.zip"
         },
         "garakuSendMail": {
           "deploymentBucketName": "amplify-garakufrontend-dev-24913-deployment",
@@ -87,6 +87,56 @@
       },
       "custom": {
         "customResource1b080f88": {}
+      },
+      "storage": {
+        "s381050667": {}
+      }
+    }
+  },
+  "develop": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-garakufrontend-develop-5bf5c-authRole",
+      "UnauthRoleArn": "arn:aws:iam::952389366704:role/amplify-garakufrontend-develop-5bf5c-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::952389366704:role/amplify-garakufrontend-develop-5bf5c-authRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-garakufrontend-develop-5bf5c-deployment",
+      "UnauthRoleName": "amplify-garakufrontend-develop-5bf5c-unauthRole",
+      "StackName": "amplify-garakufrontend-develop-5bf5c",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:952389366704:stack/amplify-garakufrontend-develop-5bf5c/93e07a60-198d-11ef-90a5-0e44cd6b1089",
+      "AmplifyAppId": "dmghdnhtsemgt"
+    },
+    "categories": {
+      "auth": {
+        "garakufrontendbfa3456a": {}
+      },
+      "function": {
+        "AdminQueriesf7a7d2e5": {
+          "deploymentBucketName": "amplify-garakufrontend-develop-5bf5c-deployment",
+          "s3Key": "amplify-builds/AdminQueriesf7a7d2e5-415567705a306b566634-build.zip"
+        },
+        "garakuSendMail": {
+          "deploymentBucketName": "amplify-garakufrontend-develop-5bf5c-deployment",
+          "s3Key": "amplify-builds/garakuSendMail-566f4165677a59584a54-build.zip",
+          "region": "ap-northeast-1",
+          "emailFrom": "Cloud Kintai dev <noreply@dev.kintai.virtualtech.jp>"
+        },
+        "garakufrontendbfa3456a": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "dmghdnhtsemgt",
+          "type": "cicd"
+        }
+      },
+      "api": {
+        "AdminQueries": {},
+        "garakufrontend": {}
+      },
+      "custom": {
+        "customResource1b080f88": {}
+      },
+      "storage": {
+        "s381050667": {}
       }
     }
   }

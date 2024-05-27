@@ -41,7 +41,7 @@ export function RestTimeTableCell({ attendance }: { attendance: Attendance }) {
     return date.format("H:mm");
   })();
 
-  if (!formattedRestStartTime || !formattedRestEndTime) {
+  if (!formattedRestStartTime && !formattedRestEndTime) {
     return <TableCell />;
   }
 

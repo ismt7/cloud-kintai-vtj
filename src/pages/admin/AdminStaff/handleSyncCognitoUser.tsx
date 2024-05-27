@@ -40,7 +40,6 @@ export async function handleSyncCognitoUser(
         return;
       }
 
-      console.log(cognitoUser);
       await createStaff({
         cognitoUserId: cognitoUser.sub,
         familyName: cognitoUser.familyName,
