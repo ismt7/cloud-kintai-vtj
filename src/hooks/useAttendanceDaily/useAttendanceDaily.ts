@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
 import { Attendance } from "../../API";
-import fetchAttendance from "../common/fetchAttendance";
+import { AttendanceDataManager } from "../useAttendance/AttendanceDataManager";
 import useStaffs from "../useStaffs/useStaffs";
 
 export interface AttendanceDaily {
@@ -32,7 +32,10 @@ export default function useAttendanceDaily() {
     setError(null);
     Promise.all(
       staffs.map(async ({ cognitoUserId, givenName, familyName }) => {
-        const attendance = await fetchAttendance(cognitoUserId, workDate);
+        const attendance = await new AttendanceDataManager().fetchAll(
+          cognitoUserId,
+          workDate
+        );
 
         return {
           sub: cognitoUserId,

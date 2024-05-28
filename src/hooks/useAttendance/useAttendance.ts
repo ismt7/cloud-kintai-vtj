@@ -7,9 +7,7 @@ import {
   RestInput,
   UpdateAttendanceInput,
 } from "../../API";
-import fetchAttendance from "../common/fetchAttendance";
-import createAttendanceData from "./createAttendanceData";
-import updateAttendanceData from "./updateAttendanceData";
+import { AttendanceDataManager } from "./AttendanceDataManager";
 
 export enum GoDirectlyFlag {
   YES,
@@ -26,9 +24,11 @@ export default function useAttendance() {
     undefined
   );
   const [loading, setLoading] = useState(true);
+  const attendanceDataManager = new AttendanceDataManager();
 
   const getAttendance = async (staffId: string, workDate: string) =>
-    fetchAttendance(staffId, workDate)
+    attendanceDataManager
+      .fetchAll(staffId, workDate)
       .then((res) => {
         setAttendance(res);
         return res;
@@ -39,7 +39,8 @@ export default function useAttendance() {
       .finally(() => setLoading(false));
 
   const createAttendance = async (input: CreateAttendanceInput) =>
-    createAttendanceData(input)
+    attendanceDataManager
+      .create(input)
       .then((res) => {
         setAttendance(res);
         return res;
@@ -49,7 +50,8 @@ export default function useAttendance() {
       });
 
   const updateAttendance = async (input: UpdateAttendanceInput) =>
-    updateAttendanceData(input)
+    attendanceDataManager
+      .update(input)
       .then((res) => {
         setAttendance(res);
         return res;
