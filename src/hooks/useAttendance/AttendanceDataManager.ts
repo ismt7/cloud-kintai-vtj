@@ -106,7 +106,6 @@ export class AttendanceDataManager {
   }
 
   async update(input: UpdateAttendanceInput) {
-    console.log(input);
     const currentAttendance = await this.fetch(input.id).catch((e) => {
       throw e;
     });
@@ -121,8 +120,17 @@ export class AttendanceDataManager {
 
     input.revision = inputRevision + 1;
 
-    const history: AttendanceHistoryInput = {
-      ...currentAttendance,
+    const newHistory: AttendanceHistoryInput = {
+      staffId: currentAttendance.staffId,
+      workDate: currentAttendance.workDate,
+      startTime: currentAttendance.startTime,
+      endTime: currentAttendance.endTime,
+      goDirectlyFlag: currentAttendance.goDirectlyFlag,
+      returnDirectlyFlag: currentAttendance.returnDirectlyFlag,
+      remarks: currentAttendance.remarks,
+      paidHolidayFlag: currentAttendance.paidHolidayFlag,
+      substituteHolidayDate: currentAttendance.substituteHolidayDate,
+      createdAt: currentAttendance.createdAt,
       rests: currentAttendance.rests
         ? currentAttendance.rests
             .filter((item): item is NonNullable<typeof item> => !!item)
@@ -138,7 +146,16 @@ export class AttendanceDataManager {
           .filter((item): item is NonNullable<typeof item> => !!item)
           .map(
             (history): AttendanceHistoryInput => ({
-              ...history,
+              staffId: history.staffId,
+              workDate: history.workDate,
+              startTime: history.startTime,
+              endTime: history.endTime,
+              goDirectlyFlag: history.goDirectlyFlag,
+              returnDirectlyFlag: history.returnDirectlyFlag,
+              remarks: history.remarks,
+              paidHolidayFlag: history.paidHolidayFlag,
+              substituteHolidayDate: history.substituteHolidayDate,
+              createdAt: history.createdAt,
               rests: history.rests
                 ? history.rests
                     .filter((item): item is NonNullable<typeof item> => !!item)
@@ -152,10 +169,12 @@ export class AttendanceDataManager {
       : [];
 
     if (input.histories && input.histories.length > 0) {
-      input.histories.push(history);
+      input.histories.push(newHistory);
     } else {
-      input.histories = [history];
+      input.histories = [newHistory];
     }
+
+    console.log(input);
 
     const response = (await API.graphql({
       query: updateAttendance,

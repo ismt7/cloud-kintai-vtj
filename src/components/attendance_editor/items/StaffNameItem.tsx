@@ -6,7 +6,9 @@ import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProv
 export default function StaffNameItem() {
   const { staff } = useContext(AttendanceEditContext);
 
-  if (!staff || (!staff.familyName && !staff.givenName)) return null;
+  if (!staff?.familyName && !staff?.givenName) {
+    return null;
+  }
 
   return (
     <Stack direction="row" alignItems="center">

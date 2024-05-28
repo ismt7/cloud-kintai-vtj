@@ -1,13 +1,15 @@
 import { Box, Stack, TextField } from "@mui/material";
-import { UseFormRegister } from "react-hook-form";
+import { useContext } from "react";
 
-import { AttendanceEditorInputs } from "../common";
+import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 
-export default function RemarksItem({
-  register,
-}: {
-  register: UseFormRegister<AttendanceEditorInputs>;
-}) {
+export default function RemarksItem() {
+  const { register } = useContext(AttendanceEditContext);
+
+  if (!register) {
+    return null;
+  }
+
   return (
     <Stack direction="row" alignItems={"center"}>
       <Box sx={{ fontWeight: "bold", width: "150px" }}>備考</Box>

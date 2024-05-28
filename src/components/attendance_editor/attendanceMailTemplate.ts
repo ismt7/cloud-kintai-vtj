@@ -1,6 +1,7 @@
-import dayjs from "dayjs";
+import { StaffType } from "@/hooks/useStaffs/useStaffs";
+import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 
-import { Attendance, AttendanceHistory, Staff } from "../../API";
+import { Attendance, AttendanceHistory } from "../../API";
 
 function showBlankLine(): string {
   return "";
@@ -10,7 +11,7 @@ function showSeparateLine(): string {
   return "----";
 }
 
-function showHelloStaffName(staff: Staff) {
+function showHelloStaffName(staff: StaffType) {
   const { familyName, givenName } = staff;
   if (!familyName && !givenName) return "こんにちは。";
 
@@ -27,7 +28,9 @@ function showMessage() {
 //  勤務日
 // --------------------------------------------------
 function showWorkDate(attendance: Attendance) {
-  const workDate = dayjs(attendance.workDate).format("YYYY/MM/DD");
+  const workDate = new AttendanceDateTime()
+    .setDateString(attendance.workDate)
+    .toDisplayDateFormat();
   return `勤務日：${workDate}`;
 }
 
@@ -133,14 +136,25 @@ function showWorkTime(
 ) {
   if (!history) {
     const { startTime, endTime } = attendance;
-    const TIME_FORMAT = "HH:mm";
-    const NOT_SET = "--:--";
-    const afterStartTime = startTime
-      ? dayjs(startTime).format(TIME_FORMAT)
-      : NOT_SET;
-    const afterEndTime = endTime ? dayjs(endTime).format(TIME_FORMAT) : NOT_SET;
+    const afterStartTime = (() => {
+      if (!startTime) return AttendanceDateTime.NOT_SET_TIME;
+      return new AttendanceDateTime().setDateString(startTime).toTimeFormat();
+    })();
+    const afterEndTime = (() => {
+      if (!endTime) return AttendanceDateTime.NOT_SET_TIME;
+      return new AttendanceDateTime().setDateString(endTime).toTimeFormat();
+    })();
 
-    return `勤務時間：${NOT_SET} ~ ${NOT_SET} → ${afterStartTime} ~ ${afterEndTime}`;
+    return [
+      "勤務時間：",
+      AttendanceDateTime.NOT_SET_TIME,
+      " ~ ",
+      AttendanceDateTime.NOT_SET_TIME,
+      " → ",
+      afterStartTime,
+      " ~ ",
+      afterEndTime,
+    ].join("");
   }
 
   const result = (() => {
@@ -149,24 +163,39 @@ function showWorkTime(
       return "変更なし";
     }
 
-    const TIME_FORMAT = "HH:mm";
-    const NOT_SET = "--:--";
-    const beforeStartTime = history.startTime
-      ? dayjs(history.startTime).format(TIME_FORMAT)
-      : NOT_SET;
-    const beforeEndTime = history.endTime
-      ? dayjs(history.endTime).format(TIME_FORMAT)
-      : NOT_SET;
+    // Before
+    const beforeStartTime = (() => {
+      if (!history.startTime) return AttendanceDateTime.NOT_SET_TIME;
+      return new AttendanceDateTime()
+        .setDateString(history.startTime)
+        .toTimeFormat();
+    })();
+    const beforeEndTime = (() => {
+      if (!history.endTime) return AttendanceDateTime.NOT_SET_TIME;
+      return new AttendanceDateTime()
+        .setDateString(history.endTime)
+        .toTimeFormat();
+    })();
 
-    const afterStartTime = startTime
-      ? dayjs(startTime).format(TIME_FORMAT)
-      : NOT_SET;
-    const afterEndTime = endTime ? dayjs(endTime).format(TIME_FORMAT) : NOT_SET;
+    // After
+    const afterStartTime = (() => {
+      if (!startTime) return AttendanceDateTime.NOT_SET_TIME;
+      return new AttendanceDateTime().setDateString(startTime).toTimeFormat();
+    })();
+    const afterEndTime = (() => {
+      if (!endTime) return AttendanceDateTime.NOT_SET_TIME;
+      return new AttendanceDateTime().setDateString(endTime).toTimeFormat();
+    })();
 
     return [
-      `${beforeStartTime} ~ ${beforeEndTime}`,
-      `${afterStartTime} ~ ${afterEndTime}`,
-    ].join(" → ");
+      beforeStartTime,
+      " ~ ",
+      beforeEndTime,
+      " → ",
+      afterStartTime,
+      " ~ ",
+      afterEndTime,
+    ].join("");
   })();
 
   return `勤務時間：${result}`;
@@ -186,12 +215,18 @@ function showRestTime(
 
   if (!history) {
     const attendanceResults = afterRests.map((rest) => {
-      const startTime = rest.startTime
-        ? dayjs(rest.startTime).format("HH:mm")
-        : "--:--";
-      const endTime = rest.endTime
-        ? dayjs(rest.endTime).format("HH:mm")
-        : "--:--";
+      const startTime = (() => {
+        if (!rest.startTime) return AttendanceDateTime.NOT_SET_TIME;
+        return new AttendanceDateTime()
+          .setDateString(rest.startTime)
+          .toTimeFormat();
+      })();
+      const endTime = (() => {
+        if (!rest.endTime) return AttendanceDateTime.NOT_SET_TIME;
+        return new AttendanceDateTime()
+          .setDateString(rest.endTime)
+          .toTimeFormat();
+      })();
       return `${startTime} ~ ${endTime}`;
     });
 
@@ -215,17 +250,20 @@ function showRestTime(
     const afterRest = afterRests[i];
     const beforeRest = beforeRests[i];
 
-    const TIME_FORMAT = "HH:mm";
-    const NOT_SET = "--:--";
-
     // 休憩時間を削除した場合
     if (!afterRest) {
-      const beforeRestStartTime = beforeRest.startTime
-        ? dayjs(beforeRest.startTime).format(TIME_FORMAT)
-        : NOT_SET;
-      const beforeRestEndTime = beforeRest.endTime
-        ? dayjs(beforeRest.endTime).format(TIME_FORMAT)
-        : NOT_SET;
+      const beforeRestStartTime = (() => {
+        if (!beforeRest.startTime) return AttendanceDateTime.NOT_SET_TIME;
+        return new AttendanceDateTime()
+          .setDateString(beforeRest.startTime)
+          .toTimeFormat();
+      })();
+      const beforeRestEndTime = (() => {
+        if (!beforeRest.endTime) return AttendanceDateTime.NOT_SET_TIME;
+        return new AttendanceDateTime()
+          .setDateString(beforeRest.endTime)
+          .toTimeFormat();
+      })();
 
       attendanceResults.push(
         `[削除]${beforeRestStartTime} ~ ${beforeRestEndTime}`
@@ -235,12 +273,18 @@ function showRestTime(
 
     // 休憩時間を追加した場合
     if (!beforeRest) {
-      const afterRestStartTime = afterRest.startTime
-        ? dayjs(afterRest.startTime).format(TIME_FORMAT)
-        : NOT_SET;
-      const afterRestEndTime = afterRest.endTime
-        ? dayjs(afterRest.endTime).format(TIME_FORMAT)
-        : NOT_SET;
+      const afterRestStartTime = (() => {
+        if (!afterRest.startTime) return AttendanceDateTime.NOT_SET_TIME;
+        return new AttendanceDateTime()
+          .setDateString(afterRest.startTime)
+          .toTimeFormat();
+      })();
+      const afterRestEndTime = (() => {
+        if (!afterRest.endTime) return AttendanceDateTime.NOT_SET_TIME;
+        return new AttendanceDateTime()
+          .setDateString(afterRest.endTime)
+          .toTimeFormat();
+      })();
 
       attendanceResults.push(
         `[追加]${afterRestStartTime} ~ ${afterRestEndTime}`
@@ -250,19 +294,33 @@ function showRestTime(
 
     // 休憩時間を変更した場合
     {
-      const beforeRestStartTime = beforeRest.startTime
-        ? dayjs(beforeRest.startTime).format(TIME_FORMAT)
-        : NOT_SET;
-      const beforeRestEndTime = beforeRest.endTime
-        ? dayjs(beforeRest.endTime).format(TIME_FORMAT)
-        : NOT_SET;
+      // Before
+      const beforeRestStartTime = (() => {
+        if (!beforeRest.startTime) return AttendanceDateTime.NOT_SET_TIME;
+        return new AttendanceDateTime()
+          .setDateString(beforeRest.startTime)
+          .toTimeFormat();
+      })();
+      const beforeRestEndTime = (() => {
+        if (!beforeRest.endTime) return AttendanceDateTime.NOT_SET_TIME;
+        return new AttendanceDateTime()
+          .setDateString(beforeRest.endTime)
+          .toTimeFormat();
+      })();
 
-      const afterRestStartTime = afterRest.startTime
-        ? dayjs(afterRest.startTime).format(TIME_FORMAT)
-        : NOT_SET;
-      const afterRestEndTime = afterRest.endTime
-        ? dayjs(afterRest.endTime).format(TIME_FORMAT)
-        : NOT_SET;
+      // After
+      const afterRestStartTime = (() => {
+        if (!afterRest.startTime) return AttendanceDateTime.NOT_SET_TIME;
+        return new AttendanceDateTime()
+          .setDateString(afterRest.startTime)
+          .toTimeFormat();
+      })();
+      const afterRestEndTime = (() => {
+        if (!afterRest.endTime) return AttendanceDateTime.NOT_SET_TIME;
+        return new AttendanceDateTime()
+          .setDateString(afterRest.endTime)
+          .toTimeFormat();
+      })();
 
       attendanceResults.push(
         beforeRestStartTime === afterRestStartTime &&
@@ -317,7 +375,7 @@ function showLastMessage() {
 }
 
 export default function getAttendanceMailBody(
-  staff: Staff,
+  staff: StaffType,
   attendance: Attendance,
   history: AttendanceHistory | null
 ) {

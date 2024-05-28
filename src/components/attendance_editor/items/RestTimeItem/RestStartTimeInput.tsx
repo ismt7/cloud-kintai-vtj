@@ -2,31 +2,26 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import { Box, Chip, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import {
-  Control,
-  Controller,
-  FieldArrayWithId,
-  UseFieldArrayUpdate,
-} from "react-hook-form";
+import { useContext } from "react";
+import { Controller, FieldArrayWithId } from "react-hook-form";
 
-import { AttendanceEditorInputs } from "../../common";
-
-type RestStartTimeInputProps = {
-  index: number;
-  workDate: dayjs.Dayjs;
-  rest: FieldArrayWithId<AttendanceEditorInputs, "rests", "id">;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<AttendanceEditorInputs, any>;
-  restUpdate: UseFieldArrayUpdate<AttendanceEditorInputs, "rests">;
-};
+import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
+import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
+import { AttendanceEditInputs } from "@/pages/AttendanceEdit/common";
 
 export default function RestStartTimeInput({
   index,
-  workDate,
   rest,
-  control,
-  restUpdate,
-}: RestStartTimeInputProps) {
+}: {
+  index: number;
+  rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
+}) {
+  const { workDate, control, restUpdate } = useContext(AttendanceEditContext);
+
+  if (!workDate || !control || !restUpdate) {
+    return null;
+  }
+
   return (
     <Stack spacing={1}>
       <Controller
@@ -66,11 +61,9 @@ export default function RestStartTimeInput({
           color="success"
           icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
           onClick={() => {
-            const startTime = workDate
-              .hour(12)
-              .minute(0)
-              .second(0)
-              .millisecond(0)
+            const startTime = new AttendanceDateTime()
+              .setDate(workDate)
+              .setRestStart()
               .toISOString();
             restUpdate(index, { ...rest, startTime });
           }}

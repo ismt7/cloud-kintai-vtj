@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { useContext } from "react";
 import { Controller, FieldArrayWithId } from "react-hook-form";
 
+import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 
 import { AttendanceEditInputs } from "../../../common";
@@ -68,11 +69,9 @@ export default function RestStartTimeInput({
           icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
           disabled={changeRequests.length > 0}
           onClick={() => {
-            const startTime = workDate
-              .hour(12)
-              .minute(0)
-              .second(0)
-              .millisecond(0)
+            const startTime = new AttendanceDateTime()
+              .setDate(workDate)
+              .setRestStart()
               .toISOString();
             restUpdate(index, { ...rest, startTime });
           }}

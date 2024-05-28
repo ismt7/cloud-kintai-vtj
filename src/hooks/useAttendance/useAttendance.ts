@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 import { useState } from "react";
 
+import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
+
 import {
   Attendance,
   CreateAttendanceInput,
@@ -95,8 +97,7 @@ export default function useAttendance() {
   ) => {
     if (attendance) {
       const startTime = dayjs(attendance.startTime);
-      // eslint-disable-next-line newline-per-chained-call
-      const noon = dayjs().hour(12).minute(0).second(0).millisecond(0);
+      const noon = new AttendanceDateTime().setNoon().toDayjs();
       const isBeforeNoon = startTime.isBefore(noon);
 
       const rests = (() => {
@@ -115,16 +116,10 @@ export default function useAttendance() {
               )
           : [];
 
-        const lunchBreakStart = dayjs()
-          .hour(12)
-          .minute(0)
-          .second(0)
-          .millisecond(0);
-        const lunchBreakEnd = dayjs()
-          .hour(13)
-          .minute(0)
-          .second(0)
-          .millisecond(0);
+        const lunchBreakStart = new AttendanceDateTime()
+          .setRestStart()
+          .toDayjs();
+        const lunchBreakEnd = new AttendanceDateTime().setRestEnd().toDayjs();
 
         const isAlreadyExist = prevRests.filter((rest) => {
           if (!rest.startTime || !rest.endTime) {

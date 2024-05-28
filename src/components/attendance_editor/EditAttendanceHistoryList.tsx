@@ -19,11 +19,12 @@ import {
   Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
-import { useState } from "react";
-import { UseFormGetValues } from "react-hook-form";
+import { useContext, useState } from "react";
+
+import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
+import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 
 import { AttendanceHistory } from "../../API";
-import { AttendanceEditorInputs } from "./common";
 
 function Row({ history }: { history: AttendanceHistory }) {
   const [open, setOpen] = useState(false);
@@ -42,20 +43,32 @@ function Row({ history }: { history: AttendanceHistory }) {
           </IconButton>
         </TableCell>
         <TableCell>
-          {dayjs(history.createdAt).format("YYYY/MM/DD HH:mm")}
+          {new AttendanceDateTime()
+            .setDateString(history.createdAt)
+            .toDisplayDateTimeFormat()}
         </TableCell>
         <TableCell>{history.staffId}</TableCell>
-        <TableCell>{dayjs(history.workDate).format("YYYY/MM/DD")}</TableCell>
+        <TableCell>
+          {new AttendanceDateTime()
+            .setDateString(history.workDate)
+            .toDisplayDateFormat()}
+        </TableCell>
         <TableCell>{history.paidHolidayFlag ? "有" : "無"}</TableCell>
         <TableCell>{history.goDirectlyFlag ? "有" : "無"}</TableCell>
         <TableCell>{history.returnDirectlyFlag ? "有" : "無"}</TableCell>
         <TableCell>
           {history.startTime
-            ? dayjs(history.startTime).format("HH:mm")
+            ? new AttendanceDateTime()
+                .setDateString(history.startTime)
+                .toTimeFormat()
             : "(なし)"}
         </TableCell>
         <TableCell>
-          {history.endTime ? dayjs(history.endTime).format("HH:mm") : "(なし)"}
+          {history.endTime
+            ? new AttendanceDateTime()
+                .setDateString(history.endTime)
+                .toTimeFormat()
+            : "(なし)"}
         </TableCell>
         <TableCell>{history.remarks ? history.remarks : "(なし)"}</TableCell>
       </TableRow>
@@ -79,12 +92,16 @@ function Row({ history }: { history: AttendanceHistory }) {
                     <TableRow key={index}>
                       <TableCell>
                         {rest.startTime
-                          ? dayjs(rest.startTime).format("HH:mm")
+                          ? new AttendanceDateTime()
+                              .setDateString(rest.startTime)
+                              .toTimeFormat()
                           : "(なし)"}
                       </TableCell>
                       <TableCell>
                         {rest.endTime
-                          ? dayjs(rest.endTime).format("HH:mm")
+                          ? new AttendanceDateTime()
+                              .setDateString(rest.endTime)
+                              .toTimeFormat()
                           : "(なし)"}
                       </TableCell>
                       <TableCell />
@@ -100,11 +117,8 @@ function Row({ history }: { history: AttendanceHistory }) {
   );
 }
 
-export default function EditAttendanceHistoryList({
-  getValues,
-}: {
-  getValues: UseFormGetValues<AttendanceEditorInputs>;
-}) {
+export default function EditAttendanceHistoryList() {
+  const { getValues, attendance } = useContext(AttendanceEditContext);
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -114,6 +128,8 @@ export default function EditAttendanceHistoryList({
   const handleClose = () => {
     setOpen(false);
   };
+
+  if (!getValues) return null;
 
   return (
     <Box>
@@ -152,13 +168,19 @@ export default function EditAttendanceHistoryList({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {getValues("histories")
-                  .sort((a, b) =>
-                    dayjs(b.createdAt).isBefore(dayjs(a.createdAt)) ? -1 : 1
-                  )
-                  .map((history, index) => (
-                    <Row key={index} history={history} />
-                  ))}
+                {attendance?.histories
+                  ? attendance.histories
+                      .filter(
+                        (item): item is NonNullable<typeof item> =>
+                          item !== null
+                      )
+                      .sort((a, b) =>
+                        dayjs(b.createdAt).isBefore(dayjs(a.createdAt)) ? -1 : 1
+                      )
+                      .map((history, index) => (
+                        <Row key={index} history={history} />
+                      ))
+                  : null}
               </TableBody>
             </Table>
           </TableContainer>

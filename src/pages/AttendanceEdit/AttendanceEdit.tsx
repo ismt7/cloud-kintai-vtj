@@ -65,10 +65,14 @@ export default function AttendanceEdit() {
             endTime: data.endTime,
             goDirectlyFlag: data.goDirectlyFlag,
             returnDirectlyFlag: data.returnDirectlyFlag,
-            rests: data.rests,
             remarks: data.remarks,
             paidHolidayFlag: data.paidHolidayFlag,
+            substituteHolidayDate: data.substituteHolidayDate,
             staffComment: data.staffComment,
+            rests: data.rests.map((rest) => ({
+              startTime: rest.startTime,
+              endTime: rest.endTime,
+            })),
           },
         ],
         revision: attendance.revision,
@@ -91,11 +95,11 @@ export default function AttendanceEdit() {
 
           navigate("/attendance/list");
         })
-        .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E02005)));
+        .catch(() => {
+          dispatch(setSnackbarError(MESSAGE_CODE.E02005));
+        });
     } else {
       if (!staff || !targetWorkDate) return;
-
-      console.log(data);
 
       await createAttendance({
         staffId: staff.cognitoUserId,
@@ -106,13 +110,14 @@ export default function AttendanceEdit() {
             endTime: data.endTime,
             goDirectlyFlag: data.goDirectlyFlag,
             returnDirectlyFlag: data.returnDirectlyFlag,
+            remarks: data.remarks,
+            paidHolidayFlag: data.paidHolidayFlag,
+            substituteHolidayDate: data.substituteHolidayDate,
+            staffComment: data.staffComment,
             rests: data.rests.map((rest) => ({
               startTime: rest.startTime,
               endTime: rest.endTime,
             })),
-            remarks: data.remarks,
-            paidHolidayFlag: data.paidHolidayFlag,
-            staffComment: data.staffComment,
           },
         ],
       })
@@ -157,6 +162,7 @@ export default function AttendanceEdit() {
         setValue("startTime", res.startTime);
         setValue("endTime", res.endTime);
         setValue("paidHolidayFlag", res.paidHolidayFlag || false);
+        setValue("substituteHolidayDate", res.substituteHolidayDate);
         setValue("goDirectlyFlag", res.goDirectlyFlag || false);
         setValue("returnDirectlyFlag", res.returnDirectlyFlag || false);
         setValue("remarks", res.remarks);
