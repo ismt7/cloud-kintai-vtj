@@ -185,16 +185,15 @@ export default function AttendanceEditor() {
         revision: data.revision,
       })
         .then((res) => {
-          dispatch(setSnackbarSuccess(MESSAGE_CODE.S04001));
-
           if (!staff || !res.histories) return;
 
           if (enabledSendMail) {
             new AttendanceEditMailSender(staff, res).changeRequest();
           }
+
+          dispatch(setSnackbarSuccess(MESSAGE_CODE.S04001));
         })
-        .catch((e: Error) => {
-          logger.error(e);
+        .catch(() => {
           dispatch(setSnackbarError(MESSAGE_CODE.E04001));
         });
 
@@ -214,11 +213,14 @@ export default function AttendanceEditor() {
       goDirectlyFlag: data.goDirectlyFlag,
       returnDirectlyFlag: data.returnDirectlyFlag,
       remarks: data.remarks,
-      rests: data.rests,
+      rests: data.rests.map((rest) => ({
+        startTime: rest.startTime,
+        endTime: rest.endTime,
+      })),
       paidHolidayFlag: data.paidHolidayFlag,
     })
       .then((res) => {
-        if (!staff || !res.histories) {
+        if (!staff) {
           return;
         }
 

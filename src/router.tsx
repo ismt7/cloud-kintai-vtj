@@ -19,8 +19,8 @@ import DocumentView from "./pages/Document/DocumentView/DocumentView";
 import ListDocument from "./pages/Document/ListDocument/ListDocument";
 import List from "./pages/List";
 import Login from "./pages/Login/Login";
+import Profile from "./pages/Profile";
 import Register from "./pages/Register";
-import Setting from "./pages/Setting";
 
 const router = createBrowserRouter([
   {
@@ -85,7 +85,7 @@ const router = createBrowserRouter([
       },
       {
         path: "profile",
-        element: <Setting />,
+        element: <Profile />,
       },
       {
         path: "/admin",
