@@ -245,6 +245,8 @@ export const onCreateAttendance = /* GraphQL */ `subscription OnCreateAttendance
     }
     remarks
     paidHolidayFlag
+    substituteHolidayFlag
+    substituteHolidayDate
     histories {
       staffId
       workDate
@@ -259,6 +261,8 @@ export const onCreateAttendance = /* GraphQL */ `subscription OnCreateAttendance
       }
       remarks
       paidHolidayFlag
+      substituteHolidayFlag
+      substituteHolidayDate
       createdAt
       __typename
     }
@@ -274,6 +278,8 @@ export const onCreateAttendance = /* GraphQL */ `subscription OnCreateAttendance
       }
       remarks
       paidHolidayFlag
+      substituteHolidayFlag
+      substituteHolidayDate
       completed
       comment
       staffComment
@@ -307,6 +313,8 @@ export const onUpdateAttendance = /* GraphQL */ `subscription OnUpdateAttendance
     }
     remarks
     paidHolidayFlag
+    substituteHolidayFlag
+    substituteHolidayDate
     histories {
       staffId
       workDate
@@ -321,6 +329,8 @@ export const onUpdateAttendance = /* GraphQL */ `subscription OnUpdateAttendance
       }
       remarks
       paidHolidayFlag
+      substituteHolidayFlag
+      substituteHolidayDate
       createdAt
       __typename
     }
@@ -336,6 +346,8 @@ export const onUpdateAttendance = /* GraphQL */ `subscription OnUpdateAttendance
       }
       remarks
       paidHolidayFlag
+      substituteHolidayFlag
+      substituteHolidayDate
       completed
       comment
       staffComment
@@ -369,6 +381,8 @@ export const onDeleteAttendance = /* GraphQL */ `subscription OnDeleteAttendance
     }
     remarks
     paidHolidayFlag
+    substituteHolidayFlag
+    substituteHolidayDate
     histories {
       staffId
       workDate
@@ -383,6 +397,8 @@ export const onDeleteAttendance = /* GraphQL */ `subscription OnDeleteAttendance
       }
       remarks
       paidHolidayFlag
+      substituteHolidayFlag
+      substituteHolidayDate
       createdAt
       __typename
     }
@@ -398,6 +414,8 @@ export const onDeleteAttendance = /* GraphQL */ `subscription OnDeleteAttendance
       }
       remarks
       paidHolidayFlag
+      substituteHolidayFlag
+      substituteHolidayDate
       completed
       comment
       staffComment

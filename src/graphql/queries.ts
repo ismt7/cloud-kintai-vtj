@@ -200,6 +200,8 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
     }
     remarks
     paidHolidayFlag
+    substituteHolidayFlag
+    substituteHolidayDate
     histories {
       staffId
       workDate
@@ -214,6 +216,8 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
       }
       remarks
       paidHolidayFlag
+      substituteHolidayFlag
+      substituteHolidayDate
       createdAt
       __typename
     }
@@ -229,6 +233,8 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
       }
       remarks
       paidHolidayFlag
+      substituteHolidayFlag
+      substituteHolidayDate
       completed
       comment
       staffComment
@@ -265,6 +271,8 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
       }
       remarks
       paidHolidayFlag
+      substituteHolidayFlag
+      substituteHolidayDate
       histories {
         staffId
         workDate
@@ -279,6 +287,8 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
         }
         remarks
         paidHolidayFlag
+        substituteHolidayFlag
+        substituteHolidayDate
         createdAt
         __typename
       }
@@ -294,6 +304,8 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
         }
         remarks
         paidHolidayFlag
+        substituteHolidayFlag
+        substituteHolidayDate
         completed
         comment
         staffComment
