@@ -174,8 +174,6 @@ export class AttendanceDataManager {
       input.histories = [newHistory];
     }
 
-    console.log(input);
-
     const response = (await API.graphql({
       query: updateAttendance,
       variables: { input },
