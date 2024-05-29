@@ -245,7 +245,6 @@ export const onCreateAttendance = /* GraphQL */ `subscription OnCreateAttendance
     }
     remarks
     paidHolidayFlag
-    substituteHolidayFlag
     substituteHolidayDate
     histories {
       staffId
@@ -313,7 +312,6 @@ export const onUpdateAttendance = /* GraphQL */ `subscription OnUpdateAttendance
     }
     remarks
     paidHolidayFlag
-    substituteHolidayFlag
     substituteHolidayDate
     histories {
       staffId
@@ -381,7 +379,6 @@ export const onDeleteAttendance = /* GraphQL */ `subscription OnDeleteAttendance
     }
     remarks
     paidHolidayFlag
-    substituteHolidayFlag
     substituteHolidayDate
     histories {
       staffId

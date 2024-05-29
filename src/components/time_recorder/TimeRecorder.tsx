@@ -164,6 +164,7 @@ export default function TimeRecorder() {
           startTime,
           endTime,
           paidHolidayFlag,
+          substituteHolidayDate,
           changeRequests,
         } = attendance;
         return judgeStatus(
@@ -174,7 +175,8 @@ export default function TimeRecorder() {
           companyHolidayCalendars,
           paidHolidayFlag,
           changeRequests,
-          staff
+          staff,
+          substituteHolidayDate
         );
       })
       .filter((status) => status === "エラー").length;

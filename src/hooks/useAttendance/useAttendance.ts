@@ -99,7 +99,6 @@ export default function useAttendance() {
       const startTime = dayjs(attendance.startTime);
       const noon = new AttendanceDateTime().setNoon().toDayjs();
       const isBeforeNoon = startTime.isBefore(noon);
-
       const rests = (() => {
         if (!isBeforeNoon) {
           return [];

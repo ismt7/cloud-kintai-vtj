@@ -57,12 +57,60 @@ function showPaidHolidayFlag(
       return "変更なし";
     }
 
-    return `${paidHolidayFlag ? "有" : "無"} → ${
-      history.paidHolidayFlag ? "有" : "無"
+    return `${history.paidHolidayFlag ? "有" : "無"} → ${
+      paidHolidayFlag ? "有" : "無"
     }`;
   })();
 
   return `有給休暇：${result}`;
+}
+
+// --------------------------------------------------
+//  振替休日
+// --------------------------------------------------
+function showSubstituteHolidayDate(
+  attendance: Attendance,
+  history: AttendanceHistory | null
+) {
+  if (!history) {
+    const substituteHolidayDate = (() => {
+      if (!attendance.substituteHolidayDate) return null;
+      return new AttendanceDateTime()
+        .setDateString(attendance.substituteHolidayDate)
+        .toDisplayDateFormat();
+    })();
+    return `振替休日：${substituteHolidayDate}`;
+  }
+
+  const result = (() => {
+    const substituteHolidayDate = (() => {
+      if (!attendance.substituteHolidayDate) return null;
+      return new AttendanceDateTime()
+        .setDateString(attendance.substituteHolidayDate)
+        .toDisplayDateFormat();
+    })();
+
+    if (
+      (substituteHolidayDate === null &&
+        history.substituteHolidayDate === null) ||
+      substituteHolidayDate === history.substituteHolidayDate
+    ) {
+      return "変更なし";
+    }
+
+    const historySubstituteHolidayDate = (() => {
+      if (!history.substituteHolidayDate) return null;
+      return new AttendanceDateTime()
+        .setDateString(history.substituteHolidayDate)
+        .toDisplayDateFormat();
+    })();
+
+    return `${historySubstituteHolidayDate || "(なし)"} → ${
+      substituteHolidayDate || "(なし)"
+    }`;
+  })();
+
+  return `振替休日：${result}`;
 }
 
 // --------------------------------------------------
@@ -88,8 +136,8 @@ function showGoDirectlyFlag(
       return "変更なし";
     }
 
-    return `${goDirectlyFlag ? "有" : "無"} → ${
-      history.goDirectlyFlag ? "有" : "無"
+    return `${history.goDirectlyFlag ? "有" : "無"} → ${
+      goDirectlyFlag ? "有" : "無"
     }`;
   })();
 
@@ -119,8 +167,8 @@ function showReturnDirectlyFlag(
       return "変更なし";
     }
 
-    return `${returnDirectlyFlag ? "有" : "無"} → ${
-      history.returnDirectlyFlag ? "有" : "無"
+    return `${history.returnDirectlyFlag ? "有" : "無"} → ${
+      returnDirectlyFlag ? "有" : "無"
     }`;
   })();
 
@@ -364,7 +412,7 @@ function showRemarks(
     if ((!remarks && !history.remarks) || remarks === history.remarks) {
       return "変更なし";
     }
-    return `${remarks || ""} → ${history.remarks || ""}`;
+    return `${history.remarks || "(なし)"} → ${remarks || "(なし)"}`;
   })();
 
   return `備考：${result}`;
@@ -387,6 +435,7 @@ export default function getAttendanceMailBody(
     showSeparateLine(),
     showWorkDate(attendance),
     showPaidHolidayFlag(attendance, history),
+    showSubstituteHolidayDate(attendance, history),
     showGoDirectlyFlag(attendance, history),
     showReturnDirectlyFlag(attendance, history),
     showWorkTime(attendance, history),

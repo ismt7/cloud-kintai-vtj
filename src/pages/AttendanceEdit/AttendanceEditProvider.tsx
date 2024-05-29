@@ -5,6 +5,7 @@ import {
   FieldArrayWithId,
   UseFieldArrayAppend,
   UseFieldArrayRemove,
+  UseFieldArrayReplace,
   UseFieldArrayUpdate,
   UseFormGetValues,
   UseFormHandleSubmit,
@@ -31,6 +32,7 @@ type AttendanceEditContextProps = {
   restAppend?: UseFieldArrayAppend<AttendanceEditInputs, "rests">;
   restRemove?: UseFieldArrayRemove;
   restUpdate?: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
+  restReplace?: UseFieldArrayReplace<AttendanceEditInputs, "rests">;
   register?: UseFormRegister<AttendanceEditInputs>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control?: Control<AttendanceEditInputs, any>;

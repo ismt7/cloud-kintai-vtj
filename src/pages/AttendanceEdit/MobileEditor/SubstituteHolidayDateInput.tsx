@@ -1,32 +1,24 @@
-import { Stack, styled, Typography } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useContext } from "react";
 import { Controller } from "react-hook-form";
 
 import { AttendanceEditContext } from "../AttendanceEditProvider";
-
-const Label = styled(Typography)(() => ({
-  width: "150px",
-  fontWeight: "bold",
-}));
+import { Label } from "./Label";
 
 export function SubstituteHolidayDateInput() {
-  const { control, setValue, restReplace, changeRequests } = useContext(
-    AttendanceEditContext
-  );
+  const { control, setValue, restReplace } = useContext(AttendanceEditContext);
 
   if (!control || !setValue || !restReplace) {
     return null;
   }
 
   return (
-    <Stack direction="row" spacing={0} alignItems={"center"}>
-      <Label variant="body1">振替休日</Label>
+    <>
+      <Label variant="body1">振替休暇</Label>
       <Controller
         name="substituteHolidayDate"
         control={control}
-        disabled={changeRequests.length > 0}
         render={({ field }) => (
           <DatePicker
             {...field}
@@ -51,6 +43,6 @@ export function SubstituteHolidayDateInput() {
           />
         )}
       />
-    </Stack>
+    </>
   );
 }

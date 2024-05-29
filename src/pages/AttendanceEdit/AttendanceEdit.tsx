@@ -50,6 +50,7 @@ export default function AttendanceEdit() {
     append: restAppend,
     remove: restRemove,
     update: restUpdate,
+    replace: restReplace,
   } = useFieldArray({
     control,
     name: "rests",
@@ -162,8 +163,8 @@ export default function AttendanceEdit() {
         setValue("startTime", res.startTime);
         setValue("endTime", res.endTime);
         setValue("paidHolidayFlag", res.paidHolidayFlag || false);
-        setValue("substituteHolidayDate", res.substituteHolidayDate);
         setValue("goDirectlyFlag", res.goDirectlyFlag || false);
+        setValue("substituteHolidayDate", res.substituteHolidayDate);
         setValue("returnDirectlyFlag", res.returnDirectlyFlag || false);
         setValue("remarks", res.remarks);
         setValue(
@@ -224,6 +225,7 @@ export default function AttendanceEdit() {
         restAppend,
         restRemove,
         restUpdate,
+        restReplace,
         changeRequests,
       }}
     >

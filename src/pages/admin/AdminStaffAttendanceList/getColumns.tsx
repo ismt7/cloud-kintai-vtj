@@ -162,7 +162,7 @@ export default function getColumns(
       width: 300,
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<Attendance>) => {
-        const { workDate, paidHolidayFlag } = params.row;
+        const { workDate, paidHolidayFlag, substituteHolidayDate } = params.row;
         const isHoliday = holidayCalendars?.find(
           ({ holidayDate }) => holidayDate === workDate
         );
@@ -171,8 +171,13 @@ export default function getColumns(
           ({ holidayDate }) => holidayDate === workDate
         );
 
+        const isSubstituteHoliday = substituteHolidayDate
+          ? dayjs(substituteHolidayDate).isValid()
+          : false;
+
         const summaryMessage = [];
         if (paidHolidayFlag) summaryMessage.push("有給休暇");
+        if (isSubstituteHoliday) summaryMessage.push("振替休日");
         if (isHoliday) summaryMessage.push(isHoliday.name);
         if (isCompanyHoliday) summaryMessage.push(isCompanyHoliday.name);
         if (params.row.remarks) summaryMessage.push(params.row.remarks);

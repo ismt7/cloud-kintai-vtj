@@ -28,6 +28,7 @@ import {
   AttendanceEditInputs,
   defaultValues,
 } from "@/pages/AttendanceEdit/common";
+import { SubstituteHolidayDateInput } from "@/pages/AttendanceEdit/DesktopEditor/SubstituteHolidayDateInput";
 
 import { useAppDispatchV2 } from "../../app/hooks";
 import * as MESSAGE_CODE from "../../errors";
@@ -43,7 +44,7 @@ import {
 import Title from "../Title/Title";
 import ChangeRequestDialog from "./ChangeRequestDialog/ChangeRequestDialog";
 // eslint-disable-next-line import/no-cycle
-import EditAttendanceHistoryList from "./EditAttendanceHistoryList";
+import EditAttendanceHistoryList from "./EditAttendanceHistoryList/EditAttendanceHistoryList";
 import GoDirectlyFlagInput from "./GoDirectlyFlagInput";
 import ProductionTimeItem from "./items/ProductionTimeItem";
 // eslint-disable-next-line import/no-cycle
@@ -348,6 +349,7 @@ export default function AttendanceEditor() {
         changeRequests,
         restRemove,
         restUpdate,
+        restReplace,
         register,
         control,
       }}
@@ -437,10 +439,7 @@ export default function AttendanceEditor() {
           </Box>
           <StaffNameItem />
           <PaidHolidayFlagInput />
-          <Stack direction="row" spacing={1} alignItems={"center"}>
-            <Box sx={{ fontWeight: "bold", width: "150px" }}>振替休日</Box>
-            <Box></Box>
-          </Stack>
+          <SubstituteHolidayDateInput />
           <Stack direction="row" alignItems={"center"}>
             <Box sx={{ fontWeight: "bold", width: "150px" }}>直行</Box>
             <Box>

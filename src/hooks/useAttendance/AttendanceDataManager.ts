@@ -13,6 +13,7 @@ import {
 } from "@/API";
 import { createAttendance, updateAttendance } from "@/graphql/mutations";
 import { getAttendance, listAttendances } from "@/graphql/queries";
+import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 
 export class AttendanceDataManager {
   async fetch(id: string) {
@@ -120,6 +121,8 @@ export class AttendanceDataManager {
 
     input.revision = inputRevision + 1;
 
+    const createdAt = new AttendanceDateTime().toISOString();
+
     const newHistory: AttendanceHistoryInput = {
       staffId: currentAttendance.staffId,
       workDate: currentAttendance.workDate,
@@ -130,7 +133,7 @@ export class AttendanceDataManager {
       remarks: currentAttendance.remarks,
       paidHolidayFlag: currentAttendance.paidHolidayFlag,
       substituteHolidayDate: currentAttendance.substituteHolidayDate,
-      createdAt: currentAttendance.createdAt,
+      createdAt,
       rests: currentAttendance.rests
         ? currentAttendance.rests
             .filter((item): item is NonNullable<typeof item> => !!item)

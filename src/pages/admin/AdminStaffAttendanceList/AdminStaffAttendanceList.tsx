@@ -103,7 +103,7 @@ export default function AdminStaffAttendanceList() {
 
     fetchStaff(staffId)
       .then(setStaff)
-      .catch((e) => {
+      .catch(() => {
         dispatch(setSnackbarError(MESSAGE_CODE.E00001));
       });
   }, [staffId]);
@@ -241,6 +241,7 @@ export default function AdminStaffAttendanceList() {
                     {/* 摘要 */}
                     <SummaryTableCell
                       paidHolidayFlag={attendance.paidHolidayFlag}
+                      substituteHolidayDate={attendance.substituteHolidayDate}
                       remarks={attendance.remarks}
                     />
 

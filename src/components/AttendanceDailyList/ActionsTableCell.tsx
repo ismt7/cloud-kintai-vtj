@@ -54,7 +54,14 @@ function AttendanceTotalStatus({
   staff: Staff | null | undefined;
 }) {
   const judgedStatus = attendances.map(
-    ({ workDate, startTime, endTime, paidHolidayFlag, changeRequests }) =>
+    ({
+      workDate,
+      startTime,
+      endTime,
+      paidHolidayFlag,
+      changeRequests,
+      substituteHolidayDate,
+    }) =>
       judgeStatus(
         workDate,
         startTime,
@@ -63,7 +70,8 @@ function AttendanceTotalStatus({
         companyHolidayCalendars,
         paidHolidayFlag,
         changeRequests,
-        staff
+        staff,
+        substituteHolidayDate
       )
   );
 

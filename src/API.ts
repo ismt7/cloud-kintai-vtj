@@ -246,7 +246,6 @@ export type CreateAttendanceInput = {
   rests?: Array< RestInput | null > | null,
   remarks?: string | null,
   paidHolidayFlag?: boolean | null,
-  substituteHolidayFlag?: boolean | null,
   substituteHolidayDate?: string | null,
   histories?: Array< AttendanceHistoryInput | null > | null,
   changeRequests?: Array< AttendanceChangeRequestInput | null > | null,
@@ -297,7 +296,6 @@ export type ModelAttendanceConditionInput = {
   returnDirectlyFlag?: ModelBooleanInput | null,
   remarks?: ModelStringInput | null,
   paidHolidayFlag?: ModelBooleanInput | null,
-  substituteHolidayFlag?: ModelBooleanInput | null,
   substituteHolidayDate?: ModelStringInput | null,
   revision?: ModelIntInput | null,
   and?: Array< ModelAttendanceConditionInput | null > | null,
@@ -331,7 +329,6 @@ export type Attendance = {
   rests?:  Array<Rest | null > | null,
   remarks?: string | null,
   paidHolidayFlag?: boolean | null,
-  substituteHolidayFlag?: boolean | null,
   substituteHolidayDate?: string | null,
   histories?:  Array<AttendanceHistory | null > | null,
   changeRequests?:  Array<AttendanceChangeRequest | null > | null,
@@ -389,7 +386,6 @@ export type UpdateAttendanceInput = {
   rests?: Array< RestInput | null > | null,
   remarks?: string | null,
   paidHolidayFlag?: boolean | null,
-  substituteHolidayFlag?: boolean | null,
   substituteHolidayDate?: string | null,
   histories?: Array< AttendanceHistoryInput | null > | null,
   changeRequests?: Array< AttendanceChangeRequestInput | null > | null,
@@ -561,7 +557,6 @@ export type ModelAttendanceFilterInput = {
   returnDirectlyFlag?: ModelBooleanInput | null,
   remarks?: ModelStringInput | null,
   paidHolidayFlag?: ModelBooleanInput | null,
-  substituteHolidayFlag?: ModelBooleanInput | null,
   substituteHolidayDate?: ModelStringInput | null,
   revision?: ModelIntInput | null,
   createdAt?: ModelStringInput | null,
@@ -690,7 +685,6 @@ export type ModelSubscriptionAttendanceFilterInput = {
   returnDirectlyFlag?: ModelSubscriptionBooleanInput | null,
   remarks?: ModelSubscriptionStringInput | null,
   paidHolidayFlag?: ModelSubscriptionBooleanInput | null,
-  substituteHolidayFlag?: ModelSubscriptionBooleanInput | null,
   substituteHolidayDate?: ModelSubscriptionStringInput | null,
   revision?: ModelSubscriptionIntInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
@@ -977,7 +971,6 @@ export type CreateAttendanceMutation = {
     } | null > | null,
     remarks?: string | null,
     paidHolidayFlag?: boolean | null,
-    substituteHolidayFlag?: boolean | null,
     substituteHolidayDate?: string | null,
     histories?:  Array< {
       __typename: "AttendanceHistory",
@@ -1045,7 +1038,6 @@ export type UpdateAttendanceMutation = {
     } | null > | null,
     remarks?: string | null,
     paidHolidayFlag?: boolean | null,
-    substituteHolidayFlag?: boolean | null,
     substituteHolidayDate?: string | null,
     histories?:  Array< {
       __typename: "AttendanceHistory",
@@ -1113,7 +1105,6 @@ export type DeleteAttendanceMutation = {
     } | null > | null,
     remarks?: string | null,
     paidHolidayFlag?: boolean | null,
-    substituteHolidayFlag?: boolean | null,
     substituteHolidayDate?: string | null,
     histories?:  Array< {
       __typename: "AttendanceHistory",
@@ -1419,7 +1410,6 @@ export type GetAttendanceQuery = {
     } | null > | null,
     remarks?: string | null,
     paidHolidayFlag?: boolean | null,
-    substituteHolidayFlag?: boolean | null,
     substituteHolidayDate?: string | null,
     histories?:  Array< {
       __typename: "AttendanceHistory",
@@ -1490,7 +1480,6 @@ export type ListAttendancesQuery = {
       } | null > | null,
       remarks?: string | null,
       paidHolidayFlag?: boolean | null,
-      substituteHolidayFlag?: boolean | null,
       substituteHolidayDate?: string | null,
       histories?:  Array< {
         __typename: "AttendanceHistory",
@@ -1820,7 +1809,6 @@ export type OnCreateAttendanceSubscription = {
     } | null > | null,
     remarks?: string | null,
     paidHolidayFlag?: boolean | null,
-    substituteHolidayFlag?: boolean | null,
     substituteHolidayDate?: string | null,
     histories?:  Array< {
       __typename: "AttendanceHistory",
@@ -1887,7 +1875,6 @@ export type OnUpdateAttendanceSubscription = {
     } | null > | null,
     remarks?: string | null,
     paidHolidayFlag?: boolean | null,
-    substituteHolidayFlag?: boolean | null,
     substituteHolidayDate?: string | null,
     histories?:  Array< {
       __typename: "AttendanceHistory",
@@ -1954,7 +1941,6 @@ export type OnDeleteAttendanceSubscription = {
     } | null > | null,
     remarks?: string | null,
     paidHolidayFlag?: boolean | null,
-    substituteHolidayFlag?: boolean | null,
     substituteHolidayDate?: string | null,
     histories?:  Array< {
       __typename: "AttendanceHistory",

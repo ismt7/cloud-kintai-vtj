@@ -38,7 +38,6 @@ export default function AttendanceUpdateForm(props) {
     returnDirectlyFlag: false,
     remarks: "",
     paidHolidayFlag: false,
-    substituteHolidayFlag: false,
     substituteHolidayDate: "",
     revision: "",
   };
@@ -55,9 +54,6 @@ export default function AttendanceUpdateForm(props) {
   const [remarks, setRemarks] = React.useState(initialValues.remarks);
   const [paidHolidayFlag, setPaidHolidayFlag] = React.useState(
     initialValues.paidHolidayFlag
-  );
-  const [substituteHolidayFlag, setSubstituteHolidayFlag] = React.useState(
-    initialValues.substituteHolidayFlag
   );
   const [substituteHolidayDate, setSubstituteHolidayDate] = React.useState(
     initialValues.substituteHolidayDate
@@ -76,7 +72,6 @@ export default function AttendanceUpdateForm(props) {
     setReturnDirectlyFlag(cleanValues.returnDirectlyFlag);
     setRemarks(cleanValues.remarks);
     setPaidHolidayFlag(cleanValues.paidHolidayFlag);
-    setSubstituteHolidayFlag(cleanValues.substituteHolidayFlag);
     setSubstituteHolidayDate(cleanValues.substituteHolidayDate);
     setRevision(cleanValues.revision);
     setErrors({});
@@ -107,7 +102,6 @@ export default function AttendanceUpdateForm(props) {
     returnDirectlyFlag: [],
     remarks: [],
     paidHolidayFlag: [],
-    substituteHolidayFlag: [],
     substituteHolidayDate: [],
     revision: [],
   };
@@ -145,7 +139,6 @@ export default function AttendanceUpdateForm(props) {
           returnDirectlyFlag: returnDirectlyFlag ?? null,
           remarks: remarks ?? null,
           paidHolidayFlag: paidHolidayFlag ?? null,
-          substituteHolidayFlag: substituteHolidayFlag ?? null,
           substituteHolidayDate: substituteHolidayDate ?? null,
           revision: revision ?? null,
         };
@@ -216,7 +209,6 @@ export default function AttendanceUpdateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
-              substituteHolidayFlag,
               substituteHolidayDate,
               revision,
             };
@@ -250,7 +242,6 @@ export default function AttendanceUpdateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
-              substituteHolidayFlag,
               substituteHolidayDate,
               revision,
             };
@@ -284,7 +275,6 @@ export default function AttendanceUpdateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
-              substituteHolidayFlag,
               substituteHolidayDate,
               revision,
             };
@@ -318,7 +308,6 @@ export default function AttendanceUpdateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
-              substituteHolidayFlag,
               substituteHolidayDate,
               revision,
             };
@@ -352,7 +341,6 @@ export default function AttendanceUpdateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
-              substituteHolidayFlag,
               substituteHolidayDate,
               revision,
             };
@@ -386,7 +374,6 @@ export default function AttendanceUpdateForm(props) {
               returnDirectlyFlag: value,
               remarks,
               paidHolidayFlag,
-              substituteHolidayFlag,
               substituteHolidayDate,
               revision,
             };
@@ -422,7 +409,6 @@ export default function AttendanceUpdateForm(props) {
               returnDirectlyFlag,
               remarks: value,
               paidHolidayFlag,
-              substituteHolidayFlag,
               substituteHolidayDate,
               revision,
             };
@@ -456,7 +442,6 @@ export default function AttendanceUpdateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag: value,
-              substituteHolidayFlag,
               substituteHolidayDate,
               revision,
             };
@@ -472,42 +457,6 @@ export default function AttendanceUpdateForm(props) {
         errorMessage={errors.paidHolidayFlag?.errorMessage}
         hasError={errors.paidHolidayFlag?.hasError}
         {...getOverrideProps(overrides, "paidHolidayFlag")}
-      ></SwitchField>
-      <SwitchField
-        label="Substitute holiday flag"
-        defaultChecked={false}
-        isDisabled={false}
-        isChecked={substituteHolidayFlag}
-        onChange={(e) => {
-          let value = e.target.checked;
-          if (onChange) {
-            const modelFields = {
-              staffId,
-              workDate,
-              startTime,
-              endTime,
-              goDirectlyFlag,
-              returnDirectlyFlag,
-              remarks,
-              paidHolidayFlag,
-              substituteHolidayFlag: value,
-              substituteHolidayDate,
-              revision,
-            };
-            const result = onChange(modelFields);
-            value = result?.substituteHolidayFlag ?? value;
-          }
-          if (errors.substituteHolidayFlag?.hasError) {
-            runValidationTasks("substituteHolidayFlag", value);
-          }
-          setSubstituteHolidayFlag(value);
-        }}
-        onBlur={() =>
-          runValidationTasks("substituteHolidayFlag", substituteHolidayFlag)
-        }
-        errorMessage={errors.substituteHolidayFlag?.errorMessage}
-        hasError={errors.substituteHolidayFlag?.hasError}
-        {...getOverrideProps(overrides, "substituteHolidayFlag")}
       ></SwitchField>
       <TextField
         label="Substitute holiday date"
@@ -526,7 +475,6 @@ export default function AttendanceUpdateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
-              substituteHolidayFlag,
               substituteHolidayDate: value,
               revision,
             };
@@ -566,7 +514,6 @@ export default function AttendanceUpdateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
-              substituteHolidayFlag,
               substituteHolidayDate,
               revision: value,
             };

@@ -32,6 +32,7 @@ export interface DataGridProps {
   endTime: Attendance["endTime"];
   remarks: Attendance["remarks"];
   paidHolidayFlag: Attendance["paidHolidayFlag"];
+  substituteHolidayDate: Attendance["substituteHolidayDate"];
   changeRequests: Attendance["changeRequests"];
   rests: Rest[];
 }
@@ -53,6 +54,7 @@ export default function GetColumns(
           startTime,
           endTime,
           paidHolidayFlag,
+          substituteHolidayDate,
           changeRequests,
         } = params.row;
 
@@ -64,7 +66,8 @@ export default function GetColumns(
           companyHolidayCalendars,
           paidHolidayFlag,
           changeRequests,
-          staff
+          staff,
+          substituteHolidayDate
         );
       },
     },
@@ -137,13 +140,15 @@ export default function GetColumns(
       width: 300,
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<DataGridProps>) => {
-        const { workDate, paidHolidayFlag, remarks } = params.row;
+        const { workDate, paidHolidayFlag, remarks, substituteHolidayDate } =
+          params.row;
         return makeRemarks(
           workDate,
           paidHolidayFlag,
           remarks,
           holidayCalendars,
-          companyHolidayCalendars
+          companyHolidayCalendars,
+          substituteHolidayDate
         );
       },
     },

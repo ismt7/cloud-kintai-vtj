@@ -200,7 +200,6 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
     }
     remarks
     paidHolidayFlag
-    substituteHolidayFlag
     substituteHolidayDate
     histories {
       staffId
@@ -271,7 +270,6 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
       }
       remarks
       paidHolidayFlag
-      substituteHolidayFlag
       substituteHolidayDate
       histories {
         staffId

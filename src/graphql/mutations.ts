@@ -270,7 +270,6 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
     }
     remarks
     paidHolidayFlag
-    substituteHolidayFlag
     substituteHolidayDate
     histories {
       staffId
@@ -339,7 +338,6 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
     }
     remarks
     paidHolidayFlag
-    substituteHolidayFlag
     substituteHolidayDate
     histories {
       staffId
@@ -408,7 +406,6 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
     }
     remarks
     paidHolidayFlag
-    substituteHolidayFlag
     substituteHolidayDate
     histories {
       staffId
