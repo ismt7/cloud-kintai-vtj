@@ -13,12 +13,12 @@ import {
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
+import { StaffType } from "@/hooks/useStaffs/useStaffs";
 import { GenericMailSender } from "@/lib/mail/GenericMailSender";
 
 import {
   Attendance,
   AttendanceChangeRequest,
-  Staff,
   UpdateAttendanceInput,
 } from "../../../API";
 import { useAppDispatchV2 } from "../../../app/hooks";
@@ -39,7 +39,7 @@ export default function ChangeRequestDialog({
 }: {
   attendance: Attendance | null;
   updateAttendance: (input: UpdateAttendanceInput) => Promise<Attendance>;
-  staff: Staff | null | undefined;
+  staff: StaffType | null | undefined;
 }) {
   const dispatch = useAppDispatchV2();
   const [open, setOpen] = useState(false);

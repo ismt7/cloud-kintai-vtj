@@ -270,6 +270,7 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
     }
     remarks
     paidHolidayFlag
+    substituteHolidayDate
     histories {
       staffId
       workDate
@@ -284,6 +285,8 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
       }
       remarks
       paidHolidayFlag
+      substituteHolidayFlag
+      substituteHolidayDate
       createdAt
       __typename
     }
@@ -299,6 +302,8 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
       }
       remarks
       paidHolidayFlag
+      substituteHolidayFlag
+      substituteHolidayDate
       completed
       comment
       staffComment
@@ -333,6 +338,7 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
     }
     remarks
     paidHolidayFlag
+    substituteHolidayDate
     histories {
       staffId
       workDate
@@ -347,6 +353,8 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
       }
       remarks
       paidHolidayFlag
+      substituteHolidayFlag
+      substituteHolidayDate
       createdAt
       __typename
     }
@@ -362,6 +370,8 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
       }
       remarks
       paidHolidayFlag
+      substituteHolidayFlag
+      substituteHolidayDate
       completed
       comment
       staffComment
@@ -396,6 +406,7 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
     }
     remarks
     paidHolidayFlag
+    substituteHolidayDate
     histories {
       staffId
       workDate
@@ -410,6 +421,8 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
       }
       remarks
       paidHolidayFlag
+      substituteHolidayFlag
+      substituteHolidayDate
       createdAt
       __typename
     }
@@ -425,6 +438,8 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
       }
       remarks
       paidHolidayFlag
+      substituteHolidayFlag
+      substituteHolidayDate
       completed
       comment
       staffComment

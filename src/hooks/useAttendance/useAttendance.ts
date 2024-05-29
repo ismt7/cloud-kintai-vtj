@@ -1,15 +1,15 @@
 import dayjs from "dayjs";
 import { useState } from "react";
 
+import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
+
 import {
   Attendance,
   CreateAttendanceInput,
   RestInput,
   UpdateAttendanceInput,
 } from "../../API";
-import fetchAttendance from "../common/fetchAttendance";
-import createAttendanceData from "./createAttendanceData";
-import updateAttendanceData from "./updateAttendanceData";
+import { AttendanceDataManager } from "./AttendanceDataManager";
 
 export enum GoDirectlyFlag {
   YES,
@@ -26,9 +26,11 @@ export default function useAttendance() {
     undefined
   );
   const [loading, setLoading] = useState(true);
+  const attendanceDataManager = new AttendanceDataManager();
 
   const getAttendance = async (staffId: string, workDate: string) =>
-    fetchAttendance(staffId, workDate)
+    attendanceDataManager
+      .fetchAll(staffId, workDate)
       .then((res) => {
         setAttendance(res);
         return res;
@@ -39,7 +41,8 @@ export default function useAttendance() {
       .finally(() => setLoading(false));
 
   const createAttendance = async (input: CreateAttendanceInput) =>
-    createAttendanceData(input)
+    attendanceDataManager
+      .create(input)
       .then((res) => {
         setAttendance(res);
         return res;
@@ -49,7 +52,8 @@ export default function useAttendance() {
       });
 
   const updateAttendance = async (input: UpdateAttendanceInput) =>
-    updateAttendanceData(input)
+    attendanceDataManager
+      .update(input)
       .then((res) => {
         setAttendance(res);
         return res;
@@ -93,10 +97,8 @@ export default function useAttendance() {
   ) => {
     if (attendance) {
       const startTime = dayjs(attendance.startTime);
-      // eslint-disable-next-line newline-per-chained-call
-      const noon = dayjs().hour(12).minute(0).second(0).millisecond(0);
+      const noon = new AttendanceDateTime().setNoon().toDayjs();
       const isBeforeNoon = startTime.isBefore(noon);
-
       const rests = (() => {
         if (!isBeforeNoon) {
           return [];
@@ -113,16 +115,10 @@ export default function useAttendance() {
               )
           : [];
 
-        const lunchBreakStart = dayjs()
-          .hour(12)
-          .minute(0)
-          .second(0)
-          .millisecond(0);
-        const lunchBreakEnd = dayjs()
-          .hour(13)
-          .minute(0)
-          .second(0)
-          .millisecond(0);
+        const lunchBreakStart = new AttendanceDateTime()
+          .setRestStart()
+          .toDayjs();
+        const lunchBreakEnd = new AttendanceDateTime().setRestEnd().toDayjs();
 
         const isAlreadyExist = prevRests.filter((rest) => {
           if (!rest.startTime || !rest.endTime) {

@@ -80,6 +80,7 @@ export default function TableBodyRow({
       {/* 摘要 */}
       <SummaryTableCell
         paidHolidayFlag={attendance.paidHolidayFlag}
+        substituteHolidayDate={attendance.substituteHolidayDate}
         remarks={attendance.remarks}
       />
 

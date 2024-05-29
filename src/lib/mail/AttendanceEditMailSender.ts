@@ -1,15 +1,16 @@
 import dayjs from "dayjs";
 
-import { Attendance, AttendanceHistory, Staff } from "@/API";
+import { Attendance, AttendanceHistory } from "@/API";
 import getAttendanceMailBody from "@/components/attendance_editor/attendanceMailTemplate";
+import { StaffType } from "@/hooks/useStaffs/useStaffs";
 
 import { MailSender } from "./MailSender";
 
 export class AttendanceEditMailSender extends MailSender {
-  staff: Staff;
+  staff: StaffType;
   attendance: Attendance;
 
-  constructor(staff: Staff, attendance: Attendance) {
+  constructor(staff: StaffType, attendance: Attendance) {
     super();
     this.staff = staff;
     this.attendance = attendance;

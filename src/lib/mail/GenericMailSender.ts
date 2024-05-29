@@ -1,16 +1,17 @@
 import dayjs from "dayjs";
 
-import { Attendance, Staff } from "@/API";
+import { Attendance } from "@/API";
 import * as MESSAGE_CODE from "@/errors";
+import { StaffType } from "@/hooks/useStaffs/useStaffs";
 
 import { MailSender } from "./MailSender";
 
 export class GenericMailSender extends MailSender {
-  staff: Staff;
+  staff: StaffType;
   attendance: Attendance;
   basePath: string;
 
-  constructor(staff: Staff, attendance: Attendance) {
+  constructor(staff: StaffType, attendance: Attendance) {
     super();
     this.staff = staff;
     this.attendance = attendance;

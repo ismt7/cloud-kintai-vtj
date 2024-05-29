@@ -13,6 +13,8 @@ import {
   UseFormWatch,
 } from "react-hook-form";
 
+import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
+
 import { AttendanceEditInputs } from "../../common";
 
 const ClearButton = styled(Button)(({ theme }) => ({
@@ -92,11 +94,9 @@ export default function EndTimeInput({
             variant="outlined"
             icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
             onClick={() => {
-              const endTime = workDate
-                .hour(18)
-                .minute(0)
-                .second(0)
-                .millisecond(0)
+              const endTime = new AttendanceDateTime()
+                .setDate(workDate)
+                .setWorkEnd()
                 .toISOString();
               setValue("endTime", endTime);
             }}

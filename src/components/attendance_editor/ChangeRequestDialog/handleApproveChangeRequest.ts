@@ -44,6 +44,9 @@ export default async function handleApproveChangeRequest(
       : attendance.rests,
     paidHolidayFlag:
       targetChangeRequest.paidHolidayFlag ?? attendance.paidHolidayFlag,
+    substituteHolidayDate:
+      targetChangeRequest.substituteHolidayDate ??
+      attendance.substituteHolidayDate,
     changeRequests: changeRequests.map((changeRequest) => ({
       startTime: changeRequest.startTime,
       endTime: changeRequest.endTime,

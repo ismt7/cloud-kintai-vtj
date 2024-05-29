@@ -41,6 +41,7 @@ export type StaffType = {
   createdAt: Staff["createdAt"];
   updatedAt: Staff["updatedAt"];
   usageStartDate?: Staff["usageStartDate"];
+  notifications?: Staff["notifications"];
 };
 
 export function mappingStaffRole(role: Staff["role"]): StaffRole {

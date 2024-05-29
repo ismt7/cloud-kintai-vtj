@@ -4,41 +4,30 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { Box, Button, Chip, IconButton, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import {
-  Control,
-  Controller,
-  FieldArrayWithId,
-  UseFieldArrayUpdate,
-  UseFormGetValues,
-  UseFormWatch,
-} from "react-hook-form";
+import { useContext, useEffect, useState } from "react";
+import { Controller, FieldArrayWithId } from "react-hook-form";
 
-import { AttendanceEditorInputs } from "../../common";
-
-type RestEndTimeInputProps = {
-  index: number;
-  workDate: dayjs.Dayjs;
-  rest: FieldArrayWithId<AttendanceEditorInputs, "rests", "id">;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<AttendanceEditorInputs, any>;
-  watch: UseFormWatch<AttendanceEditorInputs>;
-  getValues: UseFormGetValues<AttendanceEditorInputs>;
-  restUpdate: UseFieldArrayUpdate<AttendanceEditorInputs, "rests">;
-};
+import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
+import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
+import { AttendanceEditInputs } from "@/pages/AttendanceEdit/common";
 
 export default function RestEndTimeInput({
   index,
-  workDate,
   rest,
-  control,
-  watch,
-  getValues,
-  restUpdate,
-}: RestEndTimeInputProps) {
+}: {
+  index: number;
+  rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
+}) {
+  const { workDate, control, watch, getValues, restUpdate } = useContext(
+    AttendanceEditContext
+  );
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
 
   useEffect(() => {
+    if (!watch || !getValues) {
+      return;
+    }
+
     const rest = getValues(`rests.${index}`);
     if (!rest) return;
     setEnableEndTime(!!rest.endTime);
@@ -66,6 +55,10 @@ export default function RestEndTimeInput({
         </Button>
       </Box>
     );
+  }
+
+  if (!workDate || !control || !restUpdate) {
+    return null;
   }
 
   return (
@@ -108,11 +101,9 @@ export default function RestEndTimeInput({
             color="success"
             icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
             onClick={() => {
-              const endTime = workDate
-                .hour(13)
-                .minute(0)
-                .second(0)
-                .millisecond(0)
+              const endTime = new AttendanceDateTime()
+                .setDate(workDate)
+                .setRestEnd()
                 .toISOString();
               restUpdate(index, { ...rest, endTime });
             }}

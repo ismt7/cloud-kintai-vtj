@@ -13,7 +13,9 @@ import RemarksInput from "./RemarksInput";
 import { RequestButtonItem } from "./RequestButtonItem";
 import { RestTimeInput } from "./RestTimeInput/RestTimeInput";
 import { ReturnDirectlyFlagInput } from "./ReturnDirectlyFlagInput";
+import StaffCommentInput from "./StaffCommentInput";
 import { StaffNameItem } from "./StaffNameItem";
+import { SubstituteHolidayDateInput } from "./SubstituteHolidayDateInput";
 import { WorkDateItem } from "./WorkDateItem";
 import { WorkTimeInput } from "./WorkTimeInput/WorkTimeInput";
 
@@ -78,6 +80,9 @@ export function MobileEditor() {
         {/* 有給休暇 */}
         <PaidHolidayFlagInput />
 
+        {/* 振替休暇 */}
+        <SubstituteHolidayDateInput />
+
         {/* 直行 */}
         <GoDirectlyFlagInput />
 
@@ -99,6 +104,10 @@ export function MobileEditor() {
         {/* 備考 */}
         <Label>備考</Label>
         <RemarksInput register={register} />
+
+        {/* 修正コメント */}
+        <Label>修正理由</Label>
+        <StaffCommentInput />
 
         {/* 申請ボタン */}
         <RequestButtonItem

@@ -23,6 +23,7 @@ import { calcTotalRestTime } from "./RestTimeItem/RestTimeInput/RestTimeInput";
 import RestTimeItem from "./RestTimeItem/RestTimeItem";
 import ReturnDirectlyFlagInput from "./ReturnDirectlyFlagInput";
 import StaffCommentInput from "./StaffCommentInput";
+import { SubstituteHolidayDateInput } from "./SubstituteHolidayDateInput";
 import WorkDateItem from "./WorkDateItem";
 import {
   calcTotalWorkTime,
@@ -107,6 +108,7 @@ export default function DesktopEditor() {
           <WorkDateItem />
           <StaffNameItem />
           <PaidHolidayFlagInput />
+          <SubstituteHolidayDateInput />
           <GoDirectlyFlagInput />
           <ReturnDirectlyFlagInput />
           <WorkTimeInput />

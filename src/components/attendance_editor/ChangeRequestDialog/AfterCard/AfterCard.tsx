@@ -8,6 +8,7 @@ import {
 import dayjs from "dayjs";
 
 import { AttendanceChangeRequest } from "../../../../API";
+import SubstituteHolidayDateTableRow from "../BeforeCard/SubstituteHolidayFlagDateRow";
 import GoDirectlyFlagTableRow from "./GoDirectlyFlagTableRow";
 import PaidHolidayFlagTableRow from "./PaidHolidayFlagTableRow";
 import RemarksTableRow from "./RemarksTableRow";
@@ -29,6 +30,9 @@ export default function AfterCard({
         <Table>
           <TableBody>
             <PaidHolidayFlagTableRow value={changeRequest?.paidHolidayFlag} />
+            <SubstituteHolidayDateTableRow
+              value={changeRequest?.substituteHolidayDate}
+            />
             <GoDirectlyFlagTableRow value={changeRequest?.goDirectlyFlag} />
             <ReturnDirectlyFlagTableRow
               value={changeRequest?.returnDirectlyFlag}

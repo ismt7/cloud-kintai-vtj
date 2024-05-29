@@ -11,6 +11,8 @@ import { Cache, Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 
+import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
+
 import { Staff } from "../../API";
 import { useAppDispatchV2 } from "../../app/hooks";
 import * as MESSAGE_CODE from "../../errors";
@@ -162,6 +164,7 @@ export default function TimeRecorder() {
           startTime,
           endTime,
           paidHolidayFlag,
+          substituteHolidayDate,
           changeRequests,
         } = attendance;
         return judgeStatus(
@@ -172,7 +175,8 @@ export default function TimeRecorder() {
           companyHolidayCalendars,
           paidHolidayFlag,
           changeRequests,
-          staff
+          staff,
+          substituteHolidayDate
         );
       })
       .filter((status) => status === "エラー").length;
@@ -234,12 +238,7 @@ export default function TimeRecorder() {
   const handleGoDirectly = () => {
     if (!cognitoUser) return;
 
-    const now = dayjs()
-      .hour(9)
-      .minute(0)
-      .second(0)
-      .millisecond(0)
-      .toISOString();
+    const now = new AttendanceDateTime().setWorkStart().toISOString();
 
     clockIn(cognitoUser.id, today, now, GoDirectlyFlag.YES)
       .then((res) => {
@@ -255,12 +254,7 @@ export default function TimeRecorder() {
   const handleReturnDirectly = () => {
     if (!cognitoUser) return;
 
-    const now = dayjs()
-      .hour(18)
-      .minute(0)
-      .second(0)
-      .millisecond(0)
-      .toISOString();
+    const now = new AttendanceDateTime().setWorkEnd().toISOString();
 
     clockOut(cognitoUser.id, today, now, ReturnDirectlyFlag.YES)
       .then((res) => {

@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 import { Controller, FieldArrayWithId } from "react-hook-form";
 
+import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 
 import { AttendanceEditInputs } from "../../../common";
@@ -114,11 +115,9 @@ function DefaultEndTimeChip({
   if (!workDate || !restUpdate) return null;
 
   const clickHandler = () => {
-    const endTime = workDate
-      .hour(13)
-      .minute(0)
-      .second(0)
-      .millisecond(0)
+    const endTime = new AttendanceDateTime()
+      .setDate(workDate)
+      .setRestEnd()
       .toISOString();
     restUpdate(index, { ...rest, endTime });
   };
