@@ -1,14 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import {
-  Control,
-  UseFormGetValues,
-  UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
+import { useContext, useEffect, useState } from "react";
 
-import { AttendanceEditorInputs } from "../../common";
+import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
+
 import EndTimeInput from "./EndTimeInput";
 import StartTimeInput from "./StartTimeInput";
 
@@ -24,30 +19,22 @@ export function calcTotalWorkTime(
   return diff;
 }
 
-export function WorkTimeItem({
-  targetWorkDate,
-  control,
-  watch,
-  setValue,
-  getValues,
-}: {
-  targetWorkDate: dayjs.Dayjs | null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<AttendanceEditorInputs, any>;
-  watch: UseFormWatch<AttendanceEditorInputs>;
-  setValue: UseFormSetValue<AttendanceEditorInputs>;
-  getValues: UseFormGetValues<AttendanceEditorInputs>;
-}) {
+export function WorkTimeItem() {
+  const { workDate, control, watch, setValue, getValues } = useContext(
+    AttendanceEditContext
+  );
   const [totalWorkTime, setTotalWorkTime] = useState<number>(0);
 
   useEffect(() => {
+    if (!watch) return;
+
     watch((data) => {
       const diff = calcTotalWorkTime(data.startTime, data.endTime);
       setTotalWorkTime(diff);
     });
   }, [watch]);
 
-  if (!targetWorkDate) {
+  if (!workDate || !control || !setValue || !getValues || !watch) {
     return null;
   }
 
@@ -64,11 +51,7 @@ export function WorkTimeItem({
           <Box>
             <Stack direction="row" spacing={1}>
               <Box>
-                <StartTimeInput
-                  workDate={targetWorkDate}
-                  control={control}
-                  setValue={setValue}
-                />
+                <StartTimeInput />
               </Box>
               <Box>
                 <Typography variant="body1" sx={{ py: 1 }}>
@@ -76,13 +59,7 @@ export function WorkTimeItem({
                 </Typography>
               </Box>
               <Box>
-                <EndTimeInput
-                  workDate={targetWorkDate}
-                  control={control}
-                  setValue={setValue}
-                  getValues={getValues}
-                  watch={watch}
-                />
+                <EndTimeInput />
               </Box>
             </Stack>
           </Box>

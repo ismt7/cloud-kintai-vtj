@@ -22,8 +22,14 @@ export function AttendanceStatus({
   holidayCalendars: HolidayCalendar[];
   companyHolidayCalendars: CompanyHolidayCalendar[];
 }) {
-  const { workDate, startTime, endTime, paidHolidayFlag, changeRequests } =
-    attendance;
+  const {
+    workDate,
+    startTime,
+    endTime,
+    paidHolidayFlag,
+    changeRequests,
+    substituteHolidayDate,
+  } = attendance;
 
   const getStatus = judgeStatus(
     workDate,
@@ -33,7 +39,8 @@ export function AttendanceStatus({
     companyHolidayCalendars,
     paidHolidayFlag,
     changeRequests,
-    staff
+    staff,
+    substituteHolidayDate
   );
 
   if (getStatus === "") return <Box width={24} height={24} />;

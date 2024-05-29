@@ -1,24 +1,20 @@
 import { Checkbox } from "@mui/material";
-import dayjs from "dayjs";
-import { Control, Controller, UseFormSetValue } from "react-hook-form";
+import { useContext } from "react";
+import { Controller } from "react-hook-form";
 
-import { AttendanceEditorInputs } from "./common";
+import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
+import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 
-export default function ReturnDirectlyFlagInput({
-  control,
-  setValue,
-  workDate,
-}: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<AttendanceEditorInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditorInputs>;
-  workDate: dayjs.Dayjs | null;
-}) {
-  const endTime = workDate
-    ?.hour(18)
-    .minute(0)
-    .second(0)
-    .millisecond(0)
+export default function ReturnDirectlyFlagInput() {
+  const { workDate, control, setValue } = useContext(AttendanceEditContext);
+
+  if (!workDate || !control || !setValue) {
+    return null;
+  }
+
+  const endTime = new AttendanceDateTime()
+    .setDate(workDate)
+    .setWorkEnd()
     .toISOString();
 
   return (

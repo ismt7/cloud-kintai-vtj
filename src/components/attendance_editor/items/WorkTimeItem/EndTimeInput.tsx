@@ -3,38 +3,24 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import ClearIcon from "@mui/icons-material/Clear";
 import { Box, Button, Chip, IconButton, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
-import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import {
-  Control,
-  Controller,
-  UseFormGetValues,
-  UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
+import { useContext, useEffect, useState } from "react";
+import { Controller } from "react-hook-form";
 
-import { AttendanceEditorInputs } from "../../common";
+import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
+import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 
-export default function EndTimeInput({
-  workDate,
-  control,
-  setValue,
-  getValues,
-  watch,
-}: {
-  workDate: dayjs.Dayjs | null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<AttendanceEditorInputs, any>;
-  setValue: UseFormSetValue<AttendanceEditorInputs>;
-  getValues: UseFormGetValues<AttendanceEditorInputs>;
-  watch: UseFormWatch<AttendanceEditorInputs>;
-}) {
+export default function EndTimeInput() {
+  const { workDate, control, setValue, getValues, watch } = useContext(
+    AttendanceEditContext
+  );
   if (!workDate) return null;
 
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
 
   useEffect(() => {
+    if (!watch || !getValues) return;
+
     const endTime = getValues("endTime");
     setEnableEndTime(!!endTime);
 
@@ -43,10 +29,11 @@ export default function EndTimeInput({
     });
   }, [watch]);
 
-  const logger = new Logger(
-    "EndTimeInput",
-    import.meta.env.DEV ? "DEBUG" : "ERROR"
-  );
+  // TODO: 後で確認
+  // const logger = new Logger(
+  //   "EndTimeInput",
+  //   import.meta.env.DEV ? "DEBUG" : "ERROR"
+  // );
 
   if (!enableEndTime) {
     return (
@@ -60,6 +47,10 @@ export default function EndTimeInput({
         終了時間を追加
       </Button>
     );
+  }
+
+  if (!control || !setValue) {
+    return null;
   }
 
   return (
@@ -102,11 +93,9 @@ export default function EndTimeInput({
             variant="outlined"
             icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
             onClick={() => {
-              const endTime = workDate
-                .hour(18)
-                .minute(0)
-                .second(0)
-                .millisecond(0)
+              const endTime = new AttendanceDateTime()
+                .setDate(workDate)
+                .setWorkEnd()
                 .toISOString();
               setValue("endTime", endTime);
             }}

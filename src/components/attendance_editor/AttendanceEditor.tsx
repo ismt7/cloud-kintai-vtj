@@ -20,23 +20,31 @@ import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
 
-import { Staff } from "@/API";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
+import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AttendanceEditMailSender } from "@/lib/mail/AttendanceEditMailSender";
+import AttendanceEditProvider from "@/pages/AttendanceEdit/AttendanceEditProvider";
+import {
+  AttendanceEditInputs,
+  defaultValues,
+} from "@/pages/AttendanceEdit/common";
+import { SubstituteHolidayDateInput } from "@/pages/AttendanceEdit/DesktopEditor/SubstituteHolidayDateInput";
 
 import { useAppDispatchV2 } from "../../app/hooks";
 import * as MESSAGE_CODE from "../../errors";
 import useAttendance from "../../hooks/useAttendance/useAttendance";
-import useStaffs from "../../hooks/useStaffs/useStaffs";
+import useStaffs, {
+  mappingStaffRole,
+  StaffType,
+} from "../../hooks/useStaffs/useStaffs";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
 import Title from "../Title/Title";
 import ChangeRequestDialog from "./ChangeRequestDialog/ChangeRequestDialog";
-import { AttendanceEditorInputs, defaultValues } from "./common";
 // eslint-disable-next-line import/no-cycle
-import EditAttendanceHistoryList from "./EditAttendanceHistoryList";
+import EditAttendanceHistoryList from "./EditAttendanceHistoryList/EditAttendanceHistoryList";
 import GoDirectlyFlagInput from "./GoDirectlyFlagInput";
 import ProductionTimeItem from "./items/ProductionTimeItem";
 // eslint-disable-next-line import/no-cycle
@@ -80,7 +88,7 @@ export default function AttendanceEditor() {
   const { staffs, loading: staffsLoading, error: staffSError } = useStaffs();
   const { attendance, getAttendance, updateAttendance, createAttendance } =
     useAttendance();
-  const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
+  const [staff, setStaff] = useState<StaffType | undefined | null>(undefined);
   const [workDate, setWorkDate] = useState<dayjs.Dayjs | null>(null);
   const [enabledSendMail, setEnabledSendMail] = useState<boolean>(true);
   const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
@@ -100,7 +108,7 @@ export default function AttendanceEditor() {
     handleSubmit,
     reset,
     formState: { errors, isDirty, isValid, isSubmitting },
-  } = useForm<AttendanceEditorInputs>({
+  } = useForm<AttendanceEditInputs>({
     mode: "onChange",
     defaultValues,
   });
@@ -120,7 +128,23 @@ export default function AttendanceEditor() {
     if (!targetStaffId) return;
 
     fetchStaff(targetStaffId)
-      .then(setStaff)
+      .then((res) =>
+        setStaff({
+          id: res.id,
+          cognitoUserId: res.cognitoUserId,
+          familyName: res.familyName,
+          givenName: res.givenName,
+          mailAddress: res.mailAddress,
+          owner: res.owner ?? false,
+          role: mappingStaffRole(res.role),
+          enabled: res.enabled,
+          status: res.status,
+          createdAt: res.createdAt,
+          updatedAt: res.updatedAt,
+          usageStartDate: res.usageStartDate,
+          notifications: res.notifications,
+        })
+      )
       .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E02001)));
   }, [staffs, targetStaffId]);
 
@@ -129,11 +153,11 @@ export default function AttendanceEditor() {
 
     reset();
 
-    setWorkDate(dayjs(targetWorkDate));
+    setWorkDate(AttendanceDateTime.convertToDayjs(targetWorkDate));
 
     getAttendance(
       staff.cognitoUserId,
-      dayjs(targetWorkDate).format("YYYY-MM-DD")
+      new AttendanceDateTime().setDateString(targetWorkDate).toDataFormat()
     ).catch((e: Error) => {
       logger.debug(e);
       dispatch(setSnackbarError(MESSAGE_CODE.E02001));
@@ -166,7 +190,7 @@ export default function AttendanceEditor() {
     });
   }, [watch]);
 
-  const onSubmit = async (data: AttendanceEditorInputs) => {
+  const onSubmit = async (data: AttendanceEditInputs) => {
     if (attendance) {
       await updateAttendance({
         id: attendance.id,
@@ -177,24 +201,25 @@ export default function AttendanceEditor() {
         goDirectlyFlag: data.goDirectlyFlag,
         returnDirectlyFlag: data.returnDirectlyFlag,
         remarks: data.remarks,
+        revision: data.revision,
+        paidHolidayFlag: data.paidHolidayFlag,
+        substituteHolidayDate: data.substituteHolidayDate,
         rests: data.rests.map((rest) => ({
           startTime: rest.startTime,
           endTime: rest.endTime,
         })),
-        paidHolidayFlag: data.paidHolidayFlag,
-        revision: data.revision,
       })
         .then((res) => {
-          dispatch(setSnackbarSuccess(MESSAGE_CODE.S04001));
-
           if (!staff || !res.histories) return;
 
           if (enabledSendMail) {
             new AttendanceEditMailSender(staff, res).changeRequest();
           }
+
+          dispatch(setSnackbarSuccess(MESSAGE_CODE.S04001));
         })
-        .catch((e: Error) => {
-          logger.error(e);
+        .catch((e) => {
+          console.log(e);
           dispatch(setSnackbarError(MESSAGE_CODE.E04001));
         });
 
@@ -208,17 +233,23 @@ export default function AttendanceEditor() {
 
     await createAttendance({
       staffId: targetStaffId,
-      workDate: dayjs(targetWorkDate).format("YYYY-MM-DD"),
+      workDate: new AttendanceDateTime()
+        .setDateString(targetWorkDate)
+        .toDataFormat(),
       startTime: data.startTime,
       endTime: data.endTime,
       goDirectlyFlag: data.goDirectlyFlag,
       returnDirectlyFlag: data.returnDirectlyFlag,
       remarks: data.remarks,
-      rests: data.rests,
       paidHolidayFlag: data.paidHolidayFlag,
+      substituteHolidayDate: data.substituteHolidayDate,
+      rests: data.rests.map((rest) => ({
+        startTime: rest.startTime,
+        endTime: rest.endTime,
+      })),
     })
       .then((res) => {
-        if (!staff || !res.histories) {
+        if (!staff) {
           return;
         }
 
@@ -236,7 +267,7 @@ export default function AttendanceEditor() {
   useEffect(() => {
     if (!attendance) return;
 
-    setWorkDate(dayjs(attendance.workDate));
+    setWorkDate(AttendanceDateTime.convertToDayjs(attendance.workDate));
 
     setValue("workDate", attendance.workDate);
     setValue("startTime", attendance.startTime);
@@ -245,6 +276,7 @@ export default function AttendanceEditor() {
     setValue("goDirectlyFlag", attendance.goDirectlyFlag || false);
     setValue("returnDirectlyFlag", attendance.returnDirectlyFlag || false);
     setValue("paidHolidayFlag", attendance.paidHolidayFlag || false);
+    setValue("substituteHolidayDate", attendance.substituteHolidayDate);
     setValue("revision", attendance.revision);
 
     if (attendance.rests) {
@@ -294,215 +326,212 @@ export default function AttendanceEditor() {
     );
   }
 
+  const changeRequests = attendance?.changeRequests
+    ? attendance.changeRequests
+        .filter((item): item is NonNullable<typeof item> => item !== null)
+        .filter((item) => !item.completed)
+    : [];
+
   return (
-    <Stack spacing={2} sx={{ pb: 5 }}>
-      <Box>
-        <Breadcrumbs>
-          <Link to="/" color="inherit">
-            TOP
-          </Link>
-          <Link to="/admin/attendances" color="inherit">
-            勤怠管理
-          </Link>
-          <Link to={`/admin/staff/${targetStaffId}/attendance`} color="inherit">
-            勤怠一覧
-          </Link>
-          {workDate && (
-            <Typography color="text.primary">
-              {workDate.format("YYYY/MM/DD")}
-            </Typography>
-          )}
-        </Breadcrumbs>
-      </Box>
-      <Box>
-        <Title>勤怠編集</Title>
-      </Box>
-      <Stack spacing={2} sx={{ px: 30 }}>
+    <AttendanceEditProvider
+      value={{
+        staff,
+        workDate,
+        attendance,
+        onSubmit,
+        getValues,
+        setValue,
+        watch,
+        isDirty,
+        isValid,
+        isSubmitting,
+        restFields,
+        changeRequests,
+        restRemove,
+        restUpdate,
+        restReplace,
+        register,
+        control,
+      }}
+    >
+      <Stack spacing={2} sx={{ pb: 5 }}>
         <Box>
-          {errors.startTime && (
-            <Box>
-              <Alert severity="error">
-                <AlertTitle>入力内容に誤りがあります。</AlertTitle>
-                <Typography variant="body2">
-                  {errors.startTime.message}
-                </Typography>
-              </Alert>
-            </Box>
-          )}
-          {!attendance && (
-            <Box>
-              <Alert severity="info">
-                <AlertTitle>お知らせ</AlertTitle>
-                指定された日付に勤怠情報の登録がありませんでした。保存時に新規作成されます。
-              </Alert>
-            </Box>
-          )}
-        </Box>
-        {visibleRestWarning && (
-          <Box>
-            <Alert
-              severity="warning"
-              action={
-                <Button
-                  color="inherit"
-                  size="small"
-                  onClick={() => {
-                    restAppend({
-                      startTime: dayjs(targetWorkDate)
-                        .hour(12)
-                        .minute(0)
-                        .second(0)
-                        .millisecond(0)
-                        .toISOString(),
-                      endTime: dayjs(targetWorkDate)
-                        .hour(13)
-                        .minute(0)
-                        .second(0)
-                        .millisecond(0)
-                        .toISOString(),
-                    });
-                  }}
-                >
-                  昼休みを追加
-                </Button>
-              }
+          <Breadcrumbs>
+            <Link to="/" color="inherit">
+              TOP
+            </Link>
+            <Link to="/admin/attendances" color="inherit">
+              勤怠管理
+            </Link>
+            <Link
+              to={`/admin/staff/${targetStaffId}/attendance`}
+              color="inherit"
             >
-              勤務時間が6時間を超えています。休憩時間を確認をしてください。
-            </Alert>
-          </Box>
-        )}
-        <EditAttendanceHistoryList getValues={getValues} />
-        <Box>
-          <WorkDateItem staffId={targetStaffId} workDate={workDate} />
+              勤怠一覧
+            </Link>
+            {workDate && (
+              <Typography color="text.primary">
+                {workDate.format("YYYY/MM/DD")}
+              </Typography>
+            )}
+          </Breadcrumbs>
         </Box>
         <Box>
-          <StaffNameItem />
+          <Title>勤怠編集</Title>
         </Box>
-        <Box>
-          <Stack direction="row" alignItems={"center"}>
-            <Box sx={{ fontWeight: "bold", width: "150px" }}>有給休暇</Box>
-            <Box>
-              <PaidHolidayFlagInput
-                workDate={workDate}
-                control={control}
-                setValue={setValue}
-              />
-            </Box>
-          </Stack>
-        </Box>
-        <Stack direction="row" alignItems={"center"}>
-          <Box sx={{ fontWeight: "bold", width: "150px" }}>直行</Box>
+        <Stack spacing={2} sx={{ px: 30 }}>
           <Box>
-            <GoDirectlyFlagInput
-              control={control}
-              setValue={setValue}
-              workDate={workDate}
-            />
-          </Box>
-        </Stack>
-        <Stack direction="row" alignItems={"center"}>
-          <Box sx={{ fontWeight: "bold", width: "150px" }}>直帰</Box>
-          <Box>
-            <ReturnDirectlyFlagInput
-              control={control}
-              setValue={setValue}
-              workDate={workDate}
-            />
-          </Box>
-        </Stack>
-        <WorkTimeItem
-          targetWorkDate={workDate}
-          control={control}
-          watch={watch}
-          setValue={setValue}
-          getValues={getValues}
-        />
-        <Stack direction="row">
-          <Box sx={{ fontWeight: "bold", width: "150px" }}>休憩時間</Box>
-          <Stack spacing={1} sx={{ flexGrow: 2 }}>
-            {restFields.length === 0 && (
+            {errors.startTime && (
               <Box>
-                <Typography variant="body1">休憩時間はありません</Typography>
-                <Typography variant="body1">
-                  ※昼休憩はスタッフが退勤打刻時に12:00〜13:00で自動打刻されます
-                </Typography>
+                <Alert severity="error">
+                  <AlertTitle>入力内容に誤りがあります。</AlertTitle>
+                  <Typography variant="body2">
+                    {errors.startTime.message}
+                  </Typography>
+                </Alert>
               </Box>
             )}
-            {restFields.map((rest, index) => (
-              <RestTimeItem
-                key={index}
-                targetWorkDate={workDate}
-                rest={rest}
-                index={index}
-                watch={watch}
-                restRemove={restRemove}
-                restUpdate={restUpdate}
-                control={control}
-                getValues={getValues}
-              />
-            ))}
+            {!attendance && (
+              <Box>
+                <Alert severity="info">
+                  <AlertTitle>お知らせ</AlertTitle>
+                  指定された日付に勤怠情報の登録がありませんでした。保存時に新規作成されます。
+                </Alert>
+              </Box>
+            )}
+          </Box>
+          {visibleRestWarning && (
             <Box>
-              <IconButton
-                aria-label="staff-search"
-                onClick={() =>
-                  restAppend({
-                    startTime: null,
-                    endTime: null,
-                  })
+              <Alert
+                severity="warning"
+                action={
+                  <Button
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      if (!targetWorkDate) {
+                        return;
+                      }
+
+                      restAppend({
+                        startTime: new AttendanceDateTime()
+                          .setDateString(targetWorkDate)
+                          .setRestStart()
+                          .toISOString(),
+                        endTime: new AttendanceDateTime()
+                          .setDateString(targetWorkDate)
+                          .setRestEnd()
+                          .toISOString(),
+                      });
+                    }}
+                  >
+                    昼休みを追加
+                  </Button>
                 }
               >
-                <AddAlarmIcon />
-              </IconButton>
+                勤務時間が6時間を超えています。休憩時間を確認をしてください。
+              </Alert>
             </Box>
-          </Stack>
-        </Stack>
-        <Box>
-          <SeparatorItem />
-        </Box>
-        <Box>
-          <ProductionTimeItem time={totalProductionTime} />
-        </Box>
-        <Box>
-          <RemarksItem register={register} />
-        </Box>
-        <Box>
-          <Stack direction="row" alignItems={"center"}>
-            <Box sx={{ fontWeight: "bold", width: "150px" }}>メール設定</Box>
-            <Box>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={enabledSendMail}
-                    onChange={() => setEnabledSendMail(!enabledSendMail)}
-                  />
-                }
-                label="スタッフに変更通知メールを送信する"
-              />
-            </Box>
-          </Stack>
-        </Box>
-        <Stack
-          direction="row"
-          alignItems={"center"}
-          justifyContent={"center"}
-          spacing={3}
-        >
+          )}
+          <EditAttendanceHistoryList />
           <Box>
-            <SaveButton
-              onClick={handleSubmit(onSubmit)}
-              disabled={!isValid || !isDirty || isSubmitting}
-              startIcon={isSubmitting ? <CircularProgress size={"24"} /> : null}
-            >
-              保存
-            </SaveButton>
+            <WorkDateItem staffId={targetStaffId} workDate={workDate} />
           </Box>
+          <StaffNameItem />
+          <PaidHolidayFlagInput />
+          <SubstituteHolidayDateInput />
+          <Stack direction="row" alignItems={"center"}>
+            <Box sx={{ fontWeight: "bold", width: "150px" }}>直行</Box>
+            <Box>
+              <GoDirectlyFlagInput />
+            </Box>
+          </Stack>
+          <Stack direction="row" alignItems={"center"}>
+            <Box sx={{ fontWeight: "bold", width: "150px" }}>直帰</Box>
+            <Box>
+              <ReturnDirectlyFlagInput />
+            </Box>
+          </Stack>
+          <WorkTimeItem />
+          <Stack direction="row">
+            <Box sx={{ fontWeight: "bold", width: "150px" }}>休憩時間</Box>
+            <Stack spacing={1} sx={{ flexGrow: 2 }}>
+              {restFields.length === 0 && (
+                <Box>
+                  <Typography variant="body1">休憩時間はありません</Typography>
+                  <Typography variant="body1">
+                    ※昼休憩はスタッフが退勤打刻時に12:00〜13:00で自動打刻されます
+                  </Typography>
+                </Box>
+              )}
+              {restFields.map((rest, index) => (
+                <RestTimeItem key={index} rest={rest} index={index} />
+              ))}
+              <Box>
+                <IconButton
+                  aria-label="staff-search"
+                  onClick={() =>
+                    restAppend({
+                      startTime: null,
+                      endTime: null,
+                    })
+                  }
+                >
+                  <AddAlarmIcon />
+                </IconButton>
+              </Box>
+            </Stack>
+          </Stack>
+          <Box>
+            <SeparatorItem />
+          </Box>
+          <Box>
+            <ProductionTimeItem time={totalProductionTime} />
+          </Box>
+          <Box>
+            <RemarksItem />
+          </Box>
+          <Box>
+            <Stack direction="row" alignItems={"center"}>
+              <Box sx={{ fontWeight: "bold", width: "150px" }}>メール設定</Box>
+              <Box>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={enabledSendMail}
+                      onChange={() => setEnabledSendMail(!enabledSendMail)}
+                    />
+                  }
+                  label="スタッフに変更通知メールを送信する"
+                />
+              </Box>
+            </Stack>
+          </Box>
+          <Stack
+            direction="row"
+            alignItems={"center"}
+            justifyContent={"center"}
+            spacing={3}
+          >
+            <Box>
+              <SaveButton
+                onClick={handleSubmit(onSubmit)}
+                disabled={!isValid || !isDirty || isSubmitting}
+                startIcon={
+                  isSubmitting ? <CircularProgress size={"24"} /> : null
+                }
+              >
+                保存
+              </SaveButton>
+            </Box>
+          </Stack>
         </Stack>
+        <ChangeRequestDialog
+          attendance={attendance}
+          updateAttendance={updateAttendance}
+          staff={staff}
+        />
       </Stack>
-      <ChangeRequestDialog
-        attendance={attendance}
-        updateAttendance={updateAttendance}
-        staff={staff}
-      />
-    </Stack>
+    </AttendanceEditProvider>
   );
 }

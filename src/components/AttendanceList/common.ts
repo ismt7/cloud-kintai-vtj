@@ -119,7 +119,8 @@ export function makeRemarks(
   paidHolidayFlag: Attendance["paidHolidayFlag"],
   remarks: Attendance["remarks"],
   holidayCalendars: HolidayCalendar[],
-  companyHolidayCalendars: CompanyHolidayCalendar[]
+  companyHolidayCalendars: CompanyHolidayCalendar[],
+  substituteHolidayDate: Attendance["substituteHolidayDate"]
 ) {
   const isHoliday = holidayCalendars?.find(
     ({ holidayDate }) => holidayDate === workDate
@@ -129,8 +130,13 @@ export function makeRemarks(
     ({ holidayDate }) => holidayDate === workDate
   );
 
+  const isSubstituteHoliday = substituteHolidayDate
+    ? dayjs(substituteHolidayDate).isValid()
+    : false;
+
   const summaryMessage = [];
   if (paidHolidayFlag) summaryMessage.push("有給休暇");
+  if (isSubstituteHoliday) summaryMessage.push("振替休日");
   if (isHoliday) summaryMessage.push(isHoliday.name);
   if (isCompanyHoliday) summaryMessage.push(isCompanyHoliday.name);
   if (remarks) summaryMessage.push(remarks);
@@ -148,8 +154,10 @@ export function judgeStatus(
   companyHolidayCalendars: CompanyHolidayCalendar[],
   paidHolidayFlag: Attendance["paidHolidayFlag"],
   changeRequests: Attendance["changeRequests"],
-  staff: Staff | null | undefined
+  staff: Staff | null | undefined,
+  substituteHolidayDate: Attendance["substituteHolidayDate"]
 ) {
+  // 利用開始日
   if (
     staff?.usageStartDate &&
     dayjs(staff.usageStartDate).isAfter(dayjs(workDate), "date")
@@ -157,7 +165,16 @@ export function judgeStatus(
     return "";
   }
 
+  //有給休暇
   if (paidHolidayFlag) return "OK";
+
+  // 振替休日
+  if (substituteHolidayDate) {
+    const isSubstituteHoliday = substituteHolidayDate
+      ? dayjs(substituteHolidayDate).isValid()
+      : false;
+    if (isSubstituteHoliday) return "OK";
+  }
 
   const today = dayjs().format("YYYY-MM-DD");
   const dayOfWeek = getDayOfWeek(workDate);

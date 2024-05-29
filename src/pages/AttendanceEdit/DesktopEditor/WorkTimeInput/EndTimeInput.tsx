@@ -7,6 +7,8 @@ import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
 
+import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
+
 import { AttendanceEditContext } from "../../AttendanceEditProvider";
 
 export default function EndTimeInput() {
@@ -76,11 +78,9 @@ export default function EndTimeInput() {
             icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
             disabled={changeRequests.length > 0}
             onClick={() => {
-              const endTime = workDate
-                .hour(18)
-                .minute(0)
-                .second(0)
-                .millisecond(0)
+              const endTime = new AttendanceDateTime()
+                .setDate(workDate)
+                .setWorkEnd()
                 .toISOString();
               setValue("endTime", endTime, { shouldDirty: true });
             }}
