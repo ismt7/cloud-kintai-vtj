@@ -29,12 +29,6 @@ export default function EndTimeInput() {
     });
   }, [watch]);
 
-  // TODO: 後で確認
-  // const logger = new Logger(
-  //   "EndTimeInput",
-  //   import.meta.env.DEV ? "DEBUG" : "ERROR"
-  // );
-
   if (!enableEndTime) {
     return (
       <Button
