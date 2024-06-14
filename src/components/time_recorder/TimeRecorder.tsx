@@ -212,7 +212,7 @@ export default function TimeRecorder() {
     clockIn(cognitoUser.id, today, now)
       .then((res) => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S01001));
-        new TimeRecordMailSender(cognitoUser, res).clockIn();
+        new TimeRecordMailSender(cognitoUser, res, staff).clockIn();
       })
       .catch((e) => {
         logger.debug(e);
@@ -227,7 +227,7 @@ export default function TimeRecorder() {
     clockOut(cognitoUser.id, today, now)
       .then((res) => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S01002));
-        new TimeRecordMailSender(cognitoUser, res).clockOut();
+        new TimeRecordMailSender(cognitoUser, res, staff).clockOut();
       })
       .catch((e) => {
         logger.debug(e);
@@ -243,7 +243,7 @@ export default function TimeRecorder() {
     clockIn(cognitoUser.id, today, now, GoDirectlyFlag.YES)
       .then((res) => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S01003));
-        new TimeRecordMailSender(cognitoUser, res).clockIn();
+        new TimeRecordMailSender(cognitoUser, res, staff).clockIn();
       })
       .catch((e) => {
         logger.debug(e);
@@ -259,7 +259,7 @@ export default function TimeRecorder() {
     clockOut(cognitoUser.id, today, now, ReturnDirectlyFlag.YES)
       .then((res) => {
         dispatch(setSnackbarSuccess(MESSAGE_CODE.S01004));
-        new TimeRecordMailSender(cognitoUser, res).clockOut();
+        new TimeRecordMailSender(cognitoUser, res, staff).clockOut();
       })
       .catch((e) => {
         logger.debug(e);
