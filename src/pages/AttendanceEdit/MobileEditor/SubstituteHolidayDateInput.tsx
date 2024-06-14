@@ -24,7 +24,7 @@ export function SubstituteHolidayDateInput() {
             {...field}
             label="勤務した日"
             format="YYYY/MM/DD"
-            value={dayjs(field.value)}
+            value={field.value ? dayjs(field.value) : null}
             slotProps={{
               textField: { size: "small" },
             }}

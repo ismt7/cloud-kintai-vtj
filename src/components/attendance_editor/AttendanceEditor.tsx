@@ -62,6 +62,7 @@ import {
   calcTotalWorkTime,
   WorkTimeItem,
 } from "./items/WorkTimeItem/WorkTimeItem";
+import { LunchRestTimeNotSetWarning } from "./LunchRestTimeNotSetWarning";
 import PaidHolidayFlagInput from "./PaidHolidayFlagInput";
 import ReturnDirectlyFlagInput from "./ReturnDirectlyFlagInput";
 
@@ -347,6 +348,7 @@ export default function AttendanceEditor() {
         isSubmitting,
         restFields,
         changeRequests,
+        restAppend,
         restRemove,
         restUpdate,
         restReplace,
@@ -394,45 +396,11 @@ export default function AttendanceEditor() {
             {!attendance && (
               <Box>
                 <Alert severity="info">
-                  <AlertTitle>お知らせ</AlertTitle>
-                  指定された日付に勤怠情報の登録がありませんでした。保存時に新規作成されます。
+                  指定された日付に勤怠情報の登録がありません。保存時に新規作成されます。
                 </Alert>
               </Box>
             )}
           </Box>
-          {visibleRestWarning && (
-            <Box>
-              <Alert
-                severity="warning"
-                action={
-                  <Button
-                    color="inherit"
-                    size="small"
-                    onClick={() => {
-                      if (!targetWorkDate) {
-                        return;
-                      }
-
-                      restAppend({
-                        startTime: new AttendanceDateTime()
-                          .setDateString(targetWorkDate)
-                          .setRestStart()
-                          .toISOString(),
-                        endTime: new AttendanceDateTime()
-                          .setDateString(targetWorkDate)
-                          .setRestEnd()
-                          .toISOString(),
-                      });
-                    }}
-                  >
-                    昼休みを追加
-                  </Button>
-                }
-              >
-                勤務時間が6時間を超えています。休憩時間を確認をしてください。
-              </Alert>
-            </Box>
-          )}
           <EditAttendanceHistoryList />
           <Box>
             <WorkDateItem staffId={targetStaffId} workDate={workDate} />
@@ -454,15 +422,23 @@ export default function AttendanceEditor() {
           </Stack>
           <WorkTimeItem />
           <Stack direction="row">
-            <Box sx={{ fontWeight: "bold", width: "150px" }}>休憩時間</Box>
+            <Box
+              sx={{ fontWeight: "bold", width: "150px" }}
+            >{`休憩時間(${restFields.length}件)`}</Box>
             <Stack spacing={1} sx={{ flexGrow: 2 }}>
               {restFields.length === 0 && (
-                <Box>
-                  <Typography variant="body1">休憩時間はありません</Typography>
-                  <Typography variant="body1">
-                    ※昼休憩はスタッフが退勤打刻時に12:00〜13:00で自動打刻されます
-                  </Typography>
-                </Box>
+                <Stack direction="column" spacing={1}>
+                  <Alert severity="info">
+                    昼休憩はスタッフが退勤打刻時に12:00〜13:00で自動打刻されます。
+                  </Alert>
+                  {visibleRestWarning && (
+                    <Box>
+                      <LunchRestTimeNotSetWarning
+                        targetWorkDate={targetWorkDate}
+                      />
+                    </Box>
+                  )}
+                </Stack>
               )}
               {restFields.map((rest, index) => (
                 <RestTimeItem key={index} rest={rest} index={index} />
