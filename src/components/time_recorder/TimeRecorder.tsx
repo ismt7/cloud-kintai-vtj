@@ -1,5 +1,11 @@
 import {
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControlLabel,
   Grid,
   LinearProgress,
@@ -101,6 +107,7 @@ export default function TimeRecorder() {
   );
   const [staff, setStaff] = useState<Staff | null | undefined>(undefined);
   const [isAttendanceError, setIsAttendanceError] = useState(false);
+  const [isTimeElapsedError, setIsTimeElapsedError] = useState(false);
   const [directMode, setDirectMode] = useState(false);
 
   const today = dayjs().format("YYYY-MM-DD");
@@ -182,6 +189,37 @@ export default function TimeRecorder() {
       .filter((status) => status === "エラー").length;
 
     setIsAttendanceError(errorCount > 0);
+
+    // 1週間以上前にエラーがあるかチェック
+    const timeElapsedErrorCount = attendances
+      .filter((attendance) => {
+        const { workDate } = attendance;
+        return dayjs().isAfter(dayjs(workDate).add(1, "week"));
+      })
+      .map((attendance) => {
+        const {
+          workDate,
+          startTime,
+          endTime,
+          paidHolidayFlag,
+          substituteHolidayDate,
+          changeRequests,
+        } = attendance;
+        return judgeStatus(
+          workDate,
+          startTime,
+          endTime,
+          holidayCalendars,
+          companyHolidayCalendars,
+          paidHolidayFlag,
+          changeRequests,
+          staff,
+          substituteHolidayDate
+        );
+      })
+      .filter((status) => status === "エラー").length;
+
+    setIsTimeElapsedError(timeElapsedErrorCount > 0);
   }, [attendances]);
 
   useEffect(() => {
@@ -366,10 +404,60 @@ export default function TimeRecorder() {
             <AttendanceErrorAlert />
           </Grid>
         )}
+
+        <TimeElapsedErrorDialog isTimeElapsedError={isTimeElapsedError} />
+
         <Grid item xs={12}>
           <RestTimeMessage />
         </Grid>
       </Grid>
     </Box>
+  );
+}
+
+function TimeElapsedErrorDialog({
+  isTimeElapsedError,
+}: {
+  isTimeElapsedError: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOpen(isTimeElapsedError);
+  }, [isTimeElapsedError]);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <Dialog
+      open={open}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">
+        1週間以上経過した打刻エラーがあります
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          1週間以上経過した打刻エラーがあります。
+          <br />
+          勤怠一覧を確認して打刻修正を申請してください。
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>あとで</Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            handleClose();
+            window.open("/attendance/list", "_blank");
+          }}
+        >
+          確認する
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
