@@ -114,7 +114,7 @@ export default function JobTerm() {
                       onChange(v);
                     }}
                     renderInput={(params) => (
-                      <TextField {...params} label="集計対象月" />
+                      <TextField {...params} label="集計対象月" size="small" />
                     )}
                   />
                 )}
@@ -131,6 +131,9 @@ export default function JobTerm() {
                       <DatePicker
                         label="開始日"
                         format="YYYY/MM/DD"
+                        slotProps={{
+                          textField: { size: "small" },
+                        }}
                         {...field}
                       />
                     )}
@@ -146,6 +149,9 @@ export default function JobTerm() {
                       <DatePicker
                         label="終了日"
                         format="YYYY/MM/DD"
+                        slotProps={{
+                          textField: { size: "small" },
+                        }}
                         {...field}
                       />
                     )}

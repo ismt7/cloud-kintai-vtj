@@ -71,7 +71,7 @@ export default function DownloadForm() {
       }))
     ).then((res) => {
       const exportData = [
-        "営業日,従業員コード,名前,休憩時間,出勤打刻,退勤打刻,直行,直帰,有給休暇,摘要",
+        "営業日,従業員コード,名前,休憩時間,出勤打刻,退勤打刻,直行,直帰,有給休暇,振替休日,摘要",
         ...selectedStaff.map((staff) => {
           const attendances = res.filter(
             (attendance) => attendance.staffId === staff.cognitoUserId
@@ -91,6 +91,7 @@ export default function DownloadForm() {
                   goDirectlyFlag,
                   returnDirectlyFlag,
                   paidHolidayFlag,
+                  substituteHolidayDate,
                   rests,
                   remarks,
                 } = matchAttendance;
@@ -106,6 +107,18 @@ export default function DownloadForm() {
                     return acc + diff;
                   }, 0) ?? 0;
 
+                const generateSummary = () => {
+                  const textList = [];
+                  if (substituteHolidayDate) {
+                    const formattedSubstituteHolidayDate = dayjs(
+                      substituteHolidayDate
+                    ).format("M/D");
+                    textList.push(`${formattedSubstituteHolidayDate}分振替`);
+                  }
+                  if (remarks) textList.push(remarks);
+                  return textList.join(" ");
+                };
+
                 return [
                   dayjs(workDate).format("YYYY/MM/DD"),
                   staffId,
@@ -116,7 +129,8 @@ export default function DownloadForm() {
                   goDirectlyFlag ? 1 : 0,
                   returnDirectlyFlag ? 1 : 0,
                   paidHolidayFlag ? 1 : 0,
-                  remarks,
+                  substituteHolidayDate ? 1 : 0,
+                  generateSummary(),
                 ].join(",");
               }
 
@@ -124,6 +138,7 @@ export default function DownloadForm() {
                 dayjs(workDate).format("YYYY/MM/DD"),
                 staff.cognitoUserId,
                 `${staff.familyName} ${staff.givenName}`,
+                "",
                 "",
                 "",
                 "",
