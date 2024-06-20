@@ -2,7 +2,9 @@ import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { Unstable_Popup as BasePopup } from "@mui/base/Unstable_Popup";
 import AppsIcon from "@mui/icons-material/Apps";
 import { Box, Grid, IconButton, Paper, useMediaQuery } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
+
+import { AuthContext } from "@/Layout";
 
 import { theme } from "../../../lib/theme";
 import { LinkGridItem } from "./LinkGridItem";
@@ -52,11 +54,7 @@ export function ExternalLinks({ pathName }: { pathName: string }) {
             }}
           >
             <Grid container spacing={1}>
-              <LinkGridItem
-                url="http://ginjiro.office.begi.net:3021/"
-                title="交通費申請"
-                iconType="train"
-              />
+              {TransportationExpensesLink()}
               <LinkGridItem
                 url="http://172.16.1.12:3020/"
                 title="休暇申請"
@@ -68,4 +66,15 @@ export function ExternalLinks({ pathName }: { pathName: string }) {
       </Box>
     </ClickAwayListener>
   );
+}
+
+function TransportationExpensesLink() {
+  const { cognitoUser } = useContext(AuthContext);
+
+  if (!cognitoUser) return null;
+
+  const { familyName, givenName } = cognitoUser;
+  const staffName = [familyName, givenName].join("%20");
+  const url = `http://ginjiro.office.begi.net:3021/?code=%7B%22name%22:%22${staffName}%22,%22subject%22:%22%E5%87%BA%E7%A4%BE%22,%22list%22:%5B%5B0,%22%22,%22%22,%22%22,%22%22,%22%22,%22%22,%22%22%5D%5D%7D`;
+  return <LinkGridItem url={url} title="交通費申請" iconType="train" />;
 }
