@@ -18,6 +18,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import dayjs from "dayjs";
 import { useContext, useState } from "react";
 
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
@@ -108,7 +109,9 @@ export function SystemCommentList() {
                     <TableRow key={systemCommentIndex}>
                       <TableCell>{confirmed ? <DoneIcon /> : null}</TableCell>
                       <TableCell>{comment}</TableCell>
-                      <TableCell>{createdAt}</TableCell>
+                      <TableCell>
+                        {dayjs(createdAt).format("YYYY/MM/DD HH:MM")}
+                      </TableCell>
                       <TableCell sx={{ flexGrow: 1 }} />
                     </TableRow>
                   )
