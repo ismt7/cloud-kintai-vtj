@@ -1,4 +1,4 @@
-import { Rest, UpdateAttendanceInput } from "../../API";
+import { Rest, SystemCommentInput, UpdateAttendanceInput } from "../../API";
 
 export type RestInputs = {
   startTime: Rest["startTime"] | null;
@@ -18,6 +18,7 @@ export type AttendanceEditInputs = {
   staffComment?: string;
   histories?: UpdateAttendanceInput["histories"];
   changeRequests?: UpdateAttendanceInput["changeRequests"];
+  systemComments: SystemCommentInput[];
   revision?: UpdateAttendanceInput["revision"];
 };
 
@@ -30,4 +31,5 @@ export const defaultValues: AttendanceEditInputs = {
   returnDirectlyFlag: undefined,
   remarks: undefined,
   rests: [],
+  systemComments: [],
 };

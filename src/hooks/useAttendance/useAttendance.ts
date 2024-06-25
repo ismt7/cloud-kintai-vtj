@@ -7,6 +7,7 @@ import {
   Attendance,
   CreateAttendanceInput,
   RestInput,
+  SystemCommentInput,
   UpdateAttendanceInput,
 } from "../../API";
 import { AttendanceDataManager } from "./AttendanceDataManager";
@@ -98,12 +99,22 @@ export default function useAttendance() {
     if (attendance) {
       const startTime = dayjs(attendance.startTime);
       const noon = new AttendanceDateTime().setNoon().toDayjs();
-      const isBeforeNoon = startTime.isBefore(noon);
-      const rests = (() => {
-        if (!isBeforeNoon) {
-          return [];
-        }
+      const isWorkStartBeforeNoon = startTime.isBefore(noon);
+      const isWorkEndBeforeNoon = dayjs(endTime).isBefore(noon);
+      const systemComments = attendance.systemComments
+        ? attendance.systemComments
+            .filter((item): item is NonNullable<typeof item> => item !== null)
+            .map(
+              ({ comment, confirmed, createdAt }) =>
+                ({
+                  comment,
+                  confirmed,
+                  createdAt,
+                } as SystemCommentInput)
+            )
+        : [];
 
+      const rests = (() => {
         const prevRests = attendance.rests
           ? attendance.rests
               .filter((item): item is NonNullable<typeof item> => item !== null)
@@ -115,25 +126,24 @@ export default function useAttendance() {
               )
           : [];
 
+        // 勤務開始が12時以降の場合 or 勤務終了が12時以前の場合
+        if (!isWorkStartBeforeNoon || isWorkEndBeforeNoon) {
+          return prevRests;
+        }
+
         const lunchBreakStart = new AttendanceDateTime()
           .setRestStart()
           .toDayjs();
         const lunchBreakEnd = new AttendanceDateTime().setRestEnd().toDayjs();
 
-        const isAlreadyExist = prevRests.filter((rest) => {
-          if (!rest.startTime || !rest.endTime) {
-            return false;
-          }
+        if (prevRests.length > 0) {
+          systemComments.push({
+            comment:
+              "既に休憩時間が登録されていたため、退勤時に昼休憩を自動追加しませんでした。",
+            confirmed: false,
+            createdAt: dayjs().toISOString(),
+          });
 
-          const restStart = dayjs(rest.startTime);
-          const restEnd = dayjs(rest.endTime);
-
-          return (
-            restStart.isSame(lunchBreakStart) && restEnd.isSame(lunchBreakEnd)
-          );
-        });
-
-        if (isAlreadyExist.length > 0) {
           return prevRests;
         }
 
@@ -150,6 +160,7 @@ export default function useAttendance() {
         endTime,
         returnDirectlyFlag: returnDirectlyFlag === ReturnDirectlyFlag.YES,
         rests,
+        systemComments,
         revision: attendance.revision,
       }).catch((e: Error) => {
         throw e;

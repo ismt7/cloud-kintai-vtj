@@ -40,6 +40,19 @@ type AttendanceEditContextProps = {
   getValues?: UseFormGetValues<AttendanceEditInputs>;
   watch?: UseFormWatch<AttendanceEditInputs>;
   handleSubmit?: UseFormHandleSubmit<AttendanceEditInputs, undefined>;
+  systemCommentFields: FieldArrayWithId<
+    AttendanceEditInputs,
+    "systemComments",
+    "id"
+  >[];
+  systemCommentUpdate?: UseFieldArrayUpdate<
+    AttendanceEditInputs,
+    "systemComments"
+  >;
+  systemCommentReplace?: UseFieldArrayReplace<
+    AttendanceEditInputs,
+    "systemComments"
+  >;
 };
 
 export const AttendanceEditContext = createContext<AttendanceEditContextProps>({
@@ -52,6 +65,7 @@ export const AttendanceEditContext = createContext<AttendanceEditContextProps>({
   isSubmitting: false,
   restFields: [],
   changeRequests: [],
+  systemCommentFields: [],
 });
 
 export default function AttendanceEditProvider({

@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
 
+import { SystemCommentInput } from "@/API";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AttendanceEditMailSender } from "@/lib/mail/AttendanceEditMailSender";
@@ -65,6 +66,7 @@ import {
 import { LunchRestTimeNotSetWarning } from "./LunchRestTimeNotSetWarning";
 import PaidHolidayFlagInput from "./PaidHolidayFlagInput";
 import ReturnDirectlyFlagInput from "./ReturnDirectlyFlagInput";
+import { SystemCommentList } from "./SystemCommentList";
 
 const SaveButton = styled(Button)(({ theme }) => ({
   width: 150,
@@ -123,6 +125,15 @@ export default function AttendanceEditor() {
   } = useFieldArray({
     control,
     name: "rests",
+  });
+
+  const {
+    fields: systemCommentFields,
+    update: systemCommentUpdate,
+    replace: systemCommentReplace,
+  } = useFieldArray({
+    control,
+    name: "systemComments",
   });
 
   useEffect(() => {
@@ -192,6 +203,8 @@ export default function AttendanceEditor() {
   }, [watch]);
 
   const onSubmit = async (data: AttendanceEditInputs) => {
+    console.log("data", data.systemComments);
+
     if (attendance) {
       await updateAttendance({
         id: attendance.id,
@@ -209,6 +222,13 @@ export default function AttendanceEditor() {
           startTime: rest.startTime,
           endTime: rest.endTime,
         })),
+        systemComments: data.systemComments.map(
+          ({ comment, confirmed, createdAt }) => ({
+            comment,
+            confirmed,
+            createdAt,
+          })
+        ),
       })
         .then((res) => {
           if (!staff || !res.histories) return;
@@ -248,6 +268,13 @@ export default function AttendanceEditor() {
         startTime: rest.startTime,
         endTime: rest.endTime,
       })),
+      systemComments: data.systemComments.map(
+        ({ comment, confirmed, createdAt }) => ({
+          comment,
+          confirmed,
+          createdAt,
+        })
+      ),
     })
       .then((res) => {
         if (!staff) {
@@ -303,6 +330,21 @@ export default function AttendanceEditor() {
       );
       setValue("changeRequests", changeRequests);
     }
+
+    if (attendance.systemComments) {
+      const systemComments = attendance.systemComments
+        .filter((item): item is NonNullable<typeof item> => item !== null)
+        .map(
+          ({ comment, confirmed, createdAt }) =>
+            ({
+              comment,
+              confirmed,
+              createdAt,
+            } as SystemCommentInput)
+        );
+
+      systemCommentReplace(systemComments);
+    }
   }, [attendance]);
 
   if (staffsLoading || attendance === undefined) {
@@ -354,6 +396,9 @@ export default function AttendanceEditor() {
         restReplace,
         register,
         control,
+        systemCommentFields,
+        systemCommentUpdate,
+        systemCommentReplace,
       }}
     >
       <Stack spacing={2} sx={{ pb: 5 }}>
@@ -401,7 +446,10 @@ export default function AttendanceEditor() {
               </Box>
             )}
           </Box>
-          <EditAttendanceHistoryList />
+          <Stack direction="row" spacing={1}>
+            <EditAttendanceHistoryList />
+            <SystemCommentList />
+          </Stack>
           <Box>
             <WorkDateItem staffId={targetStaffId} workDate={workDate} />
           </Box>

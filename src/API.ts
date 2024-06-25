@@ -249,6 +249,7 @@ export type CreateAttendanceInput = {
   substituteHolidayDate?: string | null,
   histories?: Array< AttendanceHistoryInput | null > | null,
   changeRequests?: Array< AttendanceChangeRequestInput | null > | null,
+  systemComments?: Array< SystemCommentInput | null > | null,
   revision?: number | null,
 };
 
@@ -285,6 +286,12 @@ export type AttendanceChangeRequestInput = {
   completed?: boolean | null,
   comment?: string | null,
   staffComment?: string | null,
+};
+
+export type SystemCommentInput = {
+  comment: string,
+  confirmed: boolean,
+  createdAt: string,
 };
 
 export type ModelAttendanceConditionInput = {
@@ -332,6 +339,7 @@ export type Attendance = {
   substituteHolidayDate?: string | null,
   histories?:  Array<AttendanceHistory | null > | null,
   changeRequests?:  Array<AttendanceChangeRequest | null > | null,
+  systemComments?:  Array<SystemComment | null > | null,
   revision?: number | null,
   createdAt: string,
   updatedAt: string,
@@ -375,6 +383,13 @@ export type AttendanceChangeRequest = {
   staffComment?: string | null,
 };
 
+export type SystemComment = {
+  __typename: "SystemComment",
+  comment: string,
+  confirmed: boolean,
+  createdAt: string,
+};
+
 export type UpdateAttendanceInput = {
   id: string,
   staffId?: string | null,
@@ -389,6 +404,7 @@ export type UpdateAttendanceInput = {
   substituteHolidayDate?: string | null,
   histories?: Array< AttendanceHistoryInput | null > | null,
   changeRequests?: Array< AttendanceChangeRequestInput | null > | null,
+  systemComments?: Array< SystemCommentInput | null > | null,
   revision?: number | null,
 };
 
@@ -1010,6 +1026,12 @@ export type CreateAttendanceMutation = {
       comment?: string | null,
       staffComment?: string | null,
     } | null > | null,
+    systemComments?:  Array< {
+      __typename: "SystemComment",
+      comment: string,
+      confirmed: boolean,
+      createdAt: string,
+    } | null > | null,
     revision?: number | null,
     createdAt: string,
     updatedAt: string,
@@ -1077,6 +1099,12 @@ export type UpdateAttendanceMutation = {
       comment?: string | null,
       staffComment?: string | null,
     } | null > | null,
+    systemComments?:  Array< {
+      __typename: "SystemComment",
+      comment: string,
+      confirmed: boolean,
+      createdAt: string,
+    } | null > | null,
     revision?: number | null,
     createdAt: string,
     updatedAt: string,
@@ -1143,6 +1171,12 @@ export type DeleteAttendanceMutation = {
       completed?: boolean | null,
       comment?: string | null,
       staffComment?: string | null,
+    } | null > | null,
+    systemComments?:  Array< {
+      __typename: "SystemComment",
+      comment: string,
+      confirmed: boolean,
+      createdAt: string,
     } | null > | null,
     revision?: number | null,
     createdAt: string,
@@ -1449,6 +1483,12 @@ export type GetAttendanceQuery = {
       comment?: string | null,
       staffComment?: string | null,
     } | null > | null,
+    systemComments?:  Array< {
+      __typename: "SystemComment",
+      comment: string,
+      confirmed: boolean,
+      createdAt: string,
+    } | null > | null,
     revision?: number | null,
     createdAt: string,
     updatedAt: string,
@@ -1518,6 +1558,12 @@ export type ListAttendancesQuery = {
         completed?: boolean | null,
         comment?: string | null,
         staffComment?: string | null,
+      } | null > | null,
+      systemComments?:  Array< {
+        __typename: "SystemComment",
+        comment: string,
+        confirmed: boolean,
+        createdAt: string,
       } | null > | null,
       revision?: number | null,
       createdAt: string,
@@ -1848,6 +1894,12 @@ export type OnCreateAttendanceSubscription = {
       comment?: string | null,
       staffComment?: string | null,
     } | null > | null,
+    systemComments?:  Array< {
+      __typename: "SystemComment",
+      comment: string,
+      confirmed: boolean,
+      createdAt: string,
+    } | null > | null,
     revision?: number | null,
     createdAt: string,
     updatedAt: string,
@@ -1914,6 +1966,12 @@ export type OnUpdateAttendanceSubscription = {
       comment?: string | null,
       staffComment?: string | null,
     } | null > | null,
+    systemComments?:  Array< {
+      __typename: "SystemComment",
+      comment: string,
+      confirmed: boolean,
+      createdAt: string,
+    } | null > | null,
     revision?: number | null,
     createdAt: string,
     updatedAt: string,
@@ -1979,6 +2037,12 @@ export type OnDeleteAttendanceSubscription = {
       completed?: boolean | null,
       comment?: string | null,
       staffComment?: string | null,
+    } | null > | null,
+    systemComments?:  Array< {
+      __typename: "SystemComment",
+      comment: string,
+      confirmed: boolean,
+      createdAt: string,
     } | null > | null,
     revision?: number | null,
     createdAt: string,

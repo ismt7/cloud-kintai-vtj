@@ -239,6 +239,12 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
       staffComment
       __typename
     }
+    systemComments {
+      comment
+      confirmed
+      createdAt
+      __typename
+    }
     revision
     createdAt
     updatedAt
@@ -307,6 +313,12 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
         completed
         comment
         staffComment
+        __typename
+      }
+      systemComments {
+        comment
+        confirmed
+        createdAt
         __typename
       }
       revision

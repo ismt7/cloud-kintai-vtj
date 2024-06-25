@@ -309,6 +309,12 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
       staffComment
       __typename
     }
+    systemComments {
+      comment
+      confirmed
+      createdAt
+      __typename
+    }
     revision
     createdAt
     updatedAt
@@ -377,6 +383,12 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
       staffComment
       __typename
     }
+    systemComments {
+      comment
+      confirmed
+      createdAt
+      __typename
+    }
     revision
     createdAt
     updatedAt
@@ -443,6 +455,12 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
       completed
       comment
       staffComment
+      __typename
+    }
+    systemComments {
+      comment
+      confirmed
+      createdAt
       __typename
     }
     revision
