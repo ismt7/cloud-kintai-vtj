@@ -284,6 +284,12 @@ export const onCreateAttendance = /* GraphQL */ `subscription OnCreateAttendance
       staffComment
       __typename
     }
+    systemComments {
+      comment
+      confirmed
+      createdAt
+      __typename
+    }
     revision
     createdAt
     updatedAt
@@ -351,6 +357,12 @@ export const onUpdateAttendance = /* GraphQL */ `subscription OnUpdateAttendance
       staffComment
       __typename
     }
+    systemComments {
+      comment
+      confirmed
+      createdAt
+      __typename
+    }
     revision
     createdAt
     updatedAt
@@ -416,6 +428,12 @@ export const onDeleteAttendance = /* GraphQL */ `subscription OnDeleteAttendance
       completed
       comment
       staffComment
+      __typename
+    }
+    systemComments {
+      comment
+      confirmed
+      createdAt
       __typename
     }
     revision
