@@ -33,6 +33,7 @@ export const getStaff = /* GraphQL */ `query GetStaff($id: ID!) {
       workEnd
       __typename
     }
+    sortKey
     createdAt
     updatedAt
     __typename
@@ -61,6 +62,7 @@ export const listStaff = /* GraphQL */ `query ListStaff(
         workEnd
         __typename
       }
+      sortKey
       createdAt
       updatedAt
       __typename
