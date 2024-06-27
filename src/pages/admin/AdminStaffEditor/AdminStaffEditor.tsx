@@ -19,7 +19,13 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import {
+  Control,
+  Controller,
+  useForm,
+  UseFormRegister,
+  UseFormSetValue,
+} from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
 
 import { useAppDispatchV2 } from "../../../app/hooks";
@@ -226,62 +232,15 @@ export default function AdminStaffEditor() {
               </TableRow>
               <TableRow>
                 <TableCell>スタッフ名</TableCell>
-                <TableCell>
-                  <Stack direction="row" spacing={1}>
-                    <TextField
-                      {...register("familyName", { required: true })}
-                      label="姓"
-                    />
-                    <TextField
-                      {...register("givenName", { required: true })}
-                      label="名"
-                    />
-                  </Stack>
-                </TableCell>
+                <StaffNameTableCell register={register} />
               </TableRow>
               <TableRow>
                 <TableCell>メールアドレス</TableCell>
-                <TableCell>
-                  <TextField
-                    {...register("mailAddress", { required: true })}
-                    label="メールアドレス"
-                    sx={{ width: 400 }}
-                  />
-                </TableCell>
+                <MailAddressTableCell register={register} />
               </TableRow>
               <TableRow>
                 <TableCell>権限</TableCell>
-                <TableCell>
-                  <Box>
-                    <Controller
-                      name="role"
-                      control={control}
-                      render={({ field }) => (
-                        <Autocomplete
-                          {...field}
-                          value={
-                            ROLE_OPTIONS.find(
-                              (option) => String(option.value) === field.value
-                            ) ?? null
-                          }
-                          options={ROLE_OPTIONS}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="権限"
-                              sx={{ width: 400 }}
-                            />
-                          )}
-                          onChange={(_, data) => {
-                            if (!data) return;
-                            setValue("role", data.value);
-                            field.onChange(data.value);
-                          }}
-                        />
-                      )}
-                    />
-                  </Box>
-                </TableCell>
+                <StaffRoleTableCell control={control} setValue={setValue} />
               </TableRow>
               {cognitoUser?.owner && (
                 <TableRow>
@@ -315,6 +274,9 @@ export default function AdminStaffEditor() {
                           {...field}
                           value={field.value}
                           format="YYYY/M/D"
+                          slotProps={{
+                            textField: { size: "small" },
+                          }}
                         />
                       )}
                     />
@@ -337,5 +299,89 @@ export default function AdminStaffEditor() {
         </Box>
       </Stack>
     </Container>
+  );
+}
+
+function StaffRoleTableCell({
+  control,
+  setValue,
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  control: Control<Inputs, any>;
+  setValue: UseFormSetValue<Inputs>;
+}) {
+  return (
+    <TableCell>
+      <Box>
+        <Controller
+          name="role"
+          control={control}
+          render={({ field }) => (
+            <Autocomplete
+              {...field}
+              value={
+                ROLE_OPTIONS.find(
+                  (option) => String(option.value) === field.value
+                ) ?? null
+              }
+              options={ROLE_OPTIONS}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="権限"
+                  size="small"
+                  sx={{ width: 400 }}
+                />
+              )}
+              onChange={(_, data) => {
+                if (!data) return;
+                setValue("role", data.value);
+                field.onChange(data.value);
+              }}
+            />
+          )}
+        />
+      </Box>
+    </TableCell>
+  );
+}
+
+function MailAddressTableCell({
+  register,
+}: {
+  register: UseFormRegister<Inputs>;
+}) {
+  return (
+    <TableCell>
+      <TextField
+        {...register("mailAddress", { required: true })}
+        label="メールアドレス"
+        size="small"
+        sx={{ width: 400 }}
+      />
+    </TableCell>
+  );
+}
+
+function StaffNameTableCell({
+  register,
+}: {
+  register: UseFormRegister<Inputs>;
+}) {
+  return (
+    <TableCell>
+      <Stack direction="row" spacing={1}>
+        <TextField
+          {...register("familyName", { required: true })}
+          size="small"
+          label="姓"
+        />
+        <TextField
+          {...register("givenName", { required: true })}
+          size="small"
+          label="名"
+        />
+      </Stack>
+    </TableCell>
   );
 }
