@@ -42,6 +42,7 @@ export type StaffType = {
   updatedAt: Staff["updatedAt"];
   usageStartDate?: Staff["usageStartDate"];
   notifications?: Staff["notifications"];
+  sortKey?: Staff["sortKey"];
 };
 
 export function mappingStaffRole(role: Staff["role"]): StaffRole {
@@ -83,6 +84,8 @@ export default function useStaffs() {
             usageStartDate: staff.usageStartDate,
             createdAt: staff.createdAt,
             updatedAt: staff.updatedAt,
+            notifications: staff.notifications,
+            sortKey: staff.sortKey,
           }))
         )
       )
@@ -110,6 +113,9 @@ export default function useStaffs() {
             status: staff.status,
             createdAt: staff.createdAt,
             updatedAt: staff.updatedAt,
+            notifications: staff.notifications,
+            sortKey: staff.sortKey,
+            usageStartDate: staff.usageStartDate,
           }))
         );
       })
@@ -134,6 +140,9 @@ export default function useStaffs() {
             status: staff.status,
             createdAt: staff.createdAt,
             updatedAt: staff.updatedAt,
+            usageStartDate: staff.usageStartDate,
+            notifications: staff.notifications,
+            sortKey: staff.sortKey,
           },
         ]);
       })
@@ -159,6 +168,9 @@ export default function useStaffs() {
                 status: staff.status,
                 createdAt: staff.createdAt,
                 updatedAt: staff.updatedAt,
+                usageStartDate: staff.usageStartDate,
+                notifications: staff.notifications,
+                sortKey: staff.sortKey,
               };
             }
             return s;

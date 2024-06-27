@@ -52,6 +52,7 @@ type Inputs = {
   beforeRoles: StaffRole[];
   role: string;
   usageStartDate?: Staff["usageStartDate"] | null;
+  sortKey: string;
 };
 
 const defaultValues: Inputs = {
@@ -60,6 +61,7 @@ const defaultValues: Inputs = {
   owner: false,
   beforeRoles: [],
   role: StaffRole.STAFF,
+  sortKey: "1",
 };
 
 export default function AdminStaffEditor() {
@@ -142,6 +144,7 @@ export default function AdminStaffEditor() {
           owner,
           role,
           usageStartDate: usageStartDate?.toISOString() || null,
+          sortKey: data.sortKey,
         })
           .then(() => {
             dispatch(setSnackbarSuccess(MESSAGE_CODE.S05003));
@@ -180,6 +183,7 @@ export default function AdminStaffEditor() {
       "usageStartDate",
       staff.usageStartDate ? dayjs(staff.usageStartDate) : null
     );
+    setValue("sortKey", staff.sortKey || "");
   }, [staffId, staffLoading]);
 
   if (staffLoading) {
@@ -227,6 +231,20 @@ export default function AdminStaffEditor() {
                 <TableCell>
                   <Typography variant="body1">
                     {getValues("staffId")}
+                  </Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>汎用コード</TableCell>
+                <TableCell>
+                  <Typography variant="body1">
+                    <TextField
+                      {...register("sortKey")}
+                      size="small"
+                      placeholder="例：1、2、3...やZZ001、ZZ002...など"
+                      helperText="このコードを利用してスタッフ一覧などの表示順を指定します。"
+                      sx={{ width: 400 }}
+                    />
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -290,7 +308,7 @@ export default function AdminStaffEditor() {
           <Button
             variant="contained"
             size="medium"
-            disabled={!isValid || !isDirty || isSubmitting}
+            disabled={!isValid || !isDirty || saving || isSubmitting}
             startIcon={saving ? <CircularProgress size={15} /> : undefined}
             onClick={handleSubmit(onSubmit)}
           >
@@ -326,12 +344,7 @@ function StaffRoleTableCell({
               }
               options={ROLE_OPTIONS}
               renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="権限"
-                  size="small"
-                  sx={{ width: 400 }}
-                />
+                <TextField {...params} size="small" sx={{ width: 400 }} />
               )}
               onChange={(_, data) => {
                 if (!data) return;
@@ -355,7 +368,6 @@ function MailAddressTableCell({
     <TableCell>
       <TextField
         {...register("mailAddress", { required: true })}
-        label="メールアドレス"
         size="small"
         sx={{ width: 400 }}
       />
