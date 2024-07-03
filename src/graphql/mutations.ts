@@ -28,6 +28,7 @@ export const createStaff = /* GraphQL */ `mutation CreateStaff(
       workEnd
       __typename
     }
+    sortKey
     createdAt
     updatedAt
     __typename
@@ -57,6 +58,7 @@ export const updateStaff = /* GraphQL */ `mutation UpdateStaff(
       workEnd
       __typename
     }
+    sortKey
     createdAt
     updatedAt
     __typename
@@ -86,6 +88,7 @@ export const deleteStaff = /* GraphQL */ `mutation DeleteStaff(
       workEnd
       __typename
     }
+    sortKey
     createdAt
     updatedAt
     __typename
@@ -309,6 +312,12 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
       staffComment
       __typename
     }
+    systemComments {
+      comment
+      confirmed
+      createdAt
+      __typename
+    }
     revision
     createdAt
     updatedAt
@@ -377,6 +386,12 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
       staffComment
       __typename
     }
+    systemComments {
+      comment
+      confirmed
+      createdAt
+      __typename
+    }
     revision
     createdAt
     updatedAt
@@ -443,6 +458,12 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
       completed
       comment
       staffComment
+      __typename
+    }
+    systemComments {
+      comment
+      confirmed
+      createdAt
       __typename
     }
     revision

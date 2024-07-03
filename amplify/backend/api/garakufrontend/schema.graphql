@@ -15,6 +15,7 @@ type Staff @model @auth(rules: [{ allow: private }]) {
   owner: Boolean
   usageStartDate: String
   notifications: Notification
+  sortKey: String
 }
 
 type Notification {
@@ -41,6 +42,12 @@ type CloseDate @model @auth(rules: [{ allow: private }]) {
   endDate: String!
 }
 
+type SystemComment {
+  comment: String!
+  confirmed: Boolean!
+  createdAt: String!
+}
+
 type Attendance @model @auth(rules: [{ allow: private }]) {
   id: ID!
   staffId: String!
@@ -55,6 +62,7 @@ type Attendance @model @auth(rules: [{ allow: private }]) {
   substituteHolidayDate: String
   histories: [AttendanceHistory]
   changeRequests: [AttendanceChangeRequest]
+  systemComments: [SystemComment]
   revision: Int
 }
 

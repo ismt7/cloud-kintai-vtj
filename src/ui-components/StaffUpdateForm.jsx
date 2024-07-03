@@ -39,6 +39,7 @@ export default function StaffUpdateForm(props) {
     status: "",
     owner: false,
     usageStartDate: "",
+    sortKey: "",
   };
   const [cognitoUserId, setCognitoUserId] = React.useState(
     initialValues.cognitoUserId
@@ -55,6 +56,7 @@ export default function StaffUpdateForm(props) {
   const [usageStartDate, setUsageStartDate] = React.useState(
     initialValues.usageStartDate
   );
+  const [sortKey, setSortKey] = React.useState(initialValues.sortKey);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = staffRecord
@@ -69,6 +71,7 @@ export default function StaffUpdateForm(props) {
     setStatus(cleanValues.status);
     setOwner(cleanValues.owner);
     setUsageStartDate(cleanValues.usageStartDate);
+    setSortKey(cleanValues.sortKey);
     setErrors({});
   };
   const [staffRecord, setStaffRecord] = React.useState(staffModelProp);
@@ -97,6 +100,7 @@ export default function StaffUpdateForm(props) {
     status: [{ type: "Required" }],
     owner: [],
     usageStartDate: [],
+    sortKey: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -133,6 +137,7 @@ export default function StaffUpdateForm(props) {
           status,
           owner: owner ?? null,
           usageStartDate: usageStartDate ?? null,
+          sortKey: sortKey ?? null,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -202,6 +207,7 @@ export default function StaffUpdateForm(props) {
               status,
               owner,
               usageStartDate,
+              sortKey,
             };
             const result = onChange(modelFields);
             value = result?.cognitoUserId ?? value;
@@ -234,6 +240,7 @@ export default function StaffUpdateForm(props) {
               status,
               owner,
               usageStartDate,
+              sortKey,
             };
             const result = onChange(modelFields);
             value = result?.familyName ?? value;
@@ -266,6 +273,7 @@ export default function StaffUpdateForm(props) {
               status,
               owner,
               usageStartDate,
+              sortKey,
             };
             const result = onChange(modelFields);
             value = result?.givenName ?? value;
@@ -298,6 +306,7 @@ export default function StaffUpdateForm(props) {
               status,
               owner,
               usageStartDate,
+              sortKey,
             };
             const result = onChange(modelFields);
             value = result?.mailAddress ?? value;
@@ -330,6 +339,7 @@ export default function StaffUpdateForm(props) {
               status,
               owner,
               usageStartDate,
+              sortKey,
             };
             const result = onChange(modelFields);
             value = result?.role ?? value;
@@ -362,6 +372,7 @@ export default function StaffUpdateForm(props) {
               status,
               owner,
               usageStartDate,
+              sortKey,
             };
             const result = onChange(modelFields);
             value = result?.enabled ?? value;
@@ -394,6 +405,7 @@ export default function StaffUpdateForm(props) {
               status: value,
               owner,
               usageStartDate,
+              sortKey,
             };
             const result = onChange(modelFields);
             value = result?.status ?? value;
@@ -426,6 +438,7 @@ export default function StaffUpdateForm(props) {
               status,
               owner: value,
               usageStartDate,
+              sortKey,
             };
             const result = onChange(modelFields);
             value = result?.owner ?? value;
@@ -458,6 +471,7 @@ export default function StaffUpdateForm(props) {
               status,
               owner,
               usageStartDate: value,
+              sortKey,
             };
             const result = onChange(modelFields);
             value = result?.usageStartDate ?? value;
@@ -471,6 +485,39 @@ export default function StaffUpdateForm(props) {
         errorMessage={errors.usageStartDate?.errorMessage}
         hasError={errors.usageStartDate?.hasError}
         {...getOverrideProps(overrides, "usageStartDate")}
+      ></TextField>
+      <TextField
+        label="Sort key"
+        isRequired={false}
+        isReadOnly={false}
+        value={sortKey}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              cognitoUserId,
+              familyName,
+              givenName,
+              mailAddress,
+              role,
+              enabled,
+              status,
+              owner,
+              usageStartDate,
+              sortKey: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.sortKey ?? value;
+          }
+          if (errors.sortKey?.hasError) {
+            runValidationTasks("sortKey", value);
+          }
+          setSortKey(value);
+        }}
+        onBlur={() => runValidationTasks("sortKey", sortKey)}
+        errorMessage={errors.sortKey?.errorMessage}
+        hasError={errors.sortKey?.hasError}
+        {...getOverrideProps(overrides, "sortKey")}
       ></TextField>
       <Flex
         justifyContent="space-between"

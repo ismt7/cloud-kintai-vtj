@@ -25,6 +25,7 @@ export const onCreateStaff = /* GraphQL */ `subscription OnCreateStaff($filter: 
       workEnd
       __typename
     }
+    sortKey
     createdAt
     updatedAt
     __typename
@@ -51,6 +52,7 @@ export const onUpdateStaff = /* GraphQL */ `subscription OnUpdateStaff($filter: 
       workEnd
       __typename
     }
+    sortKey
     createdAt
     updatedAt
     __typename
@@ -77,6 +79,7 @@ export const onDeleteStaff = /* GraphQL */ `subscription OnDeleteStaff($filter: 
       workEnd
       __typename
     }
+    sortKey
     createdAt
     updatedAt
     __typename
@@ -284,6 +287,12 @@ export const onCreateAttendance = /* GraphQL */ `subscription OnCreateAttendance
       staffComment
       __typename
     }
+    systemComments {
+      comment
+      confirmed
+      createdAt
+      __typename
+    }
     revision
     createdAt
     updatedAt
@@ -351,6 +360,12 @@ export const onUpdateAttendance = /* GraphQL */ `subscription OnUpdateAttendance
       staffComment
       __typename
     }
+    systemComments {
+      comment
+      confirmed
+      createdAt
+      __typename
+    }
     revision
     createdAt
     updatedAt
@@ -416,6 +431,12 @@ export const onDeleteAttendance = /* GraphQL */ `subscription OnDeleteAttendance
       completed
       comment
       staffComment
+      __typename
+    }
+    systemComments {
+      comment
+      confirmed
+      createdAt
       __typename
     }
     revision

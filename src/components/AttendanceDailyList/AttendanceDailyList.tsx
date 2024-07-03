@@ -38,32 +38,38 @@ export default function AttendanceDailyList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {attendanceDailyList.map((row, index) => (
-            <TableRow key={index} className="attendance-row">
-              <ActionsTableCell row={row} />
-              <TableCell>{`${row.familyName} ${row.givenName}`}</TableCell>
-              <StartTimeTableCell row={row} />
-              <EndTimeTableCell row={row} />
-              <TableCell>
-                {(() => {
-                  if (!row.attendance) return "";
-                  const { paidHolidayFlag, substituteHolidayDate, remarks } =
-                    row.attendance;
-                  const isSubstituteHoliday = substituteHolidayDate
-                    ? dayjs(substituteHolidayDate).isValid()
-                    : false;
+          {attendanceDailyList
+            .sort((a, b) => {
+              const aSortKey = a.sortKey || "";
+              const bSortKey = b.sortKey || "";
+              return aSortKey.localeCompare(bSortKey);
+            })
+            .map((row, index) => (
+              <TableRow key={index} className="attendance-row">
+                <ActionsTableCell row={row} />
+                <TableCell>{`${row.familyName} ${row.givenName}`}</TableCell>
+                <StartTimeTableCell row={row} />
+                <EndTimeTableCell row={row} />
+                <TableCell>
+                  {(() => {
+                    if (!row.attendance) return "";
+                    const { paidHolidayFlag, substituteHolidayDate, remarks } =
+                      row.attendance;
+                    const isSubstituteHoliday = substituteHolidayDate
+                      ? dayjs(substituteHolidayDate).isValid()
+                      : false;
 
-                  const summaryMessage = [];
-                  if (paidHolidayFlag) summaryMessage.push("有給休暇");
-                  if (isSubstituteHoliday) summaryMessage.push("振替休日");
-                  if (remarks) summaryMessage.push(remarks);
+                    const summaryMessage = [];
+                    if (paidHolidayFlag) summaryMessage.push("有給休暇");
+                    if (isSubstituteHoliday) summaryMessage.push("振替休日");
+                    if (remarks) summaryMessage.push(remarks);
 
-                  return summaryMessage.join(" ");
-                })()}
-              </TableCell>
-              <TableCell sx={{ whiteSpace: "nowrap" }} />
-            </TableRow>
-          ))}
+                    return summaryMessage.join(" ");
+                  })()}
+                </TableCell>
+                <TableCell sx={{ whiteSpace: "nowrap" }} />
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>

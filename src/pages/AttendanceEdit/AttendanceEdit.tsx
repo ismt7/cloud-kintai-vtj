@@ -227,6 +227,7 @@ export default function AttendanceEdit() {
         restUpdate,
         restReplace,
         changeRequests,
+        systemCommentFields: [],
       }}
     >
       <Box sx={{ display: { xs: "block", md: "none" } }}>

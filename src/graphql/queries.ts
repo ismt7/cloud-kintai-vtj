@@ -33,6 +33,7 @@ export const getStaff = /* GraphQL */ `query GetStaff($id: ID!) {
       workEnd
       __typename
     }
+    sortKey
     createdAt
     updatedAt
     __typename
@@ -61,6 +62,7 @@ export const listStaff = /* GraphQL */ `query ListStaff(
         workEnd
         __typename
       }
+      sortKey
       createdAt
       updatedAt
       __typename
@@ -239,6 +241,12 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
       staffComment
       __typename
     }
+    systemComments {
+      comment
+      confirmed
+      createdAt
+      __typename
+    }
     revision
     createdAt
     updatedAt
@@ -307,6 +315,12 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
         completed
         comment
         staffComment
+        __typename
+      }
+      systemComments {
+        comment
+        confirmed
+        createdAt
         __typename
       }
       revision

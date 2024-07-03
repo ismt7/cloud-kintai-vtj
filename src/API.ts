@@ -14,6 +14,7 @@ export type CreateStaffInput = {
   owner?: boolean | null,
   usageStartDate?: string | null,
   notifications?: NotificationInput | null,
+  sortKey?: string | null,
 };
 
 export type NotificationInput = {
@@ -31,6 +32,7 @@ export type ModelStaffConditionInput = {
   status?: ModelStringInput | null,
   owner?: ModelBooleanInput | null,
   usageStartDate?: ModelStringInput | null,
+  sortKey?: ModelStringInput | null,
   and?: Array< ModelStaffConditionInput | null > | null,
   or?: Array< ModelStaffConditionInput | null > | null,
   not?: ModelStaffConditionInput | null,
@@ -98,6 +100,7 @@ export type Staff = {
   owner?: boolean | null,
   usageStartDate?: string | null,
   notifications?: Notification | null,
+  sortKey?: string | null,
   createdAt: string,
   updatedAt: string,
 };
@@ -120,6 +123,7 @@ export type UpdateStaffInput = {
   owner?: boolean | null,
   usageStartDate?: string | null,
   notifications?: NotificationInput | null,
+  sortKey?: string | null,
 };
 
 export type DeleteStaffInput = {
@@ -249,6 +253,7 @@ export type CreateAttendanceInput = {
   substituteHolidayDate?: string | null,
   histories?: Array< AttendanceHistoryInput | null > | null,
   changeRequests?: Array< AttendanceChangeRequestInput | null > | null,
+  systemComments?: Array< SystemCommentInput | null > | null,
   revision?: number | null,
 };
 
@@ -285,6 +290,12 @@ export type AttendanceChangeRequestInput = {
   completed?: boolean | null,
   comment?: string | null,
   staffComment?: string | null,
+};
+
+export type SystemCommentInput = {
+  comment: string,
+  confirmed: boolean,
+  createdAt: string,
 };
 
 export type ModelAttendanceConditionInput = {
@@ -332,6 +343,7 @@ export type Attendance = {
   substituteHolidayDate?: string | null,
   histories?:  Array<AttendanceHistory | null > | null,
   changeRequests?:  Array<AttendanceChangeRequest | null > | null,
+  systemComments?:  Array<SystemComment | null > | null,
   revision?: number | null,
   createdAt: string,
   updatedAt: string,
@@ -375,6 +387,13 @@ export type AttendanceChangeRequest = {
   staffComment?: string | null,
 };
 
+export type SystemComment = {
+  __typename: "SystemComment",
+  comment: string,
+  confirmed: boolean,
+  createdAt: string,
+};
+
 export type UpdateAttendanceInput = {
   id: string,
   staffId?: string | null,
@@ -389,6 +408,7 @@ export type UpdateAttendanceInput = {
   substituteHolidayDate?: string | null,
   histories?: Array< AttendanceHistoryInput | null > | null,
   changeRequests?: Array< AttendanceChangeRequestInput | null > | null,
+  systemComments?: Array< SystemCommentInput | null > | null,
   revision?: number | null,
 };
 
@@ -466,6 +486,7 @@ export type ModelStaffFilterInput = {
   status?: ModelStringInput | null,
   owner?: ModelBooleanInput | null,
   usageStartDate?: ModelStringInput | null,
+  sortKey?: ModelStringInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
   and?: Array< ModelStaffFilterInput | null > | null,
@@ -603,6 +624,7 @@ export type ModelSubscriptionStaffFilterInput = {
   status?: ModelSubscriptionStringInput | null,
   owner?: ModelSubscriptionBooleanInput | null,
   usageStartDate?: ModelSubscriptionStringInput | null,
+  sortKey?: ModelSubscriptionStringInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionStaffFilterInput | null > | null,
@@ -741,6 +763,7 @@ export type CreateStaffMutation = {
       workStart?: boolean | null,
       workEnd?: boolean | null,
     } | null,
+    sortKey?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -769,6 +792,7 @@ export type UpdateStaffMutation = {
       workStart?: boolean | null,
       workEnd?: boolean | null,
     } | null,
+    sortKey?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -797,6 +821,7 @@ export type DeleteStaffMutation = {
       workStart?: boolean | null,
       workEnd?: boolean | null,
     } | null,
+    sortKey?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1010,6 +1035,12 @@ export type CreateAttendanceMutation = {
       comment?: string | null,
       staffComment?: string | null,
     } | null > | null,
+    systemComments?:  Array< {
+      __typename: "SystemComment",
+      comment: string,
+      confirmed: boolean,
+      createdAt: string,
+    } | null > | null,
     revision?: number | null,
     createdAt: string,
     updatedAt: string,
@@ -1077,6 +1108,12 @@ export type UpdateAttendanceMutation = {
       comment?: string | null,
       staffComment?: string | null,
     } | null > | null,
+    systemComments?:  Array< {
+      __typename: "SystemComment",
+      comment: string,
+      confirmed: boolean,
+      createdAt: string,
+    } | null > | null,
     revision?: number | null,
     createdAt: string,
     updatedAt: string,
@@ -1143,6 +1180,12 @@ export type DeleteAttendanceMutation = {
       completed?: boolean | null,
       comment?: string | null,
       staffComment?: string | null,
+    } | null > | null,
+    systemComments?:  Array< {
+      __typename: "SystemComment",
+      comment: string,
+      confirmed: boolean,
+      createdAt: string,
     } | null > | null,
     revision?: number | null,
     createdAt: string,
@@ -1241,6 +1284,7 @@ export type GetStaffQuery = {
       workStart?: boolean | null,
       workEnd?: boolean | null,
     } | null,
+    sortKey?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1272,6 +1316,7 @@ export type ListStaffQuery = {
         workStart?: boolean | null,
         workEnd?: boolean | null,
       } | null,
+      sortKey?: string | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -1449,6 +1494,12 @@ export type GetAttendanceQuery = {
       comment?: string | null,
       staffComment?: string | null,
     } | null > | null,
+    systemComments?:  Array< {
+      __typename: "SystemComment",
+      comment: string,
+      confirmed: boolean,
+      createdAt: string,
+    } | null > | null,
     revision?: number | null,
     createdAt: string,
     updatedAt: string,
@@ -1518,6 +1569,12 @@ export type ListAttendancesQuery = {
         completed?: boolean | null,
         comment?: string | null,
         staffComment?: string | null,
+      } | null > | null,
+      systemComments?:  Array< {
+        __typename: "SystemComment",
+        comment: string,
+        confirmed: boolean,
+        createdAt: string,
       } | null > | null,
       revision?: number | null,
       createdAt: string,
@@ -1591,6 +1648,7 @@ export type OnCreateStaffSubscription = {
       workStart?: boolean | null,
       workEnd?: boolean | null,
     } | null,
+    sortKey?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1618,6 +1676,7 @@ export type OnUpdateStaffSubscription = {
       workStart?: boolean | null,
       workEnd?: boolean | null,
     } | null,
+    sortKey?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1645,6 +1704,7 @@ export type OnDeleteStaffSubscription = {
       workStart?: boolean | null,
       workEnd?: boolean | null,
     } | null,
+    sortKey?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1848,6 +1908,12 @@ export type OnCreateAttendanceSubscription = {
       comment?: string | null,
       staffComment?: string | null,
     } | null > | null,
+    systemComments?:  Array< {
+      __typename: "SystemComment",
+      comment: string,
+      confirmed: boolean,
+      createdAt: string,
+    } | null > | null,
     revision?: number | null,
     createdAt: string,
     updatedAt: string,
@@ -1914,6 +1980,12 @@ export type OnUpdateAttendanceSubscription = {
       comment?: string | null,
       staffComment?: string | null,
     } | null > | null,
+    systemComments?:  Array< {
+      __typename: "SystemComment",
+      comment: string,
+      confirmed: boolean,
+      createdAt: string,
+    } | null > | null,
     revision?: number | null,
     createdAt: string,
     updatedAt: string,
@@ -1979,6 +2051,12 @@ export type OnDeleteAttendanceSubscription = {
       completed?: boolean | null,
       comment?: string | null,
       staffComment?: string | null,
+    } | null > | null,
+    systemComments?:  Array< {
+      __typename: "SystemComment",
+      comment: string,
+      confirmed: boolean,
+      createdAt: string,
     } | null > | null,
     revision?: number | null,
     createdAt: string,

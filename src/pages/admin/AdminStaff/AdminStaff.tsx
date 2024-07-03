@@ -91,32 +91,41 @@ export default function AdminStaff() {
                   <TableCell>名前</TableCell>
                   <TableCell>メールアドレス</TableCell>
                   <TableCell>権限</TableCell>
+                  <TableCell>汎用コード</TableCell>
                   <TableCell>作成日時</TableCell>
                   <TableCell>更新日時</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {staffs.map((staff, index) => (
-                  <TableRow key={index} className="table-row">
-                    <TableCell>
-                      <Stack direction="row" spacing={0}>
-                        <EditButton staff={staff} />
-                        <MoreActionButton
-                          staff={staff}
-                          updateStaff={updateStaff}
-                          deleteStaff={deleteStaff}
-                        />
-                      </Stack>
-                    </TableCell>
-                    <AccountStatusTableCell staff={staff} />
-                    <StatusTableCell staff={staff} />
-                    <StaffNameTableCell staff={staff} />
-                    <TableCell>{staff.mailAddress}</TableCell>
-                    <RoleTableCell staff={staff} />
-                    <CreatedAtTableCell staff={staff} />
-                    <UpdatedAtTableCell staff={staff} />
-                  </TableRow>
-                ))}
+                {staffs
+                  .sort((a, b) => {
+                    const aSortKey = a.sortKey || "";
+                    const bSortKey = b.sortKey || "";
+
+                    return aSortKey.localeCompare(bSortKey);
+                  })
+                  .map((staff, index) => (
+                    <TableRow key={index} className="table-row">
+                      <TableCell>
+                        <Stack direction="row" spacing={0}>
+                          <EditButton staff={staff} />
+                          <MoreActionButton
+                            staff={staff}
+                            updateStaff={updateStaff}
+                            deleteStaff={deleteStaff}
+                          />
+                        </Stack>
+                      </TableCell>
+                      <AccountStatusTableCell staff={staff} />
+                      <StatusTableCell staff={staff} />
+                      <StaffNameTableCell staff={staff} />
+                      <TableCell>{staff.mailAddress}</TableCell>
+                      <RoleTableCell staff={staff} />
+                      <TableCell>{staff.sortKey || ""}</TableCell>
+                      <CreatedAtTableCell staff={staff} />
+                      <UpdatedAtTableCell staff={staff} />
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
