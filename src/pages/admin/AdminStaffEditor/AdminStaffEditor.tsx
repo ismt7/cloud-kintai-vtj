@@ -19,7 +19,13 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import {
+  Control,
+  Controller,
+  useForm,
+  UseFormRegister,
+  UseFormSetValue,
+} from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
 
 import { useAppDispatchV2 } from "../../../app/hooks";
@@ -46,6 +52,7 @@ type Inputs = {
   beforeRoles: StaffRole[];
   role: string;
   usageStartDate?: Staff["usageStartDate"] | null;
+  sortKey: string;
 };
 
 const defaultValues: Inputs = {
@@ -54,6 +61,7 @@ const defaultValues: Inputs = {
   owner: false,
   beforeRoles: [],
   role: StaffRole.STAFF,
+  sortKey: "1",
 };
 
 export default function AdminStaffEditor() {
@@ -136,6 +144,7 @@ export default function AdminStaffEditor() {
           owner,
           role,
           usageStartDate: usageStartDate?.toISOString() || null,
+          sortKey: data.sortKey,
         })
           .then(() => {
             dispatch(setSnackbarSuccess(MESSAGE_CODE.S05003));
@@ -174,6 +183,7 @@ export default function AdminStaffEditor() {
       "usageStartDate",
       staff.usageStartDate ? dayjs(staff.usageStartDate) : null
     );
+    setValue("sortKey", staff.sortKey || "");
   }, [staffId, staffLoading]);
 
   if (staffLoading) {
@@ -225,63 +235,30 @@ export default function AdminStaffEditor() {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>スタッフ名</TableCell>
+                <TableCell>汎用コード</TableCell>
                 <TableCell>
-                  <Stack direction="row" spacing={1}>
+                  <Typography variant="body1">
                     <TextField
-                      {...register("familyName", { required: true })}
-                      label="姓"
+                      {...register("sortKey")}
+                      size="small"
+                      placeholder="例：1、2、3...やZZ001、ZZ002...など"
+                      helperText="このコードを利用してスタッフ一覧などの表示順を指定します。"
+                      sx={{ width: 400 }}
                     />
-                    <TextField
-                      {...register("givenName", { required: true })}
-                      label="名"
-                    />
-                  </Stack>
+                  </Typography>
                 </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>スタッフ名</TableCell>
+                <StaffNameTableCell register={register} />
               </TableRow>
               <TableRow>
                 <TableCell>メールアドレス</TableCell>
-                <TableCell>
-                  <TextField
-                    {...register("mailAddress", { required: true })}
-                    label="メールアドレス"
-                    sx={{ width: 400 }}
-                  />
-                </TableCell>
+                <MailAddressTableCell register={register} />
               </TableRow>
               <TableRow>
                 <TableCell>権限</TableCell>
-                <TableCell>
-                  <Box>
-                    <Controller
-                      name="role"
-                      control={control}
-                      render={({ field }) => (
-                        <Autocomplete
-                          {...field}
-                          value={
-                            ROLE_OPTIONS.find(
-                              (option) => String(option.value) === field.value
-                            ) ?? null
-                          }
-                          options={ROLE_OPTIONS}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="権限"
-                              sx={{ width: 400 }}
-                            />
-                          )}
-                          onChange={(_, data) => {
-                            if (!data) return;
-                            setValue("role", data.value);
-                            field.onChange(data.value);
-                          }}
-                        />
-                      )}
-                    />
-                  </Box>
-                </TableCell>
+                <StaffRoleTableCell control={control} setValue={setValue} />
               </TableRow>
               {cognitoUser?.owner && (
                 <TableRow>
@@ -315,6 +292,9 @@ export default function AdminStaffEditor() {
                           {...field}
                           value={field.value}
                           format="YYYY/M/D"
+                          slotProps={{
+                            textField: { size: "small" },
+                          }}
                         />
                       )}
                     />
@@ -328,7 +308,7 @@ export default function AdminStaffEditor() {
           <Button
             variant="contained"
             size="medium"
-            disabled={!isValid || !isDirty || isSubmitting}
+            disabled={!isValid || !isDirty || saving || isSubmitting}
             startIcon={saving ? <CircularProgress size={15} /> : undefined}
             onClick={handleSubmit(onSubmit)}
           >
@@ -337,5 +317,83 @@ export default function AdminStaffEditor() {
         </Box>
       </Stack>
     </Container>
+  );
+}
+
+function StaffRoleTableCell({
+  control,
+  setValue,
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  control: Control<Inputs, any>;
+  setValue: UseFormSetValue<Inputs>;
+}) {
+  return (
+    <TableCell>
+      <Box>
+        <Controller
+          name="role"
+          control={control}
+          render={({ field }) => (
+            <Autocomplete
+              {...field}
+              value={
+                ROLE_OPTIONS.find(
+                  (option) => String(option.value) === field.value
+                ) ?? null
+              }
+              options={ROLE_OPTIONS}
+              renderInput={(params) => (
+                <TextField {...params} size="small" sx={{ width: 400 }} />
+              )}
+              onChange={(_, data) => {
+                if (!data) return;
+                setValue("role", data.value);
+                field.onChange(data.value);
+              }}
+            />
+          )}
+        />
+      </Box>
+    </TableCell>
+  );
+}
+
+function MailAddressTableCell({
+  register,
+}: {
+  register: UseFormRegister<Inputs>;
+}) {
+  return (
+    <TableCell>
+      <TextField
+        {...register("mailAddress", { required: true })}
+        size="small"
+        sx={{ width: 400 }}
+      />
+    </TableCell>
+  );
+}
+
+function StaffNameTableCell({
+  register,
+}: {
+  register: UseFormRegister<Inputs>;
+}) {
+  return (
+    <TableCell>
+      <Stack direction="row" spacing={1}>
+        <TextField
+          {...register("familyName", { required: true })}
+          size="small"
+          label="姓"
+        />
+        <TextField
+          {...register("givenName", { required: true })}
+          size="small"
+          label="名"
+        />
+      </Stack>
+    </TableCell>
   );
 }

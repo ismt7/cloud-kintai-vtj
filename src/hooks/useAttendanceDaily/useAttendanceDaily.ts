@@ -9,6 +9,7 @@ export interface AttendanceDaily {
   sub: string;
   givenName: string;
   familyName: string;
+  sortKey: string;
   attendance: Attendance | null;
 }
 
@@ -31,7 +32,7 @@ export default function useAttendanceDaily() {
     setLoading(true);
     setError(null);
     Promise.all(
-      staffs.map(async ({ cognitoUserId, givenName, familyName }) => {
+      staffs.map(async ({ cognitoUserId, givenName, familyName, sortKey }) => {
         const attendance = await new AttendanceDataManager().fetchAll(
           cognitoUserId,
           workDate
@@ -42,6 +43,7 @@ export default function useAttendanceDaily() {
           givenName,
           familyName,
           attendance,
+          sortKey: sortKey || "",
         } as AttendanceDaily;
       })
     )

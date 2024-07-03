@@ -28,6 +28,7 @@ export const createStaff = /* GraphQL */ `mutation CreateStaff(
       workEnd
       __typename
     }
+    sortKey
     createdAt
     updatedAt
     __typename
@@ -57,6 +58,7 @@ export const updateStaff = /* GraphQL */ `mutation UpdateStaff(
       workEnd
       __typename
     }
+    sortKey
     createdAt
     updatedAt
     __typename
@@ -86,6 +88,7 @@ export const deleteStaff = /* GraphQL */ `mutation DeleteStaff(
       workEnd
       __typename
     }
+    sortKey
     createdAt
     updatedAt
     __typename

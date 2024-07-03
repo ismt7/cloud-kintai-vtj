@@ -25,6 +25,7 @@ export const onCreateStaff = /* GraphQL */ `subscription OnCreateStaff($filter: 
       workEnd
       __typename
     }
+    sortKey
     createdAt
     updatedAt
     __typename
@@ -51,6 +52,7 @@ export const onUpdateStaff = /* GraphQL */ `subscription OnUpdateStaff($filter: 
       workEnd
       __typename
     }
+    sortKey
     createdAt
     updatedAt
     __typename
@@ -77,6 +79,7 @@ export const onDeleteStaff = /* GraphQL */ `subscription OnDeleteStaff($filter: 
       workEnd
       __typename
     }
+    sortKey
     createdAt
     updatedAt
     __typename
