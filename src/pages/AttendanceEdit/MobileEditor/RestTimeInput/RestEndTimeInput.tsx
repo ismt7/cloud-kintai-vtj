@@ -70,7 +70,7 @@ export default function RestEndTimeInput({
           control={control}
           render={({ field }) => (
             <TimePicker
-              value={dayjs(field.value)}
+              value={rest.endTime ? dayjs(rest.endTime) : null}
               ampm={false}
               viewRenderers={{
                 hours: renderTimeViewClock,
