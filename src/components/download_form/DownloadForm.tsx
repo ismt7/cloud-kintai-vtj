@@ -72,84 +72,90 @@ export default function DownloadForm() {
     ).then((res) => {
       const exportData = [
         "営業日,従業員コード,名前,休憩時間,出勤打刻,退勤打刻,直行,直帰,有給休暇,振替休日,摘要",
-        ...selectedStaff.map((staff) => {
-          const attendances = res.filter(
-            (attendance) => attendance.staffId === staff.cognitoUserId
-          );
+        ...selectedStaff
+          .sort((a, b) => {
+            const aSortKey = a.sortKey || "";
+            const bSortKey = b.sortKey || "";
+            return aSortKey.localeCompare(bSortKey);
+          })
+          .map((staff) => {
+            const attendances = res.filter(
+              (attendance) => attendance.staffId === staff.cognitoUserId
+            );
 
-          return [
-            ...workDates.map((workDate) => {
-              const matchAttendance = attendances.find(
-                (attendance) => attendance.workDate === workDate
-              );
+            return [
+              ...workDates.map((workDate) => {
+                const matchAttendance = attendances.find(
+                  (attendance) => attendance.workDate === workDate
+                );
 
-              if (matchAttendance) {
-                const {
-                  staffId,
-                  startTime,
-                  endTime,
-                  goDirectlyFlag,
-                  returnDirectlyFlag,
-                  paidHolidayFlag,
-                  substituteHolidayDate,
-                  rests,
-                  remarks,
-                } = matchAttendance;
+                if (matchAttendance) {
+                  const {
+                    staffId,
+                    startTime,
+                    endTime,
+                    goDirectlyFlag,
+                    returnDirectlyFlag,
+                    paidHolidayFlag,
+                    substituteHolidayDate,
+                    rests,
+                    remarks,
+                  } = matchAttendance;
 
-                const totalRestTime =
-                  rests?.reduce((acc, rest) => {
-                    if (!rest) return acc;
+                  const totalRestTime =
+                    rests?.reduce((acc, rest) => {
+                      if (!rest) return acc;
 
-                    const diff = calcTotalRestTime(
-                      rest.startTime,
-                      rest.endTime
-                    );
-                    return acc + diff;
-                  }, 0) ?? 0;
+                      const diff = calcTotalRestTime(
+                        rest.startTime,
+                        rest.endTime
+                      );
+                      return acc + diff;
+                    }, 0) ?? 0;
 
-                const generateSummary = () => {
-                  const textList = [];
-                  if (substituteHolidayDate) {
-                    const formattedSubstituteHolidayDate = dayjs(
-                      substituteHolidayDate
-                    ).format("M/D");
-                    textList.push(`${formattedSubstituteHolidayDate}分振替`);
-                  }
-                  if (remarks) textList.push(remarks);
-                  return textList.join(" ");
-                };
+                  const generateSummary = () => {
+                    const textList = [];
+                    if (substituteHolidayDate) {
+                      const formattedSubstituteHolidayDate = dayjs(
+                        substituteHolidayDate
+                      ).format("M/D");
+                      textList.push(`${formattedSubstituteHolidayDate}分振替`);
+                    }
+                    if (remarks) textList.push(remarks);
+                    return textList.join(" ");
+                  };
+
+                  return [
+                    dayjs(workDate).format("YYYY/MM/DD"),
+                    staffId,
+                    `${staff.familyName} ${staff.givenName}`,
+                    totalRestTime.toFixed(2),
+                    startTime ? dayjs(startTime).format("HH:mm") : "",
+                    endTime ? dayjs(endTime).format("HH:mm") : "",
+                    goDirectlyFlag ? 1 : 0,
+                    returnDirectlyFlag ? 1 : 0,
+                    paidHolidayFlag ? 1 : 0,
+                    substituteHolidayDate ? 1 : 0,
+                    generateSummary(),
+                  ].join(",");
+                }
 
                 return [
                   dayjs(workDate).format("YYYY/MM/DD"),
-                  staffId,
+                  staff.cognitoUserId,
                   `${staff.familyName} ${staff.givenName}`,
-                  totalRestTime.toFixed(2),
-                  startTime ? dayjs(startTime).format("HH:mm") : "",
-                  endTime ? dayjs(endTime).format("HH:mm") : "",
-                  goDirectlyFlag ? 1 : 0,
-                  returnDirectlyFlag ? 1 : 0,
-                  paidHolidayFlag ? 1 : 0,
-                  substituteHolidayDate ? 1 : 0,
-                  generateSummary(),
+                  "",
+                  "",
+                  "",
+                  "",
+                  "",
+                  "",
+                  "",
+                  "",
                 ].join(",");
-              }
-
-              return [
-                dayjs(workDate).format("YYYY/MM/DD"),
-                staff.cognitoUserId,
-                `${staff.familyName} ${staff.givenName}`,
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-              ].join(",");
-            }),
-          ].join("\n");
-        }),
+              }),
+            ].join("\n");
+          }),
       ].join("\n");
 
       // CSVファイルを作成してダウンロード
