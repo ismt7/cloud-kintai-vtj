@@ -76,6 +76,9 @@ export default function RestEndTimeInput({
                 hours: renderTimeViewClock,
                 minutes: renderTimeViewClock,
               }}
+              slotProps={{
+                textField: { size: "small" },
+              }}
               onChange={(newEndTime) => {
                 const formattedEndTime = newEndTime
                   ? newEndTime
