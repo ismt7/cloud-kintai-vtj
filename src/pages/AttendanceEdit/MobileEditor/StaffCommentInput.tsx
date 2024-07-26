@@ -1,6 +1,6 @@
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { Box, Chip, Stack, TextField } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 
 import { AttendanceEditContext } from "../AttendanceEditProvider";
 
@@ -8,6 +8,8 @@ export default function StaffCommentInput() {
   const { changeRequests, register, setValue } = useContext(
     AttendanceEditContext
   );
+
+  const staffCommentRef = useRef<HTMLInputElement | null>(null);
 
   if (!register || !setValue) {
     return null;
@@ -17,6 +19,10 @@ export default function StaffCommentInput() {
     <Box>
       <TextField
         {...register("staffComment")}
+        inputRef={(ref) => {
+          staffCommentRef.current = ref;
+          register("staffComment", { required: false });
+        }}
         multiline
         fullWidth
         minRows={2}
@@ -31,9 +37,15 @@ export default function StaffCommentInput() {
             color="primary"
             icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
             disabled={changeRequests.length > 0}
-            onClick={() =>
-              setValue("staffComment", "打刻忘れ", { shouldDirty: true })
-            }
+            onClick={() => {
+              if (staffCommentRef.current) {
+                staffCommentRef.current.value = "打刻忘れ";
+              }
+
+              setValue("staffComment", "打刻忘れ", {
+                shouldDirty: true,
+              });
+            }}
           />
         </Stack>
       </Box>
