@@ -30,6 +30,8 @@ import {
 } from "@/API";
 import { AttendanceStatus } from "@/components/AttendanceList/AttendanceStatus";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
+import { calcTotalRestTime } from "@/pages/AttendanceEdit/DesktopEditor/RestTimeItem/RestTimeInput/RestTimeInput";
+import { calcTotalWorkTime } from "@/pages/AttendanceEdit/DesktopEditor/WorkTimeInput/WorkTimeInput";
 
 import { useAppDispatchV2 } from "../../../app/hooks";
 import getDayOfWeek, {
@@ -88,6 +90,7 @@ export default function AdminStaffAttendanceList() {
   const dispatch = useAppDispatchV2();
 
   const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
+  const [totalTime, setTotalTime] = useState<number>(0);
 
   const { attendances, getAttendances } = useAttendances();
   const {
@@ -108,6 +111,34 @@ export default function AdminStaffAttendanceList() {
         dispatch(setSnackbarError(MESSAGE_CODE.E00001));
       });
   }, [staffId]);
+
+  useEffect(() => {
+    const totalWorkTime = attendances.reduce((acc, attendance) => {
+      if (!attendance.startTime || !attendance.endTime) return acc;
+
+      const workTime = calcTotalWorkTime(
+        attendance.startTime,
+        attendance.endTime
+      );
+      return acc + workTime;
+    }, 0);
+
+    const totalRestTime = attendances.reduce((acc, attendance) => {
+      if (!attendance.rests) return acc;
+
+      const restTime = attendance.rests
+        .filter((item): item is NonNullable<typeof item> => !!item)
+        .reduce((acc, rest) => {
+          if (!rest.startTime || !rest.endTime) return acc;
+
+          return acc + calcTotalRestTime(rest.startTime, rest.endTime);
+        }, 0);
+
+      return acc + restTime;
+    }, 0);
+
+    setTotalTime(totalWorkTime - totalRestTime);
+  }, [attendances]);
 
   const {
     holidayCalendars,
@@ -170,7 +201,9 @@ export default function AdminStaffAttendanceList() {
           </Breadcrumbs>
         </Box>
         <Typography variant="h4">
-          {staff?.familyName || "(不明)"} さんの勤怠
+          {`${staff?.familyName || "(不明)"} さんの勤怠(${totalTime.toFixed(
+            1
+          )}h)`}
         </Typography>
         <ApprovalPendingMessage attendances={attendances} />
         <Box>

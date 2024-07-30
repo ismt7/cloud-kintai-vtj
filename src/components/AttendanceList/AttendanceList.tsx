@@ -12,6 +12,9 @@ import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import { calcTotalRestTime } from "@/pages/AttendanceEdit/DesktopEditor/RestTimeItem/RestTimeInput/RestTimeInput";
+import { calcTotalWorkTime } from "@/pages/AttendanceEdit/DesktopEditor/WorkTimeInput/WorkTimeInput";
+
 import { Staff } from "../../API";
 import { useAppDispatchV2 } from "../../app/hooks";
 import * as MESSAGE_CODE from "../../errors";
@@ -49,6 +52,7 @@ export default function AttendanceTable() {
   } = useCompanyHolidayCalendars();
 
   const [staff, setStaff] = useState<Staff | null | undefined>(undefined);
+  const [totalTime, setTotalTime] = useState<number>(0);
 
   const logger = new Logger(
     "AttendanceList",
@@ -73,6 +77,34 @@ export default function AttendanceTable() {
       });
   }, [cognitoUser]);
 
+  useEffect(() => {
+    const totalWorkTime = attendances.reduce((acc, attendance) => {
+      if (!attendance.startTime || !attendance.endTime) return acc;
+
+      const workTime = calcTotalWorkTime(
+        attendance.startTime,
+        attendance.endTime
+      );
+      return acc + workTime;
+    }, 0);
+
+    const totalRestTime = attendances.reduce((acc, attendance) => {
+      if (!attendance.rests) return acc;
+
+      const restTime = attendance.rests
+        .filter((item): item is NonNullable<typeof item> => !!item)
+        .reduce((acc, rest) => {
+          if (!rest.startTime || !rest.endTime) return acc;
+
+          return acc + calcTotalRestTime(rest.startTime, rest.endTime);
+        }, 0);
+
+      return acc + restTime;
+    }, 0);
+
+    setTotalTime(totalWorkTime - totalRestTime);
+  }, [attendances]);
+
   if (holidayCalendarLoading || companyHolidayCalendarLoading) {
     return <LinearProgress />;
   }
@@ -93,7 +125,7 @@ export default function AttendanceTable() {
         </Breadcrumbs>
       </Box>
       <Box>
-        <Title>勤怠一覧</Title>
+        <Title>{`勤怠一覧(${totalTime.toFixed(1)}h)`}</Title>
       </Box>
       <DescriptionTypography variant="body1">
         今日から30日前までの勤怠情報を表示しています
