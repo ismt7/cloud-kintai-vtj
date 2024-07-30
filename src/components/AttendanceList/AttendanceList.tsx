@@ -98,7 +98,13 @@ export default function AttendanceTable() {
       <DescriptionTypography variant="body1">
         今日から30日前までの勤怠情報を表示しています
       </DescriptionTypography>
-      <Box sx={{ pl: 5 }}>
+      <Box
+        sx={{
+          pl: {
+            md: 5,
+          },
+        }}
+      >
         <DatePicker
           value={dayjs()}
           format="YYYY/MM/DD"
