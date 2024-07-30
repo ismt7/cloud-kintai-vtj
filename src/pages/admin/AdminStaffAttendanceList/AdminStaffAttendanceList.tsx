@@ -17,6 +17,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -172,6 +173,25 @@ export default function AdminStaffAttendanceList() {
           {staff?.familyName || "(不明)"} さんの勤怠
         </Typography>
         <ApprovalPendingMessage attendances={attendances} />
+        <Box>
+          <DatePicker
+            value={dayjs()}
+            format="YYYY/MM/DD"
+            label="日付を指定して移動"
+            slotProps={{
+              textField: { size: "small" },
+            }}
+            onChange={(date) => {
+              if (date) {
+                navigate(
+                  `/admin/attendances/edit/${date.format(
+                    "YYYYMMDD"
+                  )}/${staffId}`
+                );
+              }
+            }}
+          />
+        </Box>
         <Box sx={{ pb: 5 }}>
           <TableContainer>
             <Table size="small">
