@@ -6,7 +6,9 @@ import {
   styled,
   Typography,
 } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
 import { Logger } from "aws-amplify";
+import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -96,6 +98,21 @@ export default function AttendanceTable() {
       <DescriptionTypography variant="body1">
         今日から30日前までの勤怠情報を表示しています
       </DescriptionTypography>
+      <Box sx={{ pl: 5 }}>
+        <DatePicker
+          value={dayjs()}
+          format="YYYY/MM/DD"
+          label="日付を指定して移動"
+          slotProps={{
+            textField: { size: "small" },
+          }}
+          onChange={(date) => {
+            if (date) {
+              navigate(`/attendance/${date.format("YYYYMMDD")}/edit`);
+            }
+          }}
+        />
+      </Box>
       <DesktopList
         attendances={attendances}
         holidayCalendars={holidayCalendars}
