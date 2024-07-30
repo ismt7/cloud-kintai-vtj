@@ -128,6 +128,10 @@ const router = createBrowserRouter([
                 element: <AdminAttendance />,
               },
               {
+                path: ":targetWorkDate",
+                element: <AdminAttendance />,
+              },
+              {
                 path: "edit/:targetWorkDate/:staffId",
                 element: <AdminAttendanceEditor />,
               },
