@@ -31,11 +31,21 @@ export default function useAttendanceDaily() {
 
     setLoading(true);
     setError(null);
-    Promise.all(
+    fetchAllByWorkDate(workDate)
+      .catch((e: Error) => {
+        setError(e);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [staffs, staffLoading, staffError, workDate]);
+
+  const fetchAllByWorkDate = async (targetDate: string) => {
+    return await Promise.all(
       staffs.map(async ({ cognitoUserId, givenName, familyName, sortKey }) => {
         const attendance = await new AttendanceDataManager().fetchAll(
           cognitoUserId,
-          workDate
+          targetDate
         );
 
         return {
@@ -46,21 +56,16 @@ export default function useAttendanceDaily() {
           sortKey: sortKey || "",
         } as AttendanceDaily;
       })
-    )
-      .then((res) => {
-        setAttendanceDailyList(res);
-      })
-      .catch((e: Error) => {
-        setError(e);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [staffs, staffLoading, staffError, workDate]);
+    ).then((res) => {
+      setAttendanceDailyList(res);
+      return res;
+    });
+  };
 
   return {
     loading,
     error,
     attendanceDailyList,
+    fetchAllByWorkDate,
   };
 }

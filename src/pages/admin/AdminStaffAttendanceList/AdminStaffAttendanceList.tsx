@@ -17,6 +17,8 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { BarChart } from "@mui/x-charts/BarChart";
+import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -29,6 +31,8 @@ import {
 } from "@/API";
 import { AttendanceStatus } from "@/components/AttendanceList/AttendanceStatus";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
+import { calcTotalRestTime } from "@/pages/AttendanceEdit/DesktopEditor/RestTimeItem/RestTimeInput/RestTimeInput";
+import { calcTotalWorkTime } from "@/pages/AttendanceEdit/DesktopEditor/WorkTimeInput/WorkTimeInput";
 
 import { useAppDispatchV2 } from "../../../app/hooks";
 import getDayOfWeek, {
@@ -87,6 +91,7 @@ export default function AdminStaffAttendanceList() {
   const dispatch = useAppDispatchV2();
 
   const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
+  const [totalTime, setTotalTime] = useState<number>(0);
 
   const { attendances, getAttendances } = useAttendances();
   const {
@@ -107,6 +112,34 @@ export default function AdminStaffAttendanceList() {
         dispatch(setSnackbarError(MESSAGE_CODE.E00001));
       });
   }, [staffId]);
+
+  useEffect(() => {
+    const totalWorkTime = attendances.reduce((acc, attendance) => {
+      if (!attendance.startTime || !attendance.endTime) return acc;
+
+      const workTime = calcTotalWorkTime(
+        attendance.startTime,
+        attendance.endTime
+      );
+      return acc + workTime;
+    }, 0);
+
+    const totalRestTime = attendances.reduce((acc, attendance) => {
+      if (!attendance.rests) return acc;
+
+      const restTime = attendance.rests
+        .filter((item): item is NonNullable<typeof item> => !!item)
+        .reduce((acc, rest) => {
+          if (!rest.startTime || !rest.endTime) return acc;
+
+          return acc + calcTotalRestTime(rest.startTime, rest.endTime);
+        }, 0);
+
+      return acc + restTime;
+    }, 0);
+
+    setTotalTime(totalWorkTime - totalRestTime);
+  }, [attendances]);
 
   const {
     holidayCalendars,
@@ -169,9 +202,33 @@ export default function AdminStaffAttendanceList() {
           </Breadcrumbs>
         </Box>
         <Typography variant="h4">
-          {staff?.familyName || "(不明)"} さんの勤怠
+          {`${staff?.familyName || "(不明)"} さんの勤怠(${totalTime.toFixed(
+            1
+          )}h)`}
         </Typography>
         <ApprovalPendingMessage attendances={attendances} />
+        <Box>
+          <DatePicker
+            value={dayjs()}
+            format="YYYY/MM/DD"
+            label="日付を指定して移動"
+            slotProps={{
+              textField: { size: "small" },
+            }}
+            onChange={(date) => {
+              if (date) {
+                navigate(
+                  `/admin/attendances/edit/${date.format(
+                    "YYYYMMDD"
+                  )}/${staffId}`
+                );
+              }
+            }}
+          />
+        </Box>
+        <Box>
+          <NewFunction attendances={attendances} />
+        </Box>
         <Box sx={{ pb: 5 }}>
           <TableContainer>
             <Table size="small">
@@ -260,5 +317,65 @@ export default function AdminStaffAttendanceList() {
         </Box>
       </Stack>
     </Container>
+  );
+}
+
+function NewFunction({ attendances }: { attendances: Attendance[] }) {
+  const workTimeData = attendances.map((attendance) => {
+    if (!attendance.startTime || !attendance.endTime) return 0;
+
+    const workTime = calcTotalWorkTime(
+      attendance.startTime,
+      attendance.endTime
+    );
+    return workTime;
+  });
+
+  const restTimeData = attendances.map((attendance) => {
+    if (!attendance.rests) return 0;
+
+    const restTime = attendance.rests
+      .filter((item): item is NonNullable<typeof item> => !!item)
+      .reduce((acc, rest) => {
+        if (!rest.startTime || !rest.endTime) return acc;
+
+        return acc + calcTotalRestTime(rest.startTime, rest.endTime);
+      }, 0);
+
+    return restTime;
+  });
+
+  const seriesA = {
+    data: workTimeData,
+    label: "勤務時間",
+  };
+  const seriesB = {
+    data: restTimeData,
+    label: "休憩時間",
+  };
+
+  const props = {
+    xAxis: [
+      {
+        data: [
+          ...attendances.map((attendance) =>
+            dayjs(attendance.workDate).format("M/D")
+          ),
+        ],
+        scaleType: "band" as const,
+      },
+    ],
+  };
+
+  return (
+    <BarChart
+      height={150}
+      grid={{ horizontal: true }}
+      series={[
+        { ...seriesA, stack: "time" },
+        { ...seriesB, stack: "time" },
+      ]}
+      {...props}
+    />
   );
 }
