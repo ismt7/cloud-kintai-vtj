@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 
 import { CompanyHoliday } from "@/lib/CompanyHoliday";
+import { DayOfWeek } from "@/lib/DayOfWeek";
 import { Holiday } from "@/lib/Holiday";
 
 import {
@@ -10,7 +11,6 @@ import {
   Rest,
   Staff,
 } from "../../API";
-import getDayOfWeek from "./getDayOfWeek";
 
 // --------------------------------------------------
 //  日付
@@ -19,10 +19,9 @@ export function makeWorkDate(
   workDate: Attendance["workDate"],
   holidayCalendars: HolidayCalendar[]
 ) {
-  const date = dayjs(workDate);
-  const isHoliday = new Holiday(holidayCalendars, workDate).isHoliday();
+  const dayOfWeek = new DayOfWeek(holidayCalendars).getLabel(workDate);
 
-  const dayOfWeek = isHoliday ? "祝" : getDayOfWeek(workDate);
+  const date = dayjs(workDate);
 
   return `${date.format("M/D")}(${dayOfWeek})`;
 }
@@ -148,7 +147,6 @@ export function judgeStatus(
   }
 
   const today = dayjs().format("YYYY-MM-DD");
-  const dayOfWeek = getDayOfWeek(workDate);
 
   const isHoliday = new Holiday(holidayCalendars, workDate).isHoliday();
   const isCompanyHoliday = new CompanyHoliday(
@@ -166,24 +164,20 @@ export function judgeStatus(
 
   if (isChangeRequesting) return "申請中";
 
-  switch (dayOfWeek) {
-    case "月":
-    case "火":
-    case "水":
-    case "木":
-    case "金":
-      if (today === workDate) {
-        if (!startTime) return "遅刻";
-        if (!endTime) return "勤務中";
-      }
-      return !startTime || !endTime ? "エラー" : "OK";
+  const isWeekday = new DayOfWeek(holidayCalendars).isWeekday(workDate);
 
-    case "土":
-    case "日":
-      if (!startTime && !endTime) return "";
-      return "OK";
+  if (isWeekday) {
+    if (today === workDate) {
+      if (!startTime) return "遅刻";
+      if (!endTime) return "勤務中";
+    }
 
-    default:
-      return "";
+    return !startTime || !endTime ? "エラー" : "OK";
   }
+
+  if (!startTime && !endTime) {
+    return "";
+  }
+
+  return "OK";
 }

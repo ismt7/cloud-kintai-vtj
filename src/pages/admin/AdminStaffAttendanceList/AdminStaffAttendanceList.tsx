@@ -32,14 +32,12 @@ import {
 import { AttendanceStatus } from "@/components/AttendanceList/AttendanceStatus";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
 import { CompanyHoliday } from "@/lib/CompanyHoliday";
+import { DayOfWeek, DayOfWeekString } from "@/lib/DayOfWeek";
 import { Holiday } from "@/lib/Holiday";
 import { calcTotalRestTime } from "@/pages/AttendanceEdit/DesktopEditor/RestTimeItem/RestTimeInput/RestTimeInput";
 import { calcTotalWorkTime } from "@/pages/AttendanceEdit/DesktopEditor/WorkTimeInput/WorkTimeInput";
 
 import { useAppDispatchV2 } from "../../../app/hooks";
-import getDayOfWeek, {
-  DayOfWeek,
-} from "../../../components/AttendanceList/getDayOfWeek";
 import * as MESSAGE_CODE from "../../../errors";
 import useAttendances from "../../../hooks/useAttendances/useAttendances";
 import useCompanyHolidayCalendars from "../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
@@ -74,11 +72,12 @@ export function getTableRowClassName(
     return "table-row--sunday";
   }
 
-  const dayOfWeek = getDayOfWeek(workDate);
+  const dayOfWeek = new DayOfWeek(holidayCalendars).getLabel(workDate);
   switch (dayOfWeek) {
-    case DayOfWeek.Sat:
+    case DayOfWeekString.Sat:
       return "table-row--saturday";
-    case DayOfWeek.Sun:
+    case DayOfWeekString.Sun:
+    case DayOfWeekString.Holiday:
       return "table-row--sunday";
     default:
       return "table-row--default";

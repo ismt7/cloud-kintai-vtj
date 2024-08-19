@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 import { NavigateFunction } from "react-router-dom";
 
 import { CompanyHoliday } from "@/lib/CompanyHoliday";
+import { DayOfWeek } from "@/lib/DayOfWeek";
 import { Holiday } from "@/lib/Holiday";
 
 import {
@@ -20,7 +21,6 @@ import {
   CompanyHolidayCalendar,
   HolidayCalendar,
 } from "../../../API";
-import getDayOfWeek from "../../../components/AttendanceList/getDayOfWeek";
 
 export default function getColumns(
   rowModelsModel: GridRowModesModel,
@@ -37,11 +37,10 @@ export default function getColumns(
       align: "right",
       valueGetter: (params: GridValueGetterParams<Attendance>) => {
         const { workDate } = params.row;
+
+        const dayOfWeek = new DayOfWeek(holidayCalendars).getLabel(workDate);
+
         const date = dayjs(workDate);
-        const isHoliday = new Holiday(holidayCalendars, workDate).isHoliday();
-
-        const dayOfWeek = isHoliday ? "祝" : getDayOfWeek(workDate);
-
         return `${date.format("M/D")}(${dayOfWeek})`;
       },
     },

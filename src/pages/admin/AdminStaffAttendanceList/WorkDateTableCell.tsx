@@ -2,6 +2,7 @@ import { styled, TableCell as MuiTableCell } from "@mui/material";
 import dayjs from "dayjs";
 
 import { CompanyHoliday } from "@/lib/CompanyHoliday";
+import { DayOfWeek } from "@/lib/DayOfWeek";
 import { Holiday } from "@/lib/Holiday";
 
 import {
@@ -9,7 +10,6 @@ import {
   CompanyHolidayCalendar,
   HolidayCalendar,
 } from "../../../API";
-import getDayOfWeek from "../../../components/AttendanceList/getDayOfWeek";
 
 const TableCell = styled(MuiTableCell)(({ theme }) => ({
   width: theme.spacing(10),
@@ -30,7 +30,8 @@ export function WorkDateTableCell({
 
   const holiday = new Holiday(holidayCalendars, workDate);
   const holidayName = holiday.getHoliday()?.name;
-  const dayOfWeek = holiday.isHoliday() ? "祝" : getDayOfWeek(workDate);
+
+  const dayOfWeek = new DayOfWeek(holidayCalendars).getLabel(workDate);
 
   const companyHoliday = new CompanyHoliday(companyHolidayCalendars, workDate);
   const companyHolidayName = companyHoliday.getHoliday()?.name;
