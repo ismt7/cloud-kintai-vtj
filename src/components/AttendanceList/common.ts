@@ -112,38 +112,6 @@ export function calcWorkTimeTotal(
 }
 
 // --------------------------------------------------
-//  摘要
-// --------------------------------------------------
-export function makeRemarks(
-  workDate: Attendance["workDate"],
-  paidHolidayFlag: Attendance["paidHolidayFlag"],
-  remarks: Attendance["remarks"],
-  holidayCalendars: HolidayCalendar[],
-  companyHolidayCalendars: CompanyHolidayCalendar[],
-  substituteHolidayDate: Attendance["substituteHolidayDate"]
-) {
-  const isHoliday = holidayCalendars?.find(
-    ({ holidayDate }) => holidayDate === workDate
-  );
-
-  const isCompanyHoliday = companyHolidayCalendars?.find(
-    ({ holidayDate }) => holidayDate === workDate
-  );
-
-  const isSubstituteHoliday = substituteHolidayDate
-    ? dayjs(substituteHolidayDate).isValid()
-    : false;
-
-  const summaryMessage = [];
-  if (paidHolidayFlag) summaryMessage.push("有給休暇");
-  if (isSubstituteHoliday) summaryMessage.push("振替休日");
-  if (isHoliday) summaryMessage.push(isHoliday.name);
-  if (isCompanyHoliday) summaryMessage.push(isCompanyHoliday.name);
-  if (remarks) summaryMessage.push(remarks);
-  return summaryMessage.join(" ");
-}
-
-// --------------------------------------------------
 //  ステータス
 // --------------------------------------------------
 export function judgeStatus(
@@ -178,12 +146,16 @@ export function judgeStatus(
 
   const today = dayjs().format("YYYY-MM-DD");
   const dayOfWeek = getDayOfWeek(workDate);
-  const isHoliday = holidayCalendars?.find(
-    (holiday) => holiday.holidayDate === workDate
-  );
-  const isCompanyHoliday = companyHolidayCalendars?.find(
-    (companyHoliday) => companyHoliday.holidayDate === workDate
-  );
+
+  const isHoliday = holidayCalendars.find(({ holidayDate }) => {
+    const convertedDate = dayjs(holidayDate).format("YYYY-MM-DD");
+    return convertedDate === workDate;
+  });
+
+  const isCompanyHoliday = companyHolidayCalendars.find(({ holidayDate }) => {
+    const convertedDate = dayjs(holidayDate).format("YYYY-MM-DD");
+    return convertedDate === workDate;
+  });
 
   if (isHoliday || isCompanyHoliday) return "";
 
