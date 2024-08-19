@@ -11,6 +11,8 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
+
 import { HolidayCalendar, UpdateHolidayCalendarInput } from "../../../../API";
 import { useAppDispatchV2 } from "../../../../app/hooks";
 import * as MESSAGE_CODE from "../../../../errors";
@@ -116,7 +118,7 @@ export default function HolidayCalendarEdit({
               render={({ field }) => (
                 <DatePicker
                   label="日付"
-                  format="YYYY/MM/DD"
+                  format={AttendanceDate.DisplayFormat}
                   {...field}
                   slotProps={{
                     textField: {

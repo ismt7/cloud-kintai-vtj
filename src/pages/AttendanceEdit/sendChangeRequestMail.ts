@@ -1,6 +1,8 @@
 import { API } from "aws-amplify";
 import dayjs from "dayjs";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
+
 import * as MESSAGE_CODE from "../../errors";
 import { sendMail } from "../../graphql/queries";
 import { CognitoUser } from "../../hooks/useCognitoUser";
@@ -28,7 +30,8 @@ export default function sendChangeRequestMail(
     throw new Error(MESSAGE_CODE.E00002);
   }
 
-  const makeWorkDate = () => dayjs(workDate).format("YYYY/MM/DD");
+  const makeWorkDate = () =>
+    dayjs(workDate).format(AttendanceDate.DisplayFormat);
 
   const makeStaffName = () => {
     if (!familyName && !givenName) {
@@ -43,7 +46,7 @@ export default function sendChangeRequestMail(
   };
 
   const makeAttendanceEditUrl = () => {
-    const targetDate = workDate.format("YYYYMMDD");
+    const targetDate = workDate.format(AttendanceDate.QueryParamFormat);
     return `${APP_BASE_PATH}/admin/attendances/edit/${targetDate}/${id}`;
   };
 

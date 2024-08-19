@@ -14,6 +14,8 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import * as xlsx from "xlsx";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
+
 import {
   CompanyHolidayCalendar,
   CreateCompanyHolidayCalendarInput,
@@ -168,7 +170,7 @@ function FileInput({
               const requestCompanyHolidayCalendars = lines
                 .slice(1)
                 .map((row) => ({
-                  holidayDate: dayjs(row[0]).format("YYYY-MM-DD"),
+                  holidayDate: dayjs(row[0]).format(AttendanceDate.DataFormat),
                   name: String(row[1]),
                 }));
 

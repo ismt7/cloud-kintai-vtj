@@ -17,6 +17,7 @@ import { Cache, Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AttendanceState, AttendanceStatus } from "@/lib/AttendanceState";
 
@@ -110,7 +111,7 @@ export default function TimeRecorder() {
   const [isTimeElapsedError, setIsTimeElapsedError] = useState(false);
   const [directMode, setDirectMode] = useState(false);
 
-  const today = dayjs().format("YYYY-MM-DD");
+  const today = dayjs().format(AttendanceDate.DataFormat);
   const logger = new Logger(
     "TimeRecorder",
     import.meta.env.DEV ? "DEBUG" : "ERROR"

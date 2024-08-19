@@ -15,6 +15,7 @@ import {
   HolidayCalendar,
   Staff,
 } from "@/API";
+import { AttendanceDate } from "@/lib/AttendanceDate";
 import { getTableRowClassName } from "@/pages/admin/AdminStaffAttendanceList/AdminStaffAttendanceList";
 import { CreatedAtTableCell } from "@/pages/admin/AdminStaffAttendanceList/CreatedAtTableCell";
 import { RestTimeTableCell } from "@/pages/admin/AdminStaffAttendanceList/RestTimeTableCell";
@@ -40,7 +41,9 @@ export default function TableBodyRow({
 
   const handleEdit = () => {
     const { workDate } = attendance;
-    const formattedWorkDate = dayjs(workDate).format("YYYYMMDD");
+    const formattedWorkDate = dayjs(workDate).format(
+      AttendanceDate.QueryParamFormat
+    );
     navigate(`/attendance/${formattedWorkDate}/edit`);
   };
 

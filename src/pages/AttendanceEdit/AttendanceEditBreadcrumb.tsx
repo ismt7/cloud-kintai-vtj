@@ -2,6 +2,8 @@ import { Breadcrumbs, Link, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useContext } from "react";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
+
 import { AttendanceEditContext } from "./AttendanceEditProvider";
 
 export default function AttendanceEditBreadcrumb() {
@@ -18,7 +20,7 @@ export default function AttendanceEditBreadcrumb() {
         勤怠一覧
       </Link>
       <Typography color="text.primary">
-        {dayjs(workDate).format("YYYY/MM/DD")}
+        {dayjs(workDate).format(AttendanceDate.DisplayFormat)}
       </Typography>
     </Breadcrumbs>
   );

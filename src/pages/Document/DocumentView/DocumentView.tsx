@@ -14,6 +14,8 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
+
 import { Document as APIDocument } from "../../../API";
 import { useAppDispatchV2 } from "../../../app/hooks";
 import * as MESSAGE_CODE from "../../../errors";
@@ -94,7 +96,7 @@ export default function DocumentView() {
     const diff = now.diff(target, "hour");
 
     if (diff >= 24) {
-      return target.format("YYYY/MM/DD");
+      return target.format(AttendanceDate.DisplayFormat);
     }
 
     if (diff >= 1) {

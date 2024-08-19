@@ -12,6 +12,8 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
+
 import { useAppDispatchV2 } from "../../../../app/hooks";
 import * as MESSAGE_CODE from "../../../../errors";
 import useCompanyHolidayCalendars from "../../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
@@ -100,14 +102,14 @@ export default function CompanyHolidayCalendarList() {
                   <TableCell>
                     {(() => {
                       const date = dayjs(holidayCalendar.holidayDate);
-                      return date.format("YYYY/MM/DD");
+                      return date.format(AttendanceDate.DisplayFormat);
                     })()}
                   </TableCell>
                   <TableCell>{holidayCalendar.name}</TableCell>
                   <TableCell>
                     {(() => {
                       const date = dayjs(holidayCalendar.createdAt);
-                      return date.format("YYYY/MM/DD");
+                      return date.format(AttendanceDate.DisplayFormat);
                     })()}
                   </TableCell>
                   <TableCell />

@@ -2,6 +2,8 @@ import dayjs from "dayjs";
 
 import { Attendance, HolidayCalendar } from "@/API";
 
+import { AttendanceDate } from "./AttendanceDate";
+
 export class Holiday {
   constructor(
     private calendars: HolidayCalendar[],
@@ -19,6 +21,6 @@ export class Holiday {
   }
 
   convertDate(value: string) {
-    return dayjs(value).format("YYYY-MM-DD");
+    return dayjs(value).format(AttendanceDate.DataFormat);
   }
 }

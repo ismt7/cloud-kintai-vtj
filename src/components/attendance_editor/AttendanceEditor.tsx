@@ -22,6 +22,7 @@ import { Link, useParams } from "react-router-dom";
 
 import { SystemCommentInput } from "@/API";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
+import { AttendanceDate } from "@/lib/AttendanceDate";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AttendanceEditMailSender } from "@/lib/mail/AttendanceEditMailSender";
 import AttendanceEditProvider from "@/pages/AttendanceEdit/AttendanceEditProvider";
@@ -418,7 +419,7 @@ export default function AttendanceEditor() {
             </Link>
             {workDate && (
               <Typography color="text.primary">
-                {workDate.format("YYYY/MM/DD")}
+                {workDate.format(AttendanceDate.DisplayFormat)}
               </Typography>
             )}
           </Breadcrumbs>

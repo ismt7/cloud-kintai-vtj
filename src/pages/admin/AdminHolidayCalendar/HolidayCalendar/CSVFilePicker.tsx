@@ -13,6 +13,8 @@ import {
 import dayjs from "dayjs";
 import { useState } from "react";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
+
 import { CreateHolidayCalendarInput, HolidayCalendar } from "../../../../API";
 import { useAppDispatchV2 } from "../../../../app/hooks";
 import * as MESSAGE_CODE from "../../../../errors";
@@ -152,7 +154,9 @@ function FileInput({
                 .map(
                   (row) =>
                     ({
-                      holidayDate: dayjs(row[0]).format("YYYY-MM-DD"),
+                      holidayDate: dayjs(row[0]).format(
+                        AttendanceDate.DataFormat
+                      ),
                       name: String(row[1]),
                     } as CreateHolidayCalendarInput)
                 );

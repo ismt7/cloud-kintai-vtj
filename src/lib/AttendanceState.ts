@@ -7,6 +7,7 @@ import {
   Staff,
 } from "@/API";
 
+import { AttendanceDate } from "./AttendanceDate";
 import { CompanyHoliday } from "./CompanyHoliday";
 import { DayOfWeek } from "./DayOfWeek";
 import { Holiday } from "./Holiday";
@@ -130,6 +131,8 @@ export class AttendanceState {
   }
 
   private isToday() {
-    return this.today.format("YYYY-MM-DD") === this.attendance.workDate;
+    return (
+      this.today.format(AttendanceDate.DataFormat) === this.attendance.workDate
+    );
   }
 }

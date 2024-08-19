@@ -1,6 +1,8 @@
 import { Box, Stack, TableCell, TableRow } from "@mui/material";
 import dayjs from "dayjs";
 
+import { AttendanceTime } from "@/lib/AttendanceTime";
+
 import { Rest } from "../../../../API";
 
 export default function RestTableRow({ rests }: { rests: Rest[] }) {
@@ -21,8 +23,8 @@ export default function RestTableRow({ rests }: { rests: Rest[] }) {
 
                 return (
                   <Box key={index}>
-                    {`${startTime?.format("HH:mm") ?? "--:--"} 〜 ${
-                      endTime?.format("HH:mm") ?? "--:--"
+                    {`${startTime?.format("HH:mm") ?? AttendanceTime.None} 〜 ${
+                      endTime?.format("HH:mm") ?? AttendanceTime.None
                     }`}
                   </Box>
                 );

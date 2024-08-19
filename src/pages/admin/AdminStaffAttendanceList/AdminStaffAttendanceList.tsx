@@ -31,6 +31,7 @@ import {
 } from "@/API";
 import { AttendanceStatusTooltip } from "@/components/AttendanceList/AttendanceStatusTooltip";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
+import { AttendanceDate } from "@/lib/AttendanceDate";
 import { ChangeRequest } from "@/lib/ChangeRequest";
 import { CompanyHoliday } from "@/lib/CompanyHoliday";
 import { DayOfWeek, DayOfWeekString } from "@/lib/DayOfWeek";
@@ -58,7 +59,7 @@ export function getTableRowClassName(
   companyHolidayCalendars: CompanyHolidayCalendar[]
 ) {
   const { workDate } = attendance;
-  const today = dayjs().format("YYYY-MM-DD");
+  const today = dayjs().format(AttendanceDate.DataFormat);
   if (workDate === today) {
     return "table-row--today";
   }
@@ -202,7 +203,7 @@ export default function AdminStaffAttendanceList() {
         <Box>
           <DatePicker
             value={dayjs()}
-            format="YYYY/MM/DD"
+            format={AttendanceDate.DisplayFormat}
             label="日付を指定して移動"
             slotProps={{
               textField: { size: "small" },
@@ -211,7 +212,7 @@ export default function AdminStaffAttendanceList() {
               if (date) {
                 navigate(
                   `/admin/attendances/edit/${date.format(
-                    "YYYYMMDD"
+                    AttendanceDate.QueryParamFormat
                   )}/${staffId}`
                 );
               }
@@ -260,7 +261,9 @@ export default function AdminStaffAttendanceList() {
                           size="small"
                           onClick={() =>
                             handleEdit(
-                              dayjs(attendance.workDate).format("YYYYMMDD")
+                              dayjs(attendance.workDate).format(
+                                AttendanceDate.QueryParamFormat
+                              )
                             )
                           }
                         >

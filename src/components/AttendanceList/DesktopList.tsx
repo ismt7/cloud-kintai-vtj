@@ -14,6 +14,7 @@ import {
 import dayjs from "dayjs";
 import { NavigateFunction } from "react-router-dom";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
 import { getTableRowClassName } from "@/pages/admin/AdminStaffAttendanceList/AdminStaffAttendanceList";
 import { CreatedAtTableCell } from "@/pages/admin/AdminStaffAttendanceList/CreatedAtTableCell";
 import { RestTimeTableCell } from "@/pages/admin/AdminStaffAttendanceList/RestTimeTableCell";
@@ -52,7 +53,9 @@ export default function DesktopList({
 }) {
   const handleEdit = (attendance: Attendance) => {
     const { workDate } = attendance;
-    const formattedWorkDate = dayjs(workDate).format("YYYYMMDD");
+    const formattedWorkDate = dayjs(workDate).format(
+      AttendanceDate.QueryParamFormat
+    );
     navigate(`/attendance/${formattedWorkDate}/edit`);
   };
   return (

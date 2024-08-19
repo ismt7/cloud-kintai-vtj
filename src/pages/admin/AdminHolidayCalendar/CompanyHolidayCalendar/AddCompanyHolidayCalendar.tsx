@@ -10,6 +10,8 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
+
 import {
   CompanyHolidayCalendar,
   CreateCompanyHolidayCalendarInput,
@@ -98,7 +100,7 @@ export default function AddCompanyHolidayCalendar({
               render={({ field }) => (
                 <DatePicker
                   label="日付"
-                  format="YYYY/MM/DD"
+                  format={AttendanceDate.DisplayFormat}
                   {...field}
                   slotProps={{
                     textField: {

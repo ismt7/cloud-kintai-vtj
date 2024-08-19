@@ -1,12 +1,9 @@
 import dayjs from "dayjs";
 
-export class AttendanceDateTime {
-  date: dayjs.Dayjs;
-  static NOT_SET_TIME = "--:--";
+import { AttendanceDate } from "./AttendanceDate";
 
-  constructor() {
-    this.date = dayjs();
-  }
+export class AttendanceDateTime {
+  date: dayjs.Dayjs = dayjs();
 
   static convertToDayjs(date: string) {
     return dayjs(date);
@@ -60,11 +57,11 @@ export class AttendanceDateTime {
   }
 
   toDataFormat() {
-    return this.date.format("YYYY-MM-DD");
+    return this.date.format(AttendanceDate.DataFormat);
   }
 
   toDisplayDateFormat() {
-    return this.date.format("YYYY/MM/DD");
+    return this.date.format(AttendanceDate.DisplayFormat);
   }
 
   toDisplayDateTimeFormat() {

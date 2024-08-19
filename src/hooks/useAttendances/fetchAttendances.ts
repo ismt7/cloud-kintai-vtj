@@ -2,13 +2,15 @@ import { GraphQLResult } from "@aws-amplify/api";
 import { API } from "aws-amplify";
 import dayjs from "dayjs";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
+
 import { Attendance, ListAttendancesQuery } from "../../API";
 import { listAttendances } from "../../graphql/queries";
 
 export default async function fetchAttendances(staffId: string) {
   const now = dayjs();
   const dateList = Array.from({ length: 30 }, (_, i) =>
-    now.subtract(i, "day").format("YYYY-MM-DD")
+    now.subtract(i, "day").format(AttendanceDate.DataFormat)
   ).sort();
 
   const attendances: Attendance[] = [];

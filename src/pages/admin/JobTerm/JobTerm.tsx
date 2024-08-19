@@ -15,6 +15,8 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
+
 import { CloseDate } from "../../../API";
 import { useAppDispatchV2 } from "../../../app/hooks";
 import * as MESSAGE_CODE from "../../../errors";
@@ -130,7 +132,7 @@ export default function JobTerm() {
                     render={({ field }) => (
                       <DatePicker
                         label="開始日"
-                        format="YYYY/MM/DD"
+                        format={AttendanceDate.DisplayFormat}
                         slotProps={{
                           textField: { size: "small" },
                         }}
@@ -148,7 +150,7 @@ export default function JobTerm() {
                     render={({ field }) => (
                       <DatePicker
                         label="終了日"
-                        format="YYYY/MM/DD"
+                        format={AttendanceDate.DisplayFormat}
                         slotProps={{
                           textField: { size: "small" },
                         }}
@@ -196,9 +198,9 @@ export default function JobTerm() {
               valueGetter: (params) => {
                 const startDate = dayjs(params.row.startDate);
                 const endDate = dayjs(params.row.endDate);
-                return `${startDate.format("YYYY/MM/DD")} 〜 ${endDate.format(
-                  "YYYY/MM/DD"
-                )}`;
+                return `${startDate.format(
+                  AttendanceDate.DisplayFormat
+                )} 〜 ${endDate.format(AttendanceDate.DisplayFormat)}`;
               },
             },
             {
@@ -207,7 +209,7 @@ export default function JobTerm() {
               width: 150,
               valueGetter: (params) => {
                 const date = dayjs(params.row.createdAt);
-                return date.format("YYYY/MM/DD");
+                return date.format(AttendanceDate.DisplayFormat);
               },
             },
             {

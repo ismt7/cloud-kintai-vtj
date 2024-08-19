@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
+
 import { Attendance } from "../../API";
 import { AttendanceDataManager } from "../useAttendance/AttendanceDataManager";
 import useStaffs from "../useStaffs/useStaffs";
@@ -23,7 +25,7 @@ export default function useAttendanceDaily() {
   const { staffs, loading: staffLoading, error: staffError } = useStaffs();
 
   const now = dayjs();
-  const workDate = now.format("YYYY-MM-DD");
+  const workDate = now.format(AttendanceDate.DataFormat);
 
   useEffect(() => {
     if (staffLoading || staffError) return;
