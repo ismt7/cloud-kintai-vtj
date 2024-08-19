@@ -90,8 +90,6 @@ export default function DocumentView() {
   }
 
   const makeDate = (target: dayjs.Dayjs) => {
-    // 0秒前、0分前、0時間前の形式で表示する
-    // 24時間以上前の場合は、YYYY/MM/DDの形式で表示する
     const now = dayjs();
     const diff = now.diff(target, "hour");
 
