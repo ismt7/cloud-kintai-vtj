@@ -14,7 +14,7 @@ export default function Footer() {
             color: "white",
           }}
         >
-          © 2024 Virtual VirtualTech Japan Inc.
+          © 2024 Virtual Tech Japan Inc.
         </Typography>
       </Box>
     </footer>
