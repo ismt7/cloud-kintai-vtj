@@ -12,12 +12,15 @@ import {
 import dayjs from "dayjs";
 import { NavigateFunction } from "react-router-dom";
 
+import { CompanyHoliday } from "@/lib/CompanyHoliday";
+import { DayOfWeek } from "@/lib/DayOfWeek";
+import { Holiday } from "@/lib/Holiday";
+
 import {
   Attendance,
   CompanyHolidayCalendar,
   HolidayCalendar,
 } from "../../../API";
-import getDayOfWeek from "../../../components/AttendanceList/getDayOfWeek";
 
 export default function getColumns(
   rowModelsModel: GridRowModesModel,
@@ -34,11 +37,10 @@ export default function getColumns(
       align: "right",
       valueGetter: (params: GridValueGetterParams<Attendance>) => {
         const { workDate } = params.row;
+
+        const dayOfWeek = new DayOfWeek(holidayCalendars).getLabel(workDate);
+
         const date = dayjs(workDate);
-        const isHoliday = holidayCalendars?.find(
-          ({ holidayDate }) => holidayDate === workDate
-        );
-        const dayOfWeek = isHoliday ? "祝" : getDayOfWeek(workDate);
         return `${date.format("M/D")}(${dayOfWeek})`;
       },
     },
@@ -163,13 +165,11 @@ export default function getColumns(
       headerAlign: "center",
       valueGetter: (params: GridValueGetterParams<Attendance>) => {
         const { workDate, paidHolidayFlag, substituteHolidayDate } = params.row;
-        const isHoliday = holidayCalendars?.find(
-          ({ holidayDate }) => holidayDate === workDate
-        );
-
-        const isCompanyHoliday = companyHolidayCalendars?.find(
-          ({ holidayDate }) => holidayDate === workDate
-        );
+        const isHoliday = new Holiday(holidayCalendars, workDate).getHoliday();
+        const isCompanyHoliday = new CompanyHoliday(
+          companyHolidayCalendars,
+          workDate
+        ).getHoliday();
 
         const isSubstituteHoliday = substituteHolidayDate
           ? dayjs(substituteHolidayDate).isValid()
