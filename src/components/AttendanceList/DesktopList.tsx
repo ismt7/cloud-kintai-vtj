@@ -16,6 +16,7 @@ import { NavigateFunction } from "react-router-dom";
 
 import { AttendanceDate } from "@/lib/AttendanceDate";
 import { getTableRowClassName } from "@/pages/admin/AdminStaffAttendanceList/AdminStaffAttendanceList";
+import { AttendanceGraph } from "@/pages/admin/AdminStaffAttendanceList/AttendanceGraph";
 import { CreatedAtTableCell } from "@/pages/admin/AdminStaffAttendanceList/CreatedAtTableCell";
 import { RestTimeTableCell } from "@/pages/admin/AdminStaffAttendanceList/RestTimeTableCell";
 import { SummaryTableCell } from "@/pages/admin/AdminStaffAttendanceList/SummaryTableCell";
@@ -60,6 +61,7 @@ export default function DesktopList({
   };
   return (
     <DesktopBox>
+      <AttendanceGraph attendances={attendances} />
       <TableContainer>
         <Table size="small">
           <TableHead>
