@@ -28,7 +28,7 @@ import {
   HolidayCalendar,
   Staff,
 } from "../../API";
-import { AttendanceStatus } from "./AttendanceStatus";
+import { AttendanceStatusTooltip } from "./AttendanceStatusTooltip";
 
 const DesktopBox = styled(Box)(({ theme }) => ({
   padding: "0px 40px 40px 40px",
@@ -85,7 +85,7 @@ export default function DesktopList({
               >
                 <TableCell>
                   <Stack direction="row" spacing={0} alignItems="center">
-                    <AttendanceStatus
+                    <AttendanceStatusTooltip
                       staff={staff}
                       attendance={attendance}
                       holidayCalendars={holidayCalendars}

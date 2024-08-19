@@ -11,7 +11,7 @@ import {
 } from "../../API";
 import { judgeStatus } from "./common";
 
-export function AttendanceStatus({
+export function AttendanceStatusTooltip({
   staff,
   attendance,
   holidayCalendars,

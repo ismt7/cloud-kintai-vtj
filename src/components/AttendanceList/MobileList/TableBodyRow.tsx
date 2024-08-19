@@ -23,7 +23,7 @@ import { UpdatedAtTableCell } from "@/pages/admin/AdminStaffAttendanceList/Updat
 import { WorkDateTableCell } from "@/pages/admin/AdminStaffAttendanceList/WorkDateTableCell";
 import { WorkTimeTableCell } from "@/pages/admin/AdminStaffAttendanceList/WorkTimeTableCell";
 
-import { AttendanceStatus } from "../AttendanceStatus";
+import { AttendanceStatusTooltip } from "../AttendanceStatusTooltip";
 
 export default function TableBodyRow({
   attendance,
@@ -54,7 +54,7 @@ export default function TableBodyRow({
     >
       <MuiTableCell>
         <Stack direction="row" spacing={1} alignItems="center">
-          <AttendanceStatus
+          <AttendanceStatusTooltip
             staff={staff}
             attendance={attendance}
             holidayCalendars={holidayCalendars}

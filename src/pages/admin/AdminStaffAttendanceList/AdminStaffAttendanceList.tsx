@@ -29,7 +29,7 @@ import {
   HolidayCalendar,
   Staff,
 } from "@/API";
-import { AttendanceStatus } from "@/components/AttendanceList/AttendanceStatus";
+import { AttendanceStatusTooltip } from "@/components/AttendanceList/AttendanceStatusTooltip";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
 import { CompanyHoliday } from "@/lib/CompanyHoliday";
 import { DayOfWeek, DayOfWeekString } from "@/lib/DayOfWeek";
@@ -257,7 +257,7 @@ export default function AdminStaffAttendanceList() {
                   >
                     <TableCell>
                       <Stack direction="row" spacing={1} alignItems="center">
-                        <AttendanceStatus
+                        <AttendanceStatusTooltip
                           staff={staff}
                           attendance={attendance}
                           holidayCalendars={holidayCalendars}
