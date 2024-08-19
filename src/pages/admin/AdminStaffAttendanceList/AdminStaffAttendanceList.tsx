@@ -8,6 +8,7 @@ import {
   Container,
   IconButton,
   LinearProgress,
+  Paper,
   Stack,
   Table,
   TableBody,
@@ -363,14 +364,16 @@ function AttendanceGraph({ attendances }: { attendances: Attendance[] }) {
   };
 
   return (
-    <BarChart
-      height={150}
-      grid={{ horizontal: true }}
-      series={[
-        { ...seriesA, stack: "time" },
-        { ...seriesB, stack: "time" },
-      ]}
-      {...props}
-    />
+    <Paper elevation={2}>
+      <BarChart
+        height={150}
+        grid={{ horizontal: true }}
+        series={[
+          { ...seriesA, stack: "time" },
+          { ...seriesB, stack: "time" },
+        ]}
+        {...props}
+      />
+    </Paper>
   );
 }
