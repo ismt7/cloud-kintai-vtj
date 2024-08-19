@@ -1,5 +1,9 @@
 import dayjs from "dayjs";
 
+import { CompanyHoliday } from "@/lib/CompanyHoliday";
+import { DayOfWeek } from "@/lib/DayOfWeek";
+import { Holiday } from "@/lib/Holiday";
+
 import {
   Attendance,
   CompanyHolidayCalendar,
@@ -7,7 +11,6 @@ import {
   Rest,
   Staff,
 } from "../../API";
-import getDayOfWeek from "./getDayOfWeek";
 
 // --------------------------------------------------
 //  日付
@@ -16,11 +19,10 @@ export function makeWorkDate(
   workDate: Attendance["workDate"],
   holidayCalendars: HolidayCalendar[]
 ) {
+  const dayOfWeek = new DayOfWeek(holidayCalendars).getLabel(workDate);
+
   const date = dayjs(workDate);
-  const isHoliday = holidayCalendars?.find(
-    ({ holidayDate }) => holidayDate === workDate
-  );
-  const dayOfWeek = isHoliday ? "祝" : getDayOfWeek(workDate);
+
   return `${date.format("M/D")}(${dayOfWeek})`;
 }
 
@@ -112,38 +114,6 @@ export function calcWorkTimeTotal(
 }
 
 // --------------------------------------------------
-//  摘要
-// --------------------------------------------------
-export function makeRemarks(
-  workDate: Attendance["workDate"],
-  paidHolidayFlag: Attendance["paidHolidayFlag"],
-  remarks: Attendance["remarks"],
-  holidayCalendars: HolidayCalendar[],
-  companyHolidayCalendars: CompanyHolidayCalendar[],
-  substituteHolidayDate: Attendance["substituteHolidayDate"]
-) {
-  const isHoliday = holidayCalendars?.find(
-    ({ holidayDate }) => holidayDate === workDate
-  );
-
-  const isCompanyHoliday = companyHolidayCalendars?.find(
-    ({ holidayDate }) => holidayDate === workDate
-  );
-
-  const isSubstituteHoliday = substituteHolidayDate
-    ? dayjs(substituteHolidayDate).isValid()
-    : false;
-
-  const summaryMessage = [];
-  if (paidHolidayFlag) summaryMessage.push("有給休暇");
-  if (isSubstituteHoliday) summaryMessage.push("振替休日");
-  if (isHoliday) summaryMessage.push(isHoliday.name);
-  if (isCompanyHoliday) summaryMessage.push(isCompanyHoliday.name);
-  if (remarks) summaryMessage.push(remarks);
-  return summaryMessage.join(" ");
-}
-
-// --------------------------------------------------
 //  ステータス
 // --------------------------------------------------
 export function judgeStatus(
@@ -177,13 +147,12 @@ export function judgeStatus(
   }
 
   const today = dayjs().format("YYYY-MM-DD");
-  const dayOfWeek = getDayOfWeek(workDate);
-  const isHoliday = holidayCalendars?.find(
-    (holiday) => holiday.holidayDate === workDate
-  );
-  const isCompanyHoliday = companyHolidayCalendars?.find(
-    (companyHoliday) => companyHoliday.holidayDate === workDate
-  );
+
+  const isHoliday = new Holiday(holidayCalendars, workDate).isHoliday();
+  const isCompanyHoliday = new CompanyHoliday(
+    companyHolidayCalendars,
+    workDate
+  ).isHoliday();
 
   if (isHoliday || isCompanyHoliday) return "";
 
@@ -195,24 +164,20 @@ export function judgeStatus(
 
   if (isChangeRequesting) return "申請中";
 
-  switch (dayOfWeek) {
-    case "月":
-    case "火":
-    case "水":
-    case "木":
-    case "金":
-      if (today === workDate) {
-        if (!startTime) return "遅刻";
-        if (!endTime) return "勤務中";
-      }
-      return !startTime || !endTime ? "エラー" : "OK";
+  const isWeekday = new DayOfWeek(holidayCalendars).isWeekday(workDate);
 
-    case "土":
-    case "日":
-      if (!startTime && !endTime) return "";
-      return "OK";
+  if (isWeekday) {
+    if (today === workDate) {
+      if (!startTime) return "遅刻";
+      if (!endTime) return "勤務中";
+    }
 
-    default:
-      return "";
+    return !startTime || !endTime ? "エラー" : "OK";
   }
+
+  if (!startTime && !endTime) {
+    return "";
+  }
+
+  return "OK";
 }
