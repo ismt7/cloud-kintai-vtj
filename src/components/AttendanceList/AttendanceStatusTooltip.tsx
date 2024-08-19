@@ -3,13 +3,14 @@ import ErrorIcon from "@mui/icons-material/Error";
 import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 import { Box, Tooltip } from "@mui/material";
 
+import { AttendanceState, AttendanceStatus } from "@/lib/AttendanceState";
+
 import {
   Attendance,
   CompanyHolidayCalendar,
   HolidayCalendar,
   Staff,
 } from "../../API";
-import { judgeStatus } from "./common";
 
 export function AttendanceStatusTooltip({
   staff,
@@ -22,48 +23,52 @@ export function AttendanceStatusTooltip({
   holidayCalendars: HolidayCalendar[];
   companyHolidayCalendars: CompanyHolidayCalendar[];
 }) {
-  const {
-    workDate,
-    startTime,
-    endTime,
-    paidHolidayFlag,
-    changeRequests,
-    substituteHolidayDate,
-  } = attendance;
+  if (!staff) {
+    return <DefaultTooltip />;
+  }
 
-  const getStatus = judgeStatus(
-    workDate,
-    startTime,
-    endTime,
-    holidayCalendars,
-    companyHolidayCalendars,
-    paidHolidayFlag,
-    changeRequests,
+  const attendanceState = new AttendanceState(
     staff,
-    substituteHolidayDate
-  );
+    attendance,
+    holidayCalendars,
+    companyHolidayCalendars
+  ).get();
 
-  if (getStatus === "") return <Box width={24} height={24} />;
+  if (attendanceState === "") {
+    return <DefaultTooltip />;
+  }
 
-  switch (getStatus) {
-    case "OK":
-    case "勤務中":
+  switch (attendanceState) {
+    case AttendanceStatus.Ok:
+    case AttendanceStatus.Working:
       return <CheckCircleIcon color="success" />;
-    case "申請中":
-      return (
-        <Tooltip title="申請中です。承認されるまで反映されません">
-          <HourglassTopIcon color="warning" />
-        </Tooltip>
-      );
-    case "遅刻":
-    case "エラー":
-      return (
-        <Tooltip title="勤怠に不備があります">
-          <ErrorIcon color="error" />
-        </Tooltip>
-      );
+    case AttendanceStatus.Requesting:
+      return <RequestingTooltip />;
+    case AttendanceStatus.Late:
+    case AttendanceStatus.Error:
+      return <ErrorTooltip />;
 
     default:
-      return <Box width={24} height={24} />;
+      return <DefaultTooltip />;
   }
+}
+
+function DefaultTooltip() {
+  return <Box width={24} height={24} />;
+}
+
+function RequestingTooltip() {
+  return (
+    <Tooltip title="申請中です。承認されるまで反映されません">
+      <HourglassTopIcon color="warning" />
+    </Tooltip>
+  );
+}
+
+function ErrorTooltip() {
+  return (
+    <Tooltip title="勤怠に不備があります">
+      <ErrorIcon color="error" />
+    </Tooltip>
+  );
 }

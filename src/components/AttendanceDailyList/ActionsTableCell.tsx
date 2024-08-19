@@ -23,12 +23,12 @@ import { useAppDispatchV2 } from "@/app/hooks";
 import useCompanyHolidayCalendars from "@/hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 import useHolidayCalendar from "@/hooks/useHolidayCalendars/useHolidayCalendars";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
+import { AttendanceState, AttendanceStatus } from "@/lib/AttendanceState";
 import { setSnackbarError } from "@/lib/reducers/snackbarReducer";
 
 import * as MESSAGE_CODE from "../../errors";
 import { AttendanceDaily } from "../../hooks/useAttendanceDaily/useAttendanceDaily";
 import useAttendances from "../../hooks/useAttendances/useAttendances";
-import { judgeStatus } from "../AttendanceList/common";
 
 function getBadgeContent(attendances: Attendance[]) {
   const changeRequestCount = attendances.filter((attendance) =>
@@ -51,40 +51,29 @@ function AttendanceTotalStatus({
   attendances: Attendance[];
   holidayCalendars: HolidayCalendar[];
   companyHolidayCalendars: CompanyHolidayCalendar[];
-  staff: Staff | null | undefined;
+  staff: Staff;
 }) {
-  const judgedStatus = attendances.map(
-    ({
-      workDate,
-      startTime,
-      endTime,
-      paidHolidayFlag,
-      changeRequests,
-      substituteHolidayDate,
-    }) =>
-      judgeStatus(
-        workDate,
-        startTime,
-        endTime,
-        holidayCalendars,
-        companyHolidayCalendars,
-        paidHolidayFlag,
-        changeRequests,
-        staff,
-        substituteHolidayDate
-      )
+  const judgedStatus = attendances.map((attendance) =>
+    new AttendanceState(
+      staff,
+      attendance,
+      holidayCalendars,
+      companyHolidayCalendars
+    ).get()
   );
 
-  const validDataCount = judgedStatus.filter((status) => status !== "").length;
+  const validDataCount = judgedStatus.filter(
+    (status) => status !== AttendanceStatus.None
+  ).length;
 
   const statusOkCount = judgedStatus.filter((status) =>
-    ["OK", "勤務中"].includes(status)
+    [AttendanceStatus.Ok, AttendanceStatus.Working].includes(status)
   ).length;
   if (statusOkCount === validDataCount) {
     return <CheckCircleIcon color="success" />;
   }
 
-  if (judgedStatus.includes("申請中")) {
+  if (judgedStatus.includes(AttendanceStatus.Requesting)) {
     return (
       <Tooltip title="申請中です。承認されるまで反映されません">
         <HourglassTopIcon color="warning" />
@@ -104,6 +93,7 @@ export function ActionsTableCell({ row }: { row: AttendanceDaily }) {
   const dispatch = useAppDispatchV2();
 
   const [staff, setStaff] = useState<Staff | null | undefined>(undefined);
+  const [staffLoading, setStaffLoading] = useState(true);
 
   const {
     attendances,
@@ -133,6 +123,9 @@ export function ActionsTableCell({ row }: { row: AttendanceDaily }) {
       })
       .catch(() => {
         dispatch(setSnackbarError(MESSAGE_CODE.E00001));
+      })
+      .finally(() => {
+        setStaffLoading(false);
       });
   }, [row]);
 
@@ -140,6 +133,7 @@ export function ActionsTableCell({ row }: { row: AttendanceDaily }) {
     attendanceLoading ||
     holidayCalendarLoading ||
     companyHolidayCalendarLoading ||
+    staffLoading ||
     attendanceError ||
     holidayCalendarError ||
     companyHolidayCalendarError
@@ -150,6 +144,10 @@ export function ActionsTableCell({ row }: { row: AttendanceDaily }) {
         <Box sx={{ width: 24, height: 24 }} />
       </TableCell>
     );
+
+  if (!staff) {
+    return null;
+  }
 
   return (
     <TableCell sx={{ width: 50, minWidth: 50 }}>

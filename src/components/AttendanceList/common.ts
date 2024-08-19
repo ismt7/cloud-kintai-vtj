@@ -1,16 +1,8 @@
 import dayjs from "dayjs";
 
-import { CompanyHoliday } from "@/lib/CompanyHoliday";
 import { DayOfWeek } from "@/lib/DayOfWeek";
-import { Holiday } from "@/lib/Holiday";
 
-import {
-  Attendance,
-  CompanyHolidayCalendar,
-  HolidayCalendar,
-  Rest,
-  Staff,
-} from "../../API";
+import { Attendance, HolidayCalendar, Rest } from "../../API";
 
 // --------------------------------------------------
 //  日付
@@ -111,73 +103,4 @@ export function calcWorkTimeTotal(
     .padStart(2, "0");
   const formatMinute = (workTimeTotal % 60).toString().padStart(2, "0");
   return `${formatHour}:${formatMinute}`;
-}
-
-// --------------------------------------------------
-//  ステータス
-// --------------------------------------------------
-export function judgeStatus(
-  workDate: Attendance["workDate"],
-  startTime: Attendance["startTime"],
-  endTime: Attendance["endTime"],
-  holidayCalendars: HolidayCalendar[],
-  companyHolidayCalendars: CompanyHolidayCalendar[],
-  paidHolidayFlag: Attendance["paidHolidayFlag"],
-  changeRequests: Attendance["changeRequests"],
-  staff: Staff | null | undefined,
-  substituteHolidayDate: Attendance["substituteHolidayDate"]
-) {
-  // 利用開始日
-  if (
-    staff?.usageStartDate &&
-    dayjs(staff.usageStartDate).isAfter(dayjs(workDate), "date")
-  ) {
-    return "";
-  }
-
-  //有給休暇
-  if (paidHolidayFlag) return "OK";
-
-  // 振替休日
-  if (substituteHolidayDate) {
-    const isSubstituteHoliday = substituteHolidayDate
-      ? dayjs(substituteHolidayDate).isValid()
-      : false;
-    if (isSubstituteHoliday) return "OK";
-  }
-
-  const today = dayjs().format("YYYY-MM-DD");
-
-  const isHoliday = new Holiday(holidayCalendars, workDate).isHoliday();
-  const isCompanyHoliday = new CompanyHoliday(
-    companyHolidayCalendars,
-    workDate
-  ).isHoliday();
-
-  if (isHoliday || isCompanyHoliday) return "";
-
-  const isChangeRequesting = changeRequests
-    ? changeRequests
-        .filter((item): item is NonNullable<typeof item> => !!item)
-        .filter((item) => !item.completed).length > 0
-    : false;
-
-  if (isChangeRequesting) return "申請中";
-
-  const isWeekday = new DayOfWeek(holidayCalendars).isWeekday(workDate);
-
-  if (isWeekday) {
-    if (today === workDate) {
-      if (!startTime) return "遅刻";
-      if (!endTime) return "勤務中";
-    }
-
-    return !startTime || !endTime ? "エラー" : "OK";
-  }
-
-  if (!startTime && !endTime) {
-    return "";
-  }
-
-  return "OK";
 }
