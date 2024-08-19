@@ -1,5 +1,8 @@
 import dayjs from "dayjs";
 
+import { CompanyHoliday } from "@/lib/CompanyHoliday";
+import { Holiday } from "@/lib/Holiday";
+
 import {
   Attendance,
   CompanyHolidayCalendar,
@@ -17,10 +20,10 @@ export function makeWorkDate(
   holidayCalendars: HolidayCalendar[]
 ) {
   const date = dayjs(workDate);
-  const isHoliday = holidayCalendars?.find(
-    ({ holidayDate }) => holidayDate === workDate
-  );
+  const isHoliday = new Holiday(holidayCalendars, workDate).isHoliday();
+
   const dayOfWeek = isHoliday ? "祝" : getDayOfWeek(workDate);
+
   return `${date.format("M/D")}(${dayOfWeek})`;
 }
 
@@ -147,15 +150,11 @@ export function judgeStatus(
   const today = dayjs().format("YYYY-MM-DD");
   const dayOfWeek = getDayOfWeek(workDate);
 
-  const isHoliday = holidayCalendars.find(({ holidayDate }) => {
-    const convertedDate = dayjs(holidayDate).format("YYYY-MM-DD");
-    return convertedDate === workDate;
-  });
-
-  const isCompanyHoliday = companyHolidayCalendars.find(({ holidayDate }) => {
-    const convertedDate = dayjs(holidayDate).format("YYYY-MM-DD");
-    return convertedDate === workDate;
-  });
+  const isHoliday = new Holiday(holidayCalendars, workDate).isHoliday();
+  const isCompanyHoliday = new CompanyHoliday(
+    companyHolidayCalendars,
+    workDate
+  ).isHoliday();
 
   if (isHoliday || isCompanyHoliday) return "";
 

@@ -31,6 +31,8 @@ import {
 } from "@/API";
 import { AttendanceStatus } from "@/components/AttendanceList/AttendanceStatus";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
+import { CompanyHoliday } from "@/lib/CompanyHoliday";
+import { Holiday } from "@/lib/Holiday";
 import { calcTotalRestTime } from "@/pages/AttendanceEdit/DesktopEditor/RestTimeItem/RestTimeInput/RestTimeInput";
 import { calcTotalWorkTime } from "@/pages/AttendanceEdit/DesktopEditor/WorkTimeInput/WorkTimeInput";
 
@@ -62,13 +64,11 @@ export function getTableRowClassName(
     return "table-row--today";
   }
 
-  const isHoliday = holidayCalendars?.find(
-    (holidayCalendar) => holidayCalendar.holidayDate === workDate
-  );
-
-  const isCompanyHoliday = companyHolidayCalendars?.find(
-    (companyHolidayCalendar) => companyHolidayCalendar.holidayDate === workDate
-  );
+  const isHoliday = new Holiday(holidayCalendars, workDate).isHoliday();
+  const isCompanyHoliday = new CompanyHoliday(
+    companyHolidayCalendars,
+    workDate
+  ).isHoliday();
 
   if (isHoliday || isCompanyHoliday) {
     return "table-row--sunday";

@@ -1,6 +1,9 @@
 import { styled, TableCell as MuiTableCell } from "@mui/material";
 import dayjs from "dayjs";
 
+import { CompanyHoliday } from "@/lib/CompanyHoliday";
+import { Holiday } from "@/lib/Holiday";
+
 import {
   Attendance,
   CompanyHolidayCalendar,
@@ -24,17 +27,13 @@ export function WorkDateTableCell({
   companyHolidayCalendars: CompanyHolidayCalendar[];
 }) {
   const date = dayjs(workDate);
-  const isHoliday = holidayCalendars?.find(
-    ({ holidayDate }) => holidayDate === workDate
-  );
-  const dayOfWeek = isHoliday ? "祝" : getDayOfWeek(workDate);
-  const holidayName = holidayCalendars?.find(
-    (holidayCalendar) => holidayCalendar.holidayDate === workDate
-  )?.name;
 
-  const companyHolidayName = companyHolidayCalendars?.find(
-    (companyHolidayCalendar) => companyHolidayCalendar.holidayDate === workDate
-  )?.name;
+  const holiday = new Holiday(holidayCalendars, workDate);
+  const holidayName = holiday.getHoliday()?.name;
+  const dayOfWeek = holiday.isHoliday() ? "祝" : getDayOfWeek(workDate);
+
+  const companyHoliday = new CompanyHoliday(companyHolidayCalendars, workDate);
+  const companyHolidayName = companyHoliday.getHoliday()?.name;
 
   return (
     <TableCell sx={{ whiteSpace: "nowrap" }}>{`${date.format(
