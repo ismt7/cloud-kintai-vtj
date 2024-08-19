@@ -220,7 +220,7 @@ export default function AdminStaffAttendanceList() {
           />
         </Box>
         <Box>
-          <NewFunction attendances={attendances} />
+          <AttendanceGraph attendances={attendances} />
         </Box>
         <Box sx={{ pb: 5 }}>
           <TableContainer>
@@ -315,7 +315,7 @@ export default function AdminStaffAttendanceList() {
   );
 }
 
-function NewFunction({ attendances }: { attendances: Attendance[] }) {
+function AttendanceGraph({ attendances }: { attendances: Attendance[] }) {
   const workTimeData = attendances.map((attendance) => {
     if (!attendance.startTime || !attendance.endTime) return 0;
 
