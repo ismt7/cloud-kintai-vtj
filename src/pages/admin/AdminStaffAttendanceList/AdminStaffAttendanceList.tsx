@@ -31,6 +31,7 @@ import {
 } from "@/API";
 import { AttendanceStatusTooltip } from "@/components/AttendanceList/AttendanceStatusTooltip";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
+import { ChangeRequest } from "@/lib/ChangeRequest";
 import { CompanyHoliday } from "@/lib/CompanyHoliday";
 import { DayOfWeek, DayOfWeekString } from "@/lib/DayOfWeek";
 import { Holiday } from "@/lib/Holiday";
@@ -175,15 +176,7 @@ export default function AdminStaffAttendanceList() {
   };
 
   const getBadgeContent = (attendance: Attendance) => {
-    const { changeRequests } = attendance;
-    if (!changeRequests) return 0;
-
-    // 未承認の変更申請の数をカウント
-    const count = changeRequests
-      .filter((item): item is NonNullable<typeof item> => item !== null)
-      .filter((changeRequest) => !changeRequest.completed).length;
-
-    return count;
+    return new ChangeRequest(attendance.changeRequests).getUnapprovedCount();
   };
 
   return (
