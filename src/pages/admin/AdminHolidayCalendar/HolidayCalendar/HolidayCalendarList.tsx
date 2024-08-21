@@ -12,11 +12,21 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 
-import { CompanyHolidayCalendar, HolidayCalendar } from "../../../../API";
+import { AttendanceDate } from "@/lib/AttendanceDate";
+import { HolidayCalenderMessage } from "@/lib/message/HolidayCalenderMessage";
+import { MessageStatus } from "@/lib/message/Message";
+
+import {
+  CompanyHolidayCalendar,
+  DeleteHolidayCalendarInput,
+  HolidayCalendar,
+} from "../../../../API";
 import { useAppDispatchV2 } from "../../../../app/hooks";
-import * as MESSAGE_CODE from "../../../../errors";
 import useHolidayCalendar from "../../../../hooks/useHolidayCalendars/useHolidayCalendars";
-import { setSnackbarError } from "../../../../lib/reducers/snackbarReducer";
+import {
+  setSnackbarError,
+  setSnackbarSuccess,
+} from "../../../../lib/reducers/snackbarReducer";
 import { AddHolidayCalendar } from "./AddHolidayCalendar";
 import { CSVFilePicker } from "./CSVFilePicker";
 import HolidayCalendarEdit from "./HolidayCalendarEdit";
@@ -38,6 +48,7 @@ export default function HolidayCalendarList() {
     bulkCreateHolidayCalendar,
     updateHolidayCalendar,
     createHolidayCalendar,
+    deleteHolidayCalendar,
   } = useHolidayCalendar();
 
   if (holidayCalendarLoading) {
@@ -45,7 +56,9 @@ export default function HolidayCalendarList() {
   }
 
   if (holidayCalendarError) {
-    dispatch(setSnackbarError(MESSAGE_CODE.E08001));
+    dispatch(
+      setSnackbarError(new HolidayCalenderMessage().get(MessageStatus.ERROR))
+    );
     return null;
   }
 
@@ -77,24 +90,15 @@ export default function HolidayCalendarList() {
                         holidayCalendar={holidayCalendar}
                         updateHolidayCalendar={updateHolidayCalendar}
                       />
-                      <IconButton>
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
+                      <HolidayCalendarDelete
+                        holidayCalendar={holidayCalendar}
+                        deleteHolidayCalendar={deleteHolidayCalendar}
+                      />
                     </Stack>
                   </TableCell>
-                  <TableCell>
-                    {(() => {
-                      const date = dayjs(holidayCalendar.holidayDate);
-                      return date.format("YYYY/MM/DD");
-                    })()}
-                  </TableCell>
-                  <TableCell>{holidayCalendar.name}</TableCell>
-                  <TableCell>
-                    {(() => {
-                      const date = dayjs(holidayCalendar.createdAt);
-                      return date.format("YYYY/MM/DD");
-                    })()}
-                  </TableCell>
+                  <HolidayDateTableCell holidayCalendar={holidayCalendar} />
+                  <HolidayNameTableCell holidayCalendar={holidayCalendar} />
+                  <CreatedAtTableCell holidayCalendar={holidayCalendar} />
                   <TableCell />
                 </TableRow>
               ))}
@@ -103,4 +107,78 @@ export default function HolidayCalendarList() {
       </TableContainer>
     </>
   );
+}
+
+function HolidayCalendarDelete({
+  holidayCalendar,
+  deleteHolidayCalendar,
+}: {
+  holidayCalendar: HolidayCalendar;
+  deleteHolidayCalendar: (input: DeleteHolidayCalendarInput) => Promise<void>;
+}) {
+  const dispatch = useAppDispatchV2();
+
+  const onSubmit = async () => {
+    const beDeleteDate = dayjs(holidayCalendar.holidayDate).format(
+      AttendanceDate.DisplayFormat
+    );
+    const beDeleteName = holidayCalendar.name;
+    const formattedDeleteMessage = `「${beDeleteDate}(${beDeleteName})」を削除しますか？\nこの操作は取り消せません。`;
+
+    const confirmed = window.confirm(formattedDeleteMessage);
+    if (!confirmed) {
+      return;
+    }
+
+    const holidayCalenderMessage = new HolidayCalenderMessage();
+    await deleteHolidayCalendar({ id: holidayCalendar.id })
+      .then(() => {
+        dispatch(
+          setSnackbarSuccess(
+            holidayCalenderMessage.delete(MessageStatus.SUCCESS)
+          )
+        );
+      })
+      .catch(() => {
+        dispatch(
+          setSnackbarError(holidayCalenderMessage.delete(MessageStatus.ERROR))
+        );
+      });
+  };
+
+  return (
+    <IconButton onClick={onSubmit}>
+      <DeleteIcon fontSize="small" />
+    </IconButton>
+  );
+}
+
+function HolidayDateTableCell({
+  holidayCalendar,
+}: {
+  holidayCalendar: HolidayCalendar;
+}) {
+  const date = dayjs(holidayCalendar.holidayDate);
+  const holidayDate = date.format(AttendanceDate.DisplayFormat);
+
+  return <TableCell>{holidayDate}</TableCell>;
+}
+
+function HolidayNameTableCell({
+  holidayCalendar,
+}: {
+  holidayCalendar: HolidayCalendar;
+}) {
+  return <TableCell>{holidayCalendar.name}</TableCell>;
+}
+
+function CreatedAtTableCell({
+  holidayCalendar,
+}: {
+  holidayCalendar: HolidayCalendar;
+}) {
+  const date = dayjs(holidayCalendar.createdAt);
+  const createdAt = date.format(AttendanceDate.DisplayFormat);
+
+  return <TableCell>{createdAt}</TableCell>;
 }

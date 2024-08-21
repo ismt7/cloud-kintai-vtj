@@ -1,5 +1,6 @@
 import { StaffType } from "@/hooks/useStaffs/useStaffs";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
+import { AttendanceTime } from "@/lib/AttendanceTime";
 
 import { Attendance, AttendanceHistory } from "../../API";
 
@@ -185,19 +186,19 @@ function showWorkTime(
   if (!history) {
     const { startTime, endTime } = attendance;
     const afterStartTime = (() => {
-      if (!startTime) return AttendanceDateTime.NOT_SET_TIME;
+      if (!startTime) return AttendanceTime.None;
       return new AttendanceDateTime().setDateString(startTime).toTimeFormat();
     })();
     const afterEndTime = (() => {
-      if (!endTime) return AttendanceDateTime.NOT_SET_TIME;
+      if (!endTime) return AttendanceTime.None;
       return new AttendanceDateTime().setDateString(endTime).toTimeFormat();
     })();
 
     return [
       "勤務時間：",
-      AttendanceDateTime.NOT_SET_TIME,
+      AttendanceTime.None,
       " ~ ",
-      AttendanceDateTime.NOT_SET_TIME,
+      AttendanceTime.None,
       " → ",
       afterStartTime,
       " ~ ",
@@ -213,13 +214,13 @@ function showWorkTime(
 
     // Before
     const beforeStartTime = (() => {
-      if (!history.startTime) return AttendanceDateTime.NOT_SET_TIME;
+      if (!history.startTime) return AttendanceTime.None;
       return new AttendanceDateTime()
         .setDateString(history.startTime)
         .toTimeFormat();
     })();
     const beforeEndTime = (() => {
-      if (!history.endTime) return AttendanceDateTime.NOT_SET_TIME;
+      if (!history.endTime) return AttendanceTime.None;
       return new AttendanceDateTime()
         .setDateString(history.endTime)
         .toTimeFormat();
@@ -227,11 +228,11 @@ function showWorkTime(
 
     // After
     const afterStartTime = (() => {
-      if (!startTime) return AttendanceDateTime.NOT_SET_TIME;
+      if (!startTime) return AttendanceTime.None;
       return new AttendanceDateTime().setDateString(startTime).toTimeFormat();
     })();
     const afterEndTime = (() => {
-      if (!endTime) return AttendanceDateTime.NOT_SET_TIME;
+      if (!endTime) return AttendanceTime.None;
       return new AttendanceDateTime().setDateString(endTime).toTimeFormat();
     })();
 
@@ -264,13 +265,13 @@ function showRestTime(
   if (!history) {
     const attendanceResults = afterRests.map((rest) => {
       const startTime = (() => {
-        if (!rest.startTime) return AttendanceDateTime.NOT_SET_TIME;
+        if (!rest.startTime) return AttendanceTime.None;
         return new AttendanceDateTime()
           .setDateString(rest.startTime)
           .toTimeFormat();
       })();
       const endTime = (() => {
-        if (!rest.endTime) return AttendanceDateTime.NOT_SET_TIME;
+        if (!rest.endTime) return AttendanceTime.None;
         return new AttendanceDateTime()
           .setDateString(rest.endTime)
           .toTimeFormat();
@@ -301,13 +302,13 @@ function showRestTime(
     // 休憩時間を削除した場合
     if (!afterRest) {
       const beforeRestStartTime = (() => {
-        if (!beforeRest.startTime) return AttendanceDateTime.NOT_SET_TIME;
+        if (!beforeRest.startTime) return AttendanceTime.None;
         return new AttendanceDateTime()
           .setDateString(beforeRest.startTime)
           .toTimeFormat();
       })();
       const beforeRestEndTime = (() => {
-        if (!beforeRest.endTime) return AttendanceDateTime.NOT_SET_TIME;
+        if (!beforeRest.endTime) return AttendanceTime.None;
         return new AttendanceDateTime()
           .setDateString(beforeRest.endTime)
           .toTimeFormat();
@@ -322,13 +323,13 @@ function showRestTime(
     // 休憩時間を追加した場合
     if (!beforeRest) {
       const afterRestStartTime = (() => {
-        if (!afterRest.startTime) return AttendanceDateTime.NOT_SET_TIME;
+        if (!afterRest.startTime) return AttendanceTime.None;
         return new AttendanceDateTime()
           .setDateString(afterRest.startTime)
           .toTimeFormat();
       })();
       const afterRestEndTime = (() => {
-        if (!afterRest.endTime) return AttendanceDateTime.NOT_SET_TIME;
+        if (!afterRest.endTime) return AttendanceTime.None;
         return new AttendanceDateTime()
           .setDateString(afterRest.endTime)
           .toTimeFormat();
@@ -344,13 +345,13 @@ function showRestTime(
     {
       // Before
       const beforeRestStartTime = (() => {
-        if (!beforeRest.startTime) return AttendanceDateTime.NOT_SET_TIME;
+        if (!beforeRest.startTime) return AttendanceTime.None;
         return new AttendanceDateTime()
           .setDateString(beforeRest.startTime)
           .toTimeFormat();
       })();
       const beforeRestEndTime = (() => {
-        if (!beforeRest.endTime) return AttendanceDateTime.NOT_SET_TIME;
+        if (!beforeRest.endTime) return AttendanceTime.None;
         return new AttendanceDateTime()
           .setDateString(beforeRest.endTime)
           .toTimeFormat();
@@ -358,13 +359,13 @@ function showRestTime(
 
       // After
       const afterRestStartTime = (() => {
-        if (!afterRest.startTime) return AttendanceDateTime.NOT_SET_TIME;
+        if (!afterRest.startTime) return AttendanceTime.None;
         return new AttendanceDateTime()
           .setDateString(afterRest.startTime)
           .toTimeFormat();
       })();
       const afterRestEndTime = (() => {
-        if (!afterRest.endTime) return AttendanceDateTime.NOT_SET_TIME;
+        if (!afterRest.endTime) return AttendanceTime.None;
         return new AttendanceDateTime()
           .setDateString(afterRest.endTime)
           .toTimeFormat();

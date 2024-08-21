@@ -4,6 +4,7 @@ import { Attendance, Staff } from "@/API";
 import * as MESSAGE_CODE from "@/errors";
 import { CognitoUser } from "@/hooks/useCognitoUser";
 
+import { AttendanceDate } from "../AttendanceDate";
 import { MailSender } from "./MailSender";
 
 export class TimeRecordMailSender extends MailSender {
@@ -24,7 +25,7 @@ export class TimeRecordMailSender extends MailSender {
 
   protected getWorkDate() {
     const { workDate } = this.attendance;
-    return dayjs(workDate).format("YYYY/MM/DD");
+    return dayjs(workDate).format(AttendanceDate.DisplayFormat);
   }
 
   protected getStaffName() {

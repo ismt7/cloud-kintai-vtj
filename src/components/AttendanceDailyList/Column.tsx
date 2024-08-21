@@ -8,6 +8,8 @@ import {
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 
+import { AttendanceTime } from "@/lib/AttendanceTime";
+
 import { AttendanceDaily } from "../../hooks/useAttendanceDaily/useAttendanceDaily";
 
 export default function GetColumns(): GridColDef[] {
@@ -53,10 +55,10 @@ export default function GetColumns(): GridColDef[] {
       sortable: false,
       headerAlign: "center",
       valueGetter(params: GridValueGetterParams<AttendanceDaily>) {
-        if (params.row.attendance === null) return "--:--";
+        if (params.row.attendance === null) return AttendanceTime.None;
 
         const { startTime } = params.row.attendance;
-        if (!startTime) return "--:--";
+        if (!startTime) return AttendanceTime.None;
 
         return dayjs(startTime).format("HH:mm");
       },
@@ -69,10 +71,10 @@ export default function GetColumns(): GridColDef[] {
       sortable: false,
       headerAlign: "center",
       valueGetter(params: GridValueGetterParams<AttendanceDaily>) {
-        if (params.row.attendance === null) return "--:--";
+        if (params.row.attendance === null) return AttendanceTime.None;
 
         const { endTime } = params.row.attendance;
-        if (!endTime) return "--:--";
+        if (!endTime) return AttendanceTime.None;
 
         return dayjs(endTime).format("HH:mm");
       },

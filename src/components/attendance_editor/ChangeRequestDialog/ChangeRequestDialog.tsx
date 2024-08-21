@@ -14,6 +14,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
 import { StaffType } from "@/hooks/useStaffs/useStaffs";
+import { AttendanceDate } from "@/lib/AttendanceDate";
 import { GenericMailSender } from "@/lib/mail/GenericMailSender";
 
 import {
@@ -75,7 +76,7 @@ export default function ChangeRequestDialog({
     const { workDate } = attendance;
     if (!dayjs(workDate).isValid()) return "";
 
-    return dayjs(workDate).format("YYYY/MM/DD");
+    return dayjs(workDate).format(AttendanceDate.DisplayFormat);
   };
 
   return (

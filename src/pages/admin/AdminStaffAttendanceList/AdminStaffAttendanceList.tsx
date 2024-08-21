@@ -17,7 +17,6 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { BarChart } from "@mui/x-charts/BarChart";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -29,8 +28,10 @@ import {
   HolidayCalendar,
   Staff,
 } from "@/API";
-import { AttendanceStatus } from "@/components/AttendanceList/AttendanceStatus";
+import { AttendanceStatusTooltip } from "@/components/AttendanceList/AttendanceStatusTooltip";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
+import { AttendanceDate } from "@/lib/AttendanceDate";
+import { ChangeRequest } from "@/lib/ChangeRequest";
 import { CompanyHoliday } from "@/lib/CompanyHoliday";
 import { DayOfWeek, DayOfWeekString } from "@/lib/DayOfWeek";
 import { Holiday } from "@/lib/Holiday";
@@ -44,6 +45,7 @@ import useCompanyHolidayCalendars from "../../../hooks/useCompanyHolidayCalendar
 import useHolidayCalendars from "../../../hooks/useHolidayCalendars/useHolidayCalendars";
 import { setSnackbarError } from "../../../lib/reducers/snackbarReducer";
 import { ApprovalPendingMessage } from "./ApprovalPendingMessage";
+import { AttendanceGraph } from "./AttendanceGraph";
 import { CreatedAtTableCell } from "./CreatedAtTableCell";
 import { RestTimeTableCell } from "./RestTimeTableCell";
 import { SummaryTableCell } from "./SummaryTableCell";
@@ -57,7 +59,7 @@ export function getTableRowClassName(
   companyHolidayCalendars: CompanyHolidayCalendar[]
 ) {
   const { workDate } = attendance;
-  const today = dayjs().format("YYYY-MM-DD");
+  const today = dayjs().format(AttendanceDate.DataFormat);
   if (workDate === today) {
     return "table-row--today";
   }
@@ -175,15 +177,7 @@ export default function AdminStaffAttendanceList() {
   };
 
   const getBadgeContent = (attendance: Attendance) => {
-    const { changeRequests } = attendance;
-    if (!changeRequests) return 0;
-
-    // 未承認の変更申請の数をカウント
-    const count = changeRequests
-      .filter((item): item is NonNullable<typeof item> => item !== null)
-      .filter((changeRequest) => !changeRequest.completed).length;
-
-    return count;
+    return new ChangeRequest(attendance.changeRequests).getUnapprovedCount();
   };
 
   return (
@@ -209,7 +203,7 @@ export default function AdminStaffAttendanceList() {
         <Box>
           <DatePicker
             value={dayjs()}
-            format="YYYY/MM/DD"
+            format={AttendanceDate.DisplayFormat}
             label="日付を指定して移動"
             slotProps={{
               textField: { size: "small" },
@@ -218,7 +212,7 @@ export default function AdminStaffAttendanceList() {
               if (date) {
                 navigate(
                   `/admin/attendances/edit/${date.format(
-                    "YYYYMMDD"
+                    AttendanceDate.QueryParamFormat
                   )}/${staffId}`
                 );
               }
@@ -226,7 +220,7 @@ export default function AdminStaffAttendanceList() {
           />
         </Box>
         <Box>
-          <NewFunction attendances={attendances} />
+          <AttendanceGraph attendances={attendances} />
         </Box>
         <Box sx={{ pb: 5 }}>
           <TableContainer>
@@ -257,7 +251,7 @@ export default function AdminStaffAttendanceList() {
                   >
                     <TableCell>
                       <Stack direction="row" spacing={1} alignItems="center">
-                        <AttendanceStatus
+                        <AttendanceStatusTooltip
                           staff={staff}
                           attendance={attendance}
                           holidayCalendars={holidayCalendars}
@@ -267,7 +261,9 @@ export default function AdminStaffAttendanceList() {
                           size="small"
                           onClick={() =>
                             handleEdit(
-                              dayjs(attendance.workDate).format("YYYYMMDD")
+                              dayjs(attendance.workDate).format(
+                                AttendanceDate.QueryParamFormat
+                              )
                             )
                           }
                         >
@@ -316,65 +312,5 @@ export default function AdminStaffAttendanceList() {
         </Box>
       </Stack>
     </Container>
-  );
-}
-
-function NewFunction({ attendances }: { attendances: Attendance[] }) {
-  const workTimeData = attendances.map((attendance) => {
-    if (!attendance.startTime || !attendance.endTime) return 0;
-
-    const workTime = calcTotalWorkTime(
-      attendance.startTime,
-      attendance.endTime
-    );
-    return workTime;
-  });
-
-  const restTimeData = attendances.map((attendance) => {
-    if (!attendance.rests) return 0;
-
-    const restTime = attendance.rests
-      .filter((item): item is NonNullable<typeof item> => !!item)
-      .reduce((acc, rest) => {
-        if (!rest.startTime || !rest.endTime) return acc;
-
-        return acc + calcTotalRestTime(rest.startTime, rest.endTime);
-      }, 0);
-
-    return restTime;
-  });
-
-  const seriesA = {
-    data: workTimeData,
-    label: "勤務時間",
-  };
-  const seriesB = {
-    data: restTimeData,
-    label: "休憩時間",
-  };
-
-  const props = {
-    xAxis: [
-      {
-        data: [
-          ...attendances.map((attendance) =>
-            dayjs(attendance.workDate).format("M/D")
-          ),
-        ],
-        scaleType: "band" as const,
-      },
-    ],
-  };
-
-  return (
-    <BarChart
-      height={150}
-      grid={{ horizontal: true }}
-      series={[
-        { ...seriesA, stack: "time" },
-        { ...seriesB, stack: "time" },
-      ]}
-      {...props}
-    />
   );
 }

@@ -12,6 +12,7 @@ import {
 import dayjs from "dayjs";
 import { NavigateFunction } from "react-router-dom";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
 import { CompanyHoliday } from "@/lib/CompanyHoliday";
 import { DayOfWeek } from "@/lib/DayOfWeek";
 import { Holiday } from "@/lib/Holiday";
@@ -214,7 +215,9 @@ export default function getColumns(
             onClick={() => {
               if (!staffId) return;
 
-              const workDate = dayjs(params.row.workDate).format("YYYYMMDD");
+              const workDate = dayjs(params.row.workDate).format(
+                AttendanceDate.QueryParamFormat
+              );
               navigate(`/admin/attendances/edit/${workDate}/${staffId}`);
             }}
           />,

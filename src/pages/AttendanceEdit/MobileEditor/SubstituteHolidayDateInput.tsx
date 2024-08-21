@@ -3,6 +3,8 @@ import dayjs from "dayjs";
 import { useContext } from "react";
 import { Controller } from "react-hook-form";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
+
 import { AttendanceEditContext } from "../AttendanceEditProvider";
 import { Label } from "./Label";
 
@@ -23,7 +25,7 @@ export function SubstituteHolidayDateInput() {
           <DatePicker
             {...field}
             label="勤務した日"
-            format="YYYY/MM/DD"
+            format={AttendanceDate.DisplayFormat}
             value={field.value ? dayjs(field.value) : null}
             slotProps={{
               textField: { size: "small" },

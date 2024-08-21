@@ -17,6 +17,8 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
+
 import useCloseDates from "../../hooks/useCloseDates/useCloseDates";
 import useStaffs, { StaffType } from "../../hooks/useStaffs/useStaffs";
 import { calcTotalRestTime } from "../attendance_editor/items/RestTimeItem/RestTimeItem";
@@ -59,7 +61,7 @@ export default function DownloadForm() {
     const workDates: string[] = [];
     let date = startDate;
     while (date.isBefore(endDate) || date.isSame(endDate)) {
-      workDates.push(date.format("YYYY-MM-DD"));
+      workDates.push(date.format(AttendanceDate.DataFormat));
       date = date.add(1, "day");
     }
 
@@ -126,7 +128,7 @@ export default function DownloadForm() {
                   };
 
                   return [
-                    dayjs(workDate).format("YYYY/MM/DD"),
+                    dayjs(workDate).format(AttendanceDate.DisplayFormat),
                     staffId,
                     `${staff.familyName} ${staff.givenName}`,
                     totalRestTime.toFixed(2),
@@ -141,7 +143,7 @@ export default function DownloadForm() {
                 }
 
                 return [
-                  dayjs(workDate).format("YYYY/MM/DD"),
+                  dayjs(workDate).format(AttendanceDate.DisplayFormat),
                   staff.cognitoUserId,
                   `${staff.familyName} ${staff.givenName}`,
                   "",
@@ -165,7 +167,9 @@ export default function DownloadForm() {
       });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.download = `attendances_${dayjs().format("YYYYMMDD")}.csv`;
+      a.download = `attendances_${dayjs().format(
+        AttendanceDate.QueryParamFormat
+      )}.csv`;
       a.href = url;
       a.click();
       a.remove();
@@ -221,7 +225,7 @@ export default function DownloadForm() {
                       <DesktopDatePicker
                         {...field}
                         label="開始日"
-                        format="YYYY/MM/DD"
+                        format={AttendanceDate.DisplayFormat}
                         slotProps={{
                           textField: { variant: "outlined", size: "small" },
                         }}
@@ -238,7 +242,7 @@ export default function DownloadForm() {
                       <DesktopDatePicker
                         {...field}
                         label="終了日"
-                        format="YYYY/MM/DD"
+                        format={AttendanceDate.DisplayFormat}
                         slotProps={{
                           textField: { variant: "outlined", size: "small" },
                         }}

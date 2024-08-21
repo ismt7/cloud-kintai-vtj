@@ -14,7 +14,9 @@ import {
 import dayjs from "dayjs";
 import { NavigateFunction } from "react-router-dom";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
 import { getTableRowClassName } from "@/pages/admin/AdminStaffAttendanceList/AdminStaffAttendanceList";
+import { AttendanceGraph } from "@/pages/admin/AdminStaffAttendanceList/AttendanceGraph";
 import { CreatedAtTableCell } from "@/pages/admin/AdminStaffAttendanceList/CreatedAtTableCell";
 import { RestTimeTableCell } from "@/pages/admin/AdminStaffAttendanceList/RestTimeTableCell";
 import { SummaryTableCell } from "@/pages/admin/AdminStaffAttendanceList/SummaryTableCell";
@@ -28,7 +30,7 @@ import {
   HolidayCalendar,
   Staff,
 } from "../../API";
-import { AttendanceStatus } from "./AttendanceStatus";
+import { AttendanceStatusTooltip } from "./AttendanceStatusTooltip";
 
 const DesktopBox = styled(Box)(({ theme }) => ({
   padding: "0px 40px 40px 40px",
@@ -52,11 +54,14 @@ export default function DesktopList({
 }) {
   const handleEdit = (attendance: Attendance) => {
     const { workDate } = attendance;
-    const formattedWorkDate = dayjs(workDate).format("YYYYMMDD");
+    const formattedWorkDate = dayjs(workDate).format(
+      AttendanceDate.QueryParamFormat
+    );
     navigate(`/attendance/${formattedWorkDate}/edit`);
   };
   return (
     <DesktopBox>
+      <AttendanceGraph attendances={attendances} />
       <TableContainer>
         <Table size="small">
           <TableHead>
@@ -85,7 +90,7 @@ export default function DesktopList({
               >
                 <TableCell>
                   <Stack direction="row" spacing={0} alignItems="center">
-                    <AttendanceStatus
+                    <AttendanceStatusTooltip
                       staff={staff}
                       attendance={attendance}
                       holidayCalendars={holidayCalendars}

@@ -4,6 +4,7 @@ import { Attendance } from "@/API";
 import * as MESSAGE_CODE from "@/errors";
 import { StaffType } from "@/hooks/useStaffs/useStaffs";
 
+import { AttendanceDate } from "../AttendanceDate";
 import { MailSender } from "./MailSender";
 
 export class GenericMailSender extends MailSender {
@@ -23,7 +24,7 @@ export class GenericMailSender extends MailSender {
 
   protected getWorkDate() {
     const { workDate } = this.attendance;
-    return dayjs(workDate).format("YYYY/MM/DD");
+    return dayjs(workDate).format(AttendanceDate.DisplayFormat);
   }
 
   protected getStaffName() {
@@ -49,7 +50,9 @@ export class GenericMailSender extends MailSender {
       "",
       "勤怠情報の変更リクエストが却下されました。",
       "",
-      `${this.basePath}/attendance/${dayjs(workDate).format("YYYYMMDD")}/edit`,
+      `${this.basePath}/attendance/${dayjs(workDate).format(
+        AttendanceDate.QueryParamFormat
+      )}/edit`,
       "",
       "【コメント】",
       comment || "コメントはありません。",
@@ -66,13 +69,15 @@ export class GenericMailSender extends MailSender {
 
     const subject = `[承認]勤怠情報の変更リクエストが承認されました - ${dayjs(
       workDate
-    ).format("YYYY/MM/DD")}`;
+    ).format(AttendanceDate.DisplayFormat)}`;
     const body = [
       `お疲れ様です。${this.getStaffName()}`,
       "",
       "勤怠情報の変更リクエストが承認されました。",
       "",
-      `${this.basePath}/attendance/${dayjs(workDate).format("YYYYMMDD")}/edit`,
+      `${this.basePath}/attendance/${dayjs(workDate).format(
+        AttendanceDate.QueryParamFormat
+      )}/edit`,
       "",
       "【コメント】",
       comment || "コメントはありません。",
