@@ -14,9 +14,10 @@ import dayjs from "dayjs";
 
 import { CompanyHolidayCalendar } from "@/API";
 import { AttendanceDate } from "@/lib/AttendanceDate";
+import { CompanyHolidayCalenderMessage } from "@/lib/message/CompanyHolidayCalenderMessage";
+import { MessageStatus } from "@/lib/message/Message";
 
 import { useAppDispatchV2 } from "../../../../app/hooks";
-import * as MESSAGE_CODE from "../../../../errors";
 import useCompanyHolidayCalendars from "../../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 import {
   setSnackbarError,
@@ -56,6 +57,22 @@ export default function CompanyHolidayCalendarList() {
     }
 
     const id = companyHolidayCalendar.id;
+    const companyHolidayCalenderMessage = new CompanyHolidayCalenderMessage();
+    await deleteCompanyHolidayCalendar({ id })
+      .then(() =>
+        dispatch(
+          setSnackbarSuccess(
+            companyHolidayCalenderMessage.delete(MessageStatus.SUCCESS)
+          )
+        )
+      )
+      .catch(() =>
+        dispatch(
+          setSnackbarError(
+            companyHolidayCalenderMessage.delete(MessageStatus.ERROR)
+          )
+        )
+      );
   };
 
   if (companyHolidayCalendarLoading) {
@@ -63,7 +80,12 @@ export default function CompanyHolidayCalendarList() {
   }
 
   if (companyHolidayCalendarError) {
-    dispatch(setSnackbarError(MESSAGE_CODE.E08001));
+    dispatch(
+      setSnackbarError(
+        new CompanyHolidayCalenderMessage().get(MessageStatus.ERROR)
+      )
+    );
+
     return null;
   }
 

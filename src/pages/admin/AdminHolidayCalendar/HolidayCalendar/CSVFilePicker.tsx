@@ -14,10 +14,11 @@ import dayjs from "dayjs";
 import { useState } from "react";
 
 import { AttendanceDate } from "@/lib/AttendanceDate";
+import { HolidayCalenderMessage } from "@/lib/message/HolidayCalenderMessage";
+import { MessageStatus } from "@/lib/message/Message";
 
 import { CreateHolidayCalendarInput, HolidayCalendar } from "../../../../API";
 import { useAppDispatchV2 } from "../../../../app/hooks";
-import * as MESSAGE_CODE from "../../../../errors";
 import {
   setSnackbarError,
   setSnackbarSuccess,
@@ -45,7 +46,7 @@ export function CSVFilePicker({
     setOpen(false);
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (uploadedData.length === 0) return;
 
     // eslint-disable-next-line no-alert
@@ -54,9 +55,20 @@ export function CSVFilePicker({
     );
     if (!result) return;
 
-    bulkCreateHolidayCalendar(uploadedData)
-      .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S07001)))
-      .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E07001)));
+    const holidayCalenderMessage = new HolidayCalenderMessage();
+    await bulkCreateHolidayCalendar(uploadedData)
+      .then(() =>
+        dispatch(
+          setSnackbarSuccess(
+            holidayCalenderMessage.create(MessageStatus.SUCCESS)
+          )
+        )
+      )
+      .catch(() =>
+        dispatch(
+          setSnackbarError(holidayCalenderMessage.create(MessageStatus.ERROR))
+        )
+      );
   };
 
   return (

@@ -11,13 +11,14 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { AttendanceDate } from "@/lib/AttendanceDate";
+import { CompanyHolidayCalenderMessage } from "@/lib/message/CompanyHolidayCalenderMessage";
+import { MessageStatus } from "@/lib/message/Message";
 
 import {
   CompanyHolidayCalendar,
   CreateCompanyHolidayCalendarInput,
 } from "../../../../API";
 import { useAppDispatchV2 } from "../../../../app/hooks";
-import * as MESSAGE_CODE from "../../../../errors";
 import {
   setSnackbarError,
   setSnackbarSuccess,
@@ -59,13 +60,24 @@ export default function AddCompanyHolidayCalendar({
     setOpen(false);
   };
 
-  const onSubmit = (data: Inputs) => {
-    createCompanyHolidayCalendar(data)
+  const onSubmit = async (data: Inputs) => {
+    const companyHolidayCalenderMessage = new CompanyHolidayCalenderMessage();
+    await createCompanyHolidayCalendar(data)
       .then(() => {
-        dispatch(setSnackbarSuccess(MESSAGE_CODE.S08002));
+        dispatch(
+          setSnackbarSuccess(
+            companyHolidayCalenderMessage.create(MessageStatus.SUCCESS)
+          )
+        );
         setOpen(false);
       })
-      .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E08002)));
+      .catch(() =>
+        dispatch(
+          setSnackbarError(
+            companyHolidayCalenderMessage.create(MessageStatus.ERROR)
+          )
+        )
+      );
   };
 
   return (

@@ -14,10 +14,11 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { AttendanceDate } from "@/lib/AttendanceDate";
+import { HolidayCalenderMessage } from "@/lib/message/HolidayCalenderMessage";
+import { MessageStatus } from "@/lib/message/Message";
 
 import { CreateHolidayCalendarInput, HolidayCalendar } from "../../../../API";
 import { useAppDispatchV2 } from "../../../../app/hooks";
-import * as MESSAGE_CODE from "../../../../errors";
 import {
   setSnackbarError,
   setSnackbarSuccess,
@@ -58,13 +59,22 @@ export function AddHolidayCalendar({
     setOpen(false);
   };
 
-  const onSubmit = (data: Inputs) => {
-    createHolidayCalendar(data)
+  const onSubmit = async (data: Inputs) => {
+    const holidayCalenderMessage = new HolidayCalenderMessage();
+    await createHolidayCalendar(data)
       .then(() => {
-        dispatch(setSnackbarSuccess(MESSAGE_CODE.S08002));
+        dispatch(
+          setSnackbarSuccess(
+            holidayCalenderMessage.create(MessageStatus.SUCCESS)
+          )
+        );
         setOpen(false);
       })
-      .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E08002)));
+      .catch(() =>
+        dispatch(
+          setSnackbarError(holidayCalenderMessage.create(MessageStatus.ERROR))
+        )
+      );
   };
 
   return (

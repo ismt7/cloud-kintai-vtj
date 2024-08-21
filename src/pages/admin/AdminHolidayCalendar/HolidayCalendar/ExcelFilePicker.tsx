@@ -15,13 +15,14 @@ import { useState } from "react";
 import * as xlsx from "xlsx";
 
 import { AttendanceDate } from "@/lib/AttendanceDate";
+import { CompanyHolidayCalenderMessage } from "@/lib/message/CompanyHolidayCalenderMessage";
+import { MessageStatus } from "@/lib/message/Message";
 
 import {
   CompanyHolidayCalendar,
   CreateCompanyHolidayCalendarInput,
 } from "../../../../API";
 import { useAppDispatchV2 } from "../../../../app/hooks";
-import * as MESSAGE_CODE from "../../../../errors";
 import {
   setSnackbarError,
   setSnackbarSuccess,
@@ -50,7 +51,7 @@ export function ExcelFilePicker({
     setOpen(false);
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (uploadedData.length === 0) return;
 
     // eslint-disable-next-line no-alert
@@ -59,13 +60,24 @@ export function ExcelFilePicker({
     );
     if (!result) return;
 
-    bulkCreateCompanyHolidayCalendar(uploadedData)
+    const companyHolidayCalenderMessage = new CompanyHolidayCalenderMessage();
+    await bulkCreateCompanyHolidayCalendar(uploadedData)
       .then(() => {
         setUploadedData([]);
         handleClose();
-        dispatch(setSnackbarSuccess(MESSAGE_CODE.S08002));
+        dispatch(
+          setSnackbarSuccess(
+            companyHolidayCalenderMessage.create(MessageStatus.SUCCESS)
+          )
+        );
       })
-      .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E08001)));
+      .catch(() =>
+        dispatch(
+          setSnackbarError(
+            companyHolidayCalenderMessage.create(MessageStatus.ERROR)
+          )
+        )
+      );
   };
 
   return (

@@ -55,7 +55,11 @@ export default function useHolidayCalendar() {
   const updateHolidayCalendar = async (input: UpdateHolidayCalendarInput) =>
     updateHolidayCalendarData(input)
       .then((res) => {
-        setHolidayCalendars([...holidayCalendars, res]);
+        setHolidayCalendars((holidayCalendars) =>
+          holidayCalendars.map((holidayCalendar) => {
+            return holidayCalendar.id === res.id ? res : holidayCalendar;
+          })
+        );
         return res;
       })
       .catch((e) => {

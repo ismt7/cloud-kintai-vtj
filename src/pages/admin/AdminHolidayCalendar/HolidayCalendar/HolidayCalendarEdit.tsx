@@ -12,10 +12,11 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { AttendanceDate } from "@/lib/AttendanceDate";
+import { HolidayCalenderMessage } from "@/lib/message/HolidayCalenderMessage";
+import { MessageStatus } from "@/lib/message/Message";
 
 import { HolidayCalendar, UpdateHolidayCalendarInput } from "../../../../API";
 import { useAppDispatchV2 } from "../../../../app/hooks";
-import * as MESSAGE_CODE from "../../../../errors";
 import {
   setSnackbarError,
   setSnackbarSuccess,
@@ -70,22 +71,29 @@ export default function HolidayCalendarEdit({
     setEditRow(null);
   };
 
-  const onSubmit = (data: Inputs) => {
+  const onSubmit = async (data: Inputs) => {
     const { id, holidayDate, name } = data;
 
     if (!id || !holidayDate) return;
 
-    void updateHolidayCalendar({
-      id,
+    const holidayCalenderMessage = new HolidayCalenderMessage();
+    await updateHolidayCalendar({
+      id: holidayCalendar.id,
       holidayDate: holidayDate.toISOString(),
       name,
     })
       .then(() => {
-        dispatch(setSnackbarSuccess(MESSAGE_CODE.S07003));
+        dispatch(
+          setSnackbarSuccess(
+            holidayCalenderMessage.update(MessageStatus.SUCCESS)
+          )
+        );
         onClose();
       })
       .catch(() => {
-        dispatch(setSnackbarError(MESSAGE_CODE.E07003));
+        dispatch(
+          setSnackbarError(holidayCalenderMessage.update(MessageStatus.ERROR))
+        );
       });
   };
 
