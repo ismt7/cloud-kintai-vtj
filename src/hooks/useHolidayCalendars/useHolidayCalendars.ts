@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 
 import {
   CreateHolidayCalendarInput,
+  DeleteHolidayCalendarInput,
   HolidayCalendar,
   UpdateHolidayCalendarInput,
 } from "../../API";
 import createHolidayCalendarData from "./createHolidayCalendarData";
+import deleteHolidayCalendarData from "./deleteHolidayCalendarData";
 import fetchHolidayCalendars from "./fetchHolidayCalendars";
 import updateHolidayCalendarData from "./updateHolidayCalendarData";
 
@@ -60,6 +62,20 @@ export default function useHolidayCalendar() {
         throw e;
       });
 
+  const deleteHolidayCalendar = async (input: DeleteHolidayCalendarInput) => {
+    deleteHolidayCalendarData(input)
+      .then((res) => {
+        setHolidayCalendars(
+          holidayCalendars.filter((holidayCalendar) => {
+            return holidayCalendar.id !== res.id;
+          })
+        );
+      })
+      .catch((e) => {
+        throw e;
+      });
+  };
+
   return {
     loading,
     error,
@@ -67,5 +83,6 @@ export default function useHolidayCalendar() {
     createHolidayCalendar,
     bulkCreateHolidayCalendar,
     updateHolidayCalendar,
+    deleteHolidayCalendar,
   };
 }
