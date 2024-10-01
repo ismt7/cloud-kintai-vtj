@@ -16,6 +16,40 @@ export const sendMail = /* GraphQL */ `query SendMail($data: EmailData!) {
   }
 }
 ` as GeneratedQuery<APITypes.SendMailQueryVariables, APITypes.SendMailQuery>;
+export const getCheckForUpdate = /* GraphQL */ `query GetCheckForUpdate($id: ID!) {
+  getCheckForUpdate(id: $id) {
+    id
+    deployUuid
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetCheckForUpdateQueryVariables,
+  APITypes.GetCheckForUpdateQuery
+>;
+export const listCheckForUpdates = /* GraphQL */ `query ListCheckForUpdates(
+  $filter: ModelCheckForUpdateFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listCheckForUpdates(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      deployUuid
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListCheckForUpdatesQueryVariables,
+  APITypes.ListCheckForUpdatesQuery
+>;
 export const getStaff = /* GraphQL */ `query GetStaff($id: ID!) {
   getStaff(id: $id) {
     id

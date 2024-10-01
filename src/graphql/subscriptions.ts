@@ -8,6 +8,51 @@ type GeneratedSubscription<InputType, OutputType> = string & {
   __generatedSubscriptionOutput: OutputType;
 };
 
+export const onCreateCheckForUpdate = /* GraphQL */ `subscription OnCreateCheckForUpdate(
+  $filter: ModelSubscriptionCheckForUpdateFilterInput
+) {
+  onCreateCheckForUpdate(filter: $filter) {
+    id
+    deployUuid
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateCheckForUpdateSubscriptionVariables,
+  APITypes.OnCreateCheckForUpdateSubscription
+>;
+export const onUpdateCheckForUpdate = /* GraphQL */ `subscription OnUpdateCheckForUpdate(
+  $filter: ModelSubscriptionCheckForUpdateFilterInput
+) {
+  onUpdateCheckForUpdate(filter: $filter) {
+    id
+    deployUuid
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateCheckForUpdateSubscriptionVariables,
+  APITypes.OnUpdateCheckForUpdateSubscription
+>;
+export const onDeleteCheckForUpdate = /* GraphQL */ `subscription OnDeleteCheckForUpdate(
+  $filter: ModelSubscriptionCheckForUpdateFilterInput
+) {
+  onDeleteCheckForUpdate(filter: $filter) {
+    id
+    deployUuid
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteCheckForUpdateSubscriptionVariables,
+  APITypes.OnDeleteCheckForUpdateSubscription
+>;
 export const onCreateStaff = /* GraphQL */ `subscription OnCreateStaff($filter: ModelSubscriptionStaffFilterInput) {
   onCreateStaff(filter: $filter) {
     id

@@ -17,7 +17,6 @@ frontend:
     build:
       commands:
         - APP_REVISION_ID=$REVISION_ID npm run build
-        - echo "VITE_COMMIT_HASH=$(git rev-parse HEAD)" >> .env
     postBuild:
       commands:
         - printf '{"revision":"%s"}' $REVISION_ID | aws s3 cp - s3://$BUCKET_NAME/public/revision.json --content-type "application/json"
