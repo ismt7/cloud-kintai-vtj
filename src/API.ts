@@ -2,40 +2,16 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateStaffInput = {
+export type CreateCheckForUpdateInput = {
   id?: string | null,
-  cognitoUserId: string,
-  familyName?: string | null,
-  givenName?: string | null,
-  mailAddress: string,
-  role: string,
-  enabled: boolean,
-  status: string,
-  owner?: boolean | null,
-  usageStartDate?: string | null,
-  notifications?: NotificationInput | null,
-  sortKey?: string | null,
+  deployUuid: string,
 };
 
-export type NotificationInput = {
-  workStart?: boolean | null,
-  workEnd?: boolean | null,
-};
-
-export type ModelStaffConditionInput = {
-  cognitoUserId?: ModelStringInput | null,
-  familyName?: ModelStringInput | null,
-  givenName?: ModelStringInput | null,
-  mailAddress?: ModelStringInput | null,
-  role?: ModelStringInput | null,
-  enabled?: ModelBooleanInput | null,
-  status?: ModelStringInput | null,
-  owner?: ModelBooleanInput | null,
-  usageStartDate?: ModelStringInput | null,
-  sortKey?: ModelStringInput | null,
-  and?: Array< ModelStaffConditionInput | null > | null,
-  or?: Array< ModelStaffConditionInput | null > | null,
-  not?: ModelStaffConditionInput | null,
+export type ModelCheckForUpdateConditionInput = {
+  deployUuid?: ModelStringInput | null,
+  and?: Array< ModelCheckForUpdateConditionInput | null > | null,
+  or?: Array< ModelCheckForUpdateConditionInput | null > | null,
+  not?: ModelCheckForUpdateConditionInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
 };
@@ -78,6 +54,61 @@ export type ModelSizeInput = {
   ge?: number | null,
   gt?: number | null,
   between?: Array< number | null > | null,
+};
+
+export type CheckForUpdate = {
+  __typename: "CheckForUpdate",
+  id: string,
+  deployUuid: string,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type UpdateCheckForUpdateInput = {
+  id: string,
+  deployUuid?: string | null,
+};
+
+export type DeleteCheckForUpdateInput = {
+  id: string,
+};
+
+export type CreateStaffInput = {
+  id?: string | null,
+  cognitoUserId: string,
+  familyName?: string | null,
+  givenName?: string | null,
+  mailAddress: string,
+  role: string,
+  enabled: boolean,
+  status: string,
+  owner?: boolean | null,
+  usageStartDate?: string | null,
+  notifications?: NotificationInput | null,
+  sortKey?: string | null,
+};
+
+export type NotificationInput = {
+  workStart?: boolean | null,
+  workEnd?: boolean | null,
+};
+
+export type ModelStaffConditionInput = {
+  cognitoUserId?: ModelStringInput | null,
+  familyName?: ModelStringInput | null,
+  givenName?: ModelStringInput | null,
+  mailAddress?: ModelStringInput | null,
+  role?: ModelStringInput | null,
+  enabled?: ModelBooleanInput | null,
+  status?: ModelStringInput | null,
+  owner?: ModelBooleanInput | null,
+  usageStartDate?: ModelStringInput | null,
+  sortKey?: ModelStringInput | null,
+  and?: Array< ModelStaffConditionInput | null > | null,
+  or?: Array< ModelStaffConditionInput | null > | null,
+  not?: ModelStaffConditionInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type ModelBooleanInput = {
@@ -475,6 +506,38 @@ export type EmailResult = {
   body?: string | null,
 };
 
+export type ModelCheckForUpdateFilterInput = {
+  id?: ModelIDInput | null,
+  deployUuid?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelCheckForUpdateFilterInput | null > | null,
+  or?: Array< ModelCheckForUpdateFilterInput | null > | null,
+  not?: ModelCheckForUpdateFilterInput | null,
+};
+
+export type ModelIDInput = {
+  ne?: string | null,
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  contains?: string | null,
+  notContains?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+  size?: ModelSizeInput | null,
+};
+
+export type ModelCheckForUpdateConnection = {
+  __typename: "ModelCheckForUpdateConnection",
+  items:  Array<CheckForUpdate | null >,
+  nextToken?: string | null,
+};
+
 export type ModelStaffFilterInput = {
   id?: ModelIDInput | null,
   cognitoUserId?: ModelStringInput | null,
@@ -492,22 +555,6 @@ export type ModelStaffFilterInput = {
   and?: Array< ModelStaffFilterInput | null > | null,
   or?: Array< ModelStaffFilterInput | null > | null,
   not?: ModelStaffFilterInput | null,
-};
-
-export type ModelIDInput = {
-  ne?: string | null,
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  contains?: string | null,
-  notContains?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-  size?: ModelSizeInput | null,
 };
 
 export type ModelStaffConnection = {
@@ -613,22 +660,13 @@ export type ModelDocumentConnection = {
   nextToken?: string | null,
 };
 
-export type ModelSubscriptionStaffFilterInput = {
+export type ModelSubscriptionCheckForUpdateFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  cognitoUserId?: ModelSubscriptionStringInput | null,
-  familyName?: ModelSubscriptionStringInput | null,
-  givenName?: ModelSubscriptionStringInput | null,
-  mailAddress?: ModelSubscriptionStringInput | null,
-  role?: ModelSubscriptionStringInput | null,
-  enabled?: ModelSubscriptionBooleanInput | null,
-  status?: ModelSubscriptionStringInput | null,
-  owner?: ModelSubscriptionBooleanInput | null,
-  usageStartDate?: ModelSubscriptionStringInput | null,
-  sortKey?: ModelSubscriptionStringInput | null,
+  deployUuid?: ModelSubscriptionStringInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionStaffFilterInput | null > | null,
-  or?: Array< ModelSubscriptionStaffFilterInput | null > | null,
+  and?: Array< ModelSubscriptionCheckForUpdateFilterInput | null > | null,
+  or?: Array< ModelSubscriptionCheckForUpdateFilterInput | null > | null,
 };
 
 export type ModelSubscriptionIDInput = {
@@ -659,6 +697,24 @@ export type ModelSubscriptionStringInput = {
   beginsWith?: string | null,
   in?: Array< string | null > | null,
   notIn?: Array< string | null > | null,
+};
+
+export type ModelSubscriptionStaffFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  cognitoUserId?: ModelSubscriptionStringInput | null,
+  familyName?: ModelSubscriptionStringInput | null,
+  givenName?: ModelSubscriptionStringInput | null,
+  mailAddress?: ModelSubscriptionStringInput | null,
+  role?: ModelSubscriptionStringInput | null,
+  enabled?: ModelSubscriptionBooleanInput | null,
+  status?: ModelSubscriptionStringInput | null,
+  owner?: ModelSubscriptionBooleanInput | null,
+  usageStartDate?: ModelSubscriptionStringInput | null,
+  sortKey?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionStaffFilterInput | null > | null,
+  or?: Array< ModelSubscriptionStaffFilterInput | null > | null,
 };
 
 export type ModelSubscriptionBooleanInput = {
@@ -738,6 +794,51 @@ export type ModelSubscriptionDocumentFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionDocumentFilterInput | null > | null,
   or?: Array< ModelSubscriptionDocumentFilterInput | null > | null,
+};
+
+export type CreateCheckForUpdateMutationVariables = {
+  input: CreateCheckForUpdateInput,
+  condition?: ModelCheckForUpdateConditionInput | null,
+};
+
+export type CreateCheckForUpdateMutation = {
+  createCheckForUpdate?:  {
+    __typename: "CheckForUpdate",
+    id: string,
+    deployUuid: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateCheckForUpdateMutationVariables = {
+  input: UpdateCheckForUpdateInput,
+  condition?: ModelCheckForUpdateConditionInput | null,
+};
+
+export type UpdateCheckForUpdateMutation = {
+  updateCheckForUpdate?:  {
+    __typename: "CheckForUpdate",
+    id: string,
+    deployUuid: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteCheckForUpdateMutationVariables = {
+  input: DeleteCheckForUpdateInput,
+  condition?: ModelCheckForUpdateConditionInput | null,
+};
+
+export type DeleteCheckForUpdateMutation = {
+  deleteCheckForUpdate?:  {
+    __typename: "CheckForUpdate",
+    id: string,
+    deployUuid: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
 };
 
 export type CreateStaffMutationVariables = {
@@ -1262,6 +1363,40 @@ export type SendMailQuery = {
   } | null,
 };
 
+export type GetCheckForUpdateQueryVariables = {
+  id: string,
+};
+
+export type GetCheckForUpdateQuery = {
+  getCheckForUpdate?:  {
+    __typename: "CheckForUpdate",
+    id: string,
+    deployUuid: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListCheckForUpdatesQueryVariables = {
+  filter?: ModelCheckForUpdateFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListCheckForUpdatesQuery = {
+  listCheckForUpdates?:  {
+    __typename: "ModelCheckForUpdateConnection",
+    items:  Array< {
+      __typename: "CheckForUpdate",
+      id: string,
+      deployUuid: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
 export type GetStaffQueryVariables = {
   id: string,
 };
@@ -1623,6 +1758,48 @@ export type ListDocumentsQuery = {
       updatedAt: string,
     } | null >,
     nextToken?: string | null,
+  } | null,
+};
+
+export type OnCreateCheckForUpdateSubscriptionVariables = {
+  filter?: ModelSubscriptionCheckForUpdateFilterInput | null,
+};
+
+export type OnCreateCheckForUpdateSubscription = {
+  onCreateCheckForUpdate?:  {
+    __typename: "CheckForUpdate",
+    id: string,
+    deployUuid: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateCheckForUpdateSubscriptionVariables = {
+  filter?: ModelSubscriptionCheckForUpdateFilterInput | null,
+};
+
+export type OnUpdateCheckForUpdateSubscription = {
+  onUpdateCheckForUpdate?:  {
+    __typename: "CheckForUpdate",
+    id: string,
+    deployUuid: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteCheckForUpdateSubscriptionVariables = {
+  filter?: ModelSubscriptionCheckForUpdateFilterInput | null,
+};
+
+export type OnDeleteCheckForUpdateSubscription = {
+  onDeleteCheckForUpdate?:  {
+    __typename: "CheckForUpdate",
+    id: string,
+    deployUuid: string,
+    createdAt: string,
+    updatedAt: string,
   } | null,
 };
 

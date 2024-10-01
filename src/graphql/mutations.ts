@@ -8,6 +8,54 @@ type GeneratedMutation<InputType, OutputType> = string & {
   __generatedMutationOutput: OutputType;
 };
 
+export const createCheckForUpdate = /* GraphQL */ `mutation CreateCheckForUpdate(
+  $input: CreateCheckForUpdateInput!
+  $condition: ModelCheckForUpdateConditionInput
+) {
+  createCheckForUpdate(input: $input, condition: $condition) {
+    id
+    deployUuid
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateCheckForUpdateMutationVariables,
+  APITypes.CreateCheckForUpdateMutation
+>;
+export const updateCheckForUpdate = /* GraphQL */ `mutation UpdateCheckForUpdate(
+  $input: UpdateCheckForUpdateInput!
+  $condition: ModelCheckForUpdateConditionInput
+) {
+  updateCheckForUpdate(input: $input, condition: $condition) {
+    id
+    deployUuid
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateCheckForUpdateMutationVariables,
+  APITypes.UpdateCheckForUpdateMutation
+>;
+export const deleteCheckForUpdate = /* GraphQL */ `mutation DeleteCheckForUpdate(
+  $input: DeleteCheckForUpdateInput!
+  $condition: ModelCheckForUpdateConditionInput
+) {
+  deleteCheckForUpdate(input: $input, condition: $condition) {
+    id
+    deployUuid
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteCheckForUpdateMutationVariables,
+  APITypes.DeleteCheckForUpdateMutation
+>;
 export const createStaff = /* GraphQL */ `mutation CreateStaff(
   $input: CreateStaffInput!
   $condition: ModelStaffConditionInput
