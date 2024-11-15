@@ -158,7 +158,12 @@ export default function AttendanceEditor() {
           notifications: res.notifications,
         })
       )
-      .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E02001)));
+      .catch((e) => {
+        logger.error(
+          `Failed to fetch staff with ID ${targetStaffId}: ${e.message}`
+        );
+        dispatch(setSnackbarError(MESSAGE_CODE.E02001));
+      });
   }, [staffs, targetStaffId]);
 
   useEffect(() => {
