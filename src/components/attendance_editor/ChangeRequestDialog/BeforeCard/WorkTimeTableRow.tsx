@@ -1,6 +1,8 @@
 import { TableCell, TableRow } from "@mui/material";
 import dayjs from "dayjs";
 
+import { AttendanceTime } from "@/lib/AttendanceTime";
+
 export default function WorkTimeTableRow({
   startTime,
   endTime,
@@ -17,8 +19,8 @@ export default function WorkTimeTableRow({
             return "(登録なし)";
           }
 
-          return `${startTime?.format("HH:mm") ?? "--:--"} 〜 ${
-            endTime?.format("HH:mm") ?? "--:--"
+          return `${startTime?.format("HH:mm") ?? AttendanceTime.None} 〜 ${
+            endTime?.format("HH:mm") ?? AttendanceTime.None
           }`;
         })()}
       </TableCell>

@@ -17,7 +17,9 @@ import { Cache, Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
+import { AttendanceState, AttendanceStatus } from "@/lib/AttendanceState";
 
 import { Staff } from "../../API";
 import { useAppDispatchV2 } from "../../app/hooks";
@@ -37,7 +39,6 @@ import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
-import { judgeStatus } from "../AttendanceList/common";
 import Clock from "../clock/Clock";
 import { AttendanceErrorAlert } from "./AttendanceErrorAlert";
 import { WorkStatus } from "./common";
@@ -110,7 +111,7 @@ export default function TimeRecorder() {
   const [isTimeElapsedError, setIsTimeElapsedError] = useState(false);
   const [directMode, setDirectMode] = useState(false);
 
-  const today = dayjs().format("YYYY-MM-DD");
+  const today = dayjs().format(AttendanceDate.DataFormat);
   const logger = new Logger(
     "TimeRecorder",
     import.meta.env.DEV ? "DEBUG" : "ERROR"
@@ -157,6 +158,7 @@ export default function TimeRecorder() {
 
   useEffect(() => {
     if (
+      !staff ||
       !attendances ||
       holidayCalendarLoading ||
       companyHolidayCalendarLoading
@@ -166,27 +168,14 @@ export default function TimeRecorder() {
 
     const errorCount = attendances
       .map((attendance) => {
-        const {
-          workDate,
-          startTime,
-          endTime,
-          paidHolidayFlag,
-          substituteHolidayDate,
-          changeRequests,
-        } = attendance;
-        return judgeStatus(
-          workDate,
-          startTime,
-          endTime,
-          holidayCalendars,
-          companyHolidayCalendars,
-          paidHolidayFlag,
-          changeRequests,
+        return new AttendanceState(
           staff,
-          substituteHolidayDate
-        );
+          attendance,
+          holidayCalendars,
+          companyHolidayCalendars
+        ).get();
       })
-      .filter((status) => status === "エラー").length;
+      .filter((status) => status === AttendanceStatus.Error).length;
 
     setIsAttendanceError(errorCount > 0);
 
@@ -197,27 +186,14 @@ export default function TimeRecorder() {
         return dayjs().isAfter(dayjs(workDate).add(1, "week"));
       })
       .map((attendance) => {
-        const {
-          workDate,
-          startTime,
-          endTime,
-          paidHolidayFlag,
-          substituteHolidayDate,
-          changeRequests,
-        } = attendance;
-        return judgeStatus(
-          workDate,
-          startTime,
-          endTime,
-          holidayCalendars,
-          companyHolidayCalendars,
-          paidHolidayFlag,
-          changeRequests,
+        return new AttendanceState(
           staff,
-          substituteHolidayDate
-        );
+          attendance,
+          holidayCalendars,
+          companyHolidayCalendars
+        ).get();
       })
-      .filter((status) => status === "エラー").length;
+      .filter((status) => status === AttendanceStatus.Error).length;
 
     setIsTimeElapsedError(timeElapsedErrorCount > 0);
   }, [attendances]);

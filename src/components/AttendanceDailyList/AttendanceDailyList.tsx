@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import MoveDateItem from "@/components/AttendanceDailyList/MoveDateItem";
+import { AttendanceDate } from "@/lib/AttendanceDate";
 
 import useAttendanceDaily from "../../hooks/useAttendanceDaily/useAttendanceDaily";
 import { ActionsTableCell } from "./ActionsTableCell";
@@ -23,14 +24,14 @@ import { StartTimeTableCell } from "./StartTimeTableCell";
 export default function AttendanceDailyList() {
   const { targetWorkDate } = useParams();
   const { attendanceDailyList, fetchAllByWorkDate } = useAttendanceDaily();
-  const today = dayjs().format("YYYYMMDD");
+  const today = dayjs().format(AttendanceDate.QueryParamFormat);
 
   useEffect(() => {
     if (!targetWorkDate) {
       return;
     }
 
-    fetchAllByWorkDate(dayjs(targetWorkDate).format("YYYY-MM-DD"));
+    fetchAllByWorkDate(dayjs(targetWorkDate).format(AttendanceDate.DataFormat));
   }, [targetWorkDate]);
 
   return (

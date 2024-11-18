@@ -54,5 +54,8 @@
     "node_modules/**/*": true
   },
   "testing.openTesting": "neverOpen",
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "markdown.extension.toc.omittedFromToc": {
+    "README.md": ["## 目次"]
+  }
 }

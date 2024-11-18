@@ -75,6 +75,11 @@ type Document @model @auth(rules: [{ allow: private }]) {
   revision: Int
 }
 
+type CheckForUpdate @model {
+  id: ID!
+  deployUuid: String!
+}
+
 type Rest {
   startTime: String
   endTime: String

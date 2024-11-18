@@ -14,6 +14,8 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
+
 import { Document as APIDocument } from "../../../API";
 import { useAppDispatchV2 } from "../../../app/hooks";
 import * as MESSAGE_CODE from "../../../errors";
@@ -88,13 +90,11 @@ export default function DocumentView() {
   }
 
   const makeDate = (target: dayjs.Dayjs) => {
-    // 0秒前、0分前、0時間前の形式で表示する
-    // 24時間以上前の場合は、YYYY/MM/DDの形式で表示する
     const now = dayjs();
     const diff = now.diff(target, "hour");
 
     if (diff >= 24) {
-      return target.format("YYYY/MM/DD");
+      return target.format(AttendanceDate.DisplayFormat);
     }
 
     if (diff >= 1) {

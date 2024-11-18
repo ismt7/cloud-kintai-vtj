@@ -4,6 +4,7 @@ import { Attendance, AttendanceHistory } from "@/API";
 import getAttendanceMailBody from "@/components/attendance_editor/attendanceMailTemplate";
 import { StaffType } from "@/hooks/useStaffs/useStaffs";
 
+import { AttendanceDate } from "../AttendanceDate";
 import { MailSender } from "./MailSender";
 
 export class AttendanceEditMailSender extends MailSender {
@@ -18,7 +19,7 @@ export class AttendanceEditMailSender extends MailSender {
 
   protected getWorkDate(): string {
     const { workDate } = this.attendance;
-    return dayjs(workDate).format("YYYY/MM/DD");
+    return dayjs(workDate).format(AttendanceDate.DisplayFormat);
   }
 
   protected getStaffName(): string {

@@ -22,6 +22,7 @@ import { Link, useParams } from "react-router-dom";
 
 import { SystemCommentInput } from "@/API";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
+import { AttendanceDate } from "@/lib/AttendanceDate";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AttendanceEditMailSender } from "@/lib/mail/AttendanceEditMailSender";
 import AttendanceEditProvider from "@/pages/AttendanceEdit/AttendanceEditProvider";
@@ -157,7 +158,12 @@ export default function AttendanceEditor() {
           notifications: res.notifications,
         })
       )
-      .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E02001)));
+      .catch((e) => {
+        logger.error(
+          `Failed to fetch staff with ID ${targetStaffId}: ${e.message}`
+        );
+        dispatch(setSnackbarError(MESSAGE_CODE.E02001));
+      });
   }, [staffs, targetStaffId]);
 
   useEffect(() => {
@@ -418,7 +424,7 @@ export default function AttendanceEditor() {
             </Link>
             {workDate && (
               <Typography color="text.primary">
-                {workDate.format("YYYY/MM/DD")}
+                {workDate.format(AttendanceDate.DisplayFormat)}
               </Typography>
             )}
           </Breadcrumbs>

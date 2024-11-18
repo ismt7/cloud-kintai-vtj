@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
 import { calcTotalRestTime } from "@/pages/AttendanceEdit/DesktopEditor/RestTimeItem/RestTimeInput/RestTimeInput";
 import { calcTotalWorkTime } from "@/pages/AttendanceEdit/DesktopEditor/WorkTimeInput/WorkTimeInput";
 
@@ -139,14 +140,18 @@ export default function AttendanceTable() {
       >
         <DatePicker
           value={dayjs()}
-          format="YYYY/MM/DD"
+          format={AttendanceDate.DisplayFormat}
           label="日付を指定して移動"
           slotProps={{
             textField: { size: "small" },
           }}
           onChange={(date) => {
             if (date) {
-              navigate(`/attendance/${date.format("YYYYMMDD")}/edit`);
+              navigate(
+                `/attendance/${date.format(
+                  AttendanceDate.QueryParamFormat
+                )}/edit`
+              );
             }
           }}
         />

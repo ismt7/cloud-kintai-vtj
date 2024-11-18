@@ -12,8 +12,12 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 
+import { CompanyHolidayCalendar } from "@/API";
+import { AttendanceDate } from "@/lib/AttendanceDate";
+import { CompanyHolidayCalenderMessage } from "@/lib/message/CompanyHolidayCalenderMessage";
+import { MessageStatus } from "@/lib/message/Message";
+
 import { useAppDispatchV2 } from "../../../../app/hooks";
-import * as MESSAGE_CODE from "../../../../errors";
 import useCompanyHolidayCalendars from "../../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 import {
   setSnackbarError,
@@ -37,14 +41,38 @@ export default function CompanyHolidayCalendarList() {
     bulkCreateCompanyHolidayCalendar,
   } = useCompanyHolidayCalendars();
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (
+    companyHolidayCalendar: CompanyHolidayCalendar
+  ) => {
     // eslint-disable-next-line no-alert
-    const confirm = window.confirm("本当に削除しますか？");
-    if (!confirm) return;
+    const beDeleteDate = dayjs(companyHolidayCalendar.holidayDate).format(
+      AttendanceDate.DisplayFormat
+    );
+    const beDeleteName = companyHolidayCalendar.name;
+    const message = `「${beDeleteDate}(${beDeleteName})」を削除しますか？\n削除したデータは元に戻せません。`;
 
-    deleteCompanyHolidayCalendar({ id })
-      .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S08004)))
-      .catch(() => dispatch(setSnackbarError(MESSAGE_CODE.E08004)));
+    const confirm = window.confirm(message);
+    if (!confirm) {
+      return;
+    }
+
+    const id = companyHolidayCalendar.id;
+    const companyHolidayCalenderMessage = new CompanyHolidayCalenderMessage();
+    await deleteCompanyHolidayCalendar({ id })
+      .then(() =>
+        dispatch(
+          setSnackbarSuccess(
+            companyHolidayCalenderMessage.delete(MessageStatus.SUCCESS)
+          )
+        )
+      )
+      .catch(() =>
+        dispatch(
+          setSnackbarError(
+            companyHolidayCalenderMessage.delete(MessageStatus.ERROR)
+          )
+        )
+      );
   };
 
   if (companyHolidayCalendarLoading) {
@@ -52,7 +80,12 @@ export default function CompanyHolidayCalendarList() {
   }
 
   if (companyHolidayCalendarError) {
-    dispatch(setSnackbarError(MESSAGE_CODE.E08001));
+    dispatch(
+      setSnackbarError(
+        new CompanyHolidayCalenderMessage().get(MessageStatus.ERROR)
+      )
+    );
+
     return null;
   }
 
@@ -90,9 +123,7 @@ export default function CompanyHolidayCalendarList() {
                           updateCompanyHolidayCalendar
                         }
                       />
-                      <IconButton
-                        onClick={() => handleDelete(holidayCalendar.id)}
-                      >
+                      <IconButton onClick={() => handleDelete(holidayCalendar)}>
                         <DeleteIcon fontSize="small" />
                       </IconButton>
                     </Stack>
@@ -100,14 +131,14 @@ export default function CompanyHolidayCalendarList() {
                   <TableCell>
                     {(() => {
                       const date = dayjs(holidayCalendar.holidayDate);
-                      return date.format("YYYY/MM/DD");
+                      return date.format(AttendanceDate.DisplayFormat);
                     })()}
                   </TableCell>
                   <TableCell>{holidayCalendar.name}</TableCell>
                   <TableCell>
                     {(() => {
                       const date = dayjs(holidayCalendar.createdAt);
-                      return date.format("YYYY/MM/DD");
+                      return date.format(AttendanceDate.DisplayFormat);
                     })()}
                   </TableCell>
                   <TableCell />

@@ -79,7 +79,8 @@ export class AttendanceDataManager {
     }
 
     if (attendances.length > 1) {
-      throw new Error("Failed to fetch attendance");
+      const ids = attendances.map((attendance) => attendance.id);
+      throw new Error(`Multiple attendances found with IDs: ${ids.join(", ")}`);
     }
 
     return attendances[0];

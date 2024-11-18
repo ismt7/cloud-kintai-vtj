@@ -39,6 +39,8 @@ export default function Layout() {
     loading: cognitoUserLoading,
   } = useCognitoUser();
 
+  console.log("VITE_COMMIT_HASH", import.meta.env.VITE_COMMIT_HASH);
+
   useEffect(() => {
     const url = new URL(window.location.href);
     if (url.pathname === "/login") return;

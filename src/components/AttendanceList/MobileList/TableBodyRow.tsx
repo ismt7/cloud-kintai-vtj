@@ -15,6 +15,7 @@ import {
   HolidayCalendar,
   Staff,
 } from "@/API";
+import { AttendanceDate } from "@/lib/AttendanceDate";
 import { getTableRowClassName } from "@/pages/admin/AdminStaffAttendanceList/AdminStaffAttendanceList";
 import { CreatedAtTableCell } from "@/pages/admin/AdminStaffAttendanceList/CreatedAtTableCell";
 import { RestTimeTableCell } from "@/pages/admin/AdminStaffAttendanceList/RestTimeTableCell";
@@ -23,7 +24,7 @@ import { UpdatedAtTableCell } from "@/pages/admin/AdminStaffAttendanceList/Updat
 import { WorkDateTableCell } from "@/pages/admin/AdminStaffAttendanceList/WorkDateTableCell";
 import { WorkTimeTableCell } from "@/pages/admin/AdminStaffAttendanceList/WorkTimeTableCell";
 
-import { AttendanceStatus } from "../AttendanceStatus";
+import { AttendanceStatusTooltip } from "../AttendanceStatusTooltip";
 
 export default function TableBodyRow({
   attendance,
@@ -40,7 +41,9 @@ export default function TableBodyRow({
 
   const handleEdit = () => {
     const { workDate } = attendance;
-    const formattedWorkDate = dayjs(workDate).format("YYYYMMDD");
+    const formattedWorkDate = dayjs(workDate).format(
+      AttendanceDate.QueryParamFormat
+    );
     navigate(`/attendance/${formattedWorkDate}/edit`);
   };
 
@@ -54,7 +57,7 @@ export default function TableBodyRow({
     >
       <MuiTableCell>
         <Stack direction="row" spacing={1} alignItems="center">
-          <AttendanceStatus
+          <AttendanceStatusTooltip
             staff={staff}
             attendance={attendance}
             holidayCalendars={holidayCalendars}

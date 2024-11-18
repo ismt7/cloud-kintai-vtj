@@ -5,6 +5,8 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
+
 export default function MoveDateItem({
   staffId,
   workDate,
@@ -26,7 +28,7 @@ export default function MoveDateItem({
             const prevDate = workDate.add(-1, "day");
             navigate(
               `/admin/attendances/edit/${prevDate.format(
-                "YYYYMMDD"
+                AttendanceDate.QueryParamFormat
               )}/${staffId}`
             );
           }}
@@ -36,14 +38,16 @@ export default function MoveDateItem({
       </Box>
       <DatePicker
         value={workDate}
-        format="YYYY/MM/DD"
+        format={AttendanceDate.DisplayFormat}
         slotProps={{
           textField: { size: "small" },
         }}
         onChange={(date) => {
           if (date) {
             navigate(
-              `/admin/attendances/edit/${date.format("YYYYMMDD")}/${staffId}`
+              `/admin/attendances/edit/${date.format(
+                AttendanceDate.QueryParamFormat
+              )}/${staffId}`
             );
           }
         }}
@@ -54,7 +58,7 @@ export default function MoveDateItem({
             const nextDate = workDate.add(1, "day");
             navigate(
               `/admin/attendances/edit/${nextDate.format(
-                "YYYYMMDD"
+                AttendanceDate.QueryParamFormat
               )}/${staffId}`
             );
           }}

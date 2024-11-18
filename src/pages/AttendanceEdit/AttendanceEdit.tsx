@@ -4,6 +4,8 @@ import { useContext, useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { AttendanceDate } from "@/lib/AttendanceDate";
+
 import { useAppDispatchV2 } from "../../app/hooks";
 import * as MESSAGE_CODE from "../../errors";
 import useAttendance from "../../hooks/useAttendance/useAttendance";
@@ -104,7 +106,7 @@ export default function AttendanceEdit() {
 
       await createAttendance({
         staffId: staff.cognitoUserId,
-        workDate: dayjs(targetWorkDate).format("YYYY-MM-DD"),
+        workDate: dayjs(targetWorkDate).format(AttendanceDate.DataFormat),
         changeRequests: [
           {
             startTime: data.startTime,
@@ -155,7 +157,7 @@ export default function AttendanceEdit() {
 
     getAttendance(
       staff.cognitoUserId,
-      dayjs(targetWorkDate).format("YYYY-MM-DD")
+      dayjs(targetWorkDate).format(AttendanceDate.DataFormat)
     )
       .then((res) => {
         if (!res) return;
