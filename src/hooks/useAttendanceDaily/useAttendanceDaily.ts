@@ -36,6 +36,7 @@ export default function useAttendanceDaily() {
     fetchAllByWorkDate(workDate)
       .catch((e: Error) => {
         setError(e);
+        throw e;
       })
       .finally(() => {
         setLoading(false);
