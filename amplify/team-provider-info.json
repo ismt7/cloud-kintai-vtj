@@ -75,7 +75,7 @@
       "function": {
         "AdminQueriesf7a7d2e5": {
           "deploymentBucketName": "amplify-garakufrontend-dev-24913-deployment",
-          "s3Key": "amplify-builds/AdminQueriesf7a7d2e5-415567705a306b566634-build.zip"
+          "s3Key": "amplify-builds/AdminQueriesf7a7d2e5-616965714c4e32474e62-build.zip"
         },
         "garakuSendMail": {
           "deploymentBucketName": "amplify-garakufrontend-dev-24913-deployment",
