@@ -36,6 +36,7 @@ export default function AttendanceCreateForm(props) {
     returnDirectlyFlag: false,
     remarks: "",
     paidHolidayFlag: false,
+    substituteHolidayDate: "",
     revision: "",
   };
   const [staffId, setStaffId] = React.useState(initialValues.staffId);
@@ -52,6 +53,9 @@ export default function AttendanceCreateForm(props) {
   const [paidHolidayFlag, setPaidHolidayFlag] = React.useState(
     initialValues.paidHolidayFlag
   );
+  const [substituteHolidayDate, setSubstituteHolidayDate] = React.useState(
+    initialValues.substituteHolidayDate
+  );
   const [revision, setRevision] = React.useState(initialValues.revision);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
@@ -63,6 +67,7 @@ export default function AttendanceCreateForm(props) {
     setReturnDirectlyFlag(initialValues.returnDirectlyFlag);
     setRemarks(initialValues.remarks);
     setPaidHolidayFlag(initialValues.paidHolidayFlag);
+    setSubstituteHolidayDate(initialValues.substituteHolidayDate);
     setRevision(initialValues.revision);
     setErrors({});
   };
@@ -75,6 +80,7 @@ export default function AttendanceCreateForm(props) {
     returnDirectlyFlag: [],
     remarks: [],
     paidHolidayFlag: [],
+    substituteHolidayDate: [],
     revision: [],
   };
   const runValidationTasks = async (
@@ -111,6 +117,7 @@ export default function AttendanceCreateForm(props) {
           returnDirectlyFlag,
           remarks,
           paidHolidayFlag,
+          substituteHolidayDate,
           revision,
         };
         const validationResponses = await Promise.all(
@@ -182,6 +189,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
+              substituteHolidayDate,
               revision,
             };
             const result = onChange(modelFields);
@@ -214,6 +222,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
+              substituteHolidayDate,
               revision,
             };
             const result = onChange(modelFields);
@@ -246,6 +255,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
+              substituteHolidayDate,
               revision,
             };
             const result = onChange(modelFields);
@@ -278,6 +288,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
+              substituteHolidayDate,
               revision,
             };
             const result = onChange(modelFields);
@@ -310,6 +321,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
+              substituteHolidayDate,
               revision,
             };
             const result = onChange(modelFields);
@@ -342,6 +354,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag: value,
               remarks,
               paidHolidayFlag,
+              substituteHolidayDate,
               revision,
             };
             const result = onChange(modelFields);
@@ -376,6 +389,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag,
               remarks: value,
               paidHolidayFlag,
+              substituteHolidayDate,
               revision,
             };
             const result = onChange(modelFields);
@@ -408,6 +422,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag: value,
+              substituteHolidayDate,
               revision,
             };
             const result = onChange(modelFields);
@@ -423,6 +438,41 @@ export default function AttendanceCreateForm(props) {
         hasError={errors.paidHolidayFlag?.hasError}
         {...getOverrideProps(overrides, "paidHolidayFlag")}
       ></SwitchField>
+      <TextField
+        label="Substitute holiday date"
+        isRequired={false}
+        isReadOnly={false}
+        value={substituteHolidayDate}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              staffId,
+              workDate,
+              startTime,
+              endTime,
+              goDirectlyFlag,
+              returnDirectlyFlag,
+              remarks,
+              paidHolidayFlag,
+              substituteHolidayDate: value,
+              revision,
+            };
+            const result = onChange(modelFields);
+            value = result?.substituteHolidayDate ?? value;
+          }
+          if (errors.substituteHolidayDate?.hasError) {
+            runValidationTasks("substituteHolidayDate", value);
+          }
+          setSubstituteHolidayDate(value);
+        }}
+        onBlur={() =>
+          runValidationTasks("substituteHolidayDate", substituteHolidayDate)
+        }
+        errorMessage={errors.substituteHolidayDate?.errorMessage}
+        hasError={errors.substituteHolidayDate?.hasError}
+        {...getOverrideProps(overrides, "substituteHolidayDate")}
+      ></TextField>
       <TextField
         label="Revision"
         isRequired={false}
@@ -444,6 +494,7 @@ export default function AttendanceCreateForm(props) {
               returnDirectlyFlag,
               remarks,
               paidHolidayFlag,
+              substituteHolidayDate,
               revision: value,
             };
             const result = onChange(modelFields);
