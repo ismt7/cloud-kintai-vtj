@@ -14,13 +14,6 @@ type Staff @model @auth(rules: [{ allow: private }]) {
   status: String!
   owner: Boolean
   usageStartDate: String
-  notifications: Notification
-  sortKey: String
-}
-
-type Notification {
-  workStart: Boolean
-  workEnd: Boolean
 }
 
 type HolidayCalendar @model @auth(rules: [{ allow: private }]) {
@@ -42,12 +35,6 @@ type CloseDate @model @auth(rules: [{ allow: private }]) {
   endDate: String!
 }
 
-type SystemComment {
-  comment: String!
-  confirmed: Boolean!
-  createdAt: String!
-}
-
 type Attendance @model @auth(rules: [{ allow: private }]) {
   id: ID!
   staffId: String!
@@ -59,10 +46,8 @@ type Attendance @model @auth(rules: [{ allow: private }]) {
   rests: [Rest]
   remarks: String
   paidHolidayFlag: Boolean
-  substituteHolidayDate: String
   histories: [AttendanceHistory]
   changeRequests: [AttendanceChangeRequest]
-  systemComments: [SystemComment]
   revision: Int
 }
 
@@ -73,11 +58,6 @@ type Document @model @auth(rules: [{ allow: private }]) {
   tag: [String]
   targetRole: [String]
   revision: Int
-}
-
-type CheckForUpdate @model {
-  id: ID!
-  deployUuid: String!
 }
 
 type Rest {
@@ -95,8 +75,6 @@ type AttendanceHistory {
   rests: [Rest]
   remarks: String
   paidHolidayFlag: Boolean
-  substituteHolidayFlag: Boolean
-  substituteHolidayDate: String
   createdAt: String!
 }
 
@@ -108,8 +86,6 @@ type AttendanceChangeRequest {
   rests: [Rest]
   remarks: String
   paidHolidayFlag: Boolean
-  substituteHolidayFlag: Boolean
-  substituteHolidayDate: String
   completed: Boolean
   comment: String
   staffComment: String
