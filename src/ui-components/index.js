@@ -6,8 +6,6 @@
 
 export { default as AttendanceCreateForm } from "./AttendanceCreateForm";
 export { default as AttendanceUpdateForm } from "./AttendanceUpdateForm";
-export { default as CheckForUpdateCreateForm } from "./CheckForUpdateCreateForm";
-export { default as CheckForUpdateUpdateForm } from "./CheckForUpdateUpdateForm";
 export { default as CloseDateCreateForm } from "./CloseDateCreateForm";
 export { default as CloseDateUpdateForm } from "./CloseDateUpdateForm";
 export { default as CompanyHolidayCalendarCreateForm } from "./CompanyHolidayCalendarCreateForm";

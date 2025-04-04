@@ -30,7 +30,6 @@ export declare type AttendanceCreateFormInputValues = {
     returnDirectlyFlag?: boolean;
     remarks?: string;
     paidHolidayFlag?: boolean;
-    substituteHolidayDate?: string;
     revision?: number;
 };
 export declare type AttendanceCreateFormValidationValues = {
@@ -42,7 +41,6 @@ export declare type AttendanceCreateFormValidationValues = {
     returnDirectlyFlag?: ValidationFunction<boolean>;
     remarks?: ValidationFunction<string>;
     paidHolidayFlag?: ValidationFunction<boolean>;
-    substituteHolidayDate?: ValidationFunction<string>;
     revision?: ValidationFunction<number>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
@@ -56,7 +54,6 @@ export declare type AttendanceCreateFormOverridesProps = {
     returnDirectlyFlag?: PrimitiveOverrideProps<SwitchFieldProps>;
     remarks?: PrimitiveOverrideProps<TextFieldProps>;
     paidHolidayFlag?: PrimitiveOverrideProps<SwitchFieldProps>;
-    substituteHolidayDate?: PrimitiveOverrideProps<TextFieldProps>;
     revision?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type AttendanceCreateFormProps = React.PropsWithChildren<{
