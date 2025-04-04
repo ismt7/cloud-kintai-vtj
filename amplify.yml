@@ -10,7 +10,7 @@ frontend:
   phases:
     preBuild:
       commands:
-        - nvm use 18
+        - nvm use 19
         - npm install -g ulid
         - REVISION_ID=`ulid`
         - npm ci
