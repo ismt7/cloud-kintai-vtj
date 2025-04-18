@@ -57,5 +57,11 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "markdown.extension.toc.omittedFromToc": {
     "README.md": ["## 目次"]
-  }
+  },
+  "testing.automaticallyOpenTestResults": "neverOpen",
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "file": ".vscode/copilot-commit-message-instructions.md"
+    }
+  ]
 }
