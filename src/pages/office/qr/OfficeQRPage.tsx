@@ -30,7 +30,7 @@ const generateToken = async (timestamp: number) => {
   return btoa(`${timestamp}:${signature}`);
 };
 
-const OfficeQRPage: React.FC = () => {
+const OfficeQRView: React.FC = () => {
   const [qrValue, setQrValue] = useState<string>("");
   const [progress, setProgress] = useState(100);
   const [timeLeft, setTimeLeft] = useState(30);
@@ -178,4 +178,4 @@ const OfficeQRPage: React.FC = () => {
   );
 };
 
-export default OfficeQRPage;
+export default OfficeQRView;

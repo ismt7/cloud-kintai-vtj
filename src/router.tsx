@@ -22,7 +22,7 @@ import Login from "./pages/Login/Login";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import OfficePage from "./pages/office/OfficePage";
-import OfficeQRPage from "./pages/office/qr/OfficeQRPage";
+import OfficeQRView from "./pages/office/qr/OfficeQRPage";
 import RegisterPage from "./pages/office/qr/RegisterPage";
 import AdminFeatureManagement from "./pages/admin/AdminFeatureManagement/AdminFeatureManagement";
 
@@ -178,7 +178,7 @@ const router = createBrowserRouter([
           },
           {
             path: "qr",
-            element: <OfficeQRPage />,
+            element: <OfficeQRView />,
           },
           {
             path: "qr/register",
