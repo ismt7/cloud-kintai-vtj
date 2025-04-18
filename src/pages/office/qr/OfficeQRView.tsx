@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Container,
   Typography,
@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 import { QRCodeCanvas } from "qrcode.react";
 import dayjs from "dayjs";
+import { AuthContext } from "@/Layout";
+import { StaffRole } from "@/hooks/useStaffs/useStaffs";
 
 const generateToken = async (timestamp: number) => {
   const secret = import.meta.env.VITE_TOKEN_SECRET || "default_secret";
@@ -31,11 +33,13 @@ const generateToken = async (timestamp: number) => {
 };
 
 const OfficeQRView: React.FC = () => {
+  const { isCognitoUserRole } = useContext(AuthContext);
   const [qrValue, setQrValue] = useState<string>("");
   const [progress, setProgress] = useState(100);
   const [timeLeft, setTimeLeft] = useState(30);
   const [isRegisterMode, setIsRegisterMode] = useState(true);
   const [tooltipOpen, setTooltipOpen] = useState(false);
+  const [showAdminAlert, setShowAdminAlert] = useState(false);
 
   const isOfficeModeEnabled = import.meta.env.VITE_OFFICE_MODE === "true";
 
@@ -48,6 +52,12 @@ const OfficeQRView: React.FC = () => {
       </Container>
     );
   }
+
+  useEffect(() => {
+    if (isCognitoUserRole(StaffRole.ADMIN)) {
+      setShowAdminAlert(true);
+    }
+  }, [isCognitoUserRole]);
 
   const updateQRValue = async () => {
     const timestamp = dayjs().unix();
@@ -121,6 +131,13 @@ const OfficeQRView: React.FC = () => {
 
   return (
     <Container>
+      {showAdminAlert && (
+        <Box sx={{ mt: 4, textAlign: "center" }}>
+          <Alert severity="warning">
+            管理者権限で表示されています。オペレーター権限を持ったアカウントでの表示を推奨しています。
+          </Alert>
+        </Box>
+      )}
       <Box sx={{ mt: 4, textAlign: "center" }}>
         <Button
           variant="contained"

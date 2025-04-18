@@ -1,8 +1,21 @@
 import { Box, Alert, Container } from "@mui/material";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import TimeRecorder from "../components/time_recorder/TimeRecorder";
+import { AuthContext } from "../Layout";
+import { StaffRole } from "../hooks/useStaffs/useStaffs";
 
 export default function Register() {
+  const { isCognitoUserRole } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isCognitoUserRole(StaffRole.OPERATOR)) {
+      navigate("/office/qr");
+    }
+  }, [isCognitoUserRole, navigate]);
+
   const isRegisterDisabled =
     import.meta.env.VITE_STANDARD_REGISTER_DISABLE === "true";
 

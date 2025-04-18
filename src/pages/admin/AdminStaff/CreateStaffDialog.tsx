@@ -39,6 +39,7 @@ const defaultValues: Inputs = {
 export const ROLE_OPTIONS = [
   { value: StaffRole.ADMIN, label: "管理者" },
   { value: StaffRole.STAFF, label: "スタッフ" },
+  { value: StaffRole.OPERATOR, label: "オペレーター" },
 ];
 
 export default function CreateStaffDialog({

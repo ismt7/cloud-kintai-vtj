@@ -25,6 +25,7 @@ import OfficePage from "./pages/office/OfficePage";
 import OfficeQRView from "./pages/office/qr/OfficeQRView";
 import OfficeQRRegister from "./pages/office/qr/OfficeQRRegister";
 import AdminFeatureManagement from "./pages/admin/AdminFeatureManagement/AdminFeatureManagement";
+import OfficeLayout from "./pages/office/OfficeLayout";
 
 const router = createBrowserRouter([
   {
@@ -171,6 +172,7 @@ const router = createBrowserRouter([
       },
       {
         path: "office",
+        element: <OfficeLayout />,
         children: [
           {
             index: true,

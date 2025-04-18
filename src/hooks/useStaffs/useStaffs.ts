@@ -17,6 +17,7 @@ export enum StaffRole {
   STAFF_ADMIN = "StaffAdmin",
   STAFF = "Staff",
   GUEST = "Guest",
+  OPERATOR = "Operator",
   NONE = "None",
 }
 
@@ -26,6 +27,7 @@ export const roleLabelMap = new Map<StaffRole, string>([
   [StaffRole.STAFF_ADMIN, "スタッフ管理者"],
   [StaffRole.STAFF, "スタッフ"],
   [StaffRole.GUEST, "ゲスト"],
+  [StaffRole.OPERATOR, "オペレーター"],
 ]);
 
 export type StaffType = {
@@ -55,6 +57,8 @@ export function mappingStaffRole(role: Staff["role"]): StaffRole {
       return StaffRole.STAFF;
     case StaffRole.GUEST:
       return StaffRole.GUEST;
+    case StaffRole.OPERATOR:
+      return StaffRole.OPERATOR;
     default:
       return StaffRole.NONE;
   }
