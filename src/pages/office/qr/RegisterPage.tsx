@@ -31,12 +31,12 @@ const ActionButton = styled(Button)(({ theme }) => ({
 
 const validateToken = async (timestamp: string, token: string) => {
   try {
-    const secret = import.meta.env.VITE_TOKEN_SECRET;
-
-    if (!secret || secret == "") {
+    const secret: string | undefined = import.meta.env.VITE_TOKEN_SECRET;
+    if (!secret) {
       console.error("VITE_TOKEN_SECRET is not set.");
-      throw new Error("VITE_TOKEN_SECRET is not set.");
+      throw new Error("VITE_TOKEN_SECRET is not defined or invalid.");
     }
+
     const [receivedTimestamp, receivedSignature] = atob(token).split(":");
 
     // タイムスタンプが一致しない場合は無効
