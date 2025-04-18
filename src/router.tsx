@@ -23,7 +23,7 @@ import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import OfficePage from "./pages/office/OfficePage";
 import OfficeQRView from "./pages/office/qr/OfficeQRView";
-import OfficeQRRegister from "./pages/office/qr/RegisterPage";
+import OfficeQRRegister from "./pages/office/qr/OfficeQRRegister";
 import AdminFeatureManagement from "./pages/admin/AdminFeatureManagement/AdminFeatureManagement";
 
 const router = createBrowserRouter([
