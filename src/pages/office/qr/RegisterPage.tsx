@@ -34,6 +34,7 @@ const validateToken = async (timestamp: string, token: string) => {
     const secret = import.meta.env.VITE_TOKEN_SECRET;
 
     if (!secret || secret == "") {
+      console.error("VITE_TOKEN_SECRET is not set.");
       throw new Error("VITE_TOKEN_SECRET is not set.");
     }
     const [receivedTimestamp, receivedSignature] = atob(token).split(":");
