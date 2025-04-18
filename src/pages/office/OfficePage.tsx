@@ -1,20 +1,14 @@
-import React from "react";
-import { Container, Typography, Box } from "@mui/material";
-import dayjs from "dayjs";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const OfficePage: React.FC = () => {
-  const currentDate = dayjs().format("YYYY-MM-DD");
+  const navigate = useNavigate();
 
-  return (
-    <Container>
-      <Box sx={{ mt: 4, textAlign: "center" }}>
-        <Typography variant="h4" gutterBottom>
-          オフィスページ
-        </Typography>
-        <Typography variant="body1">本日は {currentDate} です。</Typography>
-      </Box>
-    </Container>
-  );
+  useEffect(() => {
+    navigate("/office/qr");
+  }, [navigate]);
+
+  return null;
 };
 
 export default OfficePage;

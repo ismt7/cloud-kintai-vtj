@@ -21,6 +21,8 @@ export default function DesktopMenu({ pathName }: { pathName: string }) {
     { label: "マスタ管理", href: "/admin/master" },
   ];
 
+  const operatorMenuList = [{ label: "QR表示", href: "/office/qr" }];
+
   // システム管理者、スタッフ管理者
   const { user } = useAuthenticator();
   const isMailVerified = user?.attributes?.email_verified ? true : false;
@@ -30,9 +32,11 @@ export default function DesktopMenu({ pathName }: { pathName: string }) {
       isCognitoUserRole(StaffRole.ADMIN) ||
       isCognitoUserRole(StaffRole.STAFF_ADMIN)
     ) {
-      viewableList.push(...menuList, ...adminMenuList);
+      viewableList.push(...menuList, ...adminMenuList, ...operatorMenuList);
     } else if (isCognitoUserRole(StaffRole.STAFF)) {
       viewableList.push(...menuList);
+    } else if (isCognitoUserRole(StaffRole.OPERATOR)) {
+      viewableList.push(...operatorMenuList);
     }
   }
 

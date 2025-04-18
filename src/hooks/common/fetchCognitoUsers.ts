@@ -67,6 +67,8 @@ export default async function fetchCognitoUsers(): Promise<Staff[]> {
             return StaffRole.STAFF;
           case "Guest":
             return StaffRole.GUEST;
+          case "Operator":
+            return StaffRole.OPERATOR;
           default:
             return StaffRole.NONE;
         }

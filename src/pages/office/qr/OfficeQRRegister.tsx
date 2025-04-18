@@ -1,12 +1,5 @@
 import React, { useContext, useState } from "react";
-import {
-  Container,
-  Typography,
-  Box,
-  Button,
-  Alert,
-  styled,
-} from "@mui/material";
+import { Container, Box, Button, Alert, styled } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
 import Clock from "../../../components/clock/Clock";
@@ -31,7 +24,12 @@ const ActionButton = styled(Button)(({ theme }) => ({
 
 const validateToken = async (timestamp: string, token: string) => {
   try {
-    const secret = import.meta.env.VITE_TOKEN_SECRET || "default_secret";
+    const secret: string | undefined = import.meta.env.VITE_TOKEN_SECRET;
+    if (!secret) {
+      console.error("VITE_TOKEN_SECRET is not set.");
+      throw new Error("VITE_TOKEN_SECRET is not defined or invalid.");
+    }
+
     const [receivedTimestamp, receivedSignature] = atob(token).split(":");
 
     // タイムスタンプが一致しない場合は無効
@@ -66,13 +64,25 @@ const validateToken = async (timestamp: string, token: string) => {
   }
 };
 
-const RegisterPage: React.FC = () => {
+const OfficeQRRegister: React.FC = () => {
   const [searchParams] = useSearchParams();
   const mode = searchParams.get("mode");
   const timestamp = searchParams.get("timestamp");
   const token = searchParams.get("token");
 
   const [isValidToken, setIsValidToken] = useState(false);
+
+  const isOfficeModeEnabled = import.meta.env.VITE_OFFICE_MODE !== "false";
+
+  if (!isOfficeModeEnabled) {
+    return (
+      <Container>
+        <Box sx={{ mt: 4, textAlign: "center" }}>
+          <Alert severity="warning">現在、使用することができません。</Alert>
+        </Box>
+      </Container>
+    );
+  }
 
   const dispatch = useAppDispatchV2();
   const logger = new Logger(
@@ -141,7 +151,7 @@ const RegisterPage: React.FC = () => {
   return (
     <Container>
       {errorMessage ? (
-        <Alert severity="error" sx={{ mb: 4 }}>
+        <Alert severity="error" sx={{ mt: 4 }}>
           {errorMessage}
         </Alert>
       ) : (
@@ -195,4 +205,4 @@ const RegisterPage: React.FC = () => {
   );
 };
 
-export default RegisterPage;
+export default OfficeQRRegister;
