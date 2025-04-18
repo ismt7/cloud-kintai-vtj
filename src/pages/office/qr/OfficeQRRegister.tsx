@@ -72,6 +72,18 @@ const OfficeQRRegister: React.FC = () => {
 
   const [isValidToken, setIsValidToken] = useState(false);
 
+  const isOfficeModeEnabled = import.meta.env.VITE_OFFICE_MODE !== "false";
+
+  if (!isOfficeModeEnabled) {
+    return (
+      <Container>
+        <Box sx={{ mt: 4, textAlign: "center" }}>
+          <Alert severity="warning">現在、使用することができません。</Alert>
+        </Box>
+      </Container>
+    );
+  }
+
   const dispatch = useAppDispatchV2();
   const logger = new Logger(
     "RegisterPage",
