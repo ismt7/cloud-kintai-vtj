@@ -174,7 +174,7 @@ const OfficeQRView: React.FC = () => {
             size={500}
           />
         </Box>
-        <Box sx={{ mt: 2, display: "flex", justifyContent: "center", gap: 2 }}>
+        <Box sx={{ my: 2, display: "flex", justifyContent: "center", gap: 2 }}>
           <Tooltip
             title="URLがコピーされました！"
             open={tooltipOpen}
