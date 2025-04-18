@@ -6,6 +6,7 @@ import {
   LinearProgress,
   Button,
   Tooltip,
+  Alert,
 } from "@mui/material";
 import { QRCodeCanvas } from "qrcode.react";
 import dayjs from "dayjs";
@@ -35,6 +36,18 @@ const OfficeQRPage: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState(30);
   const [isRegisterMode, setIsRegisterMode] = useState(true);
   const [tooltipOpen, setTooltipOpen] = useState(false);
+
+  const isOfficeModeEnabled = import.meta.env.VITE_OFFICE_MODE === "true";
+
+  if (!isOfficeModeEnabled) {
+    return (
+      <Container>
+        <Box sx={{ mt: 4, textAlign: "center" }}>
+          <Alert severity="warning">現在、使用することができません。</Alert>
+        </Box>
+      </Container>
+    );
+  }
 
   const updateQRValue = async () => {
     const timestamp = dayjs().unix();
