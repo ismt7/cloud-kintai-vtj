@@ -2,7 +2,7 @@
 
 このプロジェクトでは以下の技術を使用しています:
 - **Amplify**: バックエンドの管理とデプロイ
-- **Next.js**: フロントエンドフレームワーク
+- **React**: フロントエンドフレームワーク
 - **MaterialUI**: UIコンポーネントライブラリ
 
 ## コーディングルール
@@ -18,5 +18,4 @@
 ## 注意事項
 
 - 必要に応じてAmplifyのCLIやコンソールを使用してバックエンドの設定を行ってください。
-- Next.jsの機能（例: SSR, ISR）を適切に活用してください。
 - **AmplifyでGraphQLのモデルを定義する場合**は、`amplify/backend/api/garakufrontend/schema.graphql`を変更してください。
