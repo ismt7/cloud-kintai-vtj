@@ -134,7 +134,7 @@ const OfficeQRView: React.FC = () => {
       {showAdminAlert && (
         <Box sx={{ mt: 4, textAlign: "center" }}>
           <Alert severity="warning">
-            管理者権限で表示されています。オペレーター権限を持ったアカウントでの表示を推奨しています。
+            管理者権限で表示されています。オペレーター権限を持ったアカウントで表示してから運用してください。
           </Alert>
         </Box>
       )}
