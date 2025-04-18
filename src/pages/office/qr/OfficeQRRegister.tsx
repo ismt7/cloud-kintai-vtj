@@ -151,7 +151,7 @@ const OfficeQRRegister: React.FC = () => {
   return (
     <Container>
       {errorMessage ? (
-        <Alert severity="error" sx={{ mb: 4 }}>
+        <Alert severity="error" sx={{ mt: 4 }}>
           {errorMessage}
         </Alert>
       ) : (
