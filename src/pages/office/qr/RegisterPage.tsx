@@ -1,12 +1,5 @@
 import React, { useContext, useState } from "react";
-import {
-  Container,
-  Typography,
-  Box,
-  Button,
-  Alert,
-  styled,
-} from "@mui/material";
+import { Container, Box, Button, Alert, styled } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
 import Clock from "../../../components/clock/Clock";
@@ -71,7 +64,7 @@ const validateToken = async (timestamp: string, token: string) => {
   }
 };
 
-const RegisterPage: React.FC = () => {
+const OfficeQRRegister: React.FC = () => {
   const [searchParams] = useSearchParams();
   const mode = searchParams.get("mode");
   const timestamp = searchParams.get("timestamp");
@@ -200,4 +193,4 @@ const RegisterPage: React.FC = () => {
   );
 };
 
-export default RegisterPage;
+export default OfficeQRRegister;
