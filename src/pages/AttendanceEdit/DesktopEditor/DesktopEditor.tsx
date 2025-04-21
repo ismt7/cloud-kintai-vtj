@@ -124,7 +124,7 @@ export default function DesktopEditor() {
               justifyContent={"center"}
               spacing={3}
             >
-              <Box>
+              <Box sx={{ paddingBottom: 2 }}>
                 <RequestButton
                   onClick={handleSubmit(onSubmit)}
                   disabled={
