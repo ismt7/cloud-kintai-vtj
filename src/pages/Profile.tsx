@@ -36,7 +36,7 @@ import {
   roleLabelMap,
   StaffType,
 } from "../hooks/useStaffs/useStaffs";
-import { AuthContext } from "../Layout";
+import { AuthContext } from "../context/AuthContext";
 
 const NotificationSwitch = styled(Switch)(({ theme }) => ({
   padding: 8,

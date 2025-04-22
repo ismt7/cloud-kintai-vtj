@@ -10,8 +10,8 @@ import {
 } from "@mui/material";
 import { QRCodeCanvas } from "qrcode.react";
 import dayjs from "dayjs";
-import { AuthContext } from "@/Layout";
 import { StaffRole } from "@/hooks/useStaffs/useStaffs";
+import { AuthContext } from "@/context/AuthContext";
 
 const generateToken = async (timestamp: number) => {
   const secret = import.meta.env.VITE_TOKEN_SECRET || "default_secret";

@@ -4,7 +4,7 @@ import AppsIcon from "@mui/icons-material/Apps";
 import { Box, Grid, IconButton, Paper, useMediaQuery } from "@mui/material";
 import { useContext, useState } from "react";
 
-import { AuthContext } from "@/Layout";
+import { AuthContext } from "@/context/AuthContext";
 
 import { theme } from "../../../lib/theme";
 import { LinkGridItem } from "./LinkGridItem";

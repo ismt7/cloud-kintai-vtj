@@ -10,7 +10,7 @@ import {
 } from "../../../lib/reducers/snackbarReducer";
 import { Logger } from "aws-amplify";
 import useAttendance from "../../../hooks/useAttendance/useAttendance";
-import { AuthContext } from "@/Layout";
+import { AuthContext } from "@/context/AuthContext";
 import { AttendanceDate } from "@/lib/AttendanceDate";
 
 const ActionButton = styled(Button)(({ theme }) => ({

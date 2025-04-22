@@ -3,7 +3,7 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import TimeRecorder from "../components/time_recorder/TimeRecorder";
-import { AuthContext } from "../Layout";
+import { AuthContext } from "../context/AuthContext";
 import { StaffRole } from "../hooks/useStaffs/useStaffs";
 
 export default function Register() {

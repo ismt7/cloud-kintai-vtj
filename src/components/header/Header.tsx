@@ -6,7 +6,7 @@ import { ExternalLinks } from "./ExternalLinks/ExternalLinks";
 import Logo from "./Logo";
 import MobileMenu from "./MobileMenu";
 import { SignInOutButton } from "./SignInOutButton";
-import { AuthContext } from "@/Layout";
+import { AuthContext } from "../../context/AuthContext";
 
 export const SignOutButton = styled(Button)(({ theme }) => ({
   color: theme.palette.logout.contrastText,

@@ -3,7 +3,7 @@ import { Box, Stack } from "@mui/material";
 import { useContext } from "react";
 
 import { StaffRole } from "../../hooks/useStaffs/useStaffs";
-import { AuthContext } from "../../Layout";
+import { AuthContext } from "../../context/AuthContext";
 import Link from "../link/Link";
 
 export default function DesktopMenu({ pathName }: { pathName: string }) {
