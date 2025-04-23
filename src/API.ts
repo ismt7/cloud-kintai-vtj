@@ -78,6 +78,13 @@ export type CreateAppConfigInput = {
   name: string,
   workStartTime?: string | null,
   workEndTime?: string | null,
+  links?: Array< LinkInput | null > | null,
+};
+
+export type LinkInput = {
+  label: string,
+  url: string,
+  enabled: boolean,
 };
 
 export type ModelAppConfigConditionInput = {
@@ -97,8 +104,16 @@ export type AppConfig = {
   name: string,
   workStartTime?: string | null,
   workEndTime?: string | null,
+  links?:  Array<Link | null > | null,
   createdAt: string,
   updatedAt: string,
+};
+
+export type Link = {
+  __typename: "Link",
+  label: string,
+  url: string,
+  enabled: boolean,
 };
 
 export type UpdateAppConfigInput = {
@@ -106,6 +121,7 @@ export type UpdateAppConfigInput = {
   name?: string | null,
   workStartTime?: string | null,
   workEndTime?: string | null,
+  links?: Array< LinkInput | null > | null,
 };
 
 export type DeleteAppConfigInput = {
@@ -921,6 +937,12 @@ export type CreateAppConfigMutation = {
     name: string,
     workStartTime?: string | null,
     workEndTime?: string | null,
+    links?:  Array< {
+      __typename: "Link",
+      label: string,
+      url: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -938,6 +960,12 @@ export type UpdateAppConfigMutation = {
     name: string,
     workStartTime?: string | null,
     workEndTime?: string | null,
+    links?:  Array< {
+      __typename: "Link",
+      label: string,
+      url: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -955,6 +983,12 @@ export type DeleteAppConfigMutation = {
     name: string,
     workStartTime?: string | null,
     workEndTime?: string | null,
+    links?:  Array< {
+      __typename: "Link",
+      label: string,
+      url: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1527,6 +1561,12 @@ export type GetAppConfigQuery = {
     name: string,
     workStartTime?: string | null,
     workEndTime?: string | null,
+    links?:  Array< {
+      __typename: "Link",
+      label: string,
+      url: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1547,6 +1587,12 @@ export type ListAppConfigsQuery = {
       name: string,
       workStartTime?: string | null,
       workEndTime?: string | null,
+      links?:  Array< {
+        __typename: "Link",
+        label: string,
+        url: string,
+        enabled: boolean,
+      } | null > | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -1971,6 +2017,12 @@ export type OnCreateAppConfigSubscription = {
     name: string,
     workStartTime?: string | null,
     workEndTime?: string | null,
+    links?:  Array< {
+      __typename: "Link",
+      label: string,
+      url: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1987,6 +2039,12 @@ export type OnUpdateAppConfigSubscription = {
     name: string,
     workStartTime?: string | null,
     workEndTime?: string | null,
+    links?:  Array< {
+      __typename: "Link",
+      label: string,
+      url: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -2003,6 +2061,12 @@ export type OnDeleteAppConfigSubscription = {
     name: string,
     workStartTime?: string | null,
     workEndTime?: string | null,
+    links?:  Array< {
+      __typename: "Link",
+      label: string,
+      url: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,

@@ -65,6 +65,12 @@ export const createAppConfig = /* GraphQL */ `mutation CreateAppConfig(
     name
     workStartTime
     workEndTime
+    links {
+      label
+      url
+      enabled
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -83,6 +89,12 @@ export const updateAppConfig = /* GraphQL */ `mutation UpdateAppConfig(
     name
     workStartTime
     workEndTime
+    links {
+      label
+      url
+      enabled
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -101,6 +113,12 @@ export const deleteAppConfig = /* GraphQL */ `mutation DeleteAppConfig(
     name
     workStartTime
     workEndTime
+    links {
+      label
+      url
+      enabled
+      __typename
+    }
     createdAt
     updatedAt
     __typename

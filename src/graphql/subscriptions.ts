@@ -59,6 +59,12 @@ export const onCreateAppConfig = /* GraphQL */ `subscription OnCreateAppConfig($
     name
     workStartTime
     workEndTime
+    links {
+      label
+      url
+      enabled
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -74,6 +80,12 @@ export const onUpdateAppConfig = /* GraphQL */ `subscription OnUpdateAppConfig($
     name
     workStartTime
     workEndTime
+    links {
+      label
+      url
+      enabled
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -89,6 +101,12 @@ export const onDeleteAppConfig = /* GraphQL */ `subscription OnDeleteAppConfig($
     name
     workStartTime
     workEndTime
+    links {
+      label
+      url
+      enabled
+      __typename
+    }
     createdAt
     updatedAt
     __typename

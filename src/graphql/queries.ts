@@ -56,6 +56,12 @@ export const getAppConfig = /* GraphQL */ `query GetAppConfig($id: ID!) {
     name
     workStartTime
     workEndTime
+    links {
+      label
+      url
+      enabled
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -76,6 +82,12 @@ export const listAppConfigs = /* GraphQL */ `query ListAppConfigs(
       name
       workStartTime
       workEndTime
+      links {
+        label
+        url
+        enabled
+        __typename
+      }
       createdAt
       updatedAt
       __typename
