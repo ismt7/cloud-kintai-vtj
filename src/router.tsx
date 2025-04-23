@@ -24,8 +24,8 @@ import Register from "./pages/Register";
 import OfficePage from "./pages/office/OfficePage";
 import OfficeQRView from "./pages/office/qr/OfficeQRView";
 import OfficeQRRegister from "./pages/office/qr/OfficeQRRegister";
-import AdminFeatureManagement from "./pages/admin/AdminFeatureManagement/AdminFeatureManagement";
 import OfficeLayout from "./pages/office/OfficeLayout";
+import AdminConfigManagement from "./pages/admin/AdminConfigManagement/AdminConfigManagement";
 
 const router = createBrowserRouter([
   {
@@ -164,7 +164,7 @@ const router = createBrowserRouter([
               },
               {
                 path: "feature_management",
-                element: <AdminFeatureManagement />,
+                element: <AdminConfigManagement />,
               },
             ],
           },

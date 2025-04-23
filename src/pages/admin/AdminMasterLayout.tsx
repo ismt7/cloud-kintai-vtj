@@ -21,7 +21,7 @@ export default function AdminMasterLayout() {
       path: "/admin/master/holiday_calendar",
     },
     {
-      name: "機能管理",
+      name: "設定",
       path: "/admin/master/feature_management",
     },
   ];
