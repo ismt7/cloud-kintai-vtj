@@ -7,6 +7,7 @@ import Logo from "./Logo";
 import MobileMenu from "./MobileMenu";
 import { SignInOutButton } from "./SignInOutButton";
 import { AuthContext } from "../../context/AuthContext";
+import { StaffRole } from "@/hooks/useStaffs/useStaffs";
 
 export const SignOutButton = styled(Button)(({ theme }) => ({
   color: theme.palette.logout.contrastText,
@@ -62,7 +63,9 @@ export default function Header() {
         >
           <Logo />
           <DesktopMenu pathName={pathName} />
-          {!isCognitoUserRole && <ExternalLinks pathName={pathName} />}
+          {!isCognitoUserRole(StaffRole.OPERATOR) && (
+            <ExternalLinks pathName={pathName} />
+          )}
           <MobileMenu pathName={pathName} />
           <SignInOutButton pathName={pathName} />
         </Stack>
