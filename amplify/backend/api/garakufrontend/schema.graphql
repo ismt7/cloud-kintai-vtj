@@ -115,6 +115,13 @@ type AttendanceChangeRequest {
   staffComment: String
 }
 
+type AppConfig @model {
+  id: ID!
+  name: String!
+  workStartTime: String
+  workEndTime: String
+}
+
 type EmailResult {
   statusCode: Int
   body: String

@@ -73,6 +73,45 @@ export type DeleteCheckForUpdateInput = {
   id: string,
 };
 
+export type CreateAppConfigInput = {
+  id?: string | null,
+  name: string,
+  workStartTime?: string | null,
+  workEndTime?: string | null,
+};
+
+export type ModelAppConfigConditionInput = {
+  name?: ModelStringInput | null,
+  workStartTime?: ModelStringInput | null,
+  workEndTime?: ModelStringInput | null,
+  and?: Array< ModelAppConfigConditionInput | null > | null,
+  or?: Array< ModelAppConfigConditionInput | null > | null,
+  not?: ModelAppConfigConditionInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
+export type AppConfig = {
+  __typename: "AppConfig",
+  id: string,
+  name: string,
+  workStartTime?: string | null,
+  workEndTime?: string | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type UpdateAppConfigInput = {
+  id: string,
+  name?: string | null,
+  workStartTime?: string | null,
+  workEndTime?: string | null,
+};
+
+export type DeleteAppConfigInput = {
+  id: string,
+};
+
 export type CreateStaffInput = {
   id?: string | null,
   cognitoUserId: string,
@@ -538,6 +577,24 @@ export type ModelCheckForUpdateConnection = {
   nextToken?: string | null,
 };
 
+export type ModelAppConfigFilterInput = {
+  id?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  workStartTime?: ModelStringInput | null,
+  workEndTime?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelAppConfigFilterInput | null > | null,
+  or?: Array< ModelAppConfigFilterInput | null > | null,
+  not?: ModelAppConfigFilterInput | null,
+};
+
+export type ModelAppConfigConnection = {
+  __typename: "ModelAppConfigConnection",
+  items:  Array<AppConfig | null >,
+  nextToken?: string | null,
+};
+
 export type ModelStaffFilterInput = {
   id?: ModelIDInput | null,
   cognitoUserId?: ModelStringInput | null,
@@ -699,6 +756,17 @@ export type ModelSubscriptionStringInput = {
   notIn?: Array< string | null > | null,
 };
 
+export type ModelSubscriptionAppConfigFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  workStartTime?: ModelSubscriptionStringInput | null,
+  workEndTime?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionAppConfigFilterInput | null > | null,
+  or?: Array< ModelSubscriptionAppConfigFilterInput | null > | null,
+};
+
 export type ModelSubscriptionStaffFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   cognitoUserId?: ModelSubscriptionStringInput | null,
@@ -836,6 +904,57 @@ export type DeleteCheckForUpdateMutation = {
     __typename: "CheckForUpdate",
     id: string,
     deployUuid: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type CreateAppConfigMutationVariables = {
+  input: CreateAppConfigInput,
+  condition?: ModelAppConfigConditionInput | null,
+};
+
+export type CreateAppConfigMutation = {
+  createAppConfig?:  {
+    __typename: "AppConfig",
+    id: string,
+    name: string,
+    workStartTime?: string | null,
+    workEndTime?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateAppConfigMutationVariables = {
+  input: UpdateAppConfigInput,
+  condition?: ModelAppConfigConditionInput | null,
+};
+
+export type UpdateAppConfigMutation = {
+  updateAppConfig?:  {
+    __typename: "AppConfig",
+    id: string,
+    name: string,
+    workStartTime?: string | null,
+    workEndTime?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteAppConfigMutationVariables = {
+  input: DeleteAppConfigInput,
+  condition?: ModelAppConfigConditionInput | null,
+};
+
+export type DeleteAppConfigMutation = {
+  deleteAppConfig?:  {
+    __typename: "AppConfig",
+    id: string,
+    name: string,
+    workStartTime?: string | null,
+    workEndTime?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1397,6 +1516,44 @@ export type ListCheckForUpdatesQuery = {
   } | null,
 };
 
+export type GetAppConfigQueryVariables = {
+  id: string,
+};
+
+export type GetAppConfigQuery = {
+  getAppConfig?:  {
+    __typename: "AppConfig",
+    id: string,
+    name: string,
+    workStartTime?: string | null,
+    workEndTime?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListAppConfigsQueryVariables = {
+  filter?: ModelAppConfigFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListAppConfigsQuery = {
+  listAppConfigs?:  {
+    __typename: "ModelAppConfigConnection",
+    items:  Array< {
+      __typename: "AppConfig",
+      id: string,
+      name: string,
+      workStartTime?: string | null,
+      workEndTime?: string | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
 export type GetStaffQueryVariables = {
   id: string,
 };
@@ -1798,6 +1955,54 @@ export type OnDeleteCheckForUpdateSubscription = {
     __typename: "CheckForUpdate",
     id: string,
     deployUuid: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnCreateAppConfigSubscriptionVariables = {
+  filter?: ModelSubscriptionAppConfigFilterInput | null,
+};
+
+export type OnCreateAppConfigSubscription = {
+  onCreateAppConfig?:  {
+    __typename: "AppConfig",
+    id: string,
+    name: string,
+    workStartTime?: string | null,
+    workEndTime?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateAppConfigSubscriptionVariables = {
+  filter?: ModelSubscriptionAppConfigFilterInput | null,
+};
+
+export type OnUpdateAppConfigSubscription = {
+  onUpdateAppConfig?:  {
+    __typename: "AppConfig",
+    id: string,
+    name: string,
+    workStartTime?: string | null,
+    workEndTime?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteAppConfigSubscriptionVariables = {
+  filter?: ModelSubscriptionAppConfigFilterInput | null,
+};
+
+export type OnDeleteAppConfigSubscription = {
+  onDeleteAppConfig?:  {
+    __typename: "AppConfig",
+    id: string,
+    name: string,
+    workStartTime?: string | null,
+    workEndTime?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,

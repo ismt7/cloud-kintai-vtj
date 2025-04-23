@@ -56,6 +56,60 @@ export const deleteCheckForUpdate = /* GraphQL */ `mutation DeleteCheckForUpdate
   APITypes.DeleteCheckForUpdateMutationVariables,
   APITypes.DeleteCheckForUpdateMutation
 >;
+export const createAppConfig = /* GraphQL */ `mutation CreateAppConfig(
+  $input: CreateAppConfigInput!
+  $condition: ModelAppConfigConditionInput
+) {
+  createAppConfig(input: $input, condition: $condition) {
+    id
+    name
+    workStartTime
+    workEndTime
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateAppConfigMutationVariables,
+  APITypes.CreateAppConfigMutation
+>;
+export const updateAppConfig = /* GraphQL */ `mutation UpdateAppConfig(
+  $input: UpdateAppConfigInput!
+  $condition: ModelAppConfigConditionInput
+) {
+  updateAppConfig(input: $input, condition: $condition) {
+    id
+    name
+    workStartTime
+    workEndTime
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateAppConfigMutationVariables,
+  APITypes.UpdateAppConfigMutation
+>;
+export const deleteAppConfig = /* GraphQL */ `mutation DeleteAppConfig(
+  $input: DeleteAppConfigInput!
+  $condition: ModelAppConfigConditionInput
+) {
+  deleteAppConfig(input: $input, condition: $condition) {
+    id
+    name
+    workStartTime
+    workEndTime
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteAppConfigMutationVariables,
+  APITypes.DeleteAppConfigMutation
+>;
 export const createStaff = /* GraphQL */ `mutation CreateStaff(
   $input: CreateStaffInput!
   $condition: ModelStaffConditionInput
