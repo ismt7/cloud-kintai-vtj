@@ -56,6 +56,7 @@ export const getAppConfig = /* GraphQL */ `query GetAppConfig($id: ID!) {
     name
     workStartTime
     workEndTime
+    officeMode
     links {
       label
       url
@@ -88,6 +89,7 @@ export const listAppConfigs = /* GraphQL */ `query ListAppConfigs(
       name
       workStartTime
       workEndTime
+      officeMode
       links {
         label
         url

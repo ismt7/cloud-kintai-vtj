@@ -59,6 +59,7 @@ export const onCreateAppConfig = /* GraphQL */ `subscription OnCreateAppConfig($
     name
     workStartTime
     workEndTime
+    officeMode
     links {
       label
       url
@@ -86,6 +87,7 @@ export const onUpdateAppConfig = /* GraphQL */ `subscription OnUpdateAppConfig($
     name
     workStartTime
     workEndTime
+    officeMode
     links {
       label
       url
@@ -113,6 +115,7 @@ export const onDeleteAppConfig = /* GraphQL */ `subscription OnDeleteAppConfig($
     name
     workStartTime
     workEndTime
+    officeMode
     links {
       label
       url

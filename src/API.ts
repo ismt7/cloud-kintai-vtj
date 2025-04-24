@@ -78,6 +78,7 @@ export type CreateAppConfigInput = {
   name: string,
   workStartTime?: string | null,
   workEndTime?: string | null,
+  officeMode?: boolean | null,
   links?: Array< LinkInput | null > | null,
   reasons?: Array< ReasonInput | null > | null,
 };
@@ -98,11 +99,19 @@ export type ModelAppConfigConditionInput = {
   name?: ModelStringInput | null,
   workStartTime?: ModelStringInput | null,
   workEndTime?: ModelStringInput | null,
+  officeMode?: ModelBooleanInput | null,
   and?: Array< ModelAppConfigConditionInput | null > | null,
   or?: Array< ModelAppConfigConditionInput | null > | null,
   not?: ModelAppConfigConditionInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
+};
+
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
 };
 
 export type AppConfig = {
@@ -111,6 +120,7 @@ export type AppConfig = {
   name: string,
   workStartTime?: string | null,
   workEndTime?: string | null,
+  officeMode?: boolean | null,
   links?:  Array<Link | null > | null,
   reasons?:  Array<Reason | null > | null,
   createdAt: string,
@@ -136,6 +146,7 @@ export type UpdateAppConfigInput = {
   name?: string | null,
   workStartTime?: string | null,
   workEndTime?: string | null,
+  officeMode?: boolean | null,
   links?: Array< LinkInput | null > | null,
   reasons?: Array< ReasonInput | null > | null,
 };
@@ -180,13 +191,6 @@ export type ModelStaffConditionInput = {
   not?: ModelStaffConditionInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
-};
-
-export type ModelBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
 };
 
 export type Staff = {
@@ -614,6 +618,7 @@ export type ModelAppConfigFilterInput = {
   name?: ModelStringInput | null,
   workStartTime?: ModelStringInput | null,
   workEndTime?: ModelStringInput | null,
+  officeMode?: ModelBooleanInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
   and?: Array< ModelAppConfigFilterInput | null > | null,
@@ -793,10 +798,16 @@ export type ModelSubscriptionAppConfigFilterInput = {
   name?: ModelSubscriptionStringInput | null,
   workStartTime?: ModelSubscriptionStringInput | null,
   workEndTime?: ModelSubscriptionStringInput | null,
+  officeMode?: ModelSubscriptionBooleanInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionAppConfigFilterInput | null > | null,
   or?: Array< ModelSubscriptionAppConfigFilterInput | null > | null,
+};
+
+export type ModelSubscriptionBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
 };
 
 export type ModelSubscriptionStaffFilterInput = {
@@ -815,11 +826,6 @@ export type ModelSubscriptionStaffFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionStaffFilterInput | null > | null,
   or?: Array< ModelSubscriptionStaffFilterInput | null > | null,
-};
-
-export type ModelSubscriptionBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
 };
 
 export type ModelSubscriptionHolidayCalendarFilterInput = {
@@ -953,6 +959,7 @@ export type CreateAppConfigMutation = {
     name: string,
     workStartTime?: string | null,
     workEndTime?: string | null,
+    officeMode?: boolean | null,
     links?:  Array< {
       __typename: "Link",
       label: string,
@@ -982,6 +989,7 @@ export type UpdateAppConfigMutation = {
     name: string,
     workStartTime?: string | null,
     workEndTime?: string | null,
+    officeMode?: boolean | null,
     links?:  Array< {
       __typename: "Link",
       label: string,
@@ -1011,6 +1019,7 @@ export type DeleteAppConfigMutation = {
     name: string,
     workStartTime?: string | null,
     workEndTime?: string | null,
+    officeMode?: boolean | null,
     links?:  Array< {
       __typename: "Link",
       label: string,
@@ -1595,6 +1604,7 @@ export type GetAppConfigQuery = {
     name: string,
     workStartTime?: string | null,
     workEndTime?: string | null,
+    officeMode?: boolean | null,
     links?:  Array< {
       __typename: "Link",
       label: string,
@@ -1627,6 +1637,7 @@ export type ListAppConfigsQuery = {
       name: string,
       workStartTime?: string | null,
       workEndTime?: string | null,
+      officeMode?: boolean | null,
       links?:  Array< {
         __typename: "Link",
         label: string,
@@ -2063,6 +2074,7 @@ export type OnCreateAppConfigSubscription = {
     name: string,
     workStartTime?: string | null,
     workEndTime?: string | null,
+    officeMode?: boolean | null,
     links?:  Array< {
       __typename: "Link",
       label: string,
@@ -2091,6 +2103,7 @@ export type OnUpdateAppConfigSubscription = {
     name: string,
     workStartTime?: string | null,
     workEndTime?: string | null,
+    officeMode?: boolean | null,
     links?:  Array< {
       __typename: "Link",
       label: string,
@@ -2119,6 +2132,7 @@ export type OnDeleteAppConfigSubscription = {
     name: string,
     workStartTime?: string | null,
     workEndTime?: string | null,
+    officeMode?: boolean | null,
     links?:  Array< {
       __typename: "Link",
       label: string,

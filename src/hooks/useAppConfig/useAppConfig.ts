@@ -93,6 +93,8 @@ export default function useAppConfig() {
     return [];
   };
 
+  const getOfficeMode = () => config?.officeMode || false;
+
   return {
     config,
     loading,
@@ -103,5 +105,6 @@ export default function useAppConfig() {
     getConfigId,
     getLinks,
     getReasons,
+    getOfficeMode,
   };
 }

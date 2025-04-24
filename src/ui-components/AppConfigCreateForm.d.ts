@@ -5,7 +5,7 @@
  **************************************************************************/
 
 import * as React from "react";
-import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
+import { GridProps, SwitchFieldProps, TextFieldProps } from "@aws-amplify/ui-react";
 export declare type EscapeHatchProps = {
     [elementHierarchy: string]: Record<string, unknown>;
 } | null;
@@ -25,11 +25,13 @@ export declare type AppConfigCreateFormInputValues = {
     name?: string;
     workStartTime?: string;
     workEndTime?: string;
+    officeMode?: boolean;
 };
 export declare type AppConfigCreateFormValidationValues = {
     name?: ValidationFunction<string>;
     workStartTime?: ValidationFunction<string>;
     workEndTime?: ValidationFunction<string>;
+    officeMode?: ValidationFunction<boolean>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type AppConfigCreateFormOverridesProps = {
@@ -37,6 +39,7 @@ export declare type AppConfigCreateFormOverridesProps = {
     name?: PrimitiveOverrideProps<TextFieldProps>;
     workStartTime?: PrimitiveOverrideProps<TextFieldProps>;
     workEndTime?: PrimitiveOverrideProps<TextFieldProps>;
+    officeMode?: PrimitiveOverrideProps<SwitchFieldProps>;
 } & EscapeHatchProps;
 export declare type AppConfigCreateFormProps = React.PropsWithChildren<{
     overrides?: AppConfigCreateFormOverridesProps | undefined | null;

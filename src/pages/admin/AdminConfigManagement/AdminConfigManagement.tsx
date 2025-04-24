@@ -9,6 +9,7 @@ import {
   FormControlLabel,
   MenuItem,
   Select,
+  Switch,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { predefinedIcons } from "@/constants/icons";
@@ -35,6 +36,7 @@ export default function AdminConfigManagement() {
     getConfigId,
     getLinks,
     getReasons,
+    getOfficeMode,
     loading,
   } = useAppConfig();
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
@@ -46,6 +48,7 @@ export default function AdminConfigManagement() {
   const [reasons, setReasons] = useState<
     { reason: string; enabled: boolean }[]
   >([]);
+  const [officeMode, setOfficeMode] = useState<boolean>(false);
   const dispatch = useAppDispatchV2();
 
   useEffect(() => {
@@ -58,6 +61,7 @@ export default function AdminConfigManagement() {
     setId(getConfigId());
     setLinks(getLinks());
     setReasons(getReasons());
+    setOfficeMode(getOfficeMode());
   }, [loading]);
 
   const handleAddLink = () => {
@@ -100,6 +104,12 @@ export default function AdminConfigManagement() {
     setReasons(updatedReasons);
   };
 
+  const handleOfficeModeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setOfficeMode(event.target.checked);
+  };
+
   const handleSave = async () => {
     if (startTime && endTime) {
       try {
@@ -118,6 +128,7 @@ export default function AdminConfigManagement() {
               reason: reason.reason,
               enabled: reason.enabled,
             })),
+            officeMode,
           });
           dispatch(setSnackbarSuccess(S14002));
         } else {
@@ -135,6 +146,7 @@ export default function AdminConfigManagement() {
               reason: reason.reason,
               enabled: reason.enabled,
             })),
+            officeMode,
           });
           dispatch(setSnackbarSuccess(S14001));
         }
@@ -152,7 +164,7 @@ export default function AdminConfigManagement() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Stack spacing={2}>
+      <Stack spacing={2} sx={{ pb: 2 }}>
         <Title text="設定" />
         <Typography variant="h6">勤務時間</Typography>
         <Typography variant="body2" color="textSecondary">
@@ -193,6 +205,20 @@ export default function AdminConfigManagement() {
             onChange={(newValue) => setEndTime(newValue)}
           />
         </Stack>
+        <Typography variant="h6">オフィスモード</Typography>
+        <Typography variant="body2" color="textSecondary">
+          オフィスモードを有効にすると、オフィスに設置した端末からQRコードを読み込み出退勤が可能になります。
+        </Typography>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={officeMode}
+              onChange={handleOfficeModeChange}
+              color="primary"
+            />
+          }
+          label={officeMode ? "有効" : "無効"}
+        />
         <Typography variant="h6">リンク集</Typography>
         <Typography variant="body2" color="textSecondary">
           ヘッダーのリンク集に表示するリンクを設定してください。

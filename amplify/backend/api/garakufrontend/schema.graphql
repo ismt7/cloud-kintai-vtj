@@ -132,6 +132,7 @@ type AppConfig @model {
   name: String!
   workStartTime: String
   workEndTime: String
+  officeMode: Boolean
   links: [Link]
   reasons: [Reason]
 }

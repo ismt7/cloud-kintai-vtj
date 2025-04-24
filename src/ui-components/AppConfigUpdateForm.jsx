@@ -6,7 +6,13 @@
 
 /* eslint-disable */
 import * as React from "react";
-import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
+import {
+  Button,
+  Flex,
+  Grid,
+  SwitchField,
+  TextField,
+} from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { API } from "aws-amplify";
 import { getAppConfig } from "../graphql/queries";
@@ -27,6 +33,7 @@ export default function AppConfigUpdateForm(props) {
     name: "",
     workStartTime: "",
     workEndTime: "",
+    officeMode: false,
   };
   const [name, setName] = React.useState(initialValues.name);
   const [workStartTime, setWorkStartTime] = React.useState(
@@ -35,6 +42,7 @@ export default function AppConfigUpdateForm(props) {
   const [workEndTime, setWorkEndTime] = React.useState(
     initialValues.workEndTime
   );
+  const [officeMode, setOfficeMode] = React.useState(initialValues.officeMode);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = appConfigRecord
@@ -43,6 +51,7 @@ export default function AppConfigUpdateForm(props) {
     setName(cleanValues.name);
     setWorkStartTime(cleanValues.workStartTime);
     setWorkEndTime(cleanValues.workEndTime);
+    setOfficeMode(cleanValues.officeMode);
     setErrors({});
   };
   const [appConfigRecord, setAppConfigRecord] =
@@ -66,6 +75,7 @@ export default function AppConfigUpdateForm(props) {
     name: [{ type: "Required" }],
     workStartTime: [],
     workEndTime: [],
+    officeMode: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -96,6 +106,7 @@ export default function AppConfigUpdateForm(props) {
           name,
           workStartTime: workStartTime ?? null,
           workEndTime: workEndTime ?? null,
+          officeMode: officeMode ?? null,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -159,6 +170,7 @@ export default function AppConfigUpdateForm(props) {
               name: value,
               workStartTime,
               workEndTime,
+              officeMode,
             };
             const result = onChange(modelFields);
             value = result?.name ?? value;
@@ -185,6 +197,7 @@ export default function AppConfigUpdateForm(props) {
               name,
               workStartTime: value,
               workEndTime,
+              officeMode,
             };
             const result = onChange(modelFields);
             value = result?.workStartTime ?? value;
@@ -211,6 +224,7 @@ export default function AppConfigUpdateForm(props) {
               name,
               workStartTime,
               workEndTime: value,
+              officeMode,
             };
             const result = onChange(modelFields);
             value = result?.workEndTime ?? value;
@@ -225,6 +239,33 @@ export default function AppConfigUpdateForm(props) {
         hasError={errors.workEndTime?.hasError}
         {...getOverrideProps(overrides, "workEndTime")}
       ></TextField>
+      <SwitchField
+        label="Office mode"
+        defaultChecked={false}
+        isDisabled={false}
+        isChecked={officeMode}
+        onChange={(e) => {
+          let value = e.target.checked;
+          if (onChange) {
+            const modelFields = {
+              name,
+              workStartTime,
+              workEndTime,
+              officeMode: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.officeMode ?? value;
+          }
+          if (errors.officeMode?.hasError) {
+            runValidationTasks("officeMode", value);
+          }
+          setOfficeMode(value);
+        }}
+        onBlur={() => runValidationTasks("officeMode", officeMode)}
+        errorMessage={errors.officeMode?.errorMessage}
+        hasError={errors.officeMode?.hasError}
+        {...getOverrideProps(overrides, "officeMode")}
+      ></SwitchField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}
