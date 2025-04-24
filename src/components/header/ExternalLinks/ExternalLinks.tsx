@@ -2,19 +2,39 @@ import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { Unstable_Popup as BasePopup } from "@mui/base/Unstable_Popup";
 import AppsIcon from "@mui/icons-material/Apps";
 import { Box, Grid, IconButton, Paper, useMediaQuery } from "@mui/material";
-import { useContext, useState } from "react";
-
-import { AuthContext } from "@/context/AuthContext";
+import { useContext, useEffect, useState } from "react";
 
 import { theme } from "../../../lib/theme";
 import { LinkGridItem } from "./LinkGridItem";
+import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
+import { AuthContext } from "@/context/AuthContext";
 
 export function ExternalLinks({ pathName }: { pathName: string }) {
+  const { cognitoUser } = useContext(AuthContext);
+
   const [anchor, setAnchor] = useState<null | HTMLElement>(null);
+  const { fetchConfig, getLinks, loading } = useAppConfig();
+  const [links, setLinks] = useState<
+    { label: string; url: string; enabled: boolean; icon: string }[]
+  >([]);
 
   const isMobileSize = useMediaQuery(theme.breakpoints.down("md"));
 
-  if (pathName === "/login") return null;
+  useEffect(() => {
+    fetchConfig();
+  }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      setLinks(getLinks());
+    }
+  }, [loading]);
+
+  if (!cognitoUser) {
+    return null;
+  }
+
+  const { familyName, givenName } = cognitoUser;
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchor(anchor ? null : event.currentTarget);
@@ -26,6 +46,10 @@ export function ExternalLinks({ pathName }: { pathName: string }) {
   const handleClickAway = () => {
     setAnchor(null);
   };
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
@@ -54,27 +78,19 @@ export function ExternalLinks({ pathName }: { pathName: string }) {
             }}
           >
             <Grid container spacing={1}>
-              {TransportationExpensesLink()}
-              <LinkGridItem
-                url="http://172.16.1.12:3020/"
-                title="休暇申請"
-                iconType="holiday"
-              />
+              {links.map((link, index) => (
+                <LinkGridItem
+                  key={index}
+                  url={link.url}
+                  title={link.label}
+                  iconType={link.icon}
+                  staffName={`${familyName} ${givenName}`}
+                />
+              ))}
             </Grid>
           </Paper>
         </BasePopup>
       </Box>
     </ClickAwayListener>
   );
-}
-
-function TransportationExpensesLink() {
-  const { cognitoUser } = useContext(AuthContext);
-
-  if (!cognitoUser) return null;
-
-  const { familyName, givenName } = cognitoUser;
-  const staffName = [familyName, givenName].join("%20");
-  const url = `http://ginjiro.office.begi.net:3021/?code=%7B%22name%22:%22${staffName}%22,%22subject%22:%22%E5%87%BA%E7%A4%BE%22,%22list%22:%5B%5B0,%22%22,%22%22,%22%22,%22%22,%22%22,%22%22,%22%22%5D%5D%7D`;
-  return <LinkGridItem url={url} title="交通費申請" iconType="train" />;
 }

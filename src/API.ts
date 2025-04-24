@@ -85,6 +85,7 @@ export type LinkInput = {
   label: string,
   url: string,
   enabled: boolean,
+  icon?: string | null,
 };
 
 export type ModelAppConfigConditionInput = {
@@ -114,6 +115,7 @@ export type Link = {
   label: string,
   url: string,
   enabled: boolean,
+  icon?: string | null,
 };
 
 export type UpdateAppConfigInput = {
@@ -942,6 +944,7 @@ export type CreateAppConfigMutation = {
       label: string,
       url: string,
       enabled: boolean,
+      icon?: string | null,
     } | null > | null,
     createdAt: string,
     updatedAt: string,
@@ -965,6 +968,7 @@ export type UpdateAppConfigMutation = {
       label: string,
       url: string,
       enabled: boolean,
+      icon?: string | null,
     } | null > | null,
     createdAt: string,
     updatedAt: string,
@@ -988,6 +992,7 @@ export type DeleteAppConfigMutation = {
       label: string,
       url: string,
       enabled: boolean,
+      icon?: string | null,
     } | null > | null,
     createdAt: string,
     updatedAt: string,
@@ -1566,6 +1571,7 @@ export type GetAppConfigQuery = {
       label: string,
       url: string,
       enabled: boolean,
+      icon?: string | null,
     } | null > | null,
     createdAt: string,
     updatedAt: string,
@@ -1592,6 +1598,7 @@ export type ListAppConfigsQuery = {
         label: string,
         url: string,
         enabled: boolean,
+        icon?: string | null,
       } | null > | null,
       createdAt: string,
       updatedAt: string,
@@ -2022,6 +2029,7 @@ export type OnCreateAppConfigSubscription = {
       label: string,
       url: string,
       enabled: boolean,
+      icon?: string | null,
     } | null > | null,
     createdAt: string,
     updatedAt: string,
@@ -2044,6 +2052,7 @@ export type OnUpdateAppConfigSubscription = {
       label: string,
       url: string,
       enabled: boolean,
+      icon?: string | null,
     } | null > | null,
     createdAt: string,
     updatedAt: string,
@@ -2066,6 +2075,7 @@ export type OnDeleteAppConfigSubscription = {
       label: string,
       url: string,
       enabled: boolean,
+      icon?: string | null,
     } | null > | null,
     createdAt: string,
     updatedAt: string,

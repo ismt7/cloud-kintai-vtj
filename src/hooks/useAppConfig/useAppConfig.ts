@@ -6,13 +6,14 @@ import { AppConfig, CreateAppConfigInput, UpdateAppConfigInput } from "@/API";
 // 特定の項目だけを選択して型定義
 export type DefaultAppConfig = Pick<
   AppConfig,
-  "name" | "workStartTime" | "workEndTime"
+  "name" | "workStartTime" | "workEndTime" | "links"
 >;
 
 const DEFAULT_CONFIG: DefaultAppConfig = {
   name: "default",
   workStartTime: "09:00",
   workEndTime: "18:00",
+  links: [],
 };
 
 export default function useAppConfig() {
@@ -68,6 +69,18 @@ export default function useAppConfig() {
 
   const getConfigId = () => config?.id || null;
 
+  const getLinks = () => {
+    if (config && config.links) {
+      return config.links.map((link) => ({
+        label: link?.label || "",
+        url: link?.url || "",
+        enabled: link?.enabled || false,
+        icon: link?.icon || "",
+      }));
+    }
+    return [];
+  };
+
   return {
     config,
     loading,
@@ -76,5 +89,6 @@ export default function useAppConfig() {
     getStartTime,
     getEndTime,
     getConfigId,
+    getLinks,
   };
 }

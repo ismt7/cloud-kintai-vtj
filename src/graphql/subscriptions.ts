@@ -63,6 +63,7 @@ export const onCreateAppConfig = /* GraphQL */ `subscription OnCreateAppConfig($
       label
       url
       enabled
+      icon
       __typename
     }
     createdAt
@@ -84,6 +85,7 @@ export const onUpdateAppConfig = /* GraphQL */ `subscription OnUpdateAppConfig($
       label
       url
       enabled
+      icon
       __typename
     }
     createdAt
@@ -105,6 +107,7 @@ export const onDeleteAppConfig = /* GraphQL */ `subscription OnDeleteAppConfig($
       label
       url
       enabled
+      icon
       __typename
     }
     createdAt

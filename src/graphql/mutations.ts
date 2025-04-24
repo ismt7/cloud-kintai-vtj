@@ -69,6 +69,7 @@ export const createAppConfig = /* GraphQL */ `mutation CreateAppConfig(
       label
       url
       enabled
+      icon
       __typename
     }
     createdAt
@@ -93,6 +94,7 @@ export const updateAppConfig = /* GraphQL */ `mutation UpdateAppConfig(
       label
       url
       enabled
+      icon
       __typename
     }
     createdAt
@@ -117,6 +119,7 @@ export const deleteAppConfig = /* GraphQL */ `mutation DeleteAppConfig(
       label
       url
       enabled
+      icon
       __typename
     }
     createdAt

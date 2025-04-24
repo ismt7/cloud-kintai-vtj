@@ -119,6 +119,7 @@ type Link {
   label: String!
   url: String!
   enabled: Boolean!
+  icon: String
 }
 
 type AppConfig @model {

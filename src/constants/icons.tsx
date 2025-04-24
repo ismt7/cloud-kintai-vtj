@@ -1,0 +1,11 @@
+import LinkIcon from "@mui/icons-material/Link";
+import TrainIcon from "@mui/icons-material/Train";
+import BeachAccessIcon from "@mui/icons-material/BeachAccess";
+import CurrencyYenIcon from "@mui/icons-material/CurrencyYen";
+
+export const predefinedIcons = [
+  { label: "リンク", value: "link", component: <LinkIcon /> },
+  { label: "交通費", value: "train", component: <TrainIcon /> },
+  { label: "休暇申請", value: "holiday", component: <BeachAccessIcon /> },
+  { label: "経費申請", value: "expense", component: <CurrencyYenIcon /> },
+];
