@@ -63,6 +63,11 @@ export const getAppConfig = /* GraphQL */ `query GetAppConfig($id: ID!) {
       icon
       __typename
     }
+    reasons {
+      reason
+      enabled
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -88,6 +93,11 @@ export const listAppConfigs = /* GraphQL */ `query ListAppConfigs(
         url
         enabled
         icon
+        __typename
+      }
+      reasons {
+        reason
+        enabled
         __typename
       }
       createdAt

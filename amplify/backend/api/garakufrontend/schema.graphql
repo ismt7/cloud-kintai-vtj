@@ -122,12 +122,18 @@ type Link {
   icon: String
 }
 
+type Reason {
+  reason: String!
+  enabled: Boolean!
+}
+
 type AppConfig @model {
   id: ID!
   name: String!
   workStartTime: String
   workEndTime: String
   links: [Link]
+  reasons: [Reason]
 }
 
 type EmailResult {

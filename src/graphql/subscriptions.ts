@@ -66,6 +66,11 @@ export const onCreateAppConfig = /* GraphQL */ `subscription OnCreateAppConfig($
       icon
       __typename
     }
+    reasons {
+      reason
+      enabled
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -88,6 +93,11 @@ export const onUpdateAppConfig = /* GraphQL */ `subscription OnUpdateAppConfig($
       icon
       __typename
     }
+    reasons {
+      reason
+      enabled
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -108,6 +118,11 @@ export const onDeleteAppConfig = /* GraphQL */ `subscription OnDeleteAppConfig($
       url
       enabled
       icon
+      __typename
+    }
+    reasons {
+      reason
+      enabled
       __typename
     }
     createdAt

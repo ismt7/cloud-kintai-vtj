@@ -79,6 +79,7 @@ export type CreateAppConfigInput = {
   workStartTime?: string | null,
   workEndTime?: string | null,
   links?: Array< LinkInput | null > | null,
+  reasons?: Array< ReasonInput | null > | null,
 };
 
 export type LinkInput = {
@@ -86,6 +87,11 @@ export type LinkInput = {
   url: string,
   enabled: boolean,
   icon?: string | null,
+};
+
+export type ReasonInput = {
+  reason: string,
+  enabled: boolean,
 };
 
 export type ModelAppConfigConditionInput = {
@@ -106,6 +112,7 @@ export type AppConfig = {
   workStartTime?: string | null,
   workEndTime?: string | null,
   links?:  Array<Link | null > | null,
+  reasons?:  Array<Reason | null > | null,
   createdAt: string,
   updatedAt: string,
 };
@@ -118,12 +125,19 @@ export type Link = {
   icon?: string | null,
 };
 
+export type Reason = {
+  __typename: "Reason",
+  reason: string,
+  enabled: boolean,
+};
+
 export type UpdateAppConfigInput = {
   id: string,
   name?: string | null,
   workStartTime?: string | null,
   workEndTime?: string | null,
   links?: Array< LinkInput | null > | null,
+  reasons?: Array< ReasonInput | null > | null,
 };
 
 export type DeleteAppConfigInput = {
@@ -946,6 +960,11 @@ export type CreateAppConfigMutation = {
       enabled: boolean,
       icon?: string | null,
     } | null > | null,
+    reasons?:  Array< {
+      __typename: "Reason",
+      reason: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -970,6 +989,11 @@ export type UpdateAppConfigMutation = {
       enabled: boolean,
       icon?: string | null,
     } | null > | null,
+    reasons?:  Array< {
+      __typename: "Reason",
+      reason: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -993,6 +1017,11 @@ export type DeleteAppConfigMutation = {
       url: string,
       enabled: boolean,
       icon?: string | null,
+    } | null > | null,
+    reasons?:  Array< {
+      __typename: "Reason",
+      reason: string,
+      enabled: boolean,
     } | null > | null,
     createdAt: string,
     updatedAt: string,
@@ -1573,6 +1602,11 @@ export type GetAppConfigQuery = {
       enabled: boolean,
       icon?: string | null,
     } | null > | null,
+    reasons?:  Array< {
+      __typename: "Reason",
+      reason: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1599,6 +1633,11 @@ export type ListAppConfigsQuery = {
         url: string,
         enabled: boolean,
         icon?: string | null,
+      } | null > | null,
+      reasons?:  Array< {
+        __typename: "Reason",
+        reason: string,
+        enabled: boolean,
       } | null > | null,
       createdAt: string,
       updatedAt: string,
@@ -2031,6 +2070,11 @@ export type OnCreateAppConfigSubscription = {
       enabled: boolean,
       icon?: string | null,
     } | null > | null,
+    reasons?:  Array< {
+      __typename: "Reason",
+      reason: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -2054,6 +2098,11 @@ export type OnUpdateAppConfigSubscription = {
       enabled: boolean,
       icon?: string | null,
     } | null > | null,
+    reasons?:  Array< {
+      __typename: "Reason",
+      reason: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -2076,6 +2125,11 @@ export type OnDeleteAppConfigSubscription = {
       url: string,
       enabled: boolean,
       icon?: string | null,
+    } | null > | null,
+    reasons?:  Array< {
+      __typename: "Reason",
+      reason: string,
+      enabled: boolean,
     } | null > | null,
     createdAt: string,
     updatedAt: string,

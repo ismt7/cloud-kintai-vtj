@@ -1,10 +1,11 @@
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { Box, Chip, Stack, styled, TextField, Typography } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UseFormRegister, UseFormSetValue } from "react-hook-form";
 
 import { AttendanceEditContext } from "../AttendanceEditProvider";
 import { AttendanceEditInputs } from "../common";
+import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 
 const Label = styled(Typography)(() => ({
   width: "150px",
@@ -18,7 +19,21 @@ export default function StaffCommentInput({
   register: UseFormRegister<AttendanceEditInputs>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
 }) {
+  const { fetchConfig, getReasons, loading } = useAppConfig();
   const { changeRequests } = useContext(AttendanceEditContext);
+  const [reasons, setReasons] = useState<
+    { reason: string; enabled: boolean }[]
+  >([]);
+
+  useEffect(() => {
+    fetchConfig();
+  }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      setReasons(getReasons().filter((reason) => reason.enabled));
+    }
+  }, [loading]);
 
   return (
     <Stack direction="row" alignItems={"center"}>
@@ -40,16 +55,19 @@ export default function StaffCommentInput({
             alignItems={"center"}
           >
             <Typography variant="body1">クイック入力：</Typography>
-            <Chip
-              label="打刻忘れ"
-              variant="outlined"
-              color="primary"
-              icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
-              disabled={changeRequests.length > 0}
-              onClick={() =>
-                setValue("staffComment", "打刻忘れ", { shouldDirty: true })
-              }
-            />
+            {reasons.map((reason, index) => (
+              <Chip
+                key={index}
+                label={reason.reason}
+                variant="outlined"
+                color="primary"
+                icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
+                disabled={changeRequests.length > 0}
+                onClick={() =>
+                  setValue("staffComment", reason.reason, { shouldDirty: true })
+                }
+              />
+            ))}
           </Stack>
         </Box>
       </Box>

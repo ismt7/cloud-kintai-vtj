@@ -81,6 +81,18 @@ export default function useAppConfig() {
     return [];
   };
 
+  const getReasons = () => {
+    if (config && config.reasons) {
+      return config.reasons
+        .filter((reason) => reason !== null)
+        .map((reason) => ({
+          reason: reason?.reason || "",
+          enabled: reason?.enabled || false,
+        }));
+    }
+    return [];
+  };
+
   return {
     config,
     loading,
@@ -90,5 +102,6 @@ export default function useAppConfig() {
     getEndTime,
     getConfigId,
     getLinks,
+    getReasons,
   };
 }

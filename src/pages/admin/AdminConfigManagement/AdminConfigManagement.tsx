@@ -34,6 +34,7 @@ export default function AdminConfigManagement() {
     saveConfig,
     getConfigId,
     getLinks,
+    getReasons,
     loading,
   } = useAppConfig();
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
@@ -41,6 +42,9 @@ export default function AdminConfigManagement() {
   const [id, setId] = useState<string | null>(null);
   const [links, setLinks] = useState<
     { label: string; url: string; enabled: boolean; icon: string }[]
+  >([]);
+  const [reasons, setReasons] = useState<
+    { reason: string; enabled: boolean }[]
   >([]);
   const dispatch = useAppDispatchV2();
 
@@ -53,6 +57,7 @@ export default function AdminConfigManagement() {
     setEndTime(getEndTime());
     setId(getConfigId());
     setLinks(getLinks());
+    setReasons(getReasons());
   }, [loading]);
 
   const handleAddLink = () => {
@@ -75,6 +80,26 @@ export default function AdminConfigManagement() {
     setLinks(updatedLinks);
   };
 
+  const handleAddReason = () => {
+    setReasons([...reasons, { reason: "", enabled: true }]);
+  };
+
+  const handleReasonChange = (
+    index: number,
+    field: "reason" | "enabled",
+    value: string | boolean
+  ) => {
+    const updatedReasons = [...reasons];
+    updatedReasons[index][field as keyof (typeof updatedReasons)[number]] =
+      value as never;
+    setReasons(updatedReasons);
+  };
+
+  const handleRemoveReason = (index: number) => {
+    const updatedReasons = reasons.filter((_, i) => i !== index);
+    setReasons(updatedReasons);
+  };
+
   const handleSave = async () => {
     if (startTime && endTime) {
       try {
@@ -89,6 +114,10 @@ export default function AdminConfigManagement() {
               enabled: link.enabled,
               icon: link.icon,
             })),
+            reasons: reasons.map((reason) => ({
+              reason: reason.reason,
+              enabled: reason.enabled,
+            })),
           });
           dispatch(setSnackbarSuccess(S14002));
         } else {
@@ -101,6 +130,10 @@ export default function AdminConfigManagement() {
               url: link.url,
               enabled: link.enabled,
               icon: link.icon,
+            })),
+            reasons: reasons.map((reason) => ({
+              reason: reason.reason,
+              enabled: reason.enabled,
             })),
           });
           dispatch(setSnackbarSuccess(S14001));
@@ -226,6 +259,50 @@ export default function AdminConfigManagement() {
             sx={{ alignSelf: "flex-start" }}
           >
             リンクを追加
+          </Button>
+        </Stack>
+        <Typography variant="h6">修正理由</Typography>
+        <Typography variant="body2" color="textSecondary">
+          修正理由のテキスト一覧を管理してください。
+        </Typography>
+        <Stack spacing={2}>
+          {reasons.map((reason, index) => (
+            <Stack direction="row" spacing={2} alignItems="center" key={index}>
+              <TextField
+                label={`理由 ${index + 1}`}
+                value={reason.reason}
+                onChange={(e) =>
+                  handleReasonChange(index, "reason", e.target.value)
+                }
+                size="small"
+                sx={{ flex: 1 }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={reason.enabled}
+                    onChange={(e) =>
+                      handleReasonChange(index, "enabled", e.target.checked)
+                    }
+                  />
+                }
+                label="有効"
+              />
+              <IconButton
+                onClick={() => handleRemoveReason(index)}
+                color="error"
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Stack>
+          ))}
+          <Button
+            variant="text"
+            size="small"
+            onClick={handleAddReason}
+            sx={{ alignSelf: "flex-start" }}
+          >
+            理由を追加
           </Button>
         </Stack>
         <Button variant="contained" color="primary" onClick={handleSave}>
