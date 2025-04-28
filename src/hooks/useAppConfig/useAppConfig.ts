@@ -6,14 +6,25 @@ import { AppConfig, CreateAppConfigInput, UpdateAppConfigInput } from "@/API";
 // 特定の項目だけを選択して型定義
 export type DefaultAppConfig = Pick<
   AppConfig,
-  "name" | "workStartTime" | "workEndTime" | "links"
+  | "name"
+  | "workStartTime"
+  | "workEndTime"
+  | "links"
+  | "officeMode"
+  | "reasons"
+  | "quickInputStartTimes"
+  | "quickInputEndTimes"
 >;
 
 const DEFAULT_CONFIG: DefaultAppConfig = {
   name: "default",
   workStartTime: "09:00",
   workEndTime: "18:00",
+  officeMode: false,
   links: [],
+  reasons: [],
+  quickInputStartTimes: [],
+  quickInputEndTimes: [],
 };
 
 export default function useAppConfig() {
@@ -95,6 +106,30 @@ export default function useAppConfig() {
 
   const getOfficeMode = () => config?.officeMode || false;
 
+  const getQuickInputStartTimes = (onlyEnabled = false) => {
+    if (config && config.quickInputStartTimes) {
+      return config.quickInputStartTimes
+        .filter((time) => time !== null && (!onlyEnabled || time?.enabled))
+        .map((time) => ({
+          time: time?.time || "",
+          enabled: time?.enabled || false,
+        }));
+    }
+    return [];
+  };
+
+  const getQuickInputEndTimes = (onlyEnabled = false) => {
+    if (config && config.quickInputEndTimes) {
+      return config.quickInputEndTimes
+        .filter((time) => time !== null && (!onlyEnabled || time?.enabled))
+        .map((time) => ({
+          time: time?.time || "",
+          enabled: time?.enabled || false,
+        }));
+    }
+    return [];
+  };
+
   return {
     config,
     loading,
@@ -106,5 +141,7 @@ export default function useAppConfig() {
     getLinks,
     getReasons,
     getOfficeMode,
+    getQuickInputStartTimes,
+    getQuickInputEndTimes,
   };
 }

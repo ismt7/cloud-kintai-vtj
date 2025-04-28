@@ -2,14 +2,34 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import { Box, Chip, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
 
-import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
+import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 
 export default function StartTimeInput() {
   const { workDate, control, setValue } = useContext(AttendanceEditContext);
+  const { fetchConfig, getQuickInputStartTimes, loading } = useAppConfig();
+  const [quickInputStartTimes, setQuickInputStartTimes] = useState<
+    { time: string; enabled: boolean }[]
+  >([]);
+
+  useEffect(() => {
+    fetchConfig();
+  }, [fetchConfig]);
+
+  useEffect(() => {
+    if (!loading) {
+      const quickInputStartTimes = getQuickInputStartTimes(true);
+      setQuickInputStartTimes(
+        quickInputStartTimes.map((entry) => ({
+          time: entry.time,
+          enabled: entry.enabled,
+        }))
+      );
+    }
+  }, [loading]);
 
   if (!workDate || !control || !setValue) {
     return null;
@@ -48,19 +68,23 @@ export default function StartTimeInput() {
         )}
       />
       <Box>
-        <Chip
-          label="09:00"
-          color="success"
-          variant="outlined"
-          icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
-          onClick={() => {
-            const startTime = new AttendanceDateTime()
-              .setDate(workDate)
-              .setWorkStart()
-              .toISOString();
-            setValue("startTime", startTime);
-          }}
-        />
+        <Stack direction="row" spacing={1}>
+          {quickInputStartTimes.map((entry, index) => (
+            <Chip
+              key={index}
+              label={entry.time}
+              color="success"
+              variant="outlined"
+              icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
+              onClick={() => {
+                const startTime = dayjs(
+                  `${workDate.format("YYYY-MM-DD")} ${entry.time}`
+                ).toISOString();
+                setValue("startTime", startTime);
+              }}
+            />
+          ))}
+        </Stack>
       </Box>
     </Stack>
   );

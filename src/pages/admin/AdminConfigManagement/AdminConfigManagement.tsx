@@ -17,7 +17,7 @@ import { useState, useEffect } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 import { renderTimeViewClock } from "@mui/x-date-pickers";
 import { useAppDispatchV2 } from "@/app/hooks";
@@ -37,10 +37,18 @@ export default function AdminConfigManagement() {
     getLinks,
     getReasons,
     getOfficeMode,
+    getQuickInputStartTimes,
+    getQuickInputEndTimes,
     loading,
   } = useAppConfig();
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
+  const [quickInputStartTimes, setQuickInputStartTimes] = useState<
+    { time: Dayjs; enabled: boolean }[]
+  >([]);
+  const [quickInputEndTimes, setQuickInputEndTimes] = useState<
+    { time: Dayjs; enabled: boolean }[]
+  >([]);
   const [id, setId] = useState<string | null>(null);
   const [links, setLinks] = useState<
     { label: string; url: string; enabled: boolean; icon: string }[]
@@ -62,6 +70,19 @@ export default function AdminConfigManagement() {
     setLinks(getLinks());
     setReasons(getReasons());
     setOfficeMode(getOfficeMode());
+    const quickInputStartTimes = getQuickInputStartTimes();
+    setQuickInputStartTimes(
+      quickInputStartTimes.map((entry) => ({
+        time: dayjs(entry.time, "HH:mm"),
+        enabled: entry.enabled,
+      }))
+    );
+    setQuickInputEndTimes(
+      getQuickInputEndTimes().map((entry) => ({
+        time: dayjs(entry.time, "HH:mm"),
+        enabled: entry.enabled,
+      }))
+    );
   }, [loading]);
 
   const handleAddLink = () => {
@@ -110,6 +131,66 @@ export default function AdminConfigManagement() {
     setOfficeMode(event.target.checked);
   };
 
+  const handleAddQuickInputStartTime = () => {
+    setQuickInputStartTimes([
+      ...quickInputStartTimes,
+      { time: dayjs(), enabled: true },
+    ]);
+  };
+
+  const handleQuickInputStartTimeChange = (
+    index: number,
+    newValue: Dayjs | null
+  ) => {
+    const updatedStartTimes = [...quickInputStartTimes];
+    if (newValue) {
+      updatedStartTimes[index].time = newValue;
+    }
+    setQuickInputStartTimes(updatedStartTimes);
+  };
+
+  const handleQuickInputStartTimeToggle = (index: number) => {
+    const updatedStartTimes = [...quickInputStartTimes];
+    updatedStartTimes[index].enabled = !updatedStartTimes[index].enabled;
+    setQuickInputStartTimes(updatedStartTimes);
+  };
+
+  const handleRemoveQuickInputStartTime = (index: number) => {
+    const updatedStartTimes = quickInputStartTimes.filter(
+      (_, i) => i !== index
+    );
+    setQuickInputStartTimes(updatedStartTimes);
+  };
+
+  const handleAddQuickInputEndTime = () => {
+    setQuickInputEndTimes([
+      ...quickInputEndTimes,
+      { time: dayjs(), enabled: true },
+    ]);
+  };
+
+  const handleQuickInputEndTimeChange = (
+    index: number,
+    newValue: Dayjs | null
+  ) => {
+    const updatedEndTimes = [...quickInputEndTimes];
+    if (newValue) {
+      updatedEndTimes[index].time = newValue;
+    }
+    setQuickInputEndTimes(updatedEndTimes);
+  };
+
+  const handleQuickInputEndTimeToggle = (index: number) => {
+    const updatedEndTimes = [...quickInputEndTimes];
+    updatedEndTimes[index].enabled = !updatedEndTimes[index].enabled;
+    setQuickInputEndTimes(updatedEndTimes);
+  };
+
+  const handleRemoveQuickInputEndTime = (index: number) => {
+    const updatedEndTimes = quickInputEndTimes.filter((_, i) => i !== index);
+    setQuickInputEndTimes(updatedEndTimes);
+  };
+
   const handleSave = async () => {
     if (startTime && endTime) {
       try {
@@ -129,6 +210,14 @@ export default function AdminConfigManagement() {
               enabled: reason.enabled,
             })),
             officeMode,
+            quickInputStartTimes: quickInputStartTimes.map((entry) => ({
+              time: entry.time.format("HH:mm"),
+              enabled: entry.enabled,
+            })),
+            quickInputEndTimes: quickInputEndTimes.map((entry) => ({
+              time: entry.time.format("HH:mm"),
+              enabled: entry.enabled,
+            })),
           });
           dispatch(setSnackbarSuccess(S14002));
         } else {
@@ -330,6 +419,112 @@ export default function AdminConfigManagement() {
           >
             理由を追加
           </Button>
+        </Stack>
+        <Typography variant="h6">簡単時間入力</Typography>
+        <Typography variant="body2" color="textSecondary">
+          勤怠編集画面でボタンを押すと時刻が簡単に入力されます。
+          <br />
+          この機能は、勤務開始時刻と勤務終了時刻のみを設定できます。
+        </Typography>
+        <Stack direction="row" spacing={4}>
+          <Stack spacing={2} sx={{ flex: 1 }}>
+            <Typography variant="subtitle1">出勤時間</Typography>
+            {quickInputStartTimes.map((entry, index) => (
+              <Stack
+                direction="row"
+                spacing={2}
+                alignItems="center"
+                key={index}
+              >
+                <TimePicker
+                  label={`出勤時間 ${index + 1}`}
+                  ampm={false}
+                  value={entry.time}
+                  views={["hours", "minutes"]}
+                  format="HH:mm"
+                  slotProps={{
+                    textField: { size: "small" },
+                  }}
+                  sx={{ flex: 1 }}
+                  onChange={(newValue) =>
+                    handleQuickInputStartTimeChange(index, newValue)
+                  }
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={entry.enabled}
+                      onChange={() => handleQuickInputStartTimeToggle(index)}
+                    />
+                  }
+                  label="有効"
+                />
+                <IconButton
+                  onClick={() => handleRemoveQuickInputStartTime(index)}
+                  color="error"
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Stack>
+            ))}
+            <Button
+              variant="text"
+              size="small"
+              onClick={handleAddQuickInputStartTime}
+              sx={{ alignSelf: "flex-start" }}
+            >
+              出勤時間を追加
+            </Button>
+          </Stack>
+          <Stack spacing={2} sx={{ flex: 1 }}>
+            <Typography variant="subtitle1">退勤時間</Typography>
+            {quickInputEndTimes.map((entry, index) => (
+              <Stack
+                direction="row"
+                spacing={2}
+                alignItems="center"
+                key={index}
+              >
+                <TimePicker
+                  label={`退勤時間 ${index + 1}`}
+                  ampm={false}
+                  value={entry.time}
+                  views={["hours", "minutes"]}
+                  format="HH:mm"
+                  slotProps={{
+                    textField: { size: "small" },
+                  }}
+                  sx={{ flex: 1 }}
+                  onChange={(newValue) =>
+                    handleQuickInputEndTimeChange(index, newValue)
+                  }
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={entry.enabled}
+                      onChange={() => handleQuickInputEndTimeToggle(index)}
+                    />
+                  }
+                  label="有効"
+                />
+                <IconButton
+                  onClick={() => handleRemoveQuickInputEndTime(index)}
+                  color="error"
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Stack>
+            ))}
+            <Button
+              variant="text"
+              size="small"
+              onClick={handleAddQuickInputEndTime}
+              sx={{ alignSelf: "flex-start" }}
+            >
+              退勤時間を追加
+            </Button>
+          </Stack>
         </Stack>
         <Button variant="contained" color="primary" onClick={handleSave}>
           保存
