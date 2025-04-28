@@ -69,6 +69,16 @@ export const getAppConfig = /* GraphQL */ `query GetAppConfig($id: ID!) {
       enabled
       __typename
     }
+    quickInputStartTimes {
+      time
+      enabled
+      __typename
+    }
+    quickInputEndTimes {
+      time
+      enabled
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -99,6 +109,16 @@ export const listAppConfigs = /* GraphQL */ `query ListAppConfigs(
       }
       reasons {
         reason
+        enabled
+        __typename
+      }
+      quickInputStartTimes {
+        time
+        enabled
+        __typename
+      }
+      quickInputEndTimes {
+        time
         enabled
         __typename
       }

@@ -81,6 +81,8 @@ export type CreateAppConfigInput = {
   officeMode?: boolean | null,
   links?: Array< LinkInput | null > | null,
   reasons?: Array< ReasonInput | null > | null,
+  quickInputStartTimes?: Array< QuickInputTimeInput | null > | null,
+  quickInputEndTimes?: Array< QuickInputTimeInput | null > | null,
 };
 
 export type LinkInput = {
@@ -92,6 +94,11 @@ export type LinkInput = {
 
 export type ReasonInput = {
   reason: string,
+  enabled: boolean,
+};
+
+export type QuickInputTimeInput = {
+  time: string,
   enabled: boolean,
 };
 
@@ -123,6 +130,8 @@ export type AppConfig = {
   officeMode?: boolean | null,
   links?:  Array<Link | null > | null,
   reasons?:  Array<Reason | null > | null,
+  quickInputStartTimes?:  Array<QuickInputTime | null > | null,
+  quickInputEndTimes?:  Array<QuickInputTime | null > | null,
   createdAt: string,
   updatedAt: string,
 };
@@ -141,6 +150,12 @@ export type Reason = {
   enabled: boolean,
 };
 
+export type QuickInputTime = {
+  __typename: "QuickInputTime",
+  time: string,
+  enabled: boolean,
+};
+
 export type UpdateAppConfigInput = {
   id: string,
   name?: string | null,
@@ -149,6 +164,8 @@ export type UpdateAppConfigInput = {
   officeMode?: boolean | null,
   links?: Array< LinkInput | null > | null,
   reasons?: Array< ReasonInput | null > | null,
+  quickInputStartTimes?: Array< QuickInputTimeInput | null > | null,
+  quickInputEndTimes?: Array< QuickInputTimeInput | null > | null,
 };
 
 export type DeleteAppConfigInput = {
@@ -972,6 +989,16 @@ export type CreateAppConfigMutation = {
       reason: string,
       enabled: boolean,
     } | null > | null,
+    quickInputStartTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputEndTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1002,6 +1029,16 @@ export type UpdateAppConfigMutation = {
       reason: string,
       enabled: boolean,
     } | null > | null,
+    quickInputStartTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputEndTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1030,6 +1067,16 @@ export type DeleteAppConfigMutation = {
     reasons?:  Array< {
       __typename: "Reason",
       reason: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputStartTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputEndTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
       enabled: boolean,
     } | null > | null,
     createdAt: string,
@@ -1617,6 +1664,16 @@ export type GetAppConfigQuery = {
       reason: string,
       enabled: boolean,
     } | null > | null,
+    quickInputStartTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputEndTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1648,6 +1705,16 @@ export type ListAppConfigsQuery = {
       reasons?:  Array< {
         __typename: "Reason",
         reason: string,
+        enabled: boolean,
+      } | null > | null,
+      quickInputStartTimes?:  Array< {
+        __typename: "QuickInputTime",
+        time: string,
+        enabled: boolean,
+      } | null > | null,
+      quickInputEndTimes?:  Array< {
+        __typename: "QuickInputTime",
+        time: string,
         enabled: boolean,
       } | null > | null,
       createdAt: string,
@@ -2087,6 +2154,16 @@ export type OnCreateAppConfigSubscription = {
       reason: string,
       enabled: boolean,
     } | null > | null,
+    quickInputStartTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputEndTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -2116,6 +2193,16 @@ export type OnUpdateAppConfigSubscription = {
       reason: string,
       enabled: boolean,
     } | null > | null,
+    quickInputStartTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputEndTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -2143,6 +2230,16 @@ export type OnDeleteAppConfigSubscription = {
     reasons?:  Array< {
       __typename: "Reason",
       reason: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputStartTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputEndTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
       enabled: boolean,
     } | null > | null,
     createdAt: string,

@@ -72,6 +72,16 @@ export const onCreateAppConfig = /* GraphQL */ `subscription OnCreateAppConfig($
       enabled
       __typename
     }
+    quickInputStartTimes {
+      time
+      enabled
+      __typename
+    }
+    quickInputEndTimes {
+      time
+      enabled
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -100,6 +110,16 @@ export const onUpdateAppConfig = /* GraphQL */ `subscription OnUpdateAppConfig($
       enabled
       __typename
     }
+    quickInputStartTimes {
+      time
+      enabled
+      __typename
+    }
+    quickInputEndTimes {
+      time
+      enabled
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -125,6 +145,16 @@ export const onDeleteAppConfig = /* GraphQL */ `subscription OnDeleteAppConfig($
     }
     reasons {
       reason
+      enabled
+      __typename
+    }
+    quickInputStartTimes {
+      time
+      enabled
+      __typename
+    }
+    quickInputEndTimes {
+      time
       enabled
       __typename
     }

@@ -127,6 +127,11 @@ type Reason {
   enabled: Boolean!
 }
 
+type QuickInputTime {
+  time: String!
+  enabled: Boolean!
+}
+
 type AppConfig @model {
   id: ID!
   name: String!
@@ -135,6 +140,8 @@ type AppConfig @model {
   officeMode: Boolean
   links: [Link]
   reasons: [Reason]
+  quickInputStartTimes: [QuickInputTime]
+  quickInputEndTimes: [QuickInputTime]
 }
 
 type EmailResult {

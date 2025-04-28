@@ -78,6 +78,16 @@ export const createAppConfig = /* GraphQL */ `mutation CreateAppConfig(
       enabled
       __typename
     }
+    quickInputStartTimes {
+      time
+      enabled
+      __typename
+    }
+    quickInputEndTimes {
+      time
+      enabled
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -109,6 +119,16 @@ export const updateAppConfig = /* GraphQL */ `mutation UpdateAppConfig(
       enabled
       __typename
     }
+    quickInputStartTimes {
+      time
+      enabled
+      __typename
+    }
+    quickInputEndTimes {
+      time
+      enabled
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -137,6 +157,16 @@ export const deleteAppConfig = /* GraphQL */ `mutation DeleteAppConfig(
     }
     reasons {
       reason
+      enabled
+      __typename
+    }
+    quickInputStartTimes {
+      time
+      enabled
+      __typename
+    }
+    quickInputEndTimes {
+      time
       enabled
       __typename
     }
