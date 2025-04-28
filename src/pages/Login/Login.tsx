@@ -6,7 +6,7 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { AuthContext } from "../../Layout";
+import { AuthContext } from "../../context/AuthContext";
 import logo from "./logo_large.png";
 
 export default function Login() {

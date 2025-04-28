@@ -1,8 +1,8 @@
 import { Box, Stack } from "@mui/material";
 import { useContext } from "react";
 
-import { AuthContext } from "../../Layout";
-import { SignInButton,SignOutButton } from "./Header";
+import { AuthContext } from "@/context/AuthContext";
+import { SignInButton, SignOutButton } from "./Header";
 import StaffIcon from "./StaffIcon";
 
 export function SignInOutButton({ pathName }: { pathName: string }) {

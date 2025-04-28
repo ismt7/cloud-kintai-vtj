@@ -16,6 +16,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { AttendanceDate } from "@/lib/AttendanceDate";
+import Title from "@/components/common/Title";
 
 import { CloseDate } from "../../../API";
 import { useAppDispatchV2 } from "../../../app/hooks";
@@ -27,17 +28,6 @@ import {
 } from "../../../lib/reducers/snackbarReducer";
 import { defaultValues, Inputs } from "./common";
 import EditJobTermInputDialog from "./EditJobTermInputDialog";
-
-function Title() {
-  return (
-    <Typography
-      variant="h4"
-      sx={{ pl: 1, borderBottom: "solid 5px #0FA85E", color: "#0FA85E" }}
-    >
-      集計対象月
-    </Typography>
-  );
-}
 
 export default function JobTerm() {
   const dispatch = useAppDispatchV2();
@@ -97,8 +87,12 @@ export default function JobTerm() {
   return (
     <>
       <Stack spacing={2}>
-        <Title />
-        <Typography>月ごとに勤怠を締める日付を指定します。</Typography>
+        <Title text="集計対象月" />
+        <Typography>
+          月ごとに勤怠を締める日付を指定します。
+          <br />
+          こちらで集計対象月を作成するとファイル出力時に選択して簡単に日付入力ができるようになります。
+        </Typography>
         <Box>
           <Stack spacing={2}>
             <Box>

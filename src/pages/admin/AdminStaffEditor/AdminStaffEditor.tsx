@@ -36,7 +36,7 @@ import removeUserFromGroup from "../../../hooks/common/removeUserFromGroup";
 import updateCognitoUser from "../../../hooks/common/updateCognitoUser";
 import { Staff } from "../../../hooks/useStaffs/common";
 import useStaffs, { StaffRole } from "../../../hooks/useStaffs/useStaffs";
-import { AuthContext } from "../../../Layout";
+import { AuthContext } from "@/context/AuthContext";
 import {
   setSnackbarError,
   setSnackbarSuccess,

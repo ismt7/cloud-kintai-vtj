@@ -1,11 +1,13 @@
 import { Button, Container, Stack, styled } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import DesktopMenu from "./DesktopMenu";
 import { ExternalLinks } from "./ExternalLinks/ExternalLinks";
 import Logo from "./Logo";
 import MobileMenu from "./MobileMenu";
 import { SignInOutButton } from "./SignInOutButton";
+import { AuthContext } from "../../context/AuthContext";
+import { StaffRole } from "@/hooks/useStaffs/useStaffs";
 
 export const SignOutButton = styled(Button)(({ theme }) => ({
   color: theme.palette.logout.contrastText,
@@ -33,6 +35,7 @@ export const SignInButton = styled(Button)(({ theme }) => ({
 }));
 
 export default function Header() {
+  const { isCognitoUserRole } = useContext(AuthContext);
   const [pathName, setPathName] = useState("/register");
 
   useEffect(() => {
@@ -60,7 +63,9 @@ export default function Header() {
         >
           <Logo />
           <DesktopMenu pathName={pathName} />
-          <ExternalLinks pathName={pathName} />
+          {!isCognitoUserRole(StaffRole.OPERATOR) && (
+            <ExternalLinks pathName={pathName} />
+          )}
           <MobileMenu pathName={pathName} />
           <SignInOutButton pathName={pathName} />
         </Stack>

@@ -79,6 +79,8 @@ export default function useCognitoUser() {
               return StaffRole.STAFF_ADMIN;
             case "Staff":
               return StaffRole.STAFF;
+            case "Operator":
+              return StaffRole.OPERATOR;
             default:
               return StaffRole.GUEST;
           }

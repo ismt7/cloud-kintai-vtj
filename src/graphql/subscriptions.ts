@@ -53,6 +53,120 @@ export const onDeleteCheckForUpdate = /* GraphQL */ `subscription OnDeleteCheckF
   APITypes.OnDeleteCheckForUpdateSubscriptionVariables,
   APITypes.OnDeleteCheckForUpdateSubscription
 >;
+export const onCreateAppConfig = /* GraphQL */ `subscription OnCreateAppConfig($filter: ModelSubscriptionAppConfigFilterInput) {
+  onCreateAppConfig(filter: $filter) {
+    id
+    name
+    workStartTime
+    workEndTime
+    officeMode
+    links {
+      label
+      url
+      enabled
+      icon
+      __typename
+    }
+    reasons {
+      reason
+      enabled
+      __typename
+    }
+    quickInputStartTimes {
+      time
+      enabled
+      __typename
+    }
+    quickInputEndTimes {
+      time
+      enabled
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateAppConfigSubscriptionVariables,
+  APITypes.OnCreateAppConfigSubscription
+>;
+export const onUpdateAppConfig = /* GraphQL */ `subscription OnUpdateAppConfig($filter: ModelSubscriptionAppConfigFilterInput) {
+  onUpdateAppConfig(filter: $filter) {
+    id
+    name
+    workStartTime
+    workEndTime
+    officeMode
+    links {
+      label
+      url
+      enabled
+      icon
+      __typename
+    }
+    reasons {
+      reason
+      enabled
+      __typename
+    }
+    quickInputStartTimes {
+      time
+      enabled
+      __typename
+    }
+    quickInputEndTimes {
+      time
+      enabled
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateAppConfigSubscriptionVariables,
+  APITypes.OnUpdateAppConfigSubscription
+>;
+export const onDeleteAppConfig = /* GraphQL */ `subscription OnDeleteAppConfig($filter: ModelSubscriptionAppConfigFilterInput) {
+  onDeleteAppConfig(filter: $filter) {
+    id
+    name
+    workStartTime
+    workEndTime
+    officeMode
+    links {
+      label
+      url
+      enabled
+      icon
+      __typename
+    }
+    reasons {
+      reason
+      enabled
+      __typename
+    }
+    quickInputStartTimes {
+      time
+      enabled
+      __typename
+    }
+    quickInputEndTimes {
+      time
+      enabled
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteAppConfigSubscriptionVariables,
+  APITypes.OnDeleteAppConfigSubscription
+>;
 export const onCreateStaff = /* GraphQL */ `subscription OnCreateStaff($filter: ModelSubscriptionStaffFilterInput) {
   onCreateStaff(filter: $filter) {
     id

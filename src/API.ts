@@ -73,6 +73,105 @@ export type DeleteCheckForUpdateInput = {
   id: string,
 };
 
+export type CreateAppConfigInput = {
+  id?: string | null,
+  name: string,
+  workStartTime?: string | null,
+  workEndTime?: string | null,
+  officeMode?: boolean | null,
+  links?: Array< LinkInput | null > | null,
+  reasons?: Array< ReasonInput | null > | null,
+  quickInputStartTimes?: Array< QuickInputTimeInput | null > | null,
+  quickInputEndTimes?: Array< QuickInputTimeInput | null > | null,
+};
+
+export type LinkInput = {
+  label: string,
+  url: string,
+  enabled: boolean,
+  icon?: string | null,
+};
+
+export type ReasonInput = {
+  reason: string,
+  enabled: boolean,
+};
+
+export type QuickInputTimeInput = {
+  time: string,
+  enabled: boolean,
+};
+
+export type ModelAppConfigConditionInput = {
+  name?: ModelStringInput | null,
+  workStartTime?: ModelStringInput | null,
+  workEndTime?: ModelStringInput | null,
+  officeMode?: ModelBooleanInput | null,
+  and?: Array< ModelAppConfigConditionInput | null > | null,
+  or?: Array< ModelAppConfigConditionInput | null > | null,
+  not?: ModelAppConfigConditionInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type AppConfig = {
+  __typename: "AppConfig",
+  id: string,
+  name: string,
+  workStartTime?: string | null,
+  workEndTime?: string | null,
+  officeMode?: boolean | null,
+  links?:  Array<Link | null > | null,
+  reasons?:  Array<Reason | null > | null,
+  quickInputStartTimes?:  Array<QuickInputTime | null > | null,
+  quickInputEndTimes?:  Array<QuickInputTime | null > | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type Link = {
+  __typename: "Link",
+  label: string,
+  url: string,
+  enabled: boolean,
+  icon?: string | null,
+};
+
+export type Reason = {
+  __typename: "Reason",
+  reason: string,
+  enabled: boolean,
+};
+
+export type QuickInputTime = {
+  __typename: "QuickInputTime",
+  time: string,
+  enabled: boolean,
+};
+
+export type UpdateAppConfigInput = {
+  id: string,
+  name?: string | null,
+  workStartTime?: string | null,
+  workEndTime?: string | null,
+  officeMode?: boolean | null,
+  links?: Array< LinkInput | null > | null,
+  reasons?: Array< ReasonInput | null > | null,
+  quickInputStartTimes?: Array< QuickInputTimeInput | null > | null,
+  quickInputEndTimes?: Array< QuickInputTimeInput | null > | null,
+};
+
+export type DeleteAppConfigInput = {
+  id: string,
+};
+
 export type CreateStaffInput = {
   id?: string | null,
   cognitoUserId: string,
@@ -109,13 +208,6 @@ export type ModelStaffConditionInput = {
   not?: ModelStaffConditionInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
-};
-
-export type ModelBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
 };
 
 export type Staff = {
@@ -538,6 +630,25 @@ export type ModelCheckForUpdateConnection = {
   nextToken?: string | null,
 };
 
+export type ModelAppConfigFilterInput = {
+  id?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  workStartTime?: ModelStringInput | null,
+  workEndTime?: ModelStringInput | null,
+  officeMode?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelAppConfigFilterInput | null > | null,
+  or?: Array< ModelAppConfigFilterInput | null > | null,
+  not?: ModelAppConfigFilterInput | null,
+};
+
+export type ModelAppConfigConnection = {
+  __typename: "ModelAppConfigConnection",
+  items:  Array<AppConfig | null >,
+  nextToken?: string | null,
+};
+
 export type ModelStaffFilterInput = {
   id?: ModelIDInput | null,
   cognitoUserId?: ModelStringInput | null,
@@ -699,6 +810,23 @@ export type ModelSubscriptionStringInput = {
   notIn?: Array< string | null > | null,
 };
 
+export type ModelSubscriptionAppConfigFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  workStartTime?: ModelSubscriptionStringInput | null,
+  workEndTime?: ModelSubscriptionStringInput | null,
+  officeMode?: ModelSubscriptionBooleanInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionAppConfigFilterInput | null > | null,
+  or?: Array< ModelSubscriptionAppConfigFilterInput | null > | null,
+};
+
+export type ModelSubscriptionBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+};
+
 export type ModelSubscriptionStaffFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   cognitoUserId?: ModelSubscriptionStringInput | null,
@@ -715,11 +843,6 @@ export type ModelSubscriptionStaffFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionStaffFilterInput | null > | null,
   or?: Array< ModelSubscriptionStaffFilterInput | null > | null,
-};
-
-export type ModelSubscriptionBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
 };
 
 export type ModelSubscriptionHolidayCalendarFilterInput = {
@@ -836,6 +959,126 @@ export type DeleteCheckForUpdateMutation = {
     __typename: "CheckForUpdate",
     id: string,
     deployUuid: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type CreateAppConfigMutationVariables = {
+  input: CreateAppConfigInput,
+  condition?: ModelAppConfigConditionInput | null,
+};
+
+export type CreateAppConfigMutation = {
+  createAppConfig?:  {
+    __typename: "AppConfig",
+    id: string,
+    name: string,
+    workStartTime?: string | null,
+    workEndTime?: string | null,
+    officeMode?: boolean | null,
+    links?:  Array< {
+      __typename: "Link",
+      label: string,
+      url: string,
+      enabled: boolean,
+      icon?: string | null,
+    } | null > | null,
+    reasons?:  Array< {
+      __typename: "Reason",
+      reason: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputStartTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputEndTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateAppConfigMutationVariables = {
+  input: UpdateAppConfigInput,
+  condition?: ModelAppConfigConditionInput | null,
+};
+
+export type UpdateAppConfigMutation = {
+  updateAppConfig?:  {
+    __typename: "AppConfig",
+    id: string,
+    name: string,
+    workStartTime?: string | null,
+    workEndTime?: string | null,
+    officeMode?: boolean | null,
+    links?:  Array< {
+      __typename: "Link",
+      label: string,
+      url: string,
+      enabled: boolean,
+      icon?: string | null,
+    } | null > | null,
+    reasons?:  Array< {
+      __typename: "Reason",
+      reason: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputStartTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputEndTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteAppConfigMutationVariables = {
+  input: DeleteAppConfigInput,
+  condition?: ModelAppConfigConditionInput | null,
+};
+
+export type DeleteAppConfigMutation = {
+  deleteAppConfig?:  {
+    __typename: "AppConfig",
+    id: string,
+    name: string,
+    workStartTime?: string | null,
+    workEndTime?: string | null,
+    officeMode?: boolean | null,
+    links?:  Array< {
+      __typename: "Link",
+      label: string,
+      url: string,
+      enabled: boolean,
+      icon?: string | null,
+    } | null > | null,
+    reasons?:  Array< {
+      __typename: "Reason",
+      reason: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputStartTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputEndTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1397,6 +1640,90 @@ export type ListCheckForUpdatesQuery = {
   } | null,
 };
 
+export type GetAppConfigQueryVariables = {
+  id: string,
+};
+
+export type GetAppConfigQuery = {
+  getAppConfig?:  {
+    __typename: "AppConfig",
+    id: string,
+    name: string,
+    workStartTime?: string | null,
+    workEndTime?: string | null,
+    officeMode?: boolean | null,
+    links?:  Array< {
+      __typename: "Link",
+      label: string,
+      url: string,
+      enabled: boolean,
+      icon?: string | null,
+    } | null > | null,
+    reasons?:  Array< {
+      __typename: "Reason",
+      reason: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputStartTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputEndTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListAppConfigsQueryVariables = {
+  filter?: ModelAppConfigFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListAppConfigsQuery = {
+  listAppConfigs?:  {
+    __typename: "ModelAppConfigConnection",
+    items:  Array< {
+      __typename: "AppConfig",
+      id: string,
+      name: string,
+      workStartTime?: string | null,
+      workEndTime?: string | null,
+      officeMode?: boolean | null,
+      links?:  Array< {
+        __typename: "Link",
+        label: string,
+        url: string,
+        enabled: boolean,
+        icon?: string | null,
+      } | null > | null,
+      reasons?:  Array< {
+        __typename: "Reason",
+        reason: string,
+        enabled: boolean,
+      } | null > | null,
+      quickInputStartTimes?:  Array< {
+        __typename: "QuickInputTime",
+        time: string,
+        enabled: boolean,
+      } | null > | null,
+      quickInputEndTimes?:  Array< {
+        __typename: "QuickInputTime",
+        time: string,
+        enabled: boolean,
+      } | null > | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
 export type GetStaffQueryVariables = {
   id: string,
 };
@@ -1798,6 +2125,123 @@ export type OnDeleteCheckForUpdateSubscription = {
     __typename: "CheckForUpdate",
     id: string,
     deployUuid: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnCreateAppConfigSubscriptionVariables = {
+  filter?: ModelSubscriptionAppConfigFilterInput | null,
+};
+
+export type OnCreateAppConfigSubscription = {
+  onCreateAppConfig?:  {
+    __typename: "AppConfig",
+    id: string,
+    name: string,
+    workStartTime?: string | null,
+    workEndTime?: string | null,
+    officeMode?: boolean | null,
+    links?:  Array< {
+      __typename: "Link",
+      label: string,
+      url: string,
+      enabled: boolean,
+      icon?: string | null,
+    } | null > | null,
+    reasons?:  Array< {
+      __typename: "Reason",
+      reason: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputStartTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputEndTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateAppConfigSubscriptionVariables = {
+  filter?: ModelSubscriptionAppConfigFilterInput | null,
+};
+
+export type OnUpdateAppConfigSubscription = {
+  onUpdateAppConfig?:  {
+    __typename: "AppConfig",
+    id: string,
+    name: string,
+    workStartTime?: string | null,
+    workEndTime?: string | null,
+    officeMode?: boolean | null,
+    links?:  Array< {
+      __typename: "Link",
+      label: string,
+      url: string,
+      enabled: boolean,
+      icon?: string | null,
+    } | null > | null,
+    reasons?:  Array< {
+      __typename: "Reason",
+      reason: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputStartTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputEndTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteAppConfigSubscriptionVariables = {
+  filter?: ModelSubscriptionAppConfigFilterInput | null,
+};
+
+export type OnDeleteAppConfigSubscription = {
+  onDeleteAppConfig?:  {
+    __typename: "AppConfig",
+    id: string,
+    name: string,
+    workStartTime?: string | null,
+    workEndTime?: string | null,
+    officeMode?: boolean | null,
+    links?:  Array< {
+      __typename: "Link",
+      label: string,
+      url: string,
+      enabled: boolean,
+      icon?: string | null,
+    } | null > | null,
+    reasons?:  Array< {
+      __typename: "Reason",
+      reason: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputStartTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
+    quickInputEndTimes?:  Array< {
+      __typename: "QuickInputTime",
+      time: string,
+      enabled: boolean,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,

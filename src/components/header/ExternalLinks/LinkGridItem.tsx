@@ -1,26 +1,35 @@
-import BeachAccessIcon from "@mui/icons-material/BeachAccess";
-import LinkIcon from "@mui/icons-material/Link";
-import TrainIcon from "@mui/icons-material/Train";
 import { Grid, Link, Stack, Typography } from "@mui/material";
+import { predefinedIcons } from "@/constants/icons";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext";
 
 export function LinkGridItem({
   url,
   title,
   iconType,
+  staffName,
 }: {
   url: string;
   title: string;
   iconType: string;
+  staffName: string;
 }) {
-  const IconMap = new Map<string, JSX.Element>([
-    ["link", <LinkIcon key="link" fontSize="large" />],
-    ["train", <TrainIcon key="train" fontSize="large" />],
-    ["holiday", <BeachAccessIcon key="holiday" fontSize="large" />],
-  ]);
+  const IconMap = new Map(
+    predefinedIcons.map((icon) => [icon.value, icon.component])
+  );
+
+  const iconComponent = IconMap.get(iconType) || IconMap.get("LinkIcon");
+
+  const processedUrl = url.replace("{staffName}", staffName);
 
   return (
     <Grid item xs={4}>
-      <Link href={url} target="_blank" color={"inherit"} underline="none">
+      <Link
+        href={processedUrl}
+        target="_blank"
+        color={"inherit"}
+        underline="none"
+      >
         <Stack
           direction="column"
           spacing={0}
@@ -32,7 +41,7 @@ export function LinkGridItem({
             },
           }}
         >
-          {IconMap.get(iconType)}
+          {iconComponent}
           <Typography variant="caption">{title}</Typography>
         </Stack>
       </Link>

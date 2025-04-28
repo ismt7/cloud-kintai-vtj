@@ -16,7 +16,7 @@ import {
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { AuthContext } from "../../Layout";
+import { AuthContext } from "@/context/AuthContext";
 import { theme } from "../../lib/theme";
 
 export default function MobileMenu({ pathName }: { pathName: string }) {

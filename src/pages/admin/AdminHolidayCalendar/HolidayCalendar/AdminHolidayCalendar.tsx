@@ -3,22 +3,12 @@ import { useState } from "react";
 
 import CompanyHolidayCalendarList from "../CompanyHolidayCalendar/CompanyHolidayCalendarList";
 import HolidayCalendarList from "./HolidayCalendarList";
+import Title from "@/components/common/Title";
 
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
-}
-
-function Title() {
-  return (
-    <Typography
-      variant="h4"
-      sx={{ pl: 1, borderBottom: "solid 5px #0FA85E", color: "#0FA85E" }}
-    >
-      休日カレンダー管理
-    </Typography>
-  );
 }
 
 function CustomTabPanel(props: TabPanelProps) {
@@ -53,7 +43,16 @@ export default function AdminHolidayCalendar() {
 
   return (
     <Stack spacing={2}>
-      <Title />
+      <Title text="休日カレンダー管理" />
+      <Typography>
+        こちらでは、法定休日および会社休日のカレンダーを管理できます。
+        <br />
+        法定休日は労働基準法に基づく休日、会社休日は企業が独自に設定した休日です。
+        <br />
+      </Typography>
+      <Typography>
+        法定休日は、政府が公開する祝日データを元に作成されています。詳細は「ファイルからまとめて追加」をご参照ください。
+      </Typography>
       <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs

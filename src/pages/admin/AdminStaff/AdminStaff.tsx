@@ -81,6 +81,9 @@ export default function AdminStaff() {
               updateStaff={updateStaff}
             />
           </Stack>
+          <Typography variant="body2" color="text.secondary">
+            まれにユーザー情報が同期されない場合があります。その際は適宜同期を行ってください。
+          </Typography>
           <TableContainer>
             <Table size="small">
               <TableHead>

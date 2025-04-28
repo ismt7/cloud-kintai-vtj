@@ -23,11 +23,11 @@ import useAttendances from "../../hooks/useAttendances/useAttendances";
 import useCompanyHolidayCalendars from "../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 import useHolidayCalendars from "../../hooks/useHolidayCalendars/useHolidayCalendars";
 import fetchStaff from "../../hooks/useStaff/fetchStaff";
-import { AuthContext } from "../../Layout";
 import { setSnackbarError } from "../../lib/reducers/snackbarReducer";
 import Title from "../Title/Title";
 import DesktopList from "./DesktopList";
 import MobileList from "./MobileList/MobileList";
+import { AuthContext } from "@/context/AuthContext";
 
 const DescriptionTypography = styled(Typography)(({ theme }) => ({
   padding: "0px 40px",

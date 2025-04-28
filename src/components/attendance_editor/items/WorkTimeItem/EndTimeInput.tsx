@@ -7,16 +7,37 @@ import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
 
-import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
+import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 
 export default function EndTimeInput() {
+  const { fetchConfig, getQuickInputEndTimes, loading } = useAppConfig();
   const { workDate, control, setValue, getValues, watch } = useContext(
     AttendanceEditContext
   );
   if (!workDate) return null;
 
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
+  const [quickInputStartTimes, setQuickInputStartTimes] = useState<
+    { time: string; enabled: boolean }[]
+  >([]);
+
+  useEffect(() => {
+    fetchConfig();
+  }, [fetchConfig]);
+
+  useEffect(() => {
+    if (loading) return;
+    const quickInputEndTimes = getQuickInputEndTimes(true);
+    if (quickInputEndTimes.length > 0) {
+      setQuickInputStartTimes(
+        quickInputEndTimes.map((entry) => ({
+          time: entry.time,
+          enabled: entry.enabled,
+        }))
+      );
+    }
+  }, [loading]);
 
   useEffect(() => {
     if (!watch || !getValues) return;
@@ -81,19 +102,21 @@ export default function EndTimeInput() {
           )}
         />
         <Box>
-          <Chip
-            label="18:00"
-            color="success"
-            variant="outlined"
-            icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
-            onClick={() => {
-              const endTime = new AttendanceDateTime()
-                .setDate(workDate)
-                .setWorkEnd()
-                .toISOString();
-              setValue("endTime", endTime);
-            }}
-          />
+          {quickInputStartTimes.map((entry, index) => (
+            <Chip
+              key={index}
+              label={entry.time}
+              color={entry.enabled ? "success" : "default"}
+              variant="outlined"
+              icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
+              onClick={() => {
+                const startTime = dayjs(
+                  `${workDate.format("YYYY-MM-DD")} ${entry.time}`
+                ).toISOString();
+                setValue("endTime", startTime);
+              }}
+            />
+          ))}
         </Box>
       </Stack>
       <Box>

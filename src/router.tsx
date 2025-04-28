@@ -21,6 +21,11 @@ import List from "./pages/List";
 import Login from "./pages/Login/Login";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
+import OfficePage from "./pages/office/OfficePage";
+import OfficeQRView from "./pages/office/qr/OfficeQRView";
+import OfficeQRRegister from "./pages/office/qr/OfficeQRRegister";
+import OfficeLayout from "./pages/office/OfficeLayout";
+import AdminConfigManagement from "./pages/admin/AdminConfigManagement/AdminConfigManagement";
 
 const router = createBrowserRouter([
   {
@@ -157,7 +162,29 @@ const router = createBrowserRouter([
                 path: "holiday_calendar",
                 element: <AdminHolidayCalendar />,
               },
+              {
+                path: "feature_management",
+                element: <AdminConfigManagement />,
+              },
             ],
+          },
+        ],
+      },
+      {
+        path: "office",
+        element: <OfficeLayout />,
+        children: [
+          {
+            index: true,
+            element: <OfficePage />,
+          },
+          {
+            path: "qr",
+            element: <OfficeQRView />,
+          },
+          {
+            path: "qr/register",
+            element: <OfficeQRRegister />,
           },
         ],
       },

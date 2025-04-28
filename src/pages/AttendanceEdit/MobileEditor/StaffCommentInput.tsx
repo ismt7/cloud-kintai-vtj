@@ -1,15 +1,29 @@
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { Box, Chip, Stack, TextField } from "@mui/material";
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import { AttendanceEditContext } from "../AttendanceEditProvider";
+import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 
 export default function StaffCommentInput() {
   const { changeRequests, register, setValue } = useContext(
     AttendanceEditContext
   );
-
+  const { fetchConfig, getReasons, loading } = useAppConfig();
+  const [reasons, setReasons] = useState<
+    { reason: string; enabled: boolean }[]
+  >([]);
   const staffCommentRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    fetchConfig();
+  }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      setReasons(getReasons().filter((reason) => reason.enabled)); // 有効な理由のみ設定
+    }
+  }, [loading]);
 
   if (!register || !setValue) {
     return null;
@@ -31,22 +45,24 @@ export default function StaffCommentInput() {
       />
       <Box>
         <Stack direction="row" spacing={1} sx={{ mt: 1 }} alignItems={"center"}>
-          <Chip
-            label="打刻忘れ"
-            variant="outlined"
-            color="primary"
-            icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
-            disabled={changeRequests.length > 0}
-            onClick={() => {
-              if (staffCommentRef.current) {
-                staffCommentRef.current.value = "打刻忘れ";
-              }
-
-              setValue("staffComment", "打刻忘れ", {
-                shouldDirty: true,
-              });
-            }}
-          />
+          {reasons.map((reason, index) => (
+            <Chip
+              key={index}
+              label={reason.reason}
+              variant="outlined"
+              color="primary"
+              icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
+              disabled={changeRequests.length > 0}
+              onClick={() => {
+                if (staffCommentRef.current) {
+                  staffCommentRef.current.value = reason.reason;
+                }
+                setValue("staffComment", reason.reason, {
+                  shouldDirty: true,
+                });
+              }}
+            />
+          ))}
         </Stack>
       </Box>
     </Box>
