@@ -10,8 +10,9 @@ import {
 } from "@mui/material";
 import { QRCodeCanvas } from "qrcode.react";
 import dayjs from "dayjs";
-import { AuthContext } from "@/Layout";
 import { StaffRole } from "@/hooks/useStaffs/useStaffs";
+import { AuthContext } from "@/context/AuthContext";
+import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 
 const generateToken = async (timestamp: number) => {
   const secret = import.meta.env.VITE_TOKEN_SECRET || "default_secret";
@@ -34,30 +35,14 @@ const generateToken = async (timestamp: number) => {
 
 const OfficeQRView: React.FC = () => {
   const { isCognitoUserRole } = useContext(AuthContext);
+  const { fetchConfig, getOfficeMode, loading } = useAppConfig();
   const [qrValue, setQrValue] = useState<string>("");
   const [progress, setProgress] = useState(100);
   const [timeLeft, setTimeLeft] = useState(30);
   const [isRegisterMode, setIsRegisterMode] = useState(true);
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [showAdminAlert, setShowAdminAlert] = useState(false);
-
-  const isOfficeModeEnabled = import.meta.env.VITE_OFFICE_MODE === "true";
-
-  if (!isOfficeModeEnabled) {
-    return (
-      <Container>
-        <Box sx={{ mt: 4, textAlign: "center" }}>
-          <Alert severity="warning">現在、使用することができません。</Alert>
-        </Box>
-      </Container>
-    );
-  }
-
-  useEffect(() => {
-    if (isCognitoUserRole(StaffRole.ADMIN)) {
-      setShowAdminAlert(true);
-    }
-  }, [isCognitoUserRole]);
+  const [isOfficeModeEnabled, setIsOfficeModeEnabled] = useState(false);
 
   const updateQRValue = async () => {
     const timestamp = dayjs().unix();
@@ -71,6 +56,7 @@ const OfficeQRView: React.FC = () => {
   };
 
   useEffect(() => {
+    fetchConfig();
     updateQRValue();
 
     const totalDuration = 30;
@@ -106,6 +92,40 @@ const OfficeQRView: React.FC = () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+
+    setIsOfficeModeEnabled(getOfficeMode());
+  }, [loading]);
+
+  useEffect(() => {
+    if (isCognitoUserRole(StaffRole.ADMIN)) {
+      setShowAdminAlert(true);
+    }
+  }, [isCognitoUserRole]);
+
+  if (loading) {
+    return (
+      <Container>
+        <Box sx={{ mt: 4, textAlign: "center" }}>
+          <LinearProgress />
+        </Box>
+      </Container>
+    );
+  }
+
+  if (!isOfficeModeEnabled) {
+    return (
+      <Container>
+        <Box sx={{ mt: 4, textAlign: "center" }}>
+          <Alert severity="warning">現在、使用することができません。</Alert>
+        </Box>
+      </Container>
+    );
+  }
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);

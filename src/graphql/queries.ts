@@ -50,6 +50,90 @@ export const listCheckForUpdates = /* GraphQL */ `query ListCheckForUpdates(
   APITypes.ListCheckForUpdatesQueryVariables,
   APITypes.ListCheckForUpdatesQuery
 >;
+export const getAppConfig = /* GraphQL */ `query GetAppConfig($id: ID!) {
+  getAppConfig(id: $id) {
+    id
+    name
+    workStartTime
+    workEndTime
+    officeMode
+    links {
+      label
+      url
+      enabled
+      icon
+      __typename
+    }
+    reasons {
+      reason
+      enabled
+      __typename
+    }
+    quickInputStartTimes {
+      time
+      enabled
+      __typename
+    }
+    quickInputEndTimes {
+      time
+      enabled
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetAppConfigQueryVariables,
+  APITypes.GetAppConfigQuery
+>;
+export const listAppConfigs = /* GraphQL */ `query ListAppConfigs(
+  $filter: ModelAppConfigFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listAppConfigs(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      workStartTime
+      workEndTime
+      officeMode
+      links {
+        label
+        url
+        enabled
+        icon
+        __typename
+      }
+      reasons {
+        reason
+        enabled
+        __typename
+      }
+      quickInputStartTimes {
+        time
+        enabled
+        __typename
+      }
+      quickInputEndTimes {
+        time
+        enabled
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListAppConfigsQueryVariables,
+  APITypes.ListAppConfigsQuery
+>;
 export const getStaff = /* GraphQL */ `query GetStaff($id: ID!) {
   getStaff(id: $id) {
     id

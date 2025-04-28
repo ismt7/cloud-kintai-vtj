@@ -10,8 +10,9 @@ import {
 } from "../../../lib/reducers/snackbarReducer";
 import { Logger } from "aws-amplify";
 import useAttendance from "../../../hooks/useAttendance/useAttendance";
-import { AuthContext } from "@/Layout";
+import { AuthContext } from "@/context/AuthContext";
 import { AttendanceDate } from "@/lib/AttendanceDate";
+import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 
 const ActionButton = styled(Button)(({ theme }) => ({
   color: theme.palette.clock_in.contrastText,
@@ -65,14 +66,28 @@ const validateToken = async (timestamp: string, token: string) => {
 };
 
 const OfficeQRRegister: React.FC = () => {
+  const { getOfficeMode } = useAppConfig();
   const [searchParams] = useSearchParams();
+  const [isOfficeModeEnabled, setIsOfficeModeEnabled] = useState(false);
+  const [isValidToken, setIsValidToken] = useState(false);
+
   const mode = searchParams.get("mode");
   const timestamp = searchParams.get("timestamp");
   const token = searchParams.get("token");
 
-  const [isValidToken, setIsValidToken] = useState(false);
+  React.useEffect(() => {
+    setIsOfficeModeEnabled(getOfficeMode());
+  }, [getOfficeMode]);
 
-  const isOfficeModeEnabled = import.meta.env.VITE_OFFICE_MODE !== "false";
+  React.useEffect(() => {
+    const validate = async () => {
+      if (timestamp && token) {
+        const isValid = await validateToken(timestamp, token);
+        setIsValidToken(isValid);
+      }
+    };
+    validate();
+  }, [timestamp, token]);
 
   if (!isOfficeModeEnabled) {
     return (
@@ -125,16 +140,6 @@ const OfficeQRRegister: React.FC = () => {
         dispatch(setSnackbarError("退勤処理に失敗しました。"));
       });
   };
-
-  React.useEffect(() => {
-    const validate = async () => {
-      if (timestamp && token) {
-        const isValid = await validateToken(timestamp, token);
-        setIsValidToken(isValid);
-      }
-    };
-    validate();
-  }, [timestamp, token]);
 
   const getErrorMessage = () => {
     if (!isValidToken) {

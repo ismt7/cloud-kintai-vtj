@@ -33,7 +33,6 @@ import useAttendances from "../../hooks/useAttendances/useAttendances";
 import useCompanyHolidayCalendars from "../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 import useHolidayCalendars from "../../hooks/useHolidayCalendars/useHolidayCalendars";
 import fetchStaff from "../../hooks/useStaff/fetchStaff";
-import { AuthContext } from "../../Layout";
 import { TimeRecordMailSender } from "../../lib/mail/TimeRecordMailSender";
 import {
   setSnackbarError,
@@ -50,6 +49,7 @@ import RestStartItem from "./items/RestStartItem";
 import ReturnDirectly from "./items/ReturnDirectlyItem";
 import { RestTimeMessage } from "./RestTimeMessage";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
+import { AuthContext } from "@/context/AuthContext";
 
 const DirectSwitch = styled(Switch)(({ theme }) => ({
   padding: 8,

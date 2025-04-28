@@ -1,34 +1,14 @@
-import { AmplifyUser, AuthEventData, AuthStatus } from "@aws-amplify/ui";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Box, LinearProgress, Stack } from "@mui/material";
 import { Storage } from "aws-amplify";
-import { createContext, useEffect } from "react";
+import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
+import { AuthContext } from "./context/AuthContext";
 import SnackbarGroup from "./components/ snackbar/SnackbarGroup";
 import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
-import useCognitoUser, { CognitoUser } from "./hooks/useCognitoUser";
-import { StaffRole } from "./hooks/useStaffs/useStaffs";
-
-type AuthContextProps = {
-  signOut: (data?: AuthEventData | undefined) => void;
-  signIn: () => void;
-  isCognitoUserRole: (role: StaffRole) => boolean;
-  user?: AmplifyUser;
-  authStatus?: AuthStatus;
-  cognitoUser?: CognitoUser | null;
-};
-
-export const AuthContext = createContext<AuthContextProps>({
-  signOut: () => {
-    console.log("The process is not implemented.");
-  },
-  signIn: () => {
-    console.log("The process is not implemented.");
-  },
-  isCognitoUserRole: () => false,
-});
+import useCognitoUser from "./hooks/useCognitoUser";
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -38,8 +18,6 @@ export default function Layout() {
     isCognitoUserRole,
     loading: cognitoUserLoading,
   } = useCognitoUser();
-
-  console.log("VITE_COMMIT_HASH", import.meta.env.VITE_COMMIT_HASH);
 
   useEffect(() => {
     const url = new URL(window.location.href);

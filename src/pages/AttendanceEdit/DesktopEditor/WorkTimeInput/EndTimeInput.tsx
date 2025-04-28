@@ -10,11 +10,33 @@ import { Controller } from "react-hook-form";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 
 import { AttendanceEditContext } from "../../AttendanceEditProvider";
+import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 
 export default function EndTimeInput() {
+  const { fetchConfig, getQuickInputEndTimes, loading } = useAppConfig();
   const { workDate, attendance, control, setValue, changeRequests } =
     useContext(AttendanceEditContext);
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
+  const [quickInputEndTimes, setQuickInputEndTimes] = useState<
+    { time: string; enabled: boolean }[]
+  >([]);
+
+  useEffect(() => {
+    fetchConfig();
+  }, [fetchConfig]);
+
+  useEffect(() => {
+    if (loading) return;
+    const quickInputTimes = getQuickInputEndTimes(true);
+    if (quickInputTimes.length > 0) {
+      setQuickInputEndTimes(
+        quickInputTimes.map((entry) => ({
+          time: entry.time,
+          enabled: entry.enabled,
+        }))
+      );
+    }
+  }, [loading]);
 
   useEffect(() => {
     setEnableEndTime(!!attendance?.endTime);
@@ -71,20 +93,22 @@ export default function EndTimeInput() {
           )}
         />
         <Box>
-          <Chip
-            label="18:00"
-            color="success"
-            variant="outlined"
-            icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
-            disabled={changeRequests.length > 0}
-            onClick={() => {
-              const endTime = new AttendanceDateTime()
-                .setDate(workDate)
-                .setWorkEnd()
-                .toISOString();
-              setValue("endTime", endTime, { shouldDirty: true });
-            }}
-          />
+          {quickInputEndTimes.map((entry, index) => (
+            <Chip
+              key={index}
+              label={entry.time}
+              color={entry.enabled ? "success" : "default"}
+              variant="outlined"
+              icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
+              disabled={changeRequests.length > 0}
+              onClick={() => {
+                const endTime = dayjs(
+                  `${workDate.format("YYYY-MM-DD")} ${entry.time}`
+                ).toISOString();
+                setValue("endTime", endTime, { shouldDirty: true });
+              }}
+            />
+          ))}
         </Box>
       </Stack>
       <Box>

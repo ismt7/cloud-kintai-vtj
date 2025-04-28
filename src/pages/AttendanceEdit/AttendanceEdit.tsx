@@ -10,7 +10,7 @@ import { useAppDispatchV2 } from "../../app/hooks";
 import * as MESSAGE_CODE from "../../errors";
 import useAttendance from "../../hooks/useAttendance/useAttendance";
 import useStaffs, { StaffType } from "../../hooks/useStaffs/useStaffs";
-import { AuthContext } from "../../Layout";
+import { AuthContext } from "@/context/AuthContext";
 import {
   setSnackbarError,
   setSnackbarSuccess,

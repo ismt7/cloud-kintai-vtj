@@ -115,6 +115,35 @@ type AttendanceChangeRequest {
   staffComment: String
 }
 
+type Link {
+  label: String!
+  url: String!
+  enabled: Boolean!
+  icon: String
+}
+
+type Reason {
+  reason: String!
+  enabled: Boolean!
+}
+
+type QuickInputTime {
+  time: String!
+  enabled: Boolean!
+}
+
+type AppConfig @model {
+  id: ID!
+  name: String!
+  workStartTime: String
+  workEndTime: String
+  officeMode: Boolean
+  links: [Link]
+  reasons: [Reason]
+  quickInputStartTimes: [QuickInputTime]
+  quickInputEndTimes: [QuickInputTime]
+}
+
 type EmailResult {
   statusCode: Int
   body: String

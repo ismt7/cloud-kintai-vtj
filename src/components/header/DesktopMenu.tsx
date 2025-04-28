@@ -1,13 +1,27 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Box, Stack } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { StaffRole } from "../../hooks/useStaffs/useStaffs";
-import { AuthContext } from "../../Layout";
+import { AuthContext } from "../../context/AuthContext";
 import Link from "../link/Link";
+import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 
 export default function DesktopMenu({ pathName }: { pathName: string }) {
   const { isCognitoUserRole } = useContext(AuthContext);
+  const { fetchConfig, getOfficeMode, loading } = useAppConfig();
+  const [officeMode, setOfficeMode] = useState<boolean>(false);
+
+  useEffect(() => {
+    fetchConfig();
+  }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      setOfficeMode(getOfficeMode());
+    }
+  }, [loading]);
+
   const viewableList = [];
   const menuList = [
     { label: "勤怠打刻", href: "/register" },
@@ -21,7 +35,9 @@ export default function DesktopMenu({ pathName }: { pathName: string }) {
     { label: "マスタ管理", href: "/admin/master" },
   ];
 
-  const operatorMenuList = [{ label: "QR表示", href: "/office/qr" }];
+  const operatorMenuList = officeMode
+    ? [{ label: "QR表示", href: "/office/qr" }]
+    : [];
 
   // システム管理者、スタッフ管理者
   const { user } = useAuthenticator();

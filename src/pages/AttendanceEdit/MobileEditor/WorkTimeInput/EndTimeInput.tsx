@@ -13,7 +13,7 @@ import {
   UseFormWatch,
 } from "react-hook-form";
 
-import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
+import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 
 import { AttendanceEditInputs } from "../../common";
 
@@ -42,7 +42,28 @@ export default function EndTimeInput({
   getValues: UseFormGetValues<AttendanceEditInputs>;
   watch: UseFormWatch<AttendanceEditInputs>;
 }) {
+  const { fetchConfig, getQuickInputEndTimes, loading } = useAppConfig();
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
+  const [quickInputEndTimes, setQuickInputEndTimes] = useState<
+    { time: string; enabled: boolean }[]
+  >([]);
+
+  useEffect(() => {
+    fetchConfig();
+  }, [fetchConfig]);
+
+  useEffect(() => {
+    if (loading) return;
+    const quickInputTimes = getQuickInputEndTimes(true);
+    if (quickInputTimes.length > 0) {
+      setQuickInputEndTimes(
+        quickInputTimes.map((entry) => ({
+          time: entry.time,
+          enabled: entry.enabled,
+        }))
+      );
+    }
+  }, [loading]);
 
   useEffect(() => {
     const endTime = getValues("endTime");
@@ -88,19 +109,21 @@ export default function EndTimeInput({
           )}
         />
         <Box>
-          <Chip
-            label="18:00"
-            color="success"
-            variant="outlined"
-            icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
-            onClick={() => {
-              const endTime = new AttendanceDateTime()
-                .setDate(workDate)
-                .setWorkEnd()
-                .toISOString();
-              setValue("endTime", endTime);
-            }}
-          />
+          {quickInputEndTimes.map((entry, index) => (
+            <Chip
+              key={index}
+              label={entry.time}
+              color={entry.enabled ? "success" : "default"}
+              variant="outlined"
+              icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
+              onClick={() => {
+                const endTime = dayjs(
+                  `${workDate.format("YYYY-MM-DD")} ${entry.time}`
+                ).toISOString();
+                setValue("endTime", endTime);
+              }}
+            />
+          ))}
         </Box>
       </Stack>
       <Box>
