@@ -10,10 +10,10 @@ import { Controller } from "react-hook-form";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 
 import { AttendanceEditContext } from "../../AttendanceEditProvider";
-import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
+import { AppConfigContext } from "@/context/AppConfigContext";
 
 export default function EndTimeInput() {
-  const { fetchConfig, getQuickInputEndTimes, loading } = useAppConfig();
+  const { getQuickInputEndTimes } = useContext(AppConfigContext);
   const { workDate, attendance, control, setValue, changeRequests } =
     useContext(AttendanceEditContext);
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
@@ -22,11 +22,6 @@ export default function EndTimeInput() {
   >([]);
 
   useEffect(() => {
-    fetchConfig();
-  }, [fetchConfig]);
-
-  useEffect(() => {
-    if (loading) return;
     const quickInputTimes = getQuickInputEndTimes(true);
     if (quickInputTimes.length > 0) {
       setQuickInputEndTimes(
@@ -36,7 +31,7 @@ export default function EndTimeInput() {
         }))
       );
     }
-  }, [loading]);
+  }, [getQuickInputEndTimes]);
 
   useEffect(() => {
     setEnableEndTime(!!attendance?.endTime);

@@ -11,6 +11,7 @@ import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 
 import { AttendanceEditInputs } from "../../../common";
+import { AppConfigContext } from "@/context/AppConfigContext";
 
 export default function RestEndTimeInput({
   rest,
@@ -111,6 +112,9 @@ function DefaultEndTimeChip({
   const { workDate, restUpdate, changeRequests } = useContext(
     AttendanceEditContext
   );
+  const { getLunchRestEndTime } = useContext(AppConfigContext);
+
+  const lunchRestEndTime = getLunchRestEndTime().format("H:mm");
 
   if (!workDate || !restUpdate) return null;
 
@@ -124,7 +128,7 @@ function DefaultEndTimeChip({
 
   return (
     <Chip
-      label="13:00"
+      label={lunchRestEndTime}
       variant="outlined"
       color="success"
       disabled={changeRequests.length > 0}

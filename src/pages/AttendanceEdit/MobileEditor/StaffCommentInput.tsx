@@ -4,26 +4,21 @@ import { useContext, useEffect, useRef, useState } from "react";
 
 import { AttendanceEditContext } from "../AttendanceEditProvider";
 import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
+import { AppConfigContext } from "@/context/AppConfigContext";
 
 export default function StaffCommentInput() {
   const { changeRequests, register, setValue } = useContext(
     AttendanceEditContext
   );
-  const { fetchConfig, getReasons, loading } = useAppConfig();
+  const { getReasons } = useContext(AppConfigContext);
   const [reasons, setReasons] = useState<
     { reason: string; enabled: boolean }[]
   >([]);
   const staffCommentRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    fetchConfig();
-  }, []);
-
-  useEffect(() => {
-    if (!loading) {
-      setReasons(getReasons().filter((reason) => reason.enabled)); // 有効な理由のみ設定
-    }
-  }, [loading]);
+    setReasons(getReasons().filter((reason) => reason.enabled)); // 有効な理由のみ設定
+  }, [getReasons]);
 
   if (!register || !setValue) {
     return null;

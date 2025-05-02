@@ -1,6 +1,7 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, CircularProgress } from "@mui/material";
 import { FieldArrayWithId } from "react-hook-form";
-
+import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
+import { useEffect } from "react";
 import { AttendanceEditInputs } from "../../common";
 
 export default function NoRestTimeMessage({
@@ -8,6 +9,20 @@ export default function NoRestTimeMessage({
 }: {
   restFields: FieldArrayWithId<AttendanceEditInputs, "rests", "id">[];
 }) {
+  const { getLunchRestStartTime, getLunchRestEndTime, loading } =
+    useAppConfig();
+
+  if (loading) {
+    return (
+      <Box>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  const lunchRestStartTime = getLunchRestStartTime().format("HH:mm");
+  const lunchRestEndTime = getLunchRestEndTime().format("HH:mm");
+
   if (restFields.length >= 1) {
     return null;
   }
@@ -16,7 +31,8 @@ export default function NoRestTimeMessage({
     <Box>
       <Typography variant="body1">休憩時間はありません</Typography>
       <Typography variant="body1">
-        ※昼休憩は退勤打刻の際に12:00〜13:00で自動打刻されます
+        ※昼休憩は退勤打刻の際に{lunchRestStartTime}〜{lunchRestEndTime}
+        で自動打刻されます
       </Typography>
     </Box>
   );

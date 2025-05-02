@@ -2,24 +2,18 @@ import { TableCell } from "@mui/material";
 import dayjs from "dayjs";
 
 import { Attendance } from "@/API";
-import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AppConfigContext } from "@/context/AppConfigContext";
 
 export function WorkTimeTableCell({ attendance }: { attendance: Attendance }) {
-  const { fetchConfig, getStartTime, getEndTime, loading } = useAppConfig();
+  const { getStartTime, getEndTime } = useContext(AppConfigContext);
   const [defaultStartTime, setDefaultStartTime] = useState<string>("9:00");
   const [defaultEndTime, setDefaultEndTime] = useState<string>("18:00");
 
   useEffect(() => {
-    fetchConfig();
-  }, []);
-
-  useEffect(() => {
-    if (!loading) {
-      setDefaultStartTime(getStartTime()?.format("H:mm") || "9:00");
-      setDefaultEndTime(getEndTime()?.format("H:mm") || "18:00");
-    }
-  }, [loading]);
+    setDefaultStartTime(getStartTime()?.format("H:mm") || "9:00");
+    setDefaultEndTime(getEndTime()?.format("H:mm") || "18:00");
+  }, [getStartTime, getEndTime]);
 
   const { paidHolidayFlag, startTime, endTime } = attendance;
 
@@ -47,7 +41,7 @@ export function WorkTimeTableCell({ attendance }: { attendance: Attendance }) {
       ? `(${goDirectlyFlag}${returnDirectlyFlag})`
       : "";
 
-  if (loading || (!formattedStartTime && !formattedEndTime)) {
+  if (!formattedStartTime && !formattedEndTime) {
     return <TableCell />;
   }
 

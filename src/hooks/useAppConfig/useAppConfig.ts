@@ -9,6 +9,8 @@ export type DefaultAppConfig = Pick<
   | "name"
   | "workStartTime"
   | "workEndTime"
+  | "lunchRestStartTime"
+  | "lunchRestEndTime"
   | "links"
   | "officeMode"
   | "reasons"
@@ -16,10 +18,12 @@ export type DefaultAppConfig = Pick<
   | "quickInputEndTimes"
 >;
 
-const DEFAULT_CONFIG: DefaultAppConfig = {
+export const DEFAULT_CONFIG: DefaultAppConfig = {
   name: "default",
   workStartTime: "09:00",
   workEndTime: "18:00",
+  lunchRestStartTime: "12:00",
+  lunchRestEndTime: "13:00",
   officeMode: false,
   links: [],
   reasons: [],
@@ -130,6 +134,14 @@ export default function useAppConfig() {
     return [];
   };
 
+  const getLunchRestStartTime = () =>
+    config
+      ? dayjs(config.lunchRestStartTime, "HH:mm")
+      : dayjs("12:00", "HH:mm");
+
+  const getLunchRestEndTime = () =>
+    config ? dayjs(config.lunchRestEndTime, "HH:mm") : dayjs("13:00", "HH:mm");
+
   return {
     config,
     loading,
@@ -143,5 +155,7 @@ export default function useAppConfig() {
     getOfficeMode,
     getQuickInputStartTimes,
     getQuickInputEndTimes,
+    getLunchRestStartTime,
+    getLunchRestEndTime,
   };
 }

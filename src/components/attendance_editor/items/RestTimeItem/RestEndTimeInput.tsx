@@ -10,6 +10,7 @@ import { Controller, FieldArrayWithId } from "react-hook-form";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 import { AttendanceEditInputs } from "@/pages/AttendanceEdit/common";
+import { AppConfigContext } from "@/context/AppConfigContext";
 
 export default function RestEndTimeInput({
   index,
@@ -21,7 +22,10 @@ export default function RestEndTimeInput({
   const { workDate, control, watch, getValues, restUpdate } = useContext(
     AttendanceEditContext
   );
+  const { getLunchRestEndTime } = useContext(AppConfigContext);
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
+
+  const lunchRestEndTime = getLunchRestEndTime().format("H:mm");
 
   useEffect(() => {
     if (!watch || !getValues) {
@@ -96,7 +100,7 @@ export default function RestEndTimeInput({
         />
         <Box>
           <Chip
-            label="13:00"
+            label={lunchRestEndTime}
             variant="outlined"
             color="success"
             icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
