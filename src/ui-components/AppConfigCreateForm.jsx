@@ -31,6 +31,8 @@ export default function AppConfigCreateForm(props) {
     name: "",
     workStartTime: "",
     workEndTime: "",
+    lunchRestStartTime: "",
+    lunchRestEndTime: "",
     officeMode: false,
   };
   const [name, setName] = React.useState(initialValues.name);
@@ -40,12 +42,20 @@ export default function AppConfigCreateForm(props) {
   const [workEndTime, setWorkEndTime] = React.useState(
     initialValues.workEndTime
   );
+  const [lunchRestStartTime, setLunchRestStartTime] = React.useState(
+    initialValues.lunchRestStartTime
+  );
+  const [lunchRestEndTime, setLunchRestEndTime] = React.useState(
+    initialValues.lunchRestEndTime
+  );
   const [officeMode, setOfficeMode] = React.useState(initialValues.officeMode);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setName(initialValues.name);
     setWorkStartTime(initialValues.workStartTime);
     setWorkEndTime(initialValues.workEndTime);
+    setLunchRestStartTime(initialValues.lunchRestStartTime);
+    setLunchRestEndTime(initialValues.lunchRestEndTime);
     setOfficeMode(initialValues.officeMode);
     setErrors({});
   };
@@ -53,6 +63,8 @@ export default function AppConfigCreateForm(props) {
     name: [{ type: "Required" }],
     workStartTime: [],
     workEndTime: [],
+    lunchRestStartTime: [],
+    lunchRestEndTime: [],
     officeMode: [],
   };
   const runValidationTasks = async (
@@ -84,6 +96,8 @@ export default function AppConfigCreateForm(props) {
           name,
           workStartTime,
           workEndTime,
+          lunchRestStartTime,
+          lunchRestEndTime,
           officeMode,
         };
         const validationResponses = await Promise.all(
@@ -150,6 +164,8 @@ export default function AppConfigCreateForm(props) {
               name: value,
               workStartTime,
               workEndTime,
+              lunchRestStartTime,
+              lunchRestEndTime,
               officeMode,
             };
             const result = onChange(modelFields);
@@ -177,6 +193,8 @@ export default function AppConfigCreateForm(props) {
               name,
               workStartTime: value,
               workEndTime,
+              lunchRestStartTime,
+              lunchRestEndTime,
               officeMode,
             };
             const result = onChange(modelFields);
@@ -204,6 +222,8 @@ export default function AppConfigCreateForm(props) {
               name,
               workStartTime,
               workEndTime: value,
+              lunchRestStartTime,
+              lunchRestEndTime,
               officeMode,
             };
             const result = onChange(modelFields);
@@ -219,6 +239,66 @@ export default function AppConfigCreateForm(props) {
         hasError={errors.workEndTime?.hasError}
         {...getOverrideProps(overrides, "workEndTime")}
       ></TextField>
+      <TextField
+        label="Lunch rest start time"
+        isRequired={false}
+        isReadOnly={false}
+        value={lunchRestStartTime}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              name,
+              workStartTime,
+              workEndTime,
+              lunchRestStartTime: value,
+              lunchRestEndTime,
+              officeMode,
+            };
+            const result = onChange(modelFields);
+            value = result?.lunchRestStartTime ?? value;
+          }
+          if (errors.lunchRestStartTime?.hasError) {
+            runValidationTasks("lunchRestStartTime", value);
+          }
+          setLunchRestStartTime(value);
+        }}
+        onBlur={() =>
+          runValidationTasks("lunchRestStartTime", lunchRestStartTime)
+        }
+        errorMessage={errors.lunchRestStartTime?.errorMessage}
+        hasError={errors.lunchRestStartTime?.hasError}
+        {...getOverrideProps(overrides, "lunchRestStartTime")}
+      ></TextField>
+      <TextField
+        label="Lunch rest end time"
+        isRequired={false}
+        isReadOnly={false}
+        value={lunchRestEndTime}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              name,
+              workStartTime,
+              workEndTime,
+              lunchRestStartTime,
+              lunchRestEndTime: value,
+              officeMode,
+            };
+            const result = onChange(modelFields);
+            value = result?.lunchRestEndTime ?? value;
+          }
+          if (errors.lunchRestEndTime?.hasError) {
+            runValidationTasks("lunchRestEndTime", value);
+          }
+          setLunchRestEndTime(value);
+        }}
+        onBlur={() => runValidationTasks("lunchRestEndTime", lunchRestEndTime)}
+        errorMessage={errors.lunchRestEndTime?.errorMessage}
+        hasError={errors.lunchRestEndTime?.hasError}
+        {...getOverrideProps(overrides, "lunchRestEndTime")}
+      ></TextField>
       <SwitchField
         label="Office mode"
         defaultChecked={false}
@@ -231,6 +311,8 @@ export default function AppConfigCreateForm(props) {
               name,
               workStartTime,
               workEndTime,
+              lunchRestStartTime,
+              lunchRestEndTime,
               officeMode: value,
             };
             const result = onChange(modelFields);
