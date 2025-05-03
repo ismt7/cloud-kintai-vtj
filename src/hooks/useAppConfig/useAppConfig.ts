@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import { AppConfigDataManager } from "./AppConfigDataManager";
 import { AppConfig, CreateAppConfigInput, UpdateAppConfigInput } from "@/API";
@@ -31,16 +31,28 @@ export const DEFAULT_CONFIG: DefaultAppConfig = {
   quickInputEndTimes: [],
 };
 
+const LOCAL_STORAGE_KEY = "appConfig";
+
 export default function useAppConfig() {
   const [config, setConfig] = useState<AppConfig | null>(null);
   const [loading, setLoading] = useState(false);
   const dataManager = new AppConfigDataManager();
+
+  useEffect(() => {
+    // ローカルストレージからキャッシュを読み込む
+    const cachedConfig = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (cachedConfig) {
+      setConfig(JSON.parse(cachedConfig));
+    }
+  }, []);
 
   const fetchConfig = async () => {
     setLoading(true);
     try {
       const fetchedConfig = await dataManager.fetch();
       setConfig(fetchedConfig);
+      // キャッシュをローカルストレージに保存
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(fetchedConfig));
     } catch (error) {
       console.error("Failed to fetch app config:", error);
     } finally {
@@ -66,6 +78,8 @@ export default function useAppConfig() {
         );
       }
       setConfig(savedConfig);
+      // キャッシュをローカルストレージに保存
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(savedConfig));
     } catch (error) {
       console.error("Failed to save app config:", error);
     } finally {

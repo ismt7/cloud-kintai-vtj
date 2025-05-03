@@ -578,6 +578,9 @@ export default function AdminConfigManagement() {
             </Button>
           </Stack>
         </Stack>
+        <Typography variant="body2" color="textSecondary">
+          スタッフ側への設定反映には数分程度かかる場合があります。
+        </Typography>
         <Button variant="contained" color="primary" onClick={handleSave}>
           保存
         </Button>

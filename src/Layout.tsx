@@ -117,8 +117,30 @@ export default function Layout() {
     }, 1000 * 60 * 60);
   }, [authStatus]);
 
+  const setCookie = (name: string, value: string, minutes: number) => {
+    const expires = new Date(Date.now() + minutes * 60 * 1000).toUTCString();
+    document.cookie = `${name}=${value}; expires=${expires}; path=/`;
+  };
+
+  const getCookie = (name: string): string | null => {
+    const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
+    return match ? match[2] : null;
+  };
+
   useEffect(() => {
-    fetchConfig();
+    const fetchConfigWithCookie = () => {
+      const cookieName = "configLastFetchTime";
+      const lastFetchTime = getCookie(cookieName);
+
+      if (lastFetchTime) {
+        return;
+      }
+
+      setCookie(cookieName, "config_fetched", 2);
+      fetchConfig();
+    };
+
+    fetchConfigWithCookie();
   }, []);
 
   if (cognitoUserLoading || appConfigLoading) {
