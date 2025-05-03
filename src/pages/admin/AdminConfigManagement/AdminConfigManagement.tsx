@@ -13,12 +13,11 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { predefinedIcons } from "@/constants/icons";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import dayjs, { Dayjs } from "dayjs";
-import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 import { renderTimeViewClock } from "@mui/x-date-pickers";
 import { useAppDispatchV2 } from "@/app/hooks";
 import {
@@ -26,21 +25,23 @@ import {
   setSnackbarSuccess,
 } from "@/lib/reducers/snackbarReducer";
 import { E14001, E14002, S14001, S14002 } from "@/errors";
+import { AppConfigContext } from "@/context/AppConfigContext";
 
 export default function AdminConfigManagement() {
   const {
     fetchConfig,
+    saveConfig,
     getStartTime,
     getEndTime,
-    saveConfig,
     getConfigId,
     getLinks,
     getReasons,
     getOfficeMode,
     getQuickInputStartTimes,
     getQuickInputEndTimes,
-    loading,
-  } = useAppConfig();
+    getLunchRestStartTime,
+    getLunchRestEndTime,
+  } = useContext(AppConfigContext);
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
   const [quickInputStartTimes, setQuickInputStartTimes] = useState<
@@ -57,11 +58,11 @@ export default function AdminConfigManagement() {
     { reason: string; enabled: boolean }[]
   >([]);
   const [officeMode, setOfficeMode] = useState<boolean>(false);
+  const [lunchRestStartTime, setLunchRestStartTime] = useState<Dayjs | null>(
+    null
+  );
+  const [lunchRestEndTime, setLunchRestEndTime] = useState<Dayjs | null>(null);
   const dispatch = useAppDispatchV2();
-
-  useEffect(() => {
-    fetchConfig();
-  }, []);
 
   useEffect(() => {
     setStartTime(getStartTime());
@@ -83,7 +84,20 @@ export default function AdminConfigManagement() {
         enabled: entry.enabled,
       }))
     );
-  }, [loading]);
+    setLunchRestStartTime(getLunchRestStartTime());
+    setLunchRestEndTime(getLunchRestEndTime());
+  }, [
+    getStartTime,
+    getEndTime,
+    getConfigId,
+    getLinks,
+    getReasons,
+    getOfficeMode,
+    getQuickInputStartTimes,
+    getQuickInputEndTimes,
+    getLunchRestStartTime,
+    getLunchRestEndTime,
+  ]);
 
   const handleAddLink = () => {
     setLinks([...links, { label: "", url: "", enabled: true, icon: "" }]);
@@ -192,7 +206,7 @@ export default function AdminConfigManagement() {
   };
 
   const handleSave = async () => {
-    if (startTime && endTime) {
+    if (startTime && endTime && lunchRestStartTime && lunchRestEndTime) {
       try {
         if (id) {
           await saveConfig({
@@ -218,6 +232,8 @@ export default function AdminConfigManagement() {
               time: entry.time.format("HH:mm"),
               enabled: entry.enabled,
             })),
+            lunchRestStartTime: lunchRestStartTime.format("HH:mm"),
+            lunchRestEndTime: lunchRestEndTime.format("HH:mm"),
           });
           dispatch(setSnackbarSuccess(S14002));
         } else {
@@ -239,6 +255,7 @@ export default function AdminConfigManagement() {
           });
           dispatch(setSnackbarSuccess(S14001));
         }
+        await fetchConfig();
       } catch (error) {
         dispatch(setSnackbarError(E14001));
       }
@@ -246,10 +263,6 @@ export default function AdminConfigManagement() {
       dispatch(setSnackbarError(E14002));
     }
   };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -292,6 +305,45 @@ export default function AdminConfigManagement() {
             }}
             sx={{ maxWidth: 200 }}
             onChange={(newValue) => setEndTime(newValue)}
+          />
+        </Stack>
+        <Typography variant="h6">昼休憩時間</Typography>
+        <Typography variant="body2" color="textSecondary">
+          昼休憩時間を設定してください。
+        </Typography>
+        <Stack direction="row" spacing={2} alignItems="center">
+          <TimePicker
+            label="開始時間"
+            ampm={false}
+            viewRenderers={{
+              hours: renderTimeViewClock,
+              minutes: renderTimeViewClock,
+            }}
+            value={lunchRestStartTime}
+            views={["hours", "minutes"]}
+            format="HH:mm"
+            slotProps={{
+              textField: { size: "small" },
+            }}
+            sx={{ maxWidth: 200 }}
+            onChange={(newValue) => setLunchRestStartTime(newValue)}
+          />
+          <Typography variant="body1">〜</Typography>
+          <TimePicker
+            label="終了時間"
+            ampm={false}
+            viewRenderers={{
+              hours: renderTimeViewClock,
+              minutes: renderTimeViewClock,
+            }}
+            value={lunchRestEndTime}
+            views={["hours", "minutes"]}
+            format="HH:mm"
+            slotProps={{
+              textField: { size: "small" },
+            }}
+            sx={{ maxWidth: 200 }}
+            onChange={(newValue) => setLunchRestEndTime(newValue)}
           />
         </Stack>
         <Typography variant="h6">オフィスモード</Typography>

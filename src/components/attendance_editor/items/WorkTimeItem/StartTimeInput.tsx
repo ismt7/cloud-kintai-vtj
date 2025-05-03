@@ -7,29 +7,24 @@ import { Controller } from "react-hook-form";
 
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
+import { AppConfigContext } from "@/context/AppConfigContext";
 
 export default function StartTimeInput() {
   const { workDate, control, setValue } = useContext(AttendanceEditContext);
-  const { fetchConfig, getQuickInputStartTimes, loading } = useAppConfig();
+  const { getQuickInputStartTimes } = useContext(AppConfigContext);
   const [quickInputStartTimes, setQuickInputStartTimes] = useState<
     { time: string; enabled: boolean }[]
   >([]);
 
   useEffect(() => {
-    fetchConfig();
-  }, [fetchConfig]);
-
-  useEffect(() => {
-    if (!loading) {
-      const quickInputStartTimes = getQuickInputStartTimes(true);
-      setQuickInputStartTimes(
-        quickInputStartTimes.map((entry) => ({
-          time: entry.time,
-          enabled: entry.enabled,
-        }))
-      );
-    }
-  }, [loading]);
+    const quickInputStartTimes = getQuickInputStartTimes(true);
+    setQuickInputStartTimes(
+      quickInputStartTimes.map((entry) => ({
+        time: entry.time,
+        enabled: entry.enabled,
+      }))
+    );
+  }, [getQuickInputStartTimes]);
 
   if (!workDate || !control || !setValue) {
     return null;

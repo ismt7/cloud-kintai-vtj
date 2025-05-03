@@ -8,10 +8,10 @@ import { useContext, useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
 
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
-import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
+import { AppConfigContext } from "@/context/AppConfigContext";
 
 export default function EndTimeInput() {
-  const { fetchConfig, getQuickInputEndTimes, loading } = useAppConfig();
+  const { getQuickInputEndTimes } = useContext(AppConfigContext);
   const { workDate, control, setValue, getValues, watch } = useContext(
     AttendanceEditContext
   );
@@ -23,11 +23,6 @@ export default function EndTimeInput() {
   >([]);
 
   useEffect(() => {
-    fetchConfig();
-  }, [fetchConfig]);
-
-  useEffect(() => {
-    if (loading) return;
     const quickInputEndTimes = getQuickInputEndTimes(true);
     if (quickInputEndTimes.length > 0) {
       setQuickInputStartTimes(
@@ -37,7 +32,7 @@ export default function EndTimeInput() {
         }))
       );
     }
-  }, [loading]);
+  }, []);
 
   useEffect(() => {
     if (!watch || !getValues) return;

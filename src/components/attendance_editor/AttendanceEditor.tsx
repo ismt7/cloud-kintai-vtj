@@ -68,6 +68,7 @@ import { LunchRestTimeNotSetWarning } from "./LunchRestTimeNotSetWarning";
 import PaidHolidayFlagInput from "./PaidHolidayFlagInput";
 import ReturnDirectlyFlagInput from "./ReturnDirectlyFlagInput";
 import { SystemCommentList } from "./SystemCommentList";
+import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 
 const SaveButton = styled(Button)(({ theme }) => ({
   width: 150,
@@ -86,6 +87,11 @@ const SaveButton = styled(Button)(({ theme }) => ({
 }));
 
 export default function AttendanceEditor() {
+  const {
+    getLunchRestStartTime,
+    getLunchRestEndTime,
+    loading: appConfigLoading,
+  } = useAppConfig();
   const dispatch = useAppDispatchV2();
 
   const { targetWorkDate, staffId: targetStaffId } = useParams();
@@ -353,9 +359,12 @@ export default function AttendanceEditor() {
     }
   }, [attendance]);
 
-  if (staffsLoading || attendance === undefined) {
+  if (appConfigLoading || staffsLoading || attendance === undefined) {
     return <LinearProgress />;
   }
+
+  const lunchRestStartTime = getLunchRestStartTime().format("HH:mm");
+  const lunchRestEndTime = getLunchRestEndTime().format("HH:mm");
 
   if (staffSError) {
     return (
@@ -483,7 +492,8 @@ export default function AttendanceEditor() {
               {restFields.length === 0 && (
                 <Stack direction="column" spacing={1}>
                   <Alert severity="info">
-                    昼休憩はスタッフが退勤打刻時に12:00〜13:00で自動打刻されます。
+                    昼休憩はスタッフが退勤打刻時に{lunchRestStartTime}〜
+                    {lunchRestEndTime}で自動打刻されます。
                   </Alert>
                   {visibleRestWarning && (
                     <Box>

@@ -9,6 +9,8 @@ import SnackbarGroup from "./components/ snackbar/SnackbarGroup";
 import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
 import useCognitoUser from "./hooks/useCognitoUser";
+import useAppConfig from "./hooks/useAppConfig/useAppConfig";
+import { AppConfigContext } from "./context/AppConfigContext";
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -18,6 +20,21 @@ export default function Layout() {
     isCognitoUserRole,
     loading: cognitoUserLoading,
   } = useCognitoUser();
+  const {
+    fetchConfig,
+    saveConfig,
+    getStartTime,
+    getEndTime,
+    getConfigId,
+    getLinks,
+    getReasons,
+    getOfficeMode,
+    getQuickInputStartTimes,
+    getQuickInputEndTimes,
+    getLunchRestStartTime,
+    getLunchRestEndTime,
+    loading: appConfigLoading,
+  } = useAppConfig();
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -100,7 +117,11 @@ export default function Layout() {
     }, 1000 * 60 * 60);
   }, [authStatus]);
 
-  if (cognitoUserLoading) {
+  useEffect(() => {
+    fetchConfig();
+  }, []);
+
+  if (cognitoUserLoading || appConfigLoading) {
     return <LinearProgress />;
   }
 
@@ -119,18 +140,35 @@ export default function Layout() {
         cognitoUser,
       }}
     >
-      <Stack sx={{ height: "100vh" }}>
-        <Box>
-          <Header />
-        </Box>
-        <Box sx={{ flexGrow: 2 }}>
-          <Outlet />
-        </Box>
-        <Box>
-          <Footer />
-        </Box>
-        <SnackbarGroup />
-      </Stack>
+      <AppConfigContext.Provider
+        value={{
+          fetchConfig,
+          saveConfig,
+          getStartTime,
+          getEndTime,
+          getConfigId,
+          getLinks,
+          getReasons,
+          getOfficeMode,
+          getQuickInputStartTimes,
+          getQuickInputEndTimes,
+          getLunchRestStartTime,
+          getLunchRestEndTime,
+        }}
+      >
+        <Stack sx={{ height: "100vh" }}>
+          <Box>
+            <Header />
+          </Box>
+          <Box sx={{ flexGrow: 2 }}>
+            <Outlet />
+          </Box>
+          <Box>
+            <Footer />
+          </Box>
+          <SnackbarGroup />
+        </Stack>
+      </AppConfigContext.Provider>
     </AuthContext.Provider>
   );
 }

@@ -65,6 +65,8 @@ export const createAppConfig = /* GraphQL */ `mutation CreateAppConfig(
     name
     workStartTime
     workEndTime
+    lunchRestStartTime
+    lunchRestEndTime
     officeMode
     links {
       label
@@ -106,6 +108,8 @@ export const updateAppConfig = /* GraphQL */ `mutation UpdateAppConfig(
     name
     workStartTime
     workEndTime
+    lunchRestStartTime
+    lunchRestEndTime
     officeMode
     links {
       label
@@ -147,6 +151,8 @@ export const deleteAppConfig = /* GraphQL */ `mutation DeleteAppConfig(
     name
     workStartTime
     workEndTime
+    lunchRestStartTime
+    lunchRestEndTime
     officeMode
     links {
       label

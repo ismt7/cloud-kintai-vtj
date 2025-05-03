@@ -1,5 +1,12 @@
-import { styled, TableCell as MuiTableCell } from "@mui/material";
+import {
+  styled,
+  TableCell as MuiTableCell,
+  CircularProgress,
+  Box,
+} from "@mui/material";
 import dayjs from "dayjs";
+import { useContext } from "react";
+import { AppConfigContext } from "../../../context/AppConfigContext";
 
 import { Attendance } from "../../../API";
 
@@ -16,8 +23,12 @@ export function RestStartTimeTableCell({
   rests: Attendance["rests"];
   paidHolidayFlag: Attendance["paidHolidayFlag"];
 }) {
+  const { getLunchRestStartTime } = useContext(AppConfigContext);
+
+  const lunchRestStartTime = getLunchRestStartTime().format("H:mm");
+
   const formattedRestStartTime = (() => {
-    if (paidHolidayFlag) return "12:00";
+    if (paidHolidayFlag) return lunchRestStartTime;
     if (!rests) return "";
 
     const filteredRests = rests.filter(

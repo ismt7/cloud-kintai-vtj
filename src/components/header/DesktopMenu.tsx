@@ -4,23 +4,17 @@ import { useContext, useEffect, useState } from "react";
 
 import { StaffRole } from "../../hooks/useStaffs/useStaffs";
 import { AuthContext } from "../../context/AuthContext";
+import { AppConfigContext } from "../../context/AppConfigContext";
 import Link from "../link/Link";
-import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 
 export default function DesktopMenu({ pathName }: { pathName: string }) {
   const { isCognitoUserRole } = useContext(AuthContext);
-  const { fetchConfig, getOfficeMode, loading } = useAppConfig();
+  const { getOfficeMode } = useContext(AppConfigContext);
   const [officeMode, setOfficeMode] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchConfig();
-  }, []);
-
-  useEffect(() => {
-    if (!loading) {
-      setOfficeMode(getOfficeMode());
-    }
-  }, [loading]);
+    setOfficeMode(getOfficeMode());
+  }, [getOfficeMode]);
 
   const viewableList = [];
   const menuList = [

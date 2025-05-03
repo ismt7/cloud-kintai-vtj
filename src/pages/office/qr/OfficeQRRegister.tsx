@@ -12,7 +12,7 @@ import { Logger } from "aws-amplify";
 import useAttendance from "../../../hooks/useAttendance/useAttendance";
 import { AuthContext } from "@/context/AuthContext";
 import { AttendanceDate } from "@/lib/AttendanceDate";
-import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
+import { AppConfigContext } from "../../../context/AppConfigContext";
 
 const ActionButton = styled(Button)(({ theme }) => ({
   color: theme.palette.clock_in.contrastText,
@@ -66,7 +66,7 @@ const validateToken = async (timestamp: string, token: string) => {
 };
 
 const OfficeQRRegister: React.FC = () => {
-  const { getOfficeMode } = useAppConfig();
+  const { getOfficeMode } = useContext(AppConfigContext);
   const [searchParams] = useSearchParams();
   const [isOfficeModeEnabled, setIsOfficeModeEnabled] = useState(false);
   const [isValidToken, setIsValidToken] = useState(false);

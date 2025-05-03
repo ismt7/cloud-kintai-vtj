@@ -5,7 +5,7 @@ import { UseFormRegister, UseFormSetValue } from "react-hook-form";
 
 import { AttendanceEditContext } from "../AttendanceEditProvider";
 import { AttendanceEditInputs } from "../common";
-import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
+import { AppConfigContext } from "../../../context/AppConfigContext";
 
 const Label = styled(Typography)(() => ({
   width: "150px",
@@ -19,21 +19,15 @@ export default function StaffCommentInput({
   register: UseFormRegister<AttendanceEditInputs>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
 }) {
-  const { fetchConfig, getReasons, loading } = useAppConfig();
+  const { getReasons } = useContext(AppConfigContext);
   const { changeRequests } = useContext(AttendanceEditContext);
   const [reasons, setReasons] = useState<
     { reason: string; enabled: boolean }[]
   >([]);
 
   useEffect(() => {
-    fetchConfig();
-  }, []);
-
-  useEffect(() => {
-    if (!loading) {
-      setReasons(getReasons().filter((reason) => reason.enabled));
-    }
-  }, [loading]);
+    setReasons(getReasons().filter((reason) => reason.enabled));
+  }, [getReasons]);
 
   return (
     <Stack direction="row" alignItems={"center"}>

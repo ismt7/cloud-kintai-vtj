@@ -1,11 +1,11 @@
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import { Box, Chip, Stack } from "@mui/material";
+import { Box, Chip, CircularProgress, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useContext } from "react";
 import { Controller, FieldArrayWithId } from "react-hook-form";
 
-import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
+import { AppConfigContext } from "@/context/AppConfigContext";
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 
 import { AttendanceEditInputs } from "../../../common";
@@ -22,8 +22,11 @@ export default function RestStartTimeInput({
   const { workDate, changeRequests, control, restUpdate } = useContext(
     AttendanceEditContext
   );
+  const { getLunchRestStartTime } = useContext(AppConfigContext);
 
   if (!workDate || !control || !restUpdate) return null;
+
+  const lunchRestStartTime = getLunchRestStartTime().format("HH:mm");
 
   return (
     <Stack spacing={1}>
@@ -63,15 +66,17 @@ export default function RestStartTimeInput({
       />
       <Box>
         <Chip
-          label="12:00"
+          label={lunchRestStartTime}
           variant="outlined"
           color="success"
           icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
           disabled={changeRequests.length > 0}
           onClick={() => {
-            const startTime = new AttendanceDateTime()
-              .setDate(workDate)
-              .setRestStart()
+            const startTime = dayjs(
+              `${workDate.format("YYYY-MM-DD")} ${lunchRestStartTime}`
+            )
+              .second(0)
+              .millisecond(0)
               .toISOString();
             restUpdate(index, { ...rest, startTime });
           }}
