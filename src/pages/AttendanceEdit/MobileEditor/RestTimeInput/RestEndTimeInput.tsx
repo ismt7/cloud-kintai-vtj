@@ -4,7 +4,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { Box, Button, Chip, Stack, styled } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   Control,
   Controller,
@@ -13,6 +13,7 @@ import {
 } from "react-hook-form";
 
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
+import { AppConfigContext } from "@/context/AppConfigContext";
 
 import { AttendanceEditInputs } from "../../common";
 
@@ -43,7 +44,11 @@ export default function RestEndTimeInput({
   control,
   restUpdate,
 }: RestEndTimeInputProps) {
+  const { getLunchRestEndTime } = useContext(AppConfigContext);
+
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
+
+  const lunchRestEndTime = getLunchRestEndTime().format("H:mm");
 
   if (!enableEndTime) {
     return (
@@ -100,6 +105,7 @@ export default function RestEndTimeInput({
             workDate={workDate}
             restUpdate={restUpdate}
             rest={rest}
+            lunchRestEndTime={lunchRestEndTime}
           />
         </Box>
       </Stack>
@@ -125,15 +131,17 @@ function DefaultEndTimeChip({
   workDate,
   restUpdate,
   rest,
+  lunchRestEndTime,
 }: {
   index: number;
   workDate: dayjs.Dayjs;
   restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
   rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
+  lunchRestEndTime: string;
 }): JSX.Element {
   return (
     <Chip
-      label="13:00"
+      label={lunchRestEndTime}
       variant="outlined"
       color="success"
       icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}

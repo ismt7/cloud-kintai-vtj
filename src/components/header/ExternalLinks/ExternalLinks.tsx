@@ -6,14 +6,14 @@ import { useContext, useEffect, useState } from "react";
 
 import { theme } from "../../../lib/theme";
 import { LinkGridItem } from "./LinkGridItem";
-import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 import { AuthContext } from "@/context/AuthContext";
+import { AppConfigContext } from "@/context/AppConfigContext";
 
 export function ExternalLinks({ pathName }: { pathName: string }) {
   const { cognitoUser } = useContext(AuthContext);
+  const { getLinks } = useContext(AppConfigContext);
 
   const [anchor, setAnchor] = useState<null | HTMLElement>(null);
-  const { fetchConfig, getLinks, loading } = useAppConfig();
   const [links, setLinks] = useState<
     { label: string; url: string; enabled: boolean; icon: string }[]
   >([]);
@@ -21,14 +21,8 @@ export function ExternalLinks({ pathName }: { pathName: string }) {
   const isMobileSize = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
-    fetchConfig();
-  }, []);
-
-  useEffect(() => {
-    if (!loading) {
-      setLinks(getLinks());
-    }
-  }, [loading]);
+    setLinks(getLinks);
+  }, [getLinks]);
 
   if (!cognitoUser) {
     return null;
@@ -46,10 +40,6 @@ export function ExternalLinks({ pathName }: { pathName: string }) {
   const handleClickAway = () => {
     setAnchor(null);
   };
-
-  if (loading) {
-    return null;
-  }
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>

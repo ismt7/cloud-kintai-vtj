@@ -5,9 +5,9 @@ import dayjs from "dayjs";
 import { useContext } from "react";
 import { Controller, FieldArrayWithId } from "react-hook-form";
 
-import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 import { AttendanceEditInputs } from "@/pages/AttendanceEdit/common";
+import { AppConfigContext } from "@/context/AppConfigContext";
 
 export default function RestStartTimeInput({
   index,
@@ -17,10 +17,13 @@ export default function RestStartTimeInput({
   rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
 }) {
   const { workDate, control, restUpdate } = useContext(AttendanceEditContext);
+  const { getLunchRestStartTime } = useContext(AppConfigContext);
 
   if (!workDate || !control || !restUpdate) {
     return null;
   }
+
+  const lunchRestStartTime = getLunchRestStartTime().format("HH:mm");
 
   return (
     <Stack spacing={1}>
@@ -56,14 +59,16 @@ export default function RestStartTimeInput({
       />
       <Box>
         <Chip
-          label="12:00"
+          label={lunchRestStartTime}
           variant="outlined"
           color="success"
           icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
           onClick={() => {
-            const startTime = new AttendanceDateTime()
-              .setDate(workDate)
-              .setRestStart()
+            const startTime = dayjs(
+              `${workDate.format("YYYY-MM-DD")} ${lunchRestStartTime}`
+            )
+              .second(0)
+              .millisecond(0)
               .toISOString();
             restUpdate(index, { ...rest, startTime });
           }}

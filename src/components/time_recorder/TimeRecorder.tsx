@@ -110,35 +110,13 @@ export default function TimeRecorder() {
   const [isAttendanceError, setIsAttendanceError] = useState(false);
   const [isTimeElapsedError, setIsTimeElapsedError] = useState(false);
   const [directMode, setDirectMode] = useState(false);
+  const [lastActiveTime, setLastActiveTime] = useState(dayjs());
 
   const today = dayjs().format(AttendanceDate.DataFormat);
   const logger = new Logger(
     "TimeRecorder",
     import.meta.env.DEV ? "DEBUG" : "ERROR"
   );
-
-  useEffect(() => {
-    if (!Cache.getItem("reloadTimer")) {
-      Cache.setItem("reloadTimer", true, {
-        expires: dayjs().add(10, "minute").toDate().getTime(),
-      });
-    }
-
-    setInterval(() => {
-      if (!Cache.getItem("reloadTimer")) {
-        // eslint-disable-next-line no-alert
-        const confirm = window.confirm(
-          "ページの有効期限が切れました。リロードしてください。"
-        );
-        if (confirm) {
-          window.location.reload();
-        }
-        Cache.setItem("reloadTimer", true, {
-          expires: dayjs().add(10, "minute").toDate().getTime(),
-        });
-      }
-    }, 10000);
-  }, []);
 
   useEffect(() => {
     if (!cognitoUser) return;
@@ -201,6 +179,24 @@ export default function TimeRecorder() {
   useEffect(() => {
     setWorkStatus(getWorkStatus(attendance));
   }, [attendance]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      const now = dayjs();
+      if (document.visibilityState === "visible") {
+        if (now.diff(lastActiveTime, "minute") > 5) {
+          window.location.reload();
+        }
+        setLastActiveTime(now);
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [lastActiveTime]);
 
   if (attendanceLoading || workStatus === undefined) {
     return (

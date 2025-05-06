@@ -137,6 +137,8 @@ type AppConfig @model {
   name: String!
   workStartTime: String
   workEndTime: String
+  lunchRestStartTime: String
+  lunchRestEndTime: String
   officeMode: Boolean
   links: [Link]
   reasons: [Reason]

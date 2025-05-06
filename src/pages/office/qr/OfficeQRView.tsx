@@ -12,7 +12,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import dayjs from "dayjs";
 import { StaffRole } from "@/hooks/useStaffs/useStaffs";
 import { AuthContext } from "@/context/AuthContext";
-import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
+import { AppConfigContext } from "../../../context/AppConfigContext";
 
 const generateToken = async (timestamp: number) => {
   const secret = import.meta.env.VITE_TOKEN_SECRET || "default_secret";
@@ -35,7 +35,7 @@ const generateToken = async (timestamp: number) => {
 
 const OfficeQRView: React.FC = () => {
   const { isCognitoUserRole } = useContext(AuthContext);
-  const { fetchConfig, getOfficeMode, loading } = useAppConfig();
+  const { getOfficeMode } = useContext(AppConfigContext);
   const [qrValue, setQrValue] = useState<string>("");
   const [progress, setProgress] = useState(100);
   const [timeLeft, setTimeLeft] = useState(30);
@@ -56,7 +56,6 @@ const OfficeQRView: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchConfig();
     updateQRValue();
 
     const totalDuration = 30;
@@ -94,28 +93,14 @@ const OfficeQRView: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (loading) {
-      return;
-    }
-
     setIsOfficeModeEnabled(getOfficeMode());
-  }, [loading]);
+  }, [getOfficeMode]);
 
   useEffect(() => {
     if (isCognitoUserRole(StaffRole.ADMIN)) {
       setShowAdminAlert(true);
     }
   }, [isCognitoUserRole]);
-
-  if (loading) {
-    return (
-      <Container>
-        <Box sx={{ mt: 4, textAlign: "center" }}>
-          <LinearProgress />
-        </Box>
-      </Container>
-    );
-  }
 
   if (!isOfficeModeEnabled) {
     return (

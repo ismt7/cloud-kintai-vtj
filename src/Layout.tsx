@@ -9,6 +9,8 @@ import SnackbarGroup from "./components/ snackbar/SnackbarGroup";
 import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
 import useCognitoUser from "./hooks/useCognitoUser";
+import useAppConfig from "./hooks/useAppConfig/useAppConfig";
+import { AppConfigContext } from "./context/AppConfigContext";
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -18,6 +20,21 @@ export default function Layout() {
     isCognitoUserRole,
     loading: cognitoUserLoading,
   } = useCognitoUser();
+  const {
+    fetchConfig,
+    saveConfig,
+    getStartTime,
+    getEndTime,
+    getConfigId,
+    getLinks,
+    getReasons,
+    getOfficeMode,
+    getQuickInputStartTimes,
+    getQuickInputEndTimes,
+    getLunchRestStartTime,
+    getLunchRestEndTime,
+    loading: appConfigLoading,
+  } = useAppConfig();
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -100,7 +117,33 @@ export default function Layout() {
     }, 1000 * 60 * 60);
   }, [authStatus]);
 
-  if (cognitoUserLoading) {
+  const setCookie = (name: string, value: string, minutes: number) => {
+    const expires = new Date(Date.now() + minutes * 60 * 1000).toUTCString();
+    document.cookie = `${name}=${value}; expires=${expires}; path=/`;
+  };
+
+  const getCookie = (name: string): string | null => {
+    const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
+    return match ? match[2] : null;
+  };
+
+  useEffect(() => {
+    const fetchConfigWithCookie = () => {
+      const cookieName = "configLastFetchTime";
+      const lastFetchTime = getCookie(cookieName);
+
+      if (lastFetchTime) {
+        return;
+      }
+
+      setCookie(cookieName, "config_fetched", 2);
+      fetchConfig();
+    };
+
+    fetchConfigWithCookie();
+  }, []);
+
+  if (cognitoUserLoading || appConfigLoading) {
     return <LinearProgress />;
   }
 
@@ -119,18 +162,35 @@ export default function Layout() {
         cognitoUser,
       }}
     >
-      <Stack sx={{ height: "100vh" }}>
-        <Box>
-          <Header />
-        </Box>
-        <Box sx={{ flexGrow: 2 }}>
-          <Outlet />
-        </Box>
-        <Box>
-          <Footer />
-        </Box>
-        <SnackbarGroup />
-      </Stack>
+      <AppConfigContext.Provider
+        value={{
+          fetchConfig,
+          saveConfig,
+          getStartTime,
+          getEndTime,
+          getConfigId,
+          getLinks,
+          getReasons,
+          getOfficeMode,
+          getQuickInputStartTimes,
+          getQuickInputEndTimes,
+          getLunchRestStartTime,
+          getLunchRestEndTime,
+        }}
+      >
+        <Stack sx={{ height: "100vh" }}>
+          <Box>
+            <Header />
+          </Box>
+          <Box sx={{ flexGrow: 2 }}>
+            <Outlet />
+          </Box>
+          <Box>
+            <Footer />
+          </Box>
+          <SnackbarGroup />
+        </Stack>
+      </AppConfigContext.Provider>
     </AuthContext.Provider>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import { AppConfigDataManager } from "./AppConfigDataManager";
 import { AppConfig, CreateAppConfigInput, UpdateAppConfigInput } from "@/API";
@@ -9,6 +9,8 @@ export type DefaultAppConfig = Pick<
   | "name"
   | "workStartTime"
   | "workEndTime"
+  | "lunchRestStartTime"
+  | "lunchRestEndTime"
   | "links"
   | "officeMode"
   | "reasons"
@@ -16,10 +18,12 @@ export type DefaultAppConfig = Pick<
   | "quickInputEndTimes"
 >;
 
-const DEFAULT_CONFIG: DefaultAppConfig = {
+export const DEFAULT_CONFIG: DefaultAppConfig = {
   name: "default",
   workStartTime: "09:00",
   workEndTime: "18:00",
+  lunchRestStartTime: "12:00",
+  lunchRestEndTime: "13:00",
   officeMode: false,
   links: [],
   reasons: [],
@@ -27,16 +31,28 @@ const DEFAULT_CONFIG: DefaultAppConfig = {
   quickInputEndTimes: [],
 };
 
+const LOCAL_STORAGE_KEY = "appConfig";
+
 export default function useAppConfig() {
   const [config, setConfig] = useState<AppConfig | null>(null);
   const [loading, setLoading] = useState(false);
   const dataManager = new AppConfigDataManager();
+
+  useEffect(() => {
+    // ローカルストレージからキャッシュを読み込む
+    const cachedConfig = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (cachedConfig) {
+      setConfig(JSON.parse(cachedConfig));
+    }
+  }, []);
 
   const fetchConfig = async () => {
     setLoading(true);
     try {
       const fetchedConfig = await dataManager.fetch();
       setConfig(fetchedConfig);
+      // キャッシュをローカルストレージに保存
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(fetchedConfig));
     } catch (error) {
       console.error("Failed to fetch app config:", error);
     } finally {
@@ -62,6 +78,8 @@ export default function useAppConfig() {
         );
       }
       setConfig(savedConfig);
+      // キャッシュをローカルストレージに保存
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(savedConfig));
     } catch (error) {
       console.error("Failed to save app config:", error);
     } finally {
@@ -130,6 +148,14 @@ export default function useAppConfig() {
     return [];
   };
 
+  const getLunchRestStartTime = () =>
+    config
+      ? dayjs(config.lunchRestStartTime, "HH:mm")
+      : dayjs("12:00", "HH:mm");
+
+  const getLunchRestEndTime = () =>
+    config ? dayjs(config.lunchRestEndTime, "HH:mm") : dayjs("13:00", "HH:mm");
+
   return {
     config,
     loading,
@@ -143,5 +169,7 @@ export default function useAppConfig() {
     getOfficeMode,
     getQuickInputStartTimes,
     getQuickInputEndTimes,
+    getLunchRestStartTime,
+    getLunchRestEndTime,
   };
 }

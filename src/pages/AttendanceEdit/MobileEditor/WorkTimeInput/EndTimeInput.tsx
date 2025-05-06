@@ -4,7 +4,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { Box, Button, Chip, Stack, styled } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Control,
   Controller,
@@ -13,7 +13,7 @@ import {
   UseFormWatch,
 } from "react-hook-form";
 
-import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
+import { AppConfigContext } from "@/context/AppConfigContext";
 
 import { AttendanceEditInputs } from "../../common";
 
@@ -42,18 +42,13 @@ export default function EndTimeInput({
   getValues: UseFormGetValues<AttendanceEditInputs>;
   watch: UseFormWatch<AttendanceEditInputs>;
 }) {
-  const { fetchConfig, getQuickInputEndTimes, loading } = useAppConfig();
+  const { getQuickInputEndTimes } = useContext(AppConfigContext);
   const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
   const [quickInputEndTimes, setQuickInputEndTimes] = useState<
     { time: string; enabled: boolean }[]
   >([]);
 
   useEffect(() => {
-    fetchConfig();
-  }, [fetchConfig]);
-
-  useEffect(() => {
-    if (loading) return;
     const quickInputTimes = getQuickInputEndTimes(true);
     if (quickInputTimes.length > 0) {
       setQuickInputEndTimes(
@@ -63,7 +58,7 @@ export default function EndTimeInput({
         }))
       );
     }
-  }, [loading]);
+  }, [getQuickInputEndTimes]);
 
   useEffect(() => {
     const endTime = getValues("endTime");

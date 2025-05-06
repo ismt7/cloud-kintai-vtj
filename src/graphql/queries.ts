@@ -56,6 +56,8 @@ export const getAppConfig = /* GraphQL */ `query GetAppConfig($id: ID!) {
     name
     workStartTime
     workEndTime
+    lunchRestStartTime
+    lunchRestEndTime
     officeMode
     links {
       label
@@ -99,6 +101,8 @@ export const listAppConfigs = /* GraphQL */ `query ListAppConfigs(
       name
       workStartTime
       workEndTime
+      lunchRestStartTime
+      lunchRestEndTime
       officeMode
       links {
         label

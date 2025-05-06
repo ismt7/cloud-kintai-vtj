@@ -2,12 +2,19 @@ import { TableCell } from "@mui/material";
 import dayjs from "dayjs";
 
 import { Attendance } from "@/API";
+import { useContext } from "react";
+import { AppConfigContext } from "@/context/AppConfigContext";
 
 export function RestTimeTableCell({ attendance }: { attendance: Attendance }) {
+  const { getLunchRestStartTime, getLunchRestEndTime } =
+    useContext(AppConfigContext);
   const { paidHolidayFlag, rests } = attendance;
 
+  const lunchRestStartTime = getLunchRestStartTime().format("H:mm");
+  const lunchRestEndTime = getLunchRestEndTime().format("H:mm");
+
   const formattedRestStartTime = (() => {
-    if (paidHolidayFlag) return "12:00";
+    if (paidHolidayFlag) return lunchRestStartTime;
     if (!rests) return "";
 
     const filteredRests = rests.filter(
@@ -24,7 +31,7 @@ export function RestTimeTableCell({ attendance }: { attendance: Attendance }) {
   })();
 
   const formattedRestEndTime = (() => {
-    if (paidHolidayFlag) return "13:00";
+    if (paidHolidayFlag) return lunchRestEndTime;
     if (!rests) return "";
 
     const filteredRests = rests.filter(

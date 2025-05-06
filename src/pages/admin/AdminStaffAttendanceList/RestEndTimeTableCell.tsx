@@ -2,6 +2,8 @@ import { styled, TableCell as MuiTableCell } from "@mui/material";
 import dayjs from "dayjs";
 
 import { Attendance } from "../../../API";
+import { useContext } from "react";
+import { AppConfigContext } from "@/context/AppConfigContext";
 
 const TableCell = styled(MuiTableCell)(({ theme }) => ({
   width: theme.spacing(16),
@@ -16,8 +18,12 @@ export function RestEndTimeTableCell({
   rests: Attendance["rests"];
   paidHolidayFlag: Attendance["paidHolidayFlag"];
 }) {
+  const { getLunchRestEndTime } = useContext(AppConfigContext);
+
+  const lunchRestEndTime = getLunchRestEndTime().format("H:mm");
+
   const formattedRestEndTime = (() => {
-    if (paidHolidayFlag) return "13:00";
+    if (paidHolidayFlag) return lunchRestEndTime;
     if (!rests) return "";
 
     const filteredRests = rests.filter(

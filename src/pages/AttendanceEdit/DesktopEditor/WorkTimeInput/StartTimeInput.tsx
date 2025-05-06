@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
 
-import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
+import { AppConfigContext } from "@/context/AppConfigContext";
 
 import { AttendanceEditContext } from "../../AttendanceEditProvider";
 
@@ -13,26 +13,20 @@ export default function StartTimeInput() {
   const { workDate, control, setValue, changeRequests } = useContext(
     AttendanceEditContext
   );
-  const { fetchConfig, getQuickInputStartTimes, loading } = useAppConfig();
+  const { getQuickInputStartTimes } = useContext(AppConfigContext);
   const [quickInputStartTimes, setQuickInputStartTimes] = useState<
     { time: string; enabled: boolean }[]
   >([]);
 
   useEffect(() => {
-    fetchConfig();
-  }, [fetchConfig]);
-
-  useEffect(() => {
-    if (!loading) {
-      const quickInputStartTimes = getQuickInputStartTimes(true);
-      setQuickInputStartTimes(
-        quickInputStartTimes.map((entry) => ({
-          time: entry.time,
-          enabled: entry.enabled,
-        }))
-      );
-    }
-  }, [loading]);
+    const quickInputStartTimes = getQuickInputStartTimes(true);
+    setQuickInputStartTimes(
+      quickInputStartTimes.map((entry) => ({
+        time: entry.time,
+        enabled: entry.enabled,
+      }))
+    );
+  }, [getQuickInputStartTimes]);
 
   if (!workDate || !control || !setValue) return null;
 
