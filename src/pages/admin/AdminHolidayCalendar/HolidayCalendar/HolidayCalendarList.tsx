@@ -22,7 +22,6 @@ import {
   HolidayCalendar,
 } from "../../../../API";
 import { useAppDispatchV2 } from "../../../../app/hooks";
-import useHolidayCalendar from "../../../../hooks/useHolidayCalendars/useHolidayCalendars";
 import {
   setSnackbarError,
   setSnackbarSuccess,
@@ -30,6 +29,8 @@ import {
 import { AddHolidayCalendar } from "./AddHolidayCalendar";
 import { CSVFilePicker } from "./CSVFilePicker";
 import HolidayCalendarEdit from "./HolidayCalendarEdit";
+import { useContext } from "react";
+import { AppContext } from "@/context/AppContext";
 
 export function sortCalendar(
   a: HolidayCalendar | CompanyHolidayCalendar,
@@ -43,24 +44,11 @@ export default function HolidayCalendarList() {
 
   const {
     holidayCalendars,
-    loading: holidayCalendarLoading,
-    error: holidayCalendarError,
     bulkCreateHolidayCalendar,
     updateHolidayCalendar,
     createHolidayCalendar,
     deleteHolidayCalendar,
-  } = useHolidayCalendar();
-
-  if (holidayCalendarLoading) {
-    return <LinearProgress />;
-  }
-
-  if (holidayCalendarError) {
-    dispatch(
-      setSnackbarError(new HolidayCalenderMessage().get(MessageStatus.ERROR))
-    );
-    return null;
-  }
+  } = useContext(AppContext);
 
   return (
     <>

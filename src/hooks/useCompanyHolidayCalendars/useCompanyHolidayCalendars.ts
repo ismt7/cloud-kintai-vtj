@@ -18,17 +18,6 @@ export default function useCompanyHolidayCalendars() {
     CompanyHolidayCalendar[]
   >([]);
 
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
-    fetchCompanyHolidayCalendars()
-      .then(setCompanyHolidayCalendars)
-      .catch(setError)
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
   const createCompanyHolidayCalendar = async (
     input: CreateCompanyHolidayCalendarInput
   ) =>
@@ -85,6 +74,21 @@ export default function useCompanyHolidayCalendars() {
         throw e;
       });
 
+  const fetchAllCompanyHolidayCalendars = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const calendars = await fetchCompanyHolidayCalendars();
+      setCompanyHolidayCalendars(calendars);
+      return calendars;
+    } catch (e) {
+      setError(e as Error);
+      throw e;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     error,
@@ -93,5 +97,6 @@ export default function useCompanyHolidayCalendars() {
     updateCompanyHolidayCalendar,
     deleteCompanyHolidayCalendar,
     bulkCreateCompanyHolidayCalendar,
+    fetchAllCompanyHolidayCalendars,
   };
 }

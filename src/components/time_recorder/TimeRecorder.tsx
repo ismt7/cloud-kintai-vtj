@@ -13,7 +13,7 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
-import { Cache, Logger } from "aws-amplify";
+import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 
@@ -30,8 +30,6 @@ import useAttendance, {
 } from "../../hooks/useAttendance/useAttendance";
 import { getWorkStatus } from "../../hooks/useAttendance/WorkStatus";
 import useAttendances from "../../hooks/useAttendances/useAttendances";
-import useCompanyHolidayCalendars from "../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
-import useHolidayCalendars from "../../hooks/useHolidayCalendars/useHolidayCalendars";
 import fetchStaff from "../../hooks/useStaff/fetchStaff";
 import { TimeRecordMailSender } from "../../lib/mail/TimeRecordMailSender";
 import {
@@ -50,6 +48,7 @@ import ReturnDirectly from "./items/ReturnDirectlyItem";
 import { RestTimeMessage } from "./RestTimeMessage";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
 import { AuthContext } from "@/context/AuthContext";
+import { AppContext } from "@/context/AppContext";
 
 const DirectSwitch = styled(Switch)(({ theme }) => ({
   padding: 8,
@@ -98,10 +97,7 @@ export default function TimeRecorder() {
     updateRemarks,
   } = useAttendance();
   const { attendances, getAttendances } = useAttendances();
-  const { holidayCalendars, loading: holidayCalendarLoading } =
-    useHolidayCalendars();
-  const { companyHolidayCalendars, loading: companyHolidayCalendarLoading } =
-    useCompanyHolidayCalendars();
+  const { holidayCalendars, companyHolidayCalendars } = useContext(AppContext);
 
   const [workStatus, setWorkStatus] = useState<WorkStatus | null | undefined>(
     undefined
@@ -135,12 +131,7 @@ export default function TimeRecorder() {
   }, [cognitoUser]);
 
   useEffect(() => {
-    if (
-      !staff ||
-      !attendances ||
-      holidayCalendarLoading ||
-      companyHolidayCalendarLoading
-    ) {
+    if (!staff || !attendances) {
       return;
     }
 

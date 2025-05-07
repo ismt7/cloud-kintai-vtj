@@ -27,19 +27,19 @@ import { ExcelFilePicker } from "../HolidayCalendar/ExcelFilePicker";
 import { sortCalendar } from "../HolidayCalendar/HolidayCalendarList";
 import AddCompanyHolidayCalendar from "./AddCompanyHolidayCalendar";
 import CompanyHolidayCalendarEdit from "./CompanyHolidayCalendarEdit";
+import { useContext } from "react";
+import { AppContext } from "@/context/AppContext";
 
 export default function CompanyHolidayCalendarList() {
   const dispatch = useAppDispatchV2();
 
   const {
     companyHolidayCalendars,
-    loading: companyHolidayCalendarLoading,
-    error: companyHolidayCalendarError,
     createCompanyHolidayCalendar,
     updateCompanyHolidayCalendar,
     deleteCompanyHolidayCalendar,
     bulkCreateCompanyHolidayCalendar,
-  } = useCompanyHolidayCalendars();
+  } = useContext(AppContext);
 
   const handleDelete = async (
     companyHolidayCalendar: CompanyHolidayCalendar
@@ -74,20 +74,6 @@ export default function CompanyHolidayCalendarList() {
         )
       );
   };
-
-  if (companyHolidayCalendarLoading) {
-    return <LinearProgress />;
-  }
-
-  if (companyHolidayCalendarError) {
-    dispatch(
-      setSnackbarError(
-        new CompanyHolidayCalenderMessage().get(MessageStatus.ERROR)
-      )
-    );
-
-    return null;
-  }
 
   return (
     <>
