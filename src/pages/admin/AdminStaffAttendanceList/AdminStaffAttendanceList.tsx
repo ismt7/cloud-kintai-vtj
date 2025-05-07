@@ -7,7 +7,6 @@ import {
   Breadcrumbs,
   Container,
   IconButton,
-  LinearProgress,
   Stack,
   Table,
   TableBody,
@@ -19,7 +18,7 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -41,8 +40,7 @@ import { calcTotalWorkTime } from "@/pages/AttendanceEdit/DesktopEditor/WorkTime
 import { useAppDispatchV2 } from "../../../app/hooks";
 import * as MESSAGE_CODE from "../../../errors";
 import useAttendances from "../../../hooks/useAttendances/useAttendances";
-import useCompanyHolidayCalendars from "../../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
-import useHolidayCalendars from "../../../hooks/useHolidayCalendars/useHolidayCalendars";
+import { AppContext } from "@/context/AppContext";
 import { setSnackbarError } from "../../../lib/reducers/snackbarReducer";
 import { ApprovalPendingMessage } from "./ApprovalPendingMessage";
 import { AttendanceGraph } from "./AttendanceGraph";
@@ -91,15 +89,11 @@ export default function AdminStaffAttendanceList() {
   const navigate = useNavigate();
   const dispatch = useAppDispatchV2();
 
+  const { holidayCalendars, companyHolidayCalendars } = useContext(AppContext);
   const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
   const [totalTime, setTotalTime] = useState<number>(0);
 
   const { attendances, getAttendances } = useAttendances();
-  const {
-    companyHolidayCalendars,
-    loading: companyHolidayCalendarLoading,
-    error: companyHolidayCalendarError,
-  } = useCompanyHolidayCalendars();
 
   useEffect(() => {
     if (!staffId) return;
@@ -141,28 +135,6 @@ export default function AdminStaffAttendanceList() {
 
     setTotalTime(totalWorkTime - totalRestTime);
   }, [attendances]);
-
-  const {
-    holidayCalendars,
-    loading: holidayCalendarLoading,
-    error: holidayCalendarError,
-  } = useHolidayCalendars();
-
-  if (holidayCalendarLoading || companyHolidayCalendarLoading) {
-    return (
-      <Container maxWidth="xl" sx={{ pt: 2 }}>
-        <LinearProgress />
-      </Container>
-    );
-  }
-
-  if (holidayCalendarError || companyHolidayCalendarError) {
-    return (
-      <Container maxWidth="xl" sx={{ pt: 2 }}>
-        <Typography>データ取得中に何らかの問題が発生しました</Typography>
-      </Container>
-    );
-  }
 
   if (staff === null || !staffId) {
     return (

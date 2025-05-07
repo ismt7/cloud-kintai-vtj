@@ -11,6 +11,9 @@ import Header from "./components/header/Header";
 import useCognitoUser from "./hooks/useCognitoUser";
 import useAppConfig from "./hooks/useAppConfig/useAppConfig";
 import { AppConfigContext } from "./context/AppConfigContext";
+import useHolidayCalendar from "./hooks/useHolidayCalendars/useHolidayCalendars";
+import useCompanyHolidayCalendar from "./hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
+import { AppContext } from "./context/AppContext";
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -35,6 +38,24 @@ export default function Layout() {
     getLunchRestEndTime,
     loading: appConfigLoading,
   } = useAppConfig();
+  const {
+    fetchAllHolidayCalendars,
+    createHolidayCalendar,
+    bulkCreateHolidayCalendar,
+    updateHolidayCalendar,
+    deleteHolidayCalendar,
+    holidayCalendars,
+    loading: holidayCalendarLoading,
+  } = useHolidayCalendar();
+  const {
+    fetchAllCompanyHolidayCalendars,
+    companyHolidayCalendars,
+    loading: companyHolidayCalendarLoading,
+    createCompanyHolidayCalendar,
+    bulkCreateCompanyHolidayCalendar,
+    updateCompanyHolidayCalendar,
+    deleteCompanyHolidayCalendar,
+  } = useCompanyHolidayCalendar();
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -45,7 +66,11 @@ export default function Layout() {
       return;
     }
 
-    if (authStatus !== "authenticated") return;
+    if (authStatus !== "authenticated") {
+      fetchAllHolidayCalendars();
+      fetchAllCompanyHolidayCalendars();
+      return;
+    }
 
     const isMailVerified = user?.attributes?.email_verified ? true : false;
     if (isMailVerified) return;
@@ -61,61 +86,61 @@ export default function Layout() {
     }
   }, [authStatus, user, window.location.href]);
 
-  useEffect(() => {
-    if (authStatus !== "authenticated") return;
+  // useEffect(() => {
+  //   if (authStatus !== "authenticated") return;
 
-    void Storage.get("revision.json", { download: true })
-      .then((result) => {
-        if (!result.Body) return;
-        result.Body.text()
-          .then((text) => {
-            const revision = JSON.parse(text).revision as string;
-            if (revision) {
-              const currentRevision = localStorage.getItem("revision");
-              if (currentRevision !== revision) {
-                localStorage.setItem("revision", revision);
-              }
-            }
-          })
-          .catch((e) => {
-            throw e;
-          });
-      })
-      .catch(() => {
-        console.error("Version check error");
-      });
+  //   void Storage.get("revision.json", { download: true })
+  //     .then((result) => {
+  //       if (!result.Body) return;
+  //       result.Body.text()
+  //         .then((text) => {
+  //           const revision = JSON.parse(text).revision as string;
+  //           if (revision) {
+  //             const currentRevision = localStorage.getItem("revision");
+  //             if (currentRevision !== revision) {
+  //               localStorage.setItem("revision", revision);
+  //             }
+  //           }
+  //         })
+  //         .catch((e) => {
+  //           throw e;
+  //         });
+  //     })
+  //     .catch(() => {
+  //       console.error("Version check error");
+  //     });
 
-    setInterval(() => {
-      void Storage.get("revision.json", { download: true })
-        .then((result) => {
-          if (!result.Body) return;
-          result.Body.text()
-            .then((text) => {
-              const revision = JSON.parse(text).revision as string;
-              const currentRevision = localStorage.getItem("revision");
-              if (currentRevision === revision) return;
+  //   setInterval(() => {
+  //     void Storage.get("revision.json", { download: true })
+  //       .then((result) => {
+  //         if (!result.Body) return;
+  //         result.Body.text()
+  //           .then((text) => {
+  //             const revision = JSON.parse(text).revision as string;
+  //             const currentRevision = localStorage.getItem("revision");
+  //             if (currentRevision === revision) return;
 
-              if (currentRevision) {
-                // eslint-disable-next-line no-alert
-                const result = window.confirm(
-                  "新しいバージョンがリリースされました、すぐに反映しますか？"
-                );
+  //             if (currentRevision) {
+  //               // eslint-disable-next-line no-alert
+  //               const result = window.confirm(
+  //                 "新しいバージョンがリリースされました、すぐに反映しますか？"
+  //               );
 
-                if (result) {
-                  window.location.reload();
-                  localStorage.setItem("revision", revision);
-                }
-              }
-            })
-            .catch((e) => {
-              throw e;
-            });
-        })
-        .catch(() => {
-          console.error("Version check error");
-        });
-    }, 1000 * 60 * 60);
-  }, [authStatus]);
+  //               if (result) {
+  //                 window.location.reload();
+  //                 localStorage.setItem("revision", revision);
+  //               }
+  //             }
+  //           })
+  //           .catch((e) => {
+  //             throw e;
+  //           });
+  //       })
+  //       .catch(() => {
+  //         console.error("Version check error");
+  //       });
+  //   }, 1000 * 60 * 60);
+  // }, [authStatus]);
 
   const setCookie = (name: string, value: string, minutes: number) => {
     const expires = new Date(Date.now() + minutes * 60 * 1000).toUTCString();
@@ -140,10 +165,41 @@ export default function Layout() {
       fetchConfig();
     };
 
+    const fetchHolidayCalendarsWithCookie = () => {
+      const cookieName = "holidayCalendarsLastFetchTime";
+      const lastFetchTime = getCookie(cookieName);
+
+      if (lastFetchTime) {
+        return;
+      }
+
+      setCookie(cookieName, "holiday_calendars_fetched", 2);
+      fetchAllHolidayCalendars();
+    };
+
+    const fetchCompanyHolidayCalendarsWithCookie = () => {
+      const cookieName = "companyHolidayCalendarsLastFetchTime";
+      const lastFetchTime = getCookie(cookieName);
+
+      if (lastFetchTime) {
+        return;
+      }
+
+      setCookie(cookieName, "company_holiday_calendars_fetched", 2);
+      fetchAllCompanyHolidayCalendars();
+    };
+
     fetchConfigWithCookie();
+    fetchHolidayCalendarsWithCookie();
+    fetchCompanyHolidayCalendarsWithCookie();
   }, []);
 
-  if (cognitoUserLoading || appConfigLoading) {
+  if (
+    cognitoUserLoading ||
+    appConfigLoading ||
+    holidayCalendarLoading ||
+    companyHolidayCalendarLoading
+  ) {
     return <LinearProgress />;
   }
 
@@ -178,18 +234,33 @@ export default function Layout() {
           getLunchRestEndTime,
         }}
       >
-        <Stack sx={{ height: "100vh" }}>
-          <Box>
-            <Header />
-          </Box>
-          <Box sx={{ flexGrow: 2 }}>
-            <Outlet />
-          </Box>
-          <Box>
-            <Footer />
-          </Box>
-          <SnackbarGroup />
-        </Stack>
+        <AppContext.Provider
+          value={{
+            holidayCalendars,
+            companyHolidayCalendars,
+            createHolidayCalendar,
+            bulkCreateHolidayCalendar,
+            updateHolidayCalendar,
+            deleteHolidayCalendar,
+            createCompanyHolidayCalendar,
+            bulkCreateCompanyHolidayCalendar,
+            updateCompanyHolidayCalendar,
+            deleteCompanyHolidayCalendar,
+          }}
+        >
+          <Stack sx={{ height: "100vh" }}>
+            <Box>
+              <Header />
+            </Box>
+            <Box sx={{ flexGrow: 2 }}>
+              <Outlet />
+            </Box>
+            <Box>
+              <Footer />
+            </Box>
+            <SnackbarGroup />
+          </Stack>
+        </AppContext.Provider>
       </AppConfigContext.Provider>
     </AuthContext.Provider>
   );

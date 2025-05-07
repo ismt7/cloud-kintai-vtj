@@ -20,14 +20,13 @@ import { Staff } from "../../API";
 import { useAppDispatchV2 } from "../../app/hooks";
 import * as MESSAGE_CODE from "../../errors";
 import useAttendances from "../../hooks/useAttendances/useAttendances";
-import useCompanyHolidayCalendars from "../../hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
-import useHolidayCalendars from "../../hooks/useHolidayCalendars/useHolidayCalendars";
 import fetchStaff from "../../hooks/useStaff/fetchStaff";
 import { setSnackbarError } from "../../lib/reducers/snackbarReducer";
 import Title from "../Title/Title";
 import DesktopList from "./DesktopList";
 import MobileList from "./MobileList/MobileList";
 import { AuthContext } from "@/context/AuthContext";
+import { AppContext } from "@/context/AppContext";
 
 const DescriptionTypography = styled(Typography)(({ theme }) => ({
   padding: "0px 40px",
@@ -38,19 +37,14 @@ const DescriptionTypography = styled(Typography)(({ theme }) => ({
 
 export default function AttendanceTable() {
   const { cognitoUser } = useContext(AuthContext);
+  const { holidayCalendars, companyHolidayCalendars } = useContext(AppContext);
   const dispatch = useAppDispatchV2();
   const navigate = useNavigate();
-  const { attendances, getAttendances } = useAttendances();
   const {
-    holidayCalendars,
-    loading: holidayCalendarLoading,
-    error: holidayCalendarError,
-  } = useHolidayCalendars();
-  const {
-    companyHolidayCalendars,
-    loading: companyHolidayCalendarLoading,
-    error: companyHolidayCalendarError,
-  } = useCompanyHolidayCalendars();
+    attendances,
+    getAttendances,
+    loading: attendanceLoading,
+  } = useAttendances();
 
   const [staff, setStaff] = useState<Staff | null | undefined>(undefined);
   const [totalTime, setTotalTime] = useState<number>(0);
@@ -106,13 +100,8 @@ export default function AttendanceTable() {
     setTotalTime(totalWorkTime - totalRestTime);
   }, [attendances]);
 
-  if (holidayCalendarLoading || companyHolidayCalendarLoading) {
+  if (attendanceLoading) {
     return <LinearProgress />;
-  }
-
-  if (holidayCalendarError || companyHolidayCalendarError) {
-    dispatch(setSnackbarError(MESSAGE_CODE.E00001));
-    return null;
   }
 
   return (
