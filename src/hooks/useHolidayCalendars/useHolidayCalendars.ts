@@ -18,17 +18,6 @@ export default function useHolidayCalendar() {
     []
   );
 
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
-    fetchHolidayCalendars()
-      .then(setHolidayCalendars)
-      .catch(setError)
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
   const createHolidayCalendar = async (input: CreateHolidayCalendarInput) =>
     createHolidayCalendarData(input)
       .then((holidayCalendar) => {
@@ -80,6 +69,20 @@ export default function useHolidayCalendar() {
       });
   };
 
+  const fetchAllHolidayCalendars = async () => {
+    try {
+      setLoading(true);
+      const allHolidayCalendars = await fetchHolidayCalendars();
+      setHolidayCalendars(allHolidayCalendars);
+      return allHolidayCalendars;
+    } catch (e) {
+      setError(e as Error);
+      throw e;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     error,
@@ -88,5 +91,6 @@ export default function useHolidayCalendar() {
     bulkCreateHolidayCalendar,
     updateHolidayCalendar,
     deleteHolidayCalendar,
+    fetchAllHolidayCalendars,
   };
 }

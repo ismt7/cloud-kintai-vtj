@@ -10,18 +10,12 @@ import {
   TableCell,
   Tooltip,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import {
-  Attendance,
-  CompanyHolidayCalendar,
-  HolidayCalendar,
-  Staff,
-} from "@/API";
+import { Attendance, CompanyHolidayCalendar, Staff } from "@/API";
+import { AppContext } from "@/context/AppContext";
 import { useAppDispatchV2 } from "@/app/hooks";
-import useCompanyHolidayCalendars from "@/hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
-import useHolidayCalendar from "@/hooks/useHolidayCalendars/useHolidayCalendars";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
 import { AttendanceState, AttendanceStatus } from "@/lib/AttendanceState";
 import { setSnackbarError } from "@/lib/reducers/snackbarReducer";
@@ -44,15 +38,15 @@ function getBadgeContent(attendances: Attendance[]) {
 
 function AttendanceTotalStatus({
   attendances,
-  holidayCalendars,
   companyHolidayCalendars,
   staff,
 }: {
   attendances: Attendance[];
-  holidayCalendars: HolidayCalendar[];
   companyHolidayCalendars: CompanyHolidayCalendar[];
   staff: Staff;
 }) {
+  const { holidayCalendars } = useContext(AppContext);
+
   const judgedStatus = attendances.map((attendance) =>
     new AttendanceState(
       staff,
@@ -92,6 +86,7 @@ export function ActionsTableCell({ row }: { row: AttendanceDaily }) {
   const navigate = useNavigate();
   const dispatch = useAppDispatchV2();
 
+  const { companyHolidayCalendars } = useContext(AppContext);
   const [staff, setStaff] = useState<Staff | null | undefined>(undefined);
   const [staffLoading, setStaffLoading] = useState(true);
 
@@ -101,18 +96,6 @@ export function ActionsTableCell({ row }: { row: AttendanceDaily }) {
     loading: attendanceLoading,
     error: attendanceError,
   } = useAttendances();
-
-  const {
-    holidayCalendars,
-    loading: holidayCalendarLoading,
-    error: holidayCalendarError,
-  } = useHolidayCalendar();
-
-  const {
-    companyHolidayCalendars,
-    loading: companyHolidayCalendarLoading,
-    error: companyHolidayCalendarError,
-  } = useCompanyHolidayCalendars();
 
   useEffect(() => {
     getAttendances(row.sub);
@@ -129,15 +112,7 @@ export function ActionsTableCell({ row }: { row: AttendanceDaily }) {
       });
   }, [row]);
 
-  if (
-    attendanceLoading ||
-    holidayCalendarLoading ||
-    companyHolidayCalendarLoading ||
-    staffLoading ||
-    attendanceError ||
-    holidayCalendarError ||
-    companyHolidayCalendarError
-  )
+  if (attendanceLoading || staffLoading || attendanceError)
     return (
       <TableCell>
         <Box sx={{ width: 24, height: 24 }} />
@@ -154,7 +129,6 @@ export function ActionsTableCell({ row }: { row: AttendanceDaily }) {
       <Stack direction="row" spacing={1} alignItems="center">
         <AttendanceTotalStatus
           attendances={attendances}
-          holidayCalendars={holidayCalendars}
           companyHolidayCalendars={companyHolidayCalendars}
           staff={staff}
         />
