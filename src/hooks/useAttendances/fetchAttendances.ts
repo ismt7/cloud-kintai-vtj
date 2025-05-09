@@ -44,6 +44,11 @@ export default async function fetchAttendances(staffId: string) {
       )
     );
 
+    // 30件取得したらループを停止
+    if (attendances.length >= 30) {
+      break;
+    }
+
     if (response.data.listAttendances.nextToken) {
       nextToken = response.data.listAttendances.nextToken;
       continue;
