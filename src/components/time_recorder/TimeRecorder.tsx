@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 
 import { AttendanceDate } from "@/lib/AttendanceDate";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
@@ -108,11 +108,31 @@ export default function TimeRecorder() {
   const [directMode, setDirectMode] = useState(false);
   const [lastActiveTime, setLastActiveTime] = useState(dayjs());
 
-  const today = dayjs().format(AttendanceDate.DataFormat);
-  const logger = new Logger(
-    "TimeRecorder",
-    import.meta.env.DEV ? "DEBUG" : "ERROR"
+  const today = useMemo(() => dayjs().format(AttendanceDate.DataFormat), []);
+  const logger = useMemo(
+    () => new Logger("TimeRecorder", import.meta.env.DEV ? "DEBUG" : "ERROR"),
+    []
   );
+
+  const handleVisibilityChange = useMemo(() => {
+    return () => {
+      const now = dayjs();
+      if (document.visibilityState === "visible") {
+        if (now.diff(lastActiveTime, "minute") > 5) {
+          window.location.reload();
+        }
+        setLastActiveTime(now);
+      }
+    };
+  }, [lastActiveTime]);
+
+  useEffect(() => {
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [handleVisibilityChange]);
 
   useEffect(() => {
     if (!cognitoUser) return;
@@ -150,7 +170,7 @@ export default function TimeRecorder() {
 
     // 1週間以上前にエラーがあるかチェック
     const timeElapsedErrorCount = attendances
-      .filter((attendance) => {
+      ?.filter((attendance) => {
         const { workDate } = attendance;
         return dayjs().isAfter(dayjs(workDate).add(1, "week"));
       })
@@ -170,24 +190,6 @@ export default function TimeRecorder() {
   useEffect(() => {
     setWorkStatus(getWorkStatus(attendance));
   }, [attendance]);
-
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      const now = dayjs();
-      if (document.visibilityState === "visible") {
-        if (now.diff(lastActiveTime, "minute") > 5) {
-          window.location.reload();
-        }
-        setLastActiveTime(now);
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [lastActiveTime]);
 
   if (attendanceLoading || workStatus === undefined) {
     return (
