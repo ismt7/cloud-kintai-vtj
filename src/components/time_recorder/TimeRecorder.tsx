@@ -165,7 +165,7 @@ export default function TimeRecorder() {
       .filter((status) => status === AttendanceStatus.Error).length;
 
     setIsTimeElapsedError(timeElapsedErrorCount > 0);
-  }, [attendances]);
+  }, [attendances, staff, holidayCalendars, companyHolidayCalendars]);
 
   useEffect(() => {
     setWorkStatus(getWorkStatus(attendance));
