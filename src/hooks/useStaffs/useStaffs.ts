@@ -194,6 +194,30 @@ export default function useStaffs() {
         throw e;
       });
 
+  const getAllStaffs = async (): Promise<StaffType[]> => {
+    try {
+      const res = await fetchStaffs();
+      return res.map((staff) => ({
+        id: staff.id,
+        cognitoUserId: staff.cognitoUserId,
+        familyName: staff.familyName,
+        givenName: staff.givenName,
+        mailAddress: staff.mailAddress,
+        owner: staff.owner ?? false,
+        role: mappingStaffRole(staff.role),
+        enabled: staff.enabled,
+        status: staff.status,
+        usageStartDate: staff.usageStartDate,
+        createdAt: staff.createdAt,
+        updatedAt: staff.updatedAt,
+        notifications: staff.notifications,
+        sortKey: staff.sortKey,
+      }));
+    } catch (e) {
+      throw e;
+    }
+  };
+
   return {
     loading,
     error,
@@ -202,5 +226,6 @@ export default function useStaffs() {
     createStaff,
     updateStaff,
     deleteStaff,
+    getAllStaffs,
   };
 }

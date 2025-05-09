@@ -1,8 +1,9 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Box, LinearProgress, Stack } from "@mui/material";
-import { Storage } from "aws-amplify";
+
 import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { useCallback, useMemo } from "react";
 
 import { AuthContext } from "./context/AuthContext";
 import SnackbarGroup from "./components/ snackbar/SnackbarGroup";
@@ -17,6 +18,7 @@ import { AppContext } from "./context/AppContext";
 
 export default function Layout() {
   const navigate = useNavigate();
+  const location = useLocation(); // useLocationを使用
   const { user, signOut, authStatus } = useAuthenticator();
   const {
     cognitoUser,
@@ -86,113 +88,134 @@ export default function Layout() {
     }
   }, [authStatus, user, window.location.href]);
 
-  // useEffect(() => {
-  //   if (authStatus !== "authenticated") return;
+  const setCookie = useCallback(
+    (name: string, value: string, minutes: number) => {
+      const expires = new Date(Date.now() + minutes * 60 * 1000).toUTCString();
+      document.cookie = `${name}=${value}; expires=${expires}; path=/`;
+    },
+    []
+  );
 
-  //   void Storage.get("revision.json", { download: true })
-  //     .then((result) => {
-  //       if (!result.Body) return;
-  //       result.Body.text()
-  //         .then((text) => {
-  //           const revision = JSON.parse(text).revision as string;
-  //           if (revision) {
-  //             const currentRevision = localStorage.getItem("revision");
-  //             if (currentRevision !== revision) {
-  //               localStorage.setItem("revision", revision);
-  //             }
-  //           }
-  //         })
-  //         .catch((e) => {
-  //           throw e;
-  //         });
-  //     })
-  //     .catch(() => {
-  //       console.error("Version check error");
-  //     });
-
-  //   setInterval(() => {
-  //     void Storage.get("revision.json", { download: true })
-  //       .then((result) => {
-  //         if (!result.Body) return;
-  //         result.Body.text()
-  //           .then((text) => {
-  //             const revision = JSON.parse(text).revision as string;
-  //             const currentRevision = localStorage.getItem("revision");
-  //             if (currentRevision === revision) return;
-
-  //             if (currentRevision) {
-  //               // eslint-disable-next-line no-alert
-  //               const result = window.confirm(
-  //                 "新しいバージョンがリリースされました、すぐに反映しますか？"
-  //               );
-
-  //               if (result) {
-  //                 window.location.reload();
-  //                 localStorage.setItem("revision", revision);
-  //               }
-  //             }
-  //           })
-  //           .catch((e) => {
-  //             throw e;
-  //           });
-  //       })
-  //       .catch(() => {
-  //         console.error("Version check error");
-  //       });
-  //   }, 1000 * 60 * 60);
-  // }, [authStatus]);
-
-  const setCookie = (name: string, value: string, minutes: number) => {
-    const expires = new Date(Date.now() + minutes * 60 * 1000).toUTCString();
-    document.cookie = `${name}=${value}; expires=${expires}; path=/`;
-  };
-
-  const getCookie = (name: string): string | null => {
+  const getCookie = useCallback((name: string): string | null => {
     const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
     return match ? match[2] : null;
-  };
+  }, []);
+
+  const fetchConfigWithCookie = useCallback(() => {
+    const cookieName = "configLastFetchTime";
+    const lastFetchTime = getCookie(cookieName);
+
+    if (lastFetchTime) {
+      return;
+    }
+
+    setCookie(cookieName, "config_fetched", 2);
+    fetchConfig();
+  }, [getCookie, setCookie, fetchConfig]);
+
+  const fetchHolidayCalendarsWithCookie = useCallback(() => {
+    const cookieName = "holidayCalendarsLastFetchTime";
+    const lastFetchTime = getCookie(cookieName);
+
+    if (lastFetchTime) {
+      return;
+    }
+
+    setCookie(cookieName, "holiday_calendars_fetched", 2);
+    fetchAllHolidayCalendars();
+  }, [getCookie, setCookie, fetchAllHolidayCalendars]);
+
+  const fetchCompanyHolidayCalendarsWithCookie = useCallback(() => {
+    const cookieName = "companyHolidayCalendarsLastFetchTime";
+    const lastFetchTime = getCookie(cookieName);
+
+    if (lastFetchTime) {
+      return;
+    }
+
+    setCookie(cookieName, "company_holiday_calendars_fetched", 2);
+    fetchAllCompanyHolidayCalendars();
+  }, [getCookie, setCookie, fetchAllCompanyHolidayCalendars]);
 
   useEffect(() => {
-    const fetchConfigWithCookie = () => {
-      const cookieName = "configLastFetchTime";
-      const lastFetchTime = getCookie(cookieName);
-
-      if (lastFetchTime) {
-        return;
-      }
-
-      setCookie(cookieName, "config_fetched", 2);
-      fetchConfig();
-    };
-
-    const fetchHolidayCalendarsWithCookie = () => {
-      const cookieName = "holidayCalendarsLastFetchTime";
-      const lastFetchTime = getCookie(cookieName);
-
-      if (lastFetchTime) {
-        return;
-      }
-
-      setCookie(cookieName, "holiday_calendars_fetched", 2);
-      fetchAllHolidayCalendars();
-    };
-
-    const fetchCompanyHolidayCalendarsWithCookie = () => {
-      const cookieName = "companyHolidayCalendarsLastFetchTime";
-      const lastFetchTime = getCookie(cookieName);
-
-      if (lastFetchTime) {
-        return;
-      }
-
-      setCookie(cookieName, "company_holiday_calendars_fetched", 2);
-      fetchAllCompanyHolidayCalendars();
-    };
-
     fetchConfigWithCookie();
     fetchHolidayCalendarsWithCookie();
     fetchCompanyHolidayCalendarsWithCookie();
-  }, []);
+  }, [
+    fetchConfigWithCookie,
+    fetchHolidayCalendarsWithCookie,
+    fetchCompanyHolidayCalendarsWithCookie,
+  ]);
+
+  const authContextValue = useMemo(
+    () => ({
+      signOut,
+      signIn: () => navigate("/login"),
+      isCognitoUserRole,
+      user,
+      authStatus,
+      cognitoUser,
+    }),
+    [signOut, navigate, isCognitoUserRole, user, authStatus, cognitoUser]
+  );
+
+  const appConfigContextValue = useMemo(
+    () => ({
+      fetchConfig,
+      saveConfig,
+      getStartTime,
+      getEndTime,
+      getConfigId,
+      getLinks,
+      getReasons,
+      getOfficeMode,
+      getQuickInputStartTimes,
+      getQuickInputEndTimes,
+      getLunchRestStartTime,
+      getLunchRestEndTime,
+    }),
+    [
+      fetchConfig,
+      saveConfig,
+      getStartTime,
+      getEndTime,
+      getConfigId,
+      getLinks,
+      getReasons,
+      getOfficeMode,
+      getQuickInputStartTimes,
+      getQuickInputEndTimes,
+      getLunchRestStartTime,
+      getLunchRestEndTime,
+    ]
+  );
+
+  const appContextValue = useMemo(
+    () => ({
+      holidayCalendars,
+      companyHolidayCalendars,
+      createHolidayCalendar,
+      bulkCreateHolidayCalendar,
+      updateHolidayCalendar,
+      deleteHolidayCalendar,
+      createCompanyHolidayCalendar,
+      bulkCreateCompanyHolidayCalendar,
+      updateCompanyHolidayCalendar,
+      deleteCompanyHolidayCalendar,
+    }),
+    [
+      holidayCalendars,
+      companyHolidayCalendars,
+      createHolidayCalendar,
+      bulkCreateHolidayCalendar,
+      updateHolidayCalendar,
+      deleteHolidayCalendar,
+      createCompanyHolidayCalendar,
+      bulkCreateCompanyHolidayCalendar,
+      updateCompanyHolidayCalendar,
+      deleteCompanyHolidayCalendar,
+    ]
+  );
 
   if (
     cognitoUserLoading ||
@@ -203,51 +226,10 @@ export default function Layout() {
     return <LinearProgress />;
   }
 
-  const signIn = () => {
-    navigate("/login");
-  };
-
   return (
-    <AuthContext.Provider
-      value={{
-        signOut,
-        signIn,
-        isCognitoUserRole,
-        user,
-        authStatus,
-        cognitoUser,
-      }}
-    >
-      <AppConfigContext.Provider
-        value={{
-          fetchConfig,
-          saveConfig,
-          getStartTime,
-          getEndTime,
-          getConfigId,
-          getLinks,
-          getReasons,
-          getOfficeMode,
-          getQuickInputStartTimes,
-          getQuickInputEndTimes,
-          getLunchRestStartTime,
-          getLunchRestEndTime,
-        }}
-      >
-        <AppContext.Provider
-          value={{
-            holidayCalendars,
-            companyHolidayCalendars,
-            createHolidayCalendar,
-            bulkCreateHolidayCalendar,
-            updateHolidayCalendar,
-            deleteHolidayCalendar,
-            createCompanyHolidayCalendar,
-            bulkCreateCompanyHolidayCalendar,
-            updateCompanyHolidayCalendar,
-            deleteCompanyHolidayCalendar,
-          }}
-        >
+    <AuthContext.Provider value={authContextValue}>
+      <AppConfigContext.Provider value={appConfigContextValue}>
+        <AppContext.Provider value={appContextValue}>
           <Stack sx={{ height: "100vh" }}>
             <Box>
               <Header />
