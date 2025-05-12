@@ -458,6 +458,95 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
   APITypes.ListAttendancesQueryVariables,
   APITypes.ListAttendancesQuery
 >;
+export const attendancesByStaffId = /* GraphQL */ `query AttendancesByStaffId(
+  $staffId: String!
+  $workDate: ModelStringKeyConditionInput
+  $sortDirection: ModelSortDirection
+  $filter: ModelAttendanceFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  attendancesByStaffId(
+    staffId: $staffId
+    workDate: $workDate
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      staffId
+      workDate
+      startTime
+      endTime
+      goDirectlyFlag
+      returnDirectlyFlag
+      rests {
+        startTime
+        endTime
+        __typename
+      }
+      remarks
+      paidHolidayFlag
+      substituteHolidayDate
+      histories {
+        staffId
+        workDate
+        startTime
+        endTime
+        goDirectlyFlag
+        returnDirectlyFlag
+        rests {
+          startTime
+          endTime
+          __typename
+        }
+        remarks
+        paidHolidayFlag
+        substituteHolidayFlag
+        substituteHolidayDate
+        createdAt
+        __typename
+      }
+      changeRequests {
+        startTime
+        endTime
+        goDirectlyFlag
+        returnDirectlyFlag
+        rests {
+          startTime
+          endTime
+          __typename
+        }
+        remarks
+        paidHolidayFlag
+        substituteHolidayFlag
+        substituteHolidayDate
+        completed
+        comment
+        staffComment
+        __typename
+      }
+      systemComments {
+        comment
+        confirmed
+        createdAt
+        __typename
+      }
+      revision
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.AttendancesByStaffIdQueryVariables,
+  APITypes.AttendancesByStaffIdQuery
+>;
 export const getDocument = /* GraphQL */ `query GetDocument($id: ID!) {
   getDocument(id: $id) {
     id

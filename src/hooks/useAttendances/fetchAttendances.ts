@@ -4,8 +4,8 @@ import dayjs from "dayjs";
 
 import { AttendanceDate } from "@/lib/AttendanceDate";
 
-import { Attendance, ListAttendancesQuery } from "../../API";
-import { listAttendances } from "../../graphql/queries";
+import { Attendance, AttendancesByStaffIdQuery } from "../../API";
+import { attendancesByStaffId } from "../../graphql/queries";
 
 export default async function fetchAttendances(staffId: string) {
   const now = dayjs();
@@ -14,48 +14,30 @@ export default async function fetchAttendances(staffId: string) {
   ).sort();
 
   const attendances: Attendance[] = [];
-  let nextToken: string | null = null;
-  const isLooping = true;
-  while (isLooping) {
-    const response = (await API.graphql({
-      query: listAttendances,
-      variables: {
-        filter: {
-          staffId: {
-            eq: staffId,
-          },
-        },
-        nextToken,
+  const response = (await API.graphql({
+    query: attendancesByStaffId,
+    variables: {
+      staffId: staffId,
+      workDate: {
+        between: [dateList[0], dateList[dateList.length - 1]],
       },
-      authMode: "AMAZON_COGNITO_USER_POOLS",
-    })) as GraphQLResult<ListAttendancesQuery>;
+    },
+    authMode: "AMAZON_COGNITO_USER_POOLS",
+  })) as GraphQLResult<AttendancesByStaffIdQuery>;
 
-    if (response.errors) {
-      throw new Error(response.errors[0].message);
-    }
-
-    if (!response.data?.listAttendances) {
-      throw new Error("Failed to fetch attendance");
-    }
-
-    attendances.push(
-      ...response.data.listAttendances.items.filter(
-        (item): item is NonNullable<typeof item> => item !== null
-      )
-    );
-
-    // 30件取得したらループを停止
-    if (attendances.length >= 30) {
-      break;
-    }
-
-    if (response.data.listAttendances.nextToken) {
-      nextToken = response.data.listAttendances.nextToken;
-      continue;
-    }
-
-    break;
+  if (response.errors) {
+    throw new Error(response.errors[0].message);
   }
+
+  if (!response.data?.attendancesByStaffId) {
+    throw new Error("Failed to fetch attendance");
+  }
+
+  attendances.push(
+    ...response.data.attendancesByStaffId.items.filter(
+      (item): item is NonNullable<typeof item> => item !== null
+    )
+  );
 
   return dateList.map((targetDate): Attendance => {
     const matchAttendance = attendances.find(
