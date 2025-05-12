@@ -63,10 +63,6 @@ export default function Layout() {
     const url = new URL(window.location.href);
     if (url.pathname === "/login") return;
 
-    if (authStatus === "configuring") {
-      return;
-    }
-
     if (authStatus === "unauthenticated") {
       navigate("/login");
       return;
