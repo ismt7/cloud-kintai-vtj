@@ -761,6 +761,22 @@ export type ModelAttendanceConnection = {
   nextToken?: string | null,
 };
 
+export type ModelStringKeyConditionInput = {
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+};
+
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
+
 export type ModelDocumentFilterInput = {
   id?: ModelIDInput | null,
   title?: ModelStringInput | null,
@@ -1998,6 +2014,87 @@ export type ListAttendancesQueryVariables = {
 
 export type ListAttendancesQuery = {
   listAttendances?:  {
+    __typename: "ModelAttendanceConnection",
+    items:  Array< {
+      __typename: "Attendance",
+      id: string,
+      staffId: string,
+      workDate: string,
+      startTime?: string | null,
+      endTime?: string | null,
+      goDirectlyFlag?: boolean | null,
+      returnDirectlyFlag?: boolean | null,
+      rests?:  Array< {
+        __typename: "Rest",
+        startTime?: string | null,
+        endTime?: string | null,
+      } | null > | null,
+      remarks?: string | null,
+      paidHolidayFlag?: boolean | null,
+      substituteHolidayDate?: string | null,
+      histories?:  Array< {
+        __typename: "AttendanceHistory",
+        staffId: string,
+        workDate: string,
+        startTime?: string | null,
+        endTime?: string | null,
+        goDirectlyFlag?: boolean | null,
+        returnDirectlyFlag?: boolean | null,
+        rests?:  Array< {
+          __typename: "Rest",
+          startTime?: string | null,
+          endTime?: string | null,
+        } | null > | null,
+        remarks?: string | null,
+        paidHolidayFlag?: boolean | null,
+        substituteHolidayFlag?: boolean | null,
+        substituteHolidayDate?: string | null,
+        createdAt: string,
+      } | null > | null,
+      changeRequests?:  Array< {
+        __typename: "AttendanceChangeRequest",
+        startTime?: string | null,
+        endTime?: string | null,
+        goDirectlyFlag?: boolean | null,
+        returnDirectlyFlag?: boolean | null,
+        rests?:  Array< {
+          __typename: "Rest",
+          startTime?: string | null,
+          endTime?: string | null,
+        } | null > | null,
+        remarks?: string | null,
+        paidHolidayFlag?: boolean | null,
+        substituteHolidayFlag?: boolean | null,
+        substituteHolidayDate?: string | null,
+        completed?: boolean | null,
+        comment?: string | null,
+        staffComment?: string | null,
+      } | null > | null,
+      systemComments?:  Array< {
+        __typename: "SystemComment",
+        comment: string,
+        confirmed: boolean,
+        createdAt: string,
+      } | null > | null,
+      revision?: number | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type AttendancesByStaffIdQueryVariables = {
+  staffId: string,
+  workDate?: ModelStringKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelAttendanceFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type AttendancesByStaffIdQuery = {
+  attendancesByStaffId?:  {
     __typename: "ModelAttendanceConnection",
     items:  Array< {
       __typename: "Attendance",

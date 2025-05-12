@@ -4,15 +4,15 @@ import { API } from "aws-amplify";
 import {
   Attendance,
   AttendanceHistoryInput,
+  AttendancesByStaffIdQuery,
   CreateAttendanceInput,
   CreateAttendanceMutation,
   GetAttendanceQuery,
-  ListAttendancesQuery,
   UpdateAttendanceInput,
   UpdateAttendanceMutation,
 } from "@/API";
 import { createAttendance, updateAttendance } from "@/graphql/mutations";
-import { getAttendance, listAttendances } from "@/graphql/queries";
+import { getAttendance, attendancesByStaffId } from "@/graphql/queries";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 
 export class AttendanceDataManager {
@@ -41,33 +41,33 @@ export class AttendanceDataManager {
     const isLooping = true;
     while (isLooping) {
       const response = (await API.graphql({
-        query: listAttendances,
+        query: attendancesByStaffId,
         variables: {
-          filter: {
-            staffId: { eq: staffId },
-            workDate: { eq: workDate },
+          staffId: staffId,
+          workDate: {
+            eq: workDate,
           },
           nextToken,
         },
         authMode: "AMAZON_COGNITO_USER_POOLS",
-      })) as GraphQLResult<ListAttendancesQuery>;
+      })) as GraphQLResult<AttendancesByStaffIdQuery>;
 
       if (response.errors) {
         throw new Error(response.errors[0].message);
       }
 
-      if (!response.data?.listAttendances) {
+      if (!response.data?.attendancesByStaffId) {
         throw new Error("Failed to fetch attendance");
       }
 
       attendances.push(
-        ...response.data.listAttendances.items.filter(
+        ...response.data.attendancesByStaffId.items.filter(
           (item): item is NonNullable<typeof item> => item !== null
         )
       );
 
-      if (response.data.listAttendances.nextToken) {
-        nextToken = response.data.listAttendances.nextToken;
+      if (response.data.attendancesByStaffId.nextToken) {
+        nextToken = response.data.attendancesByStaffId.nextToken;
         continue;
       }
 

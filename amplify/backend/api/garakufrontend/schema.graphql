@@ -51,6 +51,11 @@ type SystemComment {
 type Attendance @model @auth(rules: [{ allow: private }]) {
   id: ID!
   staffId: String!
+    @index(
+      name: "byStaffId"
+      sortKeyFields: ["workDate"]
+      queryField: "attendancesByStaffId"
+    )
   workDate: String!
   startTime: String
   endTime: String
