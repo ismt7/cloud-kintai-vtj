@@ -1,6 +1,7 @@
 import "./styles.scss";
 
 import {
+  LinearProgress,
   Stack,
   Table,
   TableBody,
@@ -28,7 +29,7 @@ import { StartTimeTableCell } from "./StartTimeTableCell";
 
 export default function AttendanceDailyList() {
   const { targetWorkDate } = useParams();
-  const { attendanceDailyList, error } = useAttendanceDaily();
+  const { attendanceDailyList, error, loading } = useAttendanceDaily();
   const today = dayjs().format(AttendanceDate.QueryParamFormat);
   const dispatch = useAppDispatchV2();
 
@@ -61,6 +62,10 @@ export default function AttendanceDailyList() {
 
     return summaryMessage.join(" ");
   }, []);
+
+  if (loading) {
+    return <LinearProgress sx={{ width: "100%" }} />;
+  }
 
   return (
     <Stack direction="column" spacing={1}>
