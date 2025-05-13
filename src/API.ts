@@ -684,6 +684,22 @@ export type ModelStaffConnection = {
   nextToken?: string | null,
 };
 
+export type ModelIDKeyConditionInput = {
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+};
+
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
+
 export type ModelHolidayCalendarFilterInput = {
   id?: ModelIDInput | null,
   holidayDate?: ModelStringInput | null,
@@ -770,12 +786,6 @@ export type ModelStringKeyConditionInput = {
   between?: Array< string | null > | null,
   beginsWith?: string | null,
 };
-
-export enum ModelSortDirection {
-  ASC = "ASC",
-  DESC = "DESC",
-}
-
 
 export type ModelDocumentFilterInput = {
   id?: ModelIDInput | null,
@@ -1798,6 +1808,43 @@ export type ListStaffQueryVariables = {
 
 export type ListStaffQuery = {
   listStaff?:  {
+    __typename: "ModelStaffConnection",
+    items:  Array< {
+      __typename: "Staff",
+      id: string,
+      cognitoUserId: string,
+      familyName?: string | null,
+      givenName?: string | null,
+      mailAddress: string,
+      role: string,
+      enabled: boolean,
+      status: string,
+      owner?: boolean | null,
+      usageStartDate?: string | null,
+      notifications?:  {
+        __typename: "Notification",
+        workStart?: boolean | null,
+        workEnd?: boolean | null,
+      } | null,
+      sortKey?: string | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type StaffByCognitoUserIdQueryVariables = {
+  cognitoUserId: string,
+  id?: ModelIDKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelStaffFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type StaffByCognitoUserIdQuery = {
+  staffByCognitoUserId?:  {
     __typename: "ModelStaffConnection",
     items:  Array< {
       __typename: "Staff",
