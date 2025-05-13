@@ -159,35 +159,57 @@ export default function TimeRecorder() {
       return;
     }
 
+    logger.debug("Staff and attendance loading state:", {
+      staff,
+      attendanceLoading,
+    });
+
     const errorCount = attendances
       .map((attendance) => {
-        return new AttendanceState(
+        const status = new AttendanceState(
           staff,
           attendance,
           holidayCalendars,
           companyHolidayCalendars
         ).get();
+        logger.debug("Attendance status for error count:", {
+          attendance,
+          status,
+        });
+        return status;
       })
       .filter((status) => status === AttendanceStatus.Error).length;
 
+    logger.debug("Total error count:", errorCount);
     setIsAttendanceError(errorCount > 0);
 
     // 1週間以上前にエラーがあるかチェック
     const timeElapsedErrorCount = attendances
       ?.filter((attendance) => {
         const { workDate } = attendance;
-        return dayjs().isAfter(dayjs(workDate).add(1, "week"));
+        const isAfterOneWeek = dayjs().isAfter(dayjs(workDate).add(1, "week"));
+        logger.debug("Checking time elapsed for attendance:", {
+          workDate,
+          isAfterOneWeek,
+        });
+        return isAfterOneWeek;
       })
       .map((attendance) => {
-        return new AttendanceState(
+        const status = new AttendanceState(
           staff,
           attendance,
           holidayCalendars,
           companyHolidayCalendars
         ).get();
+        logger.debug("Attendance status for time elapsed error count:", {
+          attendance,
+          status,
+        });
+        return status;
       })
       .filter((status) => status === AttendanceStatus.Error).length;
 
+    logger.debug("Total time elapsed error count:", timeElapsedErrorCount);
     setIsTimeElapsedError(timeElapsedErrorCount > 0);
   }, [attendancesLoading, staff, holidayCalendars, companyHolidayCalendars]);
 
