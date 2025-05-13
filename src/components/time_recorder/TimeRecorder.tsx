@@ -96,7 +96,11 @@ export default function TimeRecorder() {
     restEnd,
     updateRemarks,
   } = useAttendance();
-  const { attendances, getAttendances } = useAttendances();
+  const {
+    attendances,
+    getAttendances,
+    loading: attendancesLoading,
+  } = useAttendances();
   const { holidayCalendars, companyHolidayCalendars } = useContext(AppContext);
 
   const [workStatus, setWorkStatus] = useState<WorkStatus | null | undefined>(
@@ -151,7 +155,7 @@ export default function TimeRecorder() {
   }, [cognitoUser]);
 
   useEffect(() => {
-    if (!staff || !attendances) {
+    if (!staff || attendanceLoading) {
       return;
     }
 
@@ -185,13 +189,13 @@ export default function TimeRecorder() {
       .filter((status) => status === AttendanceStatus.Error).length;
 
     setIsTimeElapsedError(timeElapsedErrorCount > 0);
-  }, [attendances, staff, holidayCalendars, companyHolidayCalendars]);
+  }, [attendancesLoading, staff, holidayCalendars, companyHolidayCalendars]);
 
   useEffect(() => {
     setWorkStatus(getWorkStatus(attendance));
   }, [attendance]);
 
-  if (attendanceLoading || workStatus === undefined) {
+  if (attendanceLoading || attendancesLoading || workStatus === undefined) {
     return (
       <Box
         sx={{
