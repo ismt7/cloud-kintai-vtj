@@ -114,7 +114,8 @@ export default function TimeRecorder() {
 
   const today = useMemo(() => dayjs().format(AttendanceDate.DataFormat), []);
   const logger = useMemo(
-    () => new Logger("TimeRecorder", import.meta.env.DEV ? "DEBUG" : "ERROR"),
+    () => new Logger("TimeRecorder", "DEBUG"),
+    // () => new Logger("TimeRecorder", import.meta.env.DEV ? "DEBUG" : "ERROR"),
     []
   );
 
