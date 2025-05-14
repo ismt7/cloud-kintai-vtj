@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useMemo, useCallback } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -91,7 +91,6 @@ export default function AdminStaffAttendanceList() {
 
   const { holidayCalendars, companyHolidayCalendars } = useContext(AppContext);
   const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
-  const [totalTime, setTotalTime] = useState<number>(0);
 
   const { attendances, getAttendances } = useAttendances();
 
@@ -108,10 +107,9 @@ export default function AdminStaffAttendanceList() {
       });
   }, [staffId]);
 
-  useEffect(() => {
+  const totalTime = useMemo(() => {
     const totalWorkTime = attendances.reduce((acc, attendance) => {
       if (!attendance.startTime || !attendance.endTime) return acc;
-
       const workTime = calcTotalWorkTime(
         attendance.startTime,
         attendance.endTime
@@ -121,20 +119,41 @@ export default function AdminStaffAttendanceList() {
 
     const totalRestTime = attendances.reduce((acc, attendance) => {
       if (!attendance.rests) return acc;
-
       const restTime = attendance.rests
         .filter((item): item is NonNullable<typeof item> => !!item)
         .reduce((acc, rest) => {
           if (!rest.startTime || !rest.endTime) return acc;
-
           return acc + calcTotalRestTime(rest.startTime, rest.endTime);
         }, 0);
-
       return acc + restTime;
     }, 0);
-
-    setTotalTime(totalWorkTime - totalRestTime);
+    return totalWorkTime - totalRestTime;
   }, [attendances]);
+
+  const handleEdit = useCallback(
+    (workDate: string) => {
+      navigate(`/admin/attendances/edit/${workDate}/${staffId}`);
+    },
+    [navigate, staffId]
+  );
+
+  const getBadgeContent = useCallback((attendance: Attendance) => {
+    return new ChangeRequest(attendance.changeRequests).getUnapprovedCount();
+  }, []);
+
+  const getTableRowClassNameMemo = useCallback(
+    (
+      attendance: Attendance,
+      holidayCalendars: HolidayCalendar[],
+      companyHolidayCalendars: CompanyHolidayCalendar[]
+    ) =>
+      getTableRowClassName(
+        attendance,
+        holidayCalendars,
+        companyHolidayCalendars
+      ),
+    [holidayCalendars, companyHolidayCalendars]
+  );
 
   if (staff === null || !staffId) {
     return (
@@ -143,14 +162,6 @@ export default function AdminStaffAttendanceList() {
       </Container>
     );
   }
-
-  const handleEdit = (workDate: string) => {
-    navigate(`/admin/attendances/edit/${workDate}/${staffId}`);
-  };
-
-  const getBadgeContent = (attendance: Attendance) => {
-    return new ChangeRequest(attendance.changeRequests).getUnapprovedCount();
-  };
 
   return (
     <Container maxWidth="xl">
@@ -215,7 +226,7 @@ export default function AdminStaffAttendanceList() {
                 {attendances.map((attendance, index) => (
                   <TableRow
                     key={index}
-                    className={getTableRowClassName(
+                    className={getTableRowClassNameMemo(
                       attendance,
                       holidayCalendars,
                       companyHolidayCalendars

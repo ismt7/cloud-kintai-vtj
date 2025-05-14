@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
 
@@ -101,8 +101,6 @@ export default function AttendanceEditor() {
   const [staff, setStaff] = useState<StaffType | undefined | null>(undefined);
   const [workDate, setWorkDate] = useState<dayjs.Dayjs | null>(null);
   const [enabledSendMail, setEnabledSendMail] = useState<boolean>(true);
-  const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
-  const [visibleRestWarning, setVisibleRestWarning] = useState<boolean>(false);
 
   const logger = new Logger(
     "AttendanceEditor",
@@ -188,46 +186,109 @@ export default function AttendanceEditor() {
     });
   }, [staff, targetStaffId, targetWorkDate]);
 
-  useEffect(() => {
-    watch((data) => {
-      const totalWorkTime = calcTotalWorkTime(data.startTime, data.endTime);
+  const lunchRestStartTime = useMemo(
+    () => getLunchRestStartTime().format("HH:mm"),
+    [getLunchRestStartTime]
+  );
+  const lunchRestEndTime = useMemo(
+    () => getLunchRestEndTime().format("HH:mm"),
+    [getLunchRestEndTime]
+  );
 
-      const totalRestTime =
-        data.rests?.reduce((acc, rest) => {
-          if (!rest) return acc;
+  const watchedData = watch();
 
-          const diff = calcTotalRestTime(rest.startTime, rest.endTime);
-          return acc + diff;
-        }, 0) ?? 0;
+  const totalWorkTime = useMemo(
+    () => calcTotalWorkTime(watchedData.startTime, watchedData.endTime),
+    [watchedData.startTime, watchedData.endTime]
+  );
 
-      setVisibleRestWarning(
-        !!(
-          data.startTime &&
-          data.endTime &&
-          totalWorkTime > 6 &&
-          totalRestTime === 0
-        )
-      );
+  const totalRestTime = useMemo(
+    () =>
+      watchedData.rests?.reduce((acc, rest) => {
+        if (!rest) return acc;
+        const diff = calcTotalRestTime(rest.startTime, rest.endTime);
+        return acc + diff;
+      }, 0) ?? 0,
+    [watchedData.rests]
+  );
 
-      const totalTime = totalWorkTime - totalRestTime;
-      setTotalProductionTime(totalTime);
-    });
-  }, [watch]);
+  const totalProductionTime = useMemo(
+    () => totalWorkTime - totalRestTime,
+    [totalWorkTime, totalRestTime]
+  );
 
-  const onSubmit = async (data: AttendanceEditInputs) => {
-    console.log("data", data.systemComments);
+  const visibleRestWarning = useMemo(
+    () =>
+      !!(
+        watchedData.startTime &&
+        watchedData.endTime &&
+        totalWorkTime > 6 &&
+        totalRestTime === 0
+      ),
+    [watchedData.startTime, watchedData.endTime, totalWorkTime, totalRestTime]
+  );
 
-    if (attendance) {
-      await updateAttendance({
-        id: attendance.id,
-        staffId: attendance.staffId,
-        workDate: data.workDate,
+  const onSubmit = useCallback(
+    async (data: AttendanceEditInputs) => {
+      console.log("data", data.systemComments);
+
+      if (attendance) {
+        await updateAttendance({
+          id: attendance.id,
+          staffId: attendance.staffId,
+          workDate: data.workDate,
+          startTime: data.startTime,
+          endTime: data.endTime || null,
+          goDirectlyFlag: data.goDirectlyFlag,
+          returnDirectlyFlag: data.returnDirectlyFlag,
+          remarks: data.remarks,
+          revision: data.revision,
+          paidHolidayFlag: data.paidHolidayFlag,
+          substituteHolidayDate: data.substituteHolidayDate,
+          rests: data.rests.map((rest) => ({
+            startTime: rest.startTime,
+            endTime: rest.endTime,
+          })),
+          systemComments: data.systemComments.map(
+            ({ comment, confirmed, createdAt }) => ({
+              comment,
+              confirmed,
+              createdAt,
+            })
+          ),
+        })
+          .then((res) => {
+            if (!staff || !res.histories) return;
+
+            if (enabledSendMail) {
+              new AttendanceEditMailSender(staff, res).changeRequest();
+            }
+
+            dispatch(setSnackbarSuccess(MESSAGE_CODE.S04001));
+          })
+          .catch((e) => {
+            console.log(e);
+            dispatch(setSnackbarError(MESSAGE_CODE.E04001));
+          });
+
+        return;
+      }
+
+      if (!targetStaffId || !targetWorkDate) {
+        dispatch(setSnackbarError(MESSAGE_CODE.E04001));
+        return;
+      }
+
+      await createAttendance({
+        staffId: targetStaffId,
+        workDate: new AttendanceDateTime()
+          .setDateString(targetWorkDate)
+          .toDataFormat(),
         startTime: data.startTime,
-        endTime: data.endTime || null,
+        endTime: data.endTime,
         goDirectlyFlag: data.goDirectlyFlag,
         returnDirectlyFlag: data.returnDirectlyFlag,
         remarks: data.remarks,
-        revision: data.revision,
         paidHolidayFlag: data.paidHolidayFlag,
         substituteHolidayDate: data.substituteHolidayDate,
         rests: data.rests.map((rest) => ({
@@ -243,7 +304,9 @@ export default function AttendanceEditor() {
         ),
       })
         .then((res) => {
-          if (!staff || !res.histories) return;
+          if (!staff) {
+            return;
+          }
 
           if (enabledSendMail) {
             new AttendanceEditMailSender(staff, res).changeRequest();
@@ -251,58 +314,21 @@ export default function AttendanceEditor() {
 
           dispatch(setSnackbarSuccess(MESSAGE_CODE.S04001));
         })
-        .catch((e) => {
-          console.log(e);
+        .catch(() => {
           dispatch(setSnackbarError(MESSAGE_CODE.E04001));
         });
-
-      return;
-    }
-
-    if (!targetStaffId || !targetWorkDate) {
-      dispatch(setSnackbarError(MESSAGE_CODE.E04001));
-      return;
-    }
-
-    await createAttendance({
-      staffId: targetStaffId,
-      workDate: new AttendanceDateTime()
-        .setDateString(targetWorkDate)
-        .toDataFormat(),
-      startTime: data.startTime,
-      endTime: data.endTime,
-      goDirectlyFlag: data.goDirectlyFlag,
-      returnDirectlyFlag: data.returnDirectlyFlag,
-      remarks: data.remarks,
-      paidHolidayFlag: data.paidHolidayFlag,
-      substituteHolidayDate: data.substituteHolidayDate,
-      rests: data.rests.map((rest) => ({
-        startTime: rest.startTime,
-        endTime: rest.endTime,
-      })),
-      systemComments: data.systemComments.map(
-        ({ comment, confirmed, createdAt }) => ({
-          comment,
-          confirmed,
-          createdAt,
-        })
-      ),
-    })
-      .then((res) => {
-        if (!staff) {
-          return;
-        }
-
-        if (enabledSendMail) {
-          new AttendanceEditMailSender(staff, res).changeRequest();
-        }
-
-        dispatch(setSnackbarSuccess(MESSAGE_CODE.S04001));
-      })
-      .catch(() => {
-        dispatch(setSnackbarError(MESSAGE_CODE.E04001));
-      });
-  };
+    },
+    [
+      attendance,
+      staff,
+      enabledSendMail,
+      updateAttendance,
+      createAttendance,
+      targetStaffId,
+      targetWorkDate,
+      dispatch,
+    ]
+  );
 
   useEffect(() => {
     if (!attendance) return;
@@ -362,9 +388,6 @@ export default function AttendanceEditor() {
   if (appConfigLoading || staffsLoading || attendance === undefined) {
     return <LinearProgress />;
   }
-
-  const lunchRestStartTime = getLunchRestStartTime().format("HH:mm");
-  const lunchRestEndTime = getLunchRestEndTime().format("HH:mm");
 
   if (staffSError) {
     return (

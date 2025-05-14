@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useMemo } from "react";
 
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 
@@ -25,14 +25,17 @@ export function WorkTimeItem() {
   );
   const [totalWorkTime, setTotalWorkTime] = useState<number>(0);
 
+  const memoizedCalcTotalWorkTime = useMemo(() => calcTotalWorkTime, []);
+
   useEffect(() => {
     if (!watch) return;
 
-    watch((data) => {
-      const diff = calcTotalWorkTime(data.startTime, data.endTime);
+    const unsubscribe = watch((data) => {
+      const diff = memoizedCalcTotalWorkTime(data.startTime, data.endTime);
       setTotalWorkTime(diff);
     });
-  }, [watch]);
+    return typeof unsubscribe === "function" ? unsubscribe : undefined;
+  }, [watch, memoizedCalcTotalWorkTime]);
 
   if (!workDate || !control || !setValue || !getValues || !watch) {
     return null;

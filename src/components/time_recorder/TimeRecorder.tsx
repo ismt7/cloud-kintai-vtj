@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState, useCallback } from "react";
 
 import { AttendanceDate } from "@/lib/AttendanceDate";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
@@ -118,6 +118,92 @@ export default function TimeRecorder() {
     // () => new Logger("TimeRecorder", import.meta.env.DEV ? "DEBUG" : "ERROR"),
     []
   );
+
+  const handleClockIn = useCallback(() => {
+    if (!cognitoUser) return;
+
+    const now = dayjs().second(0).millisecond(0).toISOString();
+    clockIn(cognitoUser.id, today, now)
+      .then((res) => {
+        dispatch(setSnackbarSuccess(MESSAGE_CODE.S01001));
+        new TimeRecordMailSender(cognitoUser, res, staff).clockIn();
+      })
+      .catch((e) => {
+        logger.debug(e);
+        dispatch(setSnackbarError(MESSAGE_CODE.E01001));
+      });
+  }, [cognitoUser, today, clockIn, dispatch, staff, logger]);
+
+  const handleClockOut = useCallback(() => {
+    if (!cognitoUser) return;
+
+    const now = dayjs().second(0).millisecond(0).toISOString();
+    clockOut(cognitoUser.id, today, now)
+      .then((res) => {
+        dispatch(setSnackbarSuccess(MESSAGE_CODE.S01002));
+        new TimeRecordMailSender(cognitoUser, res, staff).clockOut();
+      })
+      .catch((e) => {
+        logger.debug(e);
+        dispatch(setSnackbarError(MESSAGE_CODE.E01002));
+      });
+  }, [cognitoUser, today, clockOut, dispatch, staff, logger]);
+
+  const handleGoDirectly = useCallback(() => {
+    if (!cognitoUser) return;
+
+    const now = new AttendanceDateTime().setWorkStart().toISOString();
+
+    clockIn(cognitoUser.id, today, now, GoDirectlyFlag.YES)
+      .then((res) => {
+        dispatch(setSnackbarSuccess(MESSAGE_CODE.S01003));
+        new TimeRecordMailSender(cognitoUser, res, staff).clockIn();
+      })
+      .catch((e) => {
+        logger.debug(e);
+        dispatch(setSnackbarError(MESSAGE_CODE.E01005));
+      });
+  }, [cognitoUser, today, clockIn, dispatch, staff, logger]);
+
+  const handleReturnDirectly = useCallback(() => {
+    if (!cognitoUser) return;
+
+    const now = new AttendanceDateTime().setWorkEnd().toISOString();
+
+    clockOut(cognitoUser.id, today, now, ReturnDirectlyFlag.YES)
+      .then((res) => {
+        dispatch(setSnackbarSuccess(MESSAGE_CODE.S01004));
+        new TimeRecordMailSender(cognitoUser, res, staff).clockOut();
+      })
+      .catch((e) => {
+        logger.debug(e);
+        dispatch(setSnackbarError(MESSAGE_CODE.E01006));
+      });
+  }, [cognitoUser, today, clockOut, dispatch, staff, logger]);
+
+  const handleRestStart = useCallback(() => {
+    if (!cognitoUser) return;
+
+    const now = dayjs().second(0).millisecond(0).toISOString();
+    restStart(cognitoUser.id, today, now)
+      .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S01005)))
+      .catch((e) => {
+        logger.debug(e);
+        dispatch(setSnackbarError(MESSAGE_CODE.E01003));
+      });
+  }, [cognitoUser, today, restStart, dispatch, logger]);
+
+  const handleRestEnd = useCallback(() => {
+    if (!cognitoUser) return;
+
+    const now = dayjs().second(0).millisecond(0).toISOString();
+    restEnd(cognitoUser.id, today, now)
+      .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S01006)))
+      .catch((e) => {
+        logger.debug(e);
+        dispatch(setSnackbarError(MESSAGE_CODE.E01004));
+      });
+  }, [cognitoUser, today, restEnd, dispatch, logger]);
 
   const handleVisibilityChange = useMemo(() => {
     return () => {
@@ -234,92 +320,6 @@ export default function TimeRecorder() {
     dispatch(setSnackbarError(MESSAGE_CODE.E00001));
     return null;
   }
-
-  const handleClockIn = () => {
-    if (!cognitoUser) return;
-
-    const now = dayjs().second(0).millisecond(0).toISOString();
-    clockIn(cognitoUser.id, today, now)
-      .then((res) => {
-        dispatch(setSnackbarSuccess(MESSAGE_CODE.S01001));
-        new TimeRecordMailSender(cognitoUser, res, staff).clockIn();
-      })
-      .catch((e) => {
-        logger.debug(e);
-        dispatch(setSnackbarError(MESSAGE_CODE.E01001));
-      });
-  };
-
-  const handleClockOut = () => {
-    if (!cognitoUser) return;
-
-    const now = dayjs().second(0).millisecond(0).toISOString();
-    clockOut(cognitoUser.id, today, now)
-      .then((res) => {
-        dispatch(setSnackbarSuccess(MESSAGE_CODE.S01002));
-        new TimeRecordMailSender(cognitoUser, res, staff).clockOut();
-      })
-      .catch((e) => {
-        logger.debug(e);
-        dispatch(setSnackbarError(MESSAGE_CODE.E01002));
-      });
-  };
-
-  const handleGoDirectly = () => {
-    if (!cognitoUser) return;
-
-    const now = new AttendanceDateTime().setWorkStart().toISOString();
-
-    clockIn(cognitoUser.id, today, now, GoDirectlyFlag.YES)
-      .then((res) => {
-        dispatch(setSnackbarSuccess(MESSAGE_CODE.S01003));
-        new TimeRecordMailSender(cognitoUser, res, staff).clockIn();
-      })
-      .catch((e) => {
-        logger.debug(e);
-        dispatch(setSnackbarError(MESSAGE_CODE.E01005));
-      });
-  };
-
-  const handleReturnDirectly = () => {
-    if (!cognitoUser) return;
-
-    const now = new AttendanceDateTime().setWorkEnd().toISOString();
-
-    clockOut(cognitoUser.id, today, now, ReturnDirectlyFlag.YES)
-      .then((res) => {
-        dispatch(setSnackbarSuccess(MESSAGE_CODE.S01004));
-        new TimeRecordMailSender(cognitoUser, res, staff).clockOut();
-      })
-      .catch((e) => {
-        logger.debug(e);
-        dispatch(setSnackbarError(MESSAGE_CODE.E01006));
-      });
-  };
-
-  const handleRestStart = () => {
-    if (!cognitoUser) return;
-
-    const now = dayjs().second(0).millisecond(0).toISOString();
-    restStart(cognitoUser.id, today, now)
-      .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S01005)))
-      .catch((e) => {
-        logger.debug(e);
-        dispatch(setSnackbarError(MESSAGE_CODE.E01003));
-      });
-  };
-
-  const handleRestEnd = () => {
-    if (!cognitoUser) return;
-
-    const now = dayjs().second(0).millisecond(0).toISOString();
-    restEnd(cognitoUser.id, today, now)
-      .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S01006)))
-      .catch((e) => {
-        logger.debug(e);
-        dispatch(setSnackbarError(MESSAGE_CODE.E01004));
-      });
-  };
 
   return (
     <Box
