@@ -194,6 +194,51 @@ export const listStaff = /* GraphQL */ `query ListStaff(
   }
 }
 ` as GeneratedQuery<APITypes.ListStaffQueryVariables, APITypes.ListStaffQuery>;
+export const staffByCognitoUserId = /* GraphQL */ `query StaffByCognitoUserId(
+  $cognitoUserId: String!
+  $id: ModelIDKeyConditionInput
+  $sortDirection: ModelSortDirection
+  $filter: ModelStaffFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  staffByCognitoUserId(
+    cognitoUserId: $cognitoUserId
+    id: $id
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      cognitoUserId
+      familyName
+      givenName
+      mailAddress
+      role
+      enabled
+      status
+      owner
+      usageStartDate
+      notifications {
+        workStart
+        workEnd
+        __typename
+      }
+      sortKey
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.StaffByCognitoUserIdQueryVariables,
+  APITypes.StaffByCognitoUserIdQuery
+>;
 export const getHolidayCalendar = /* GraphQL */ `query GetHolidayCalendar($id: ID!) {
   getHolidayCalendar(id: $id) {
     id

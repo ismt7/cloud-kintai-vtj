@@ -6,6 +6,11 @@ input AMPLIFY {
 type Staff @model @auth(rules: [{ allow: private }]) {
   id: ID!
   cognitoUserId: String!
+    @index(
+      name: "byCognitoUserId"
+      sortKeyFields: ["id"]
+      queryField: "staffByCognitoUserId"
+    )
   familyName: String
   givenName: String
   mailAddress: String!
