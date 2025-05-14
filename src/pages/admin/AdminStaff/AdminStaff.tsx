@@ -2,7 +2,6 @@ import "./styles.scss";
 
 import {
   Box,
-  Breadcrumbs,
   Container,
   LinearProgress,
   Stack,
@@ -31,6 +30,7 @@ import { StaffNameTableCell } from "./StaffNameTableCell";
 import { StatusTableCell } from "./StatusTableCell";
 import SyncCognitoUser from "./SyncCognitoUser";
 import { UpdatedAtTableCell } from "./UpdatedAtTableCell";
+import CommonBreadcrumbs from "@/components/common/CommonBreadcrumbs";
 
 export default function AdminStaff() {
   const dispatch = useAppDispatchV2();
@@ -59,12 +59,10 @@ export default function AdminStaff() {
       <Container maxWidth="xl" sx={{ height: 1, pt: 2 }}>
         <Stack spacing={2}>
           <Box>
-            <Breadcrumbs>
-              <Link to="/" color="inherit">
-                TOP
-              </Link>
-              <Typography color="text.primary">スタッフ一覧</Typography>
-            </Breadcrumbs>
+            <CommonBreadcrumbs
+              items={[{ label: "TOP", href: "/" }]}
+              current="スタッフ一覧"
+            />
           </Box>
           <Title>スタッフ一覧</Title>
           <Stack direction="row" spacing={2}>

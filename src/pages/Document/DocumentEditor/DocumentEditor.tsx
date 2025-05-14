@@ -1,7 +1,6 @@
 import {
   Autocomplete,
   Box,
-  Breadcrumbs,
   Button,
   Container,
   Paper,
@@ -25,6 +24,7 @@ import {
 } from "../../../lib/reducers/snackbarReducer";
 import { defaultValues, DocumentInputs } from "./common";
 import ContentBlockNoteEditor from "./ContentBlockNoteEditor";
+import CommonBreadcrumbs from "@/components/common/CommonBreadcrumbs";
 
 async function updateImageUrl(content: string) {
   // eslint-disable-next-line max-len
@@ -133,18 +133,13 @@ export default function DocumentEditor() {
   return (
     <>
       <Box>
-        <Breadcrumbs>
-          <Link to="/" color="inherit">
-            TOP
-          </Link>
-          <Link to="/docs" color="inherit">
-            ドキュメント一覧
-          </Link>
-          <Link to={`/docs/${documentId}`} color="inherit">
-            {documentTitle}
-          </Link>
-          <Typography color="text.primary">編集</Typography>
-        </Breadcrumbs>
+        <CommonBreadcrumbs
+          items={[
+            { label: "TOP", href: "/" },
+            { label: "ドキュメント一覧", href: "/docs" },
+          ]}
+          current="ドキュメント編集"
+        />
       </Box>
       <Title>ドキュメント編集</Title>
       <Container maxWidth="md">

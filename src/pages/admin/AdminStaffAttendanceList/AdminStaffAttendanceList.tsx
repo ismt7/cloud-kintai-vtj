@@ -4,7 +4,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import {
   Badge,
   Box,
-  Breadcrumbs,
   Container,
   IconButton,
   Stack,
@@ -28,6 +27,7 @@ import {
   Staff,
 } from "@/API";
 import { AttendanceStatusTooltip } from "@/components/AttendanceList/AttendanceStatusTooltip";
+import CommonBreadcrumbs from "@/components/common/CommonBreadcrumbs";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
 import { AttendanceDate } from "@/lib/AttendanceDate";
 import { ChangeRequest } from "@/lib/ChangeRequest";
@@ -167,15 +167,13 @@ export default function AdminStaffAttendanceList() {
     <Container maxWidth="xl">
       <Stack spacing={1} sx={{ pt: 1 }}>
         <Box>
-          <Breadcrumbs>
-            <Link to="/" color="inherit">
-              TOP
-            </Link>
-            <Link to="/admin/attendances" color="inherit">
-              勤怠管理
-            </Link>
-            <Typography color="text.primary">勤怠一覧</Typography>
-          </Breadcrumbs>
+          <CommonBreadcrumbs
+            items={[
+              { label: "TOP", href: "/" },
+              { label: "勤怠管理", href: "/admin/attendances" },
+            ]}
+            current="勤怠一覧"
+          />
         </Box>
         <Typography variant="h4">
           {`${staff?.familyName || "(不明)"} さんの勤怠(${totalTime.toFixed(

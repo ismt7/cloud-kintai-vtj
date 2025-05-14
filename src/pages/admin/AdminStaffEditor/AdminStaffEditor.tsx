@@ -1,7 +1,6 @@
 import {
   Autocomplete,
   Box,
-  Breadcrumbs,
   Button,
   CircularProgress,
   Container,
@@ -42,6 +41,7 @@ import {
   setSnackbarSuccess,
 } from "../../../lib/reducers/snackbarReducer";
 import { ROLE_OPTIONS } from "../AdminStaff/CreateStaffDialog";
+import CommonBreadcrumbs from "@/components/common/CommonBreadcrumbs";
 
 type Inputs = {
   staffId?: Staff["sub"];
@@ -212,16 +212,13 @@ export default function AdminStaffEditor() {
   return (
     <Container maxWidth="xl" sx={{ height: 1, pt: 2 }}>
       <Stack spacing={2}>
-        <Breadcrumbs>
-          <Link to="/" color="inherit">
-            TOP
-          </Link>
-          <Link to="/admin/staff" color="inherit">
-            スタッフ一覧
-          </Link>
-          <Typography color="text.primary">{makeStaffName()}</Typography>
-          <Typography color="text.primary">スタッフ編集</Typography>
-        </Breadcrumbs>
+        <CommonBreadcrumbs
+          items={[
+            { label: "TOP", href: "/" },
+            { label: "スタッフ一覧", href: "/admin/staff" },
+          ]}
+          current={makeStaffName()}
+        />
         <Title>スタッフ編集</Title>
         <TableContainer>
           <Table>
