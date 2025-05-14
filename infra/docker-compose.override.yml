@@ -20,58 +20,6 @@ services:
       timeout: 30s
       start_period: 20s
 
-  storybook:
-    build:
-      context: ../
-      dockerfile: infra/Dockerfile
-      target: dev
-    env_file:
-      - ../.env
-    environment:
-      - ESLINT_NO_DEV_ERRORS=true
-      - TZ=Asia/Tokyo
-    ports:
-      - "6006:6006"
-    volumes:
-      - ../src/components:/app/src/components:delegated
-      - ../src/lib:/app/src/lib:delegated
-      - ../src/pages:/app/src/pages:delegated
-      - ../src/stories:/app/src/stories:delegated
-      - ../.storybook:/app/.storybook:delegated
-      - ../src/app:/app/src/app:delegated
-
-    command: ["npm", "run", "storybook"]
-    healthcheck:
-      test: "curl -f http://localhost:6006 || exit 1"
-      interval: 5s
-      timeout: 30s
-      start_period: 100s
-
-  test-storybook:
-    build:
-      context: ../
-      dockerfile: infra/Dockerfile
-      target: dev
-    env_file:
-      - ../.env
-    environment:
-      - TZ=Asia/Tokyo
-    volumes:
-      - ../src:/app/src:delegated
-    command:
-      [
-        "npm",
-        "run",
-        "test-storybook",
-        "--",
-        "--url",
-        "http://storybook:6006",
-        "--no-stories-json",
-      ]
-    depends_on:
-      storybook:
-        condition: service_healthy
-
   test:
     build:
       context: ../
