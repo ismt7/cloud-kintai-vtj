@@ -110,6 +110,7 @@ export default function EndTimeInput() {
                 ).toISOString();
                 setValue("endTime", startTime);
               }}
+              sx={{ mr: 1, mb: 1 }}
             />
           ))}
         </Box>
