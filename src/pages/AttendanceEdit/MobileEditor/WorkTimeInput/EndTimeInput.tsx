@@ -16,6 +16,7 @@ import {
 import { AppConfigContext } from "@/context/AppConfigContext";
 
 import { AttendanceEditInputs } from "../../common";
+import QuickInputChips from "@/components/QuickInputChips";
 
 const ClearButton = styled(Button)(({ theme }) => ({
   color: theme.palette.error.contrastText,
@@ -104,21 +105,11 @@ export default function EndTimeInput({
           )}
         />
         <Box>
-          {quickInputEndTimes.map((entry, index) => (
-            <Chip
-              key={index}
-              label={entry.time}
-              color={entry.enabled ? "success" : "default"}
-              variant="outlined"
-              icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
-              onClick={() => {
-                const endTime = dayjs(
-                  `${workDate.format("YYYY-MM-DD")} ${entry.time}`
-                ).toISOString();
-                setValue("endTime", endTime);
-              }}
-            />
-          ))}
+          <QuickInputChips
+            quickInputTimes={quickInputEndTimes}
+            workDate={workDate}
+            onSelectTime={(endTime) => setValue("endTime", endTime)}
+          />
         </Box>
       </Stack>
       <Box>

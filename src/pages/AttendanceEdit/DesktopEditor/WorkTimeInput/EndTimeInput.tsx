@@ -1,16 +1,14 @@
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import ClearIcon from "@mui/icons-material/Clear";
-import { Box, Button, Chip, IconButton, Stack } from "@mui/material";
+import { Box, Button, IconButton, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
 
-import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
-
 import { AttendanceEditContext } from "../../AttendanceEditProvider";
 import { AppConfigContext } from "@/context/AppConfigContext";
+import QuickInputChips from "@/components/QuickInputChips";
 
 export default function EndTimeInput() {
   const { getQuickInputEndTimes } = useContext(AppConfigContext);
@@ -88,22 +86,14 @@ export default function EndTimeInput() {
           )}
         />
         <Box>
-          {quickInputEndTimes.map((entry, index) => (
-            <Chip
-              key={index}
-              label={entry.time}
-              color={entry.enabled ? "success" : "default"}
-              variant="outlined"
-              icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
-              disabled={changeRequests.length > 0}
-              onClick={() => {
-                const endTime = dayjs(
-                  `${workDate.format("YYYY-MM-DD")} ${entry.time}`
-                ).toISOString();
-                setValue("endTime", endTime, { shouldDirty: true });
-              }}
-            />
-          ))}
+          <QuickInputChips
+            quickInputTimes={quickInputEndTimes}
+            workDate={workDate}
+            disabled={changeRequests.length > 0}
+            onSelectTime={(endTime) =>
+              setValue("endTime", endTime, { shouldDirty: true })
+            }
+          />
         </Box>
       </Stack>
       <Box>
