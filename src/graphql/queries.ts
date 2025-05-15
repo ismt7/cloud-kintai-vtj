@@ -369,6 +369,7 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
     }
     remarks
     paidHolidayFlag
+    hourlyPaidHolidayHours
     substituteHolidayDate
     histories {
       staffId
@@ -384,6 +385,7 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
       }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       createdAt
@@ -401,6 +403,7 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
       }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       completed
@@ -445,6 +448,7 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
       }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayDate
       histories {
         staffId
@@ -460,6 +464,7 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
         }
         remarks
         paidHolidayFlag
+        hourlyPaidHolidayHours
         substituteHolidayFlag
         substituteHolidayDate
         createdAt
@@ -477,6 +482,7 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
         }
         remarks
         paidHolidayFlag
+        hourlyPaidHolidayHours
         substituteHolidayFlag
         substituteHolidayDate
         completed
@@ -534,6 +540,7 @@ export const attendancesByStaffId = /* GraphQL */ `query AttendancesByStaffId(
       }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayDate
       histories {
         staffId
@@ -549,6 +556,7 @@ export const attendancesByStaffId = /* GraphQL */ `query AttendancesByStaffId(
         }
         remarks
         paidHolidayFlag
+        hourlyPaidHolidayHours
         substituteHolidayFlag
         substituteHolidayDate
         createdAt
@@ -566,6 +574,7 @@ export const attendancesByStaffId = /* GraphQL */ `query AttendancesByStaffId(
         }
         remarks
         paidHolidayFlag
+        hourlyPaidHolidayHours
         substituteHolidayFlag
         substituteHolidayDate
         completed

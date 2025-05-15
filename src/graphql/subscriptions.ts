@@ -413,6 +413,7 @@ export const onCreateAttendance = /* GraphQL */ `subscription OnCreateAttendance
     }
     remarks
     paidHolidayFlag
+    hourlyPaidHolidayHours
     substituteHolidayDate
     histories {
       staffId
@@ -428,6 +429,7 @@ export const onCreateAttendance = /* GraphQL */ `subscription OnCreateAttendance
       }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       createdAt
@@ -445,6 +447,7 @@ export const onCreateAttendance = /* GraphQL */ `subscription OnCreateAttendance
       }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       completed
@@ -486,6 +489,7 @@ export const onUpdateAttendance = /* GraphQL */ `subscription OnUpdateAttendance
     }
     remarks
     paidHolidayFlag
+    hourlyPaidHolidayHours
     substituteHolidayDate
     histories {
       staffId
@@ -501,6 +505,7 @@ export const onUpdateAttendance = /* GraphQL */ `subscription OnUpdateAttendance
       }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       createdAt
@@ -518,6 +523,7 @@ export const onUpdateAttendance = /* GraphQL */ `subscription OnUpdateAttendance
       }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       completed
@@ -559,6 +565,7 @@ export const onDeleteAttendance = /* GraphQL */ `subscription OnDeleteAttendance
     }
     remarks
     paidHolidayFlag
+    hourlyPaidHolidayHours
     substituteHolidayDate
     histories {
       staffId
@@ -574,6 +581,7 @@ export const onDeleteAttendance = /* GraphQL */ `subscription OnDeleteAttendance
       }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       createdAt
@@ -591,6 +599,7 @@ export const onDeleteAttendance = /* GraphQL */ `subscription OnDeleteAttendance
       }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       completed

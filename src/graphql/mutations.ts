@@ -450,6 +450,7 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
     }
     remarks
     paidHolidayFlag
+    hourlyPaidHolidayHours
     substituteHolidayDate
     histories {
       staffId
@@ -465,6 +466,7 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
       }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       createdAt
@@ -482,6 +484,7 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
       }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       completed
@@ -524,6 +527,7 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
     }
     remarks
     paidHolidayFlag
+    hourlyPaidHolidayHours
     substituteHolidayDate
     histories {
       staffId
@@ -539,6 +543,7 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
       }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       createdAt
@@ -556,6 +561,7 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
       }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       completed
@@ -598,6 +604,7 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
     }
     remarks
     paidHolidayFlag
+    hourlyPaidHolidayHours
     substituteHolidayDate
     histories {
       staffId
@@ -613,6 +620,7 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
       }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       createdAt
@@ -630,6 +638,7 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
       }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       completed

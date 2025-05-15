@@ -69,6 +69,7 @@ type Attendance @model @auth(rules: [{ allow: private }]) {
   rests: [Rest]
   remarks: String
   paidHolidayFlag: Boolean
+  hourlyPaidHolidayHours: Int
   substituteHolidayDate: String
   histories: [AttendanceHistory]
   changeRequests: [AttendanceChangeRequest]
@@ -105,6 +106,7 @@ type AttendanceHistory {
   rests: [Rest]
   remarks: String
   paidHolidayFlag: Boolean
+  hourlyPaidHolidayHours: Int
   substituteHolidayFlag: Boolean
   substituteHolidayDate: String
   createdAt: String!
@@ -118,6 +120,7 @@ type AttendanceChangeRequest {
   rests: [Rest]
   remarks: String
   paidHolidayFlag: Boolean
+  hourlyPaidHolidayHours: Int
   substituteHolidayFlag: Boolean
   substituteHolidayDate: String
   completed: Boolean
