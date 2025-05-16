@@ -153,6 +153,7 @@ type AppConfig @model {
   lunchRestStartTime: String
   lunchRestEndTime: String
   officeMode: Boolean
+  hourlyPaidHolidayEnabled: Boolean
   links: [Link]
   reasons: [Reason]
   quickInputStartTimes: [QuickInputTime]

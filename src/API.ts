@@ -81,6 +81,7 @@ export type CreateAppConfigInput = {
   lunchRestStartTime?: string | null,
   lunchRestEndTime?: string | null,
   officeMode?: boolean | null,
+  hourlyPaidHolidayEnabled?: boolean | null,
   links?: Array< LinkInput | null > | null,
   reasons?: Array< ReasonInput | null > | null,
   quickInputStartTimes?: Array< QuickInputTimeInput | null > | null,
@@ -111,6 +112,7 @@ export type ModelAppConfigConditionInput = {
   lunchRestStartTime?: ModelStringInput | null,
   lunchRestEndTime?: ModelStringInput | null,
   officeMode?: ModelBooleanInput | null,
+  hourlyPaidHolidayEnabled?: ModelBooleanInput | null,
   and?: Array< ModelAppConfigConditionInput | null > | null,
   or?: Array< ModelAppConfigConditionInput | null > | null,
   not?: ModelAppConfigConditionInput | null,
@@ -134,6 +136,7 @@ export type AppConfig = {
   lunchRestStartTime?: string | null,
   lunchRestEndTime?: string | null,
   officeMode?: boolean | null,
+  hourlyPaidHolidayEnabled?: boolean | null,
   links?:  Array<Link | null > | null,
   reasons?:  Array<Reason | null > | null,
   quickInputStartTimes?:  Array<QuickInputTime | null > | null,
@@ -170,6 +173,7 @@ export type UpdateAppConfigInput = {
   lunchRestStartTime?: string | null,
   lunchRestEndTime?: string | null,
   officeMode?: boolean | null,
+  hourlyPaidHolidayEnabled?: boolean | null,
   links?: Array< LinkInput | null > | null,
   reasons?: Array< ReasonInput | null > | null,
   quickInputStartTimes?: Array< QuickInputTimeInput | null > | null,
@@ -654,6 +658,7 @@ export type ModelAppConfigFilterInput = {
   lunchRestStartTime?: ModelStringInput | null,
   lunchRestEndTime?: ModelStringInput | null,
   officeMode?: ModelBooleanInput | null,
+  hourlyPaidHolidayEnabled?: ModelBooleanInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
   and?: Array< ModelAppConfigFilterInput | null > | null,
@@ -863,6 +868,7 @@ export type ModelSubscriptionAppConfigFilterInput = {
   lunchRestStartTime?: ModelSubscriptionStringInput | null,
   lunchRestEndTime?: ModelSubscriptionStringInput | null,
   officeMode?: ModelSubscriptionBooleanInput | null,
+  hourlyPaidHolidayEnabled?: ModelSubscriptionBooleanInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionAppConfigFilterInput | null > | null,
@@ -1027,6 +1033,7 @@ export type CreateAppConfigMutation = {
     lunchRestStartTime?: string | null,
     lunchRestEndTime?: string | null,
     officeMode?: boolean | null,
+    hourlyPaidHolidayEnabled?: boolean | null,
     links?:  Array< {
       __typename: "Link",
       label: string,
@@ -1069,6 +1076,7 @@ export type UpdateAppConfigMutation = {
     lunchRestStartTime?: string | null,
     lunchRestEndTime?: string | null,
     officeMode?: boolean | null,
+    hourlyPaidHolidayEnabled?: boolean | null,
     links?:  Array< {
       __typename: "Link",
       label: string,
@@ -1111,6 +1119,7 @@ export type DeleteAppConfigMutation = {
     lunchRestStartTime?: string | null,
     lunchRestEndTime?: string | null,
     officeMode?: boolean | null,
+    hourlyPaidHolidayEnabled?: boolean | null,
     links?:  Array< {
       __typename: "Link",
       label: string,
@@ -1717,6 +1726,7 @@ export type GetAppConfigQuery = {
     lunchRestStartTime?: string | null,
     lunchRestEndTime?: string | null,
     officeMode?: boolean | null,
+    hourlyPaidHolidayEnabled?: boolean | null,
     links?:  Array< {
       __typename: "Link",
       label: string,
@@ -1762,6 +1772,7 @@ export type ListAppConfigsQuery = {
       lunchRestStartTime?: string | null,
       lunchRestEndTime?: string | null,
       officeMode?: boolean | null,
+      hourlyPaidHolidayEnabled?: boolean | null,
       links?:  Array< {
         __typename: "Link",
         label: string,
@@ -2338,6 +2349,7 @@ export type OnCreateAppConfigSubscription = {
     lunchRestStartTime?: string | null,
     lunchRestEndTime?: string | null,
     officeMode?: boolean | null,
+    hourlyPaidHolidayEnabled?: boolean | null,
     links?:  Array< {
       __typename: "Link",
       label: string,
@@ -2379,6 +2391,7 @@ export type OnUpdateAppConfigSubscription = {
     lunchRestStartTime?: string | null,
     lunchRestEndTime?: string | null,
     officeMode?: boolean | null,
+    hourlyPaidHolidayEnabled?: boolean | null,
     links?:  Array< {
       __typename: "Link",
       label: string,
@@ -2420,6 +2433,7 @@ export type OnDeleteAppConfigSubscription = {
     lunchRestStartTime?: string | null,
     lunchRestEndTime?: string | null,
     officeMode?: boolean | null,
+    hourlyPaidHolidayEnabled?: boolean | null,
     links?:  Array< {
       __typename: "Link",
       label: string,

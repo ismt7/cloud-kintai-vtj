@@ -29,6 +29,7 @@ export declare type AppConfigUpdateFormInputValues = {
     lunchRestStartTime?: string;
     lunchRestEndTime?: string;
     officeMode?: boolean;
+    hourlyPaidHolidayEnabled?: boolean;
 };
 export declare type AppConfigUpdateFormValidationValues = {
     name?: ValidationFunction<string>;
@@ -37,6 +38,7 @@ export declare type AppConfigUpdateFormValidationValues = {
     lunchRestStartTime?: ValidationFunction<string>;
     lunchRestEndTime?: ValidationFunction<string>;
     officeMode?: ValidationFunction<boolean>;
+    hourlyPaidHolidayEnabled?: ValidationFunction<boolean>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type AppConfigUpdateFormOverridesProps = {
@@ -47,6 +49,7 @@ export declare type AppConfigUpdateFormOverridesProps = {
     lunchRestStartTime?: PrimitiveOverrideProps<TextFieldProps>;
     lunchRestEndTime?: PrimitiveOverrideProps<TextFieldProps>;
     officeMode?: PrimitiveOverrideProps<SwitchFieldProps>;
+    hourlyPaidHolidayEnabled?: PrimitiveOverrideProps<SwitchFieldProps>;
 } & EscapeHatchProps;
 export declare type AppConfigUpdateFormProps = React.PropsWithChildren<{
     overrides?: AppConfigUpdateFormOverridesProps | undefined | null;

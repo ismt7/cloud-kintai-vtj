@@ -62,6 +62,7 @@ export const onCreateAppConfig = /* GraphQL */ `subscription OnCreateAppConfig($
     lunchRestStartTime
     lunchRestEndTime
     officeMode
+    hourlyPaidHolidayEnabled
     links {
       label
       url
@@ -102,6 +103,7 @@ export const onUpdateAppConfig = /* GraphQL */ `subscription OnUpdateAppConfig($
     lunchRestStartTime
     lunchRestEndTime
     officeMode
+    hourlyPaidHolidayEnabled
     links {
       label
       url
@@ -142,6 +144,7 @@ export const onDeleteAppConfig = /* GraphQL */ `subscription OnDeleteAppConfig($
     lunchRestStartTime
     lunchRestEndTime
     officeMode
+    hourlyPaidHolidayEnabled
     links {
       label
       url
