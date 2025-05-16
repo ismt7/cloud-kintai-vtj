@@ -75,6 +75,10 @@ export default function DesktopEditor() {
     if (!watch) return;
 
     watch((data) => {
+      if (!data.endTime) {
+        setTotalProductionTime(0);
+        return;
+      }
       const totalWorkTime = calcTotalWorkTime(data.startTime, data.endTime);
 
       const totalRestTime =
