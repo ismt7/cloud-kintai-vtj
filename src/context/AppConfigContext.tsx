@@ -32,6 +32,7 @@ type AppConfigContextProps = {
   }[];
   getLunchRestStartTime: () => dayjs.Dayjs;
   getLunchRestEndTime: () => dayjs.Dayjs;
+  getHourlyPaidHolidayEnabled: () => boolean;
 };
 
 export const AppConfigContext = createContext<AppConfigContextProps>({
@@ -52,4 +53,5 @@ export const AppConfigContext = createContext<AppConfigContextProps>({
   getLunchRestStartTime: () =>
     dayjs(DEFAULT_CONFIG.lunchRestStartTime, "HH:mm"),
   getLunchRestEndTime: () => dayjs(DEFAULT_CONFIG.lunchRestEndTime, "HH:mm"),
+  getHourlyPaidHolidayEnabled: () => false,
 });

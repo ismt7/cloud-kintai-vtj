@@ -39,6 +39,7 @@ export default function Layout() {
     getLunchRestStartTime,
     getLunchRestEndTime,
     loading: appConfigLoading,
+    getHourlyPaidHolidayEnabled,
   } = useAppConfig();
   const {
     fetchAllHolidayCalendars,
@@ -86,7 +87,14 @@ export default function Layout() {
     } catch (error) {
       console.error(error);
     }
-  }, [authStatus, user, window.location.href]);
+  }, [
+    authStatus,
+    user,
+    navigate,
+    fetchAllHolidayCalendars,
+    fetchAllCompanyHolidayCalendars,
+    signOut,
+  ]);
 
   const setCookie = useCallback(
     (name: string, value: string, minutes: number) => {
@@ -109,7 +117,7 @@ export default function Layout() {
       return;
     }
 
-    setCookie(cookieName, "config_fetched", 2);
+    setCookie(cookieName, String(Date.now()), 2);
     fetchConfig();
   }, [getCookie, setCookie, fetchConfig]);
 
@@ -121,7 +129,7 @@ export default function Layout() {
       return;
     }
 
-    setCookie(cookieName, "holiday_calendars_fetched", 2);
+    setCookie(cookieName, String(Date.now()), 2);
     fetchAllHolidayCalendars();
   }, [getCookie, setCookie, fetchAllHolidayCalendars]);
 
@@ -133,7 +141,7 @@ export default function Layout() {
       return;
     }
 
-    setCookie(cookieName, "company_holiday_calendars_fetched", 2);
+    setCookie(cookieName, String(Date.now()), 2);
     fetchAllCompanyHolidayCalendars();
   }, [getCookie, setCookie, fetchAllCompanyHolidayCalendars]);
 
@@ -173,6 +181,7 @@ export default function Layout() {
       getQuickInputEndTimes,
       getLunchRestStartTime,
       getLunchRestEndTime,
+      getHourlyPaidHolidayEnabled,
     }),
     [
       fetchConfig,
@@ -187,6 +196,7 @@ export default function Layout() {
       getQuickInputEndTimes,
       getLunchRestStartTime,
       getLunchRestEndTime,
+      getHourlyPaidHolidayEnabled,
     ]
   );
 

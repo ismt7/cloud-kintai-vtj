@@ -156,6 +156,10 @@ export default function useAppConfig() {
   const getLunchRestEndTime = () =>
     config ? dayjs(config.lunchRestEndTime, "HH:mm") : dayjs("13:00", "HH:mm");
 
+  const getHourlyPaidHolidayEnabled = () => {
+    return config?.hourlyPaidHolidayEnabled ?? false;
+  };
+
   return {
     config,
     loading,
@@ -171,5 +175,6 @@ export default function useAppConfig() {
     getQuickInputEndTimes,
     getLunchRestStartTime,
     getLunchRestEndTime,
+    getHourlyPaidHolidayEnabled,
   };
 }

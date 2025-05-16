@@ -12,6 +12,7 @@ import {
   Stack,
   styled,
   Switch,
+  TextField,
   Typography,
 } from "@mui/material";
 import { Logger } from "aws-amplify";
@@ -197,10 +198,10 @@ export default function AttendanceEditor() {
 
   const watchedData = watch();
 
-  const totalWorkTime = useMemo(
-    () => calcTotalWorkTime(watchedData.startTime, watchedData.endTime),
-    [watchedData.startTime, watchedData.endTime]
-  );
+  const totalWorkTime = useMemo(() => {
+    if (!watchedData.endTime) return 0;
+    return calcTotalWorkTime(watchedData.startTime, watchedData.endTime);
+  }, [watchedData.startTime, watchedData.endTime]);
 
   const totalRestTime = useMemo(
     () =>
@@ -245,6 +246,7 @@ export default function AttendanceEditor() {
           revision: data.revision,
           paidHolidayFlag: data.paidHolidayFlag,
           substituteHolidayDate: data.substituteHolidayDate,
+          hourlyPaidHolidayHours: data.hourlyPaidHolidayHours,
           rests: data.rests.map((rest) => ({
             startTime: rest.startTime,
             endTime: rest.endTime,
@@ -291,6 +293,7 @@ export default function AttendanceEditor() {
         remarks: data.remarks,
         paidHolidayFlag: data.paidHolidayFlag,
         substituteHolidayDate: data.substituteHolidayDate,
+        hourlyPaidHolidayHours: data.hourlyPaidHolidayHours,
         rests: data.rests.map((rest) => ({
           startTime: rest.startTime,
           endTime: rest.endTime,
@@ -344,6 +347,7 @@ export default function AttendanceEditor() {
     setValue("paidHolidayFlag", attendance.paidHolidayFlag || false);
     setValue("substituteHolidayDate", attendance.substituteHolidayDate);
     setValue("revision", attendance.revision);
+    setValue("hourlyPaidHolidayHours", attendance.hourlyPaidHolidayHours || 0);
 
     if (attendance.rests) {
       const rests = attendance.rests
@@ -493,6 +497,27 @@ export default function AttendanceEditor() {
           </Box>
           <StaffNameItem />
           <PaidHolidayFlagInput />
+          <Stack direction="row" spacing={0} alignItems={"center"}>
+            <Typography
+              variant="body1"
+              sx={{ fontWeight: "bold", width: "150px" }}
+            >
+              時間単位休暇
+            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", flexGrow: 2 }}>
+              <TextField
+                type="number"
+                size="small"
+                sx={{ width: 120 }}
+                inputProps={{ min: 0, step: 1 }}
+                {...register("hourlyPaidHolidayHours", {
+                  valueAsNumber: true,
+                })}
+                value={watch("hourlyPaidHolidayHours") ?? ""}
+              />
+              <Box sx={{ ml: 1 }}>時間(h)</Box>
+            </Box>
+          </Stack>
           <SubstituteHolidayDateInput />
           <Stack direction="row" alignItems={"center"}>
             <Box sx={{ fontWeight: "bold", width: "150px" }}>直行</Box>
@@ -549,11 +574,30 @@ export default function AttendanceEditor() {
             <SeparatorItem />
           </Box>
           <Box>
-            <ProductionTimeItem time={totalProductionTime} />
+            <ProductionTimeItem
+              time={totalProductionTime}
+              hourlyPaidHolidayHours={watch("hourlyPaidHolidayHours")}
+            />
           </Box>
           <Box>
             <RemarksItem />
           </Box>
+          {attendance?.updatedAt && (
+            <Stack direction="row" alignItems={"center"}>
+              <Box sx={{ fontWeight: "bold", width: "150px" }}>
+                最終更新日時
+              </Box>
+              <Box sx={{ flexGrow: 2 }}>
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  sx={{ pl: 1 }}
+                >
+                  {dayjs(attendance.updatedAt).format("YYYY/MM/DD HH:mm:ss")}
+                </Typography>
+              </Box>
+            </Stack>
+          )}
           <Box>
             <Stack direction="row" alignItems={"center"}>
               <Box sx={{ fontWeight: "bold", width: "150px" }}>メール設定</Box>
