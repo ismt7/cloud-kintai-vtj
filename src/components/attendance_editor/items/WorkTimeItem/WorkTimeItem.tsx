@@ -11,11 +11,9 @@ export function calcTotalWorkTime(
   startTime: string | null | undefined,
   endTime: string | null | undefined
 ) {
-  if (!startTime) return 0;
+  if (!startTime || !endTime) return 0;
 
-  const now = dayjs();
-  const diff = dayjs(endTime || now).diff(dayjs(startTime), "hour", true);
-
+  const diff = dayjs(endTime).diff(dayjs(startTime), "hour", true);
   return diff;
 }
 
