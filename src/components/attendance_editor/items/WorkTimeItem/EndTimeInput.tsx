@@ -117,7 +117,6 @@ export default function EndTimeInput() {
       </Stack>
       <Box>
         <IconButton
-          sx={{ my: 1 }}
           onClick={() => {
             setValue("endTime", null);
             setEnableEndTime(false);
