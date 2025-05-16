@@ -91,6 +91,7 @@ export default function AttendanceEditor() {
   const {
     getLunchRestStartTime,
     getLunchRestEndTime,
+    getHourlyPaidHolidayEnabled,
     loading: appConfigLoading,
   } = useAppConfig();
   const dispatch = useAppDispatchV2();
@@ -497,27 +498,29 @@ export default function AttendanceEditor() {
           </Box>
           <StaffNameItem />
           <PaidHolidayFlagInput />
-          <Stack direction="row" spacing={0} alignItems={"center"}>
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: "bold", width: "150px" }}
-            >
-              時間単位休暇
-            </Typography>
-            <Box sx={{ display: "flex", alignItems: "center", flexGrow: 2 }}>
-              <TextField
-                type="number"
-                size="small"
-                sx={{ width: 120 }}
-                inputProps={{ min: 0, step: 1 }}
-                {...register("hourlyPaidHolidayHours", {
-                  valueAsNumber: true,
-                })}
-                value={watch("hourlyPaidHolidayHours") ?? ""}
-              />
-              <Box sx={{ ml: 1 }}>時間(h)</Box>
-            </Box>
-          </Stack>
+          {getHourlyPaidHolidayEnabled() && (
+            <Stack direction="row" spacing={0} alignItems={"center"}>
+              <Typography
+                variant="body1"
+                sx={{ fontWeight: "bold", width: "150px" }}
+              >
+                時間単位休暇
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", flexGrow: 2 }}>
+                <TextField
+                  type="number"
+                  size="small"
+                  sx={{ width: 120 }}
+                  inputProps={{ min: 0, step: 1 }}
+                  {...register("hourlyPaidHolidayHours", {
+                    valueAsNumber: true,
+                  })}
+                  value={watch("hourlyPaidHolidayHours") ?? ""}
+                />
+                <Box sx={{ ml: 1 }}>時間(h)</Box>
+              </Box>
+            </Stack>
+          )}
           <SubstituteHolidayDateInput />
           <Stack direction="row" alignItems={"center"}>
             <Box sx={{ fontWeight: "bold", width: "150px" }}>直行</Box>
