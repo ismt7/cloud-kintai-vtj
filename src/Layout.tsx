@@ -18,7 +18,6 @@ import { AppContext } from "./context/AppContext";
 
 export default function Layout() {
   const navigate = useNavigate();
-  const location = useLocation(); // useLocationを使用
   const { user, signOut, authStatus } = useAuthenticator();
   const {
     cognitoUser,
