@@ -369,6 +369,11 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
       endTime
       __typename
     }
+    hourlyPaidHolidayTimes {
+      startTime
+      endTime
+      __typename
+    }
     remarks
     paidHolidayFlag
     hourlyPaidHolidayHours
@@ -381,6 +386,11 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
       goDirectlyFlag
       returnDirectlyFlag
       rests {
+        startTime
+        endTime
+        __typename
+      }
+      hourlyPaidHolidayTimes {
         startTime
         endTime
         __typename
@@ -399,6 +409,11 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
       goDirectlyFlag
       returnDirectlyFlag
       rests {
+        startTime
+        endTime
+        __typename
+      }
+      hourlyPaidHolidayTimes {
         startTime
         endTime
         __typename
@@ -448,6 +463,11 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
       hourlyPaidHolidayHours
@@ -460,6 +480,11 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
         goDirectlyFlag
         returnDirectlyFlag
         rests {
+          startTime
+          endTime
+          __typename
+        }
+        hourlyPaidHolidayTimes {
           startTime
           endTime
           __typename
@@ -478,6 +503,11 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
         goDirectlyFlag
         returnDirectlyFlag
         rests {
+          startTime
+          endTime
+          __typename
+        }
+        hourlyPaidHolidayTimes {
           startTime
           endTime
           __typename
@@ -540,6 +570,11 @@ export const attendancesByStaffId = /* GraphQL */ `query AttendancesByStaffId(
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
       hourlyPaidHolidayHours
@@ -552,6 +587,11 @@ export const attendancesByStaffId = /* GraphQL */ `query AttendancesByStaffId(
         goDirectlyFlag
         returnDirectlyFlag
         rests {
+          startTime
+          endTime
+          __typename
+        }
+        hourlyPaidHolidayTimes {
           startTime
           endTime
           __typename
@@ -570,6 +610,11 @@ export const attendancesByStaffId = /* GraphQL */ `query AttendancesByStaffId(
         goDirectlyFlag
         returnDirectlyFlag
         rests {
+          startTime
+          endTime
+          __typename
+        }
+        hourlyPaidHolidayTimes {
           startTime
           endTime
           __typename

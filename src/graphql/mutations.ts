@@ -451,6 +451,11 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
       endTime
       __typename
     }
+    hourlyPaidHolidayTimes {
+      startTime
+      endTime
+      __typename
+    }
     remarks
     paidHolidayFlag
     hourlyPaidHolidayHours
@@ -463,6 +468,11 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
       goDirectlyFlag
       returnDirectlyFlag
       rests {
+        startTime
+        endTime
+        __typename
+      }
+      hourlyPaidHolidayTimes {
         startTime
         endTime
         __typename
@@ -481,6 +491,11 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
       goDirectlyFlag
       returnDirectlyFlag
       rests {
+        startTime
+        endTime
+        __typename
+      }
+      hourlyPaidHolidayTimes {
         startTime
         endTime
         __typename
@@ -528,6 +543,11 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
       endTime
       __typename
     }
+    hourlyPaidHolidayTimes {
+      startTime
+      endTime
+      __typename
+    }
     remarks
     paidHolidayFlag
     hourlyPaidHolidayHours
@@ -540,6 +560,11 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
       goDirectlyFlag
       returnDirectlyFlag
       rests {
+        startTime
+        endTime
+        __typename
+      }
+      hourlyPaidHolidayTimes {
         startTime
         endTime
         __typename
@@ -558,6 +583,11 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
       goDirectlyFlag
       returnDirectlyFlag
       rests {
+        startTime
+        endTime
+        __typename
+      }
+      hourlyPaidHolidayTimes {
         startTime
         endTime
         __typename
@@ -605,6 +635,11 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
       endTime
       __typename
     }
+    hourlyPaidHolidayTimes {
+      startTime
+      endTime
+      __typename
+    }
     remarks
     paidHolidayFlag
     hourlyPaidHolidayHours
@@ -617,6 +652,11 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
       goDirectlyFlag
       returnDirectlyFlag
       rests {
+        startTime
+        endTime
+        __typename
+      }
+      hourlyPaidHolidayTimes {
         startTime
         endTime
         __typename
@@ -635,6 +675,11 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
       goDirectlyFlag
       returnDirectlyFlag
       rests {
+        startTime
+        endTime
+        __typename
+      }
+      hourlyPaidHolidayTimes {
         startTime
         endTime
         __typename

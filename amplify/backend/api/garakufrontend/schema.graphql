@@ -67,6 +67,7 @@ type Attendance @model @auth(rules: [{ allow: private }]) {
   goDirectlyFlag: Boolean
   returnDirectlyFlag: Boolean
   rests: [Rest]
+  hourlyPaidHolidayTimes: [HourlyPaidHolidayTime]
   remarks: String
   paidHolidayFlag: Boolean
   hourlyPaidHolidayHours: Int
@@ -104,6 +105,7 @@ type AttendanceHistory {
   goDirectlyFlag: Boolean
   returnDirectlyFlag: Boolean
   rests: [Rest]
+  hourlyPaidHolidayTimes: [HourlyPaidHolidayTime]
   remarks: String
   paidHolidayFlag: Boolean
   hourlyPaidHolidayHours: Int
@@ -118,6 +120,7 @@ type AttendanceChangeRequest {
   goDirectlyFlag: Boolean
   returnDirectlyFlag: Boolean
   rests: [Rest]
+  hourlyPaidHolidayTimes: [HourlyPaidHolidayTime]
   remarks: String
   paidHolidayFlag: Boolean
   hourlyPaidHolidayHours: Int
@@ -174,4 +177,9 @@ input EmailData {
 type Query {
   sendMail(data: EmailData!): EmailResult
     @function(name: "garakuSendMail-${env}")
+}
+
+type HourlyPaidHolidayTime {
+  startTime: String!
+  endTime: String!
 }
