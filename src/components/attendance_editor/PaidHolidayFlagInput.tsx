@@ -14,7 +14,7 @@ export default function PaidHolidayFlagInput() {
 
   return (
     <Stack direction="row" alignItems={"center"}>
-      <Box sx={{ fontWeight: "bold", width: "150px" }}>有給休暇</Box>
+      <Box sx={{ fontWeight: "bold", width: "150px" }}>有給休暇(1日)</Box>
       <Box>
         <Controller
           name="paidHolidayFlag"
