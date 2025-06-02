@@ -6,7 +6,6 @@ import { BlockNoteView, useBlockNote } from "@blocknote/react";
 import {
   Autocomplete,
   Box,
-  Breadcrumbs,
   Button,
   Container,
   Link,
@@ -27,6 +26,7 @@ import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
+import CommonBreadcrumbs from "@/components/common/CommonBreadcrumbs";
 
 type Inputs = {
   title: string | null | undefined;
@@ -99,15 +99,13 @@ export default function DocumentPoster() {
 
   return (
     <>
-      <Breadcrumbs>
-        <Link color="inherit" href="/">
-          TOP
-        </Link>
-        <Link color="inherit" href="/docs">
-          ドキュメント一覧
-        </Link>
-        <Typography color="text.primary">作成</Typography>
-      </Breadcrumbs>
+      <CommonBreadcrumbs
+        items={[
+          { label: "TOP", href: "/" },
+          { label: "ドキュメント一覧", href: "/docs" },
+        ]}
+        current="作成"
+      />
       <Title>ドキュメントの作成</Title>
       <Container maxWidth="md">
         <Stack direction="column" spacing={2}>

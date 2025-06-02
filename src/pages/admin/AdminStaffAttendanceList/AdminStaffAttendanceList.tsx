@@ -4,7 +4,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import {
   Badge,
   Box,
-  Breadcrumbs,
   Container,
   IconButton,
   Stack,
@@ -18,7 +17,7 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useMemo, useCallback } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -28,6 +27,7 @@ import {
   Staff,
 } from "@/API";
 import { AttendanceStatusTooltip } from "@/components/AttendanceList/AttendanceStatusTooltip";
+import CommonBreadcrumbs from "@/components/common/CommonBreadcrumbs";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
 import { AttendanceDate } from "@/lib/AttendanceDate";
 import { ChangeRequest } from "@/lib/ChangeRequest";
@@ -91,7 +91,6 @@ export default function AdminStaffAttendanceList() {
 
   const { holidayCalendars, companyHolidayCalendars } = useContext(AppContext);
   const [staff, setStaff] = useState<Staff | undefined | null>(undefined);
-  const [totalTime, setTotalTime] = useState<number>(0);
 
   const { attendances, getAttendances } = useAttendances();
 
@@ -108,10 +107,9 @@ export default function AdminStaffAttendanceList() {
       });
   }, [staffId]);
 
-  useEffect(() => {
+  const totalTime = useMemo(() => {
     const totalWorkTime = attendances.reduce((acc, attendance) => {
       if (!attendance.startTime || !attendance.endTime) return acc;
-
       const workTime = calcTotalWorkTime(
         attendance.startTime,
         attendance.endTime
@@ -121,20 +119,41 @@ export default function AdminStaffAttendanceList() {
 
     const totalRestTime = attendances.reduce((acc, attendance) => {
       if (!attendance.rests) return acc;
-
       const restTime = attendance.rests
         .filter((item): item is NonNullable<typeof item> => !!item)
         .reduce((acc, rest) => {
           if (!rest.startTime || !rest.endTime) return acc;
-
           return acc + calcTotalRestTime(rest.startTime, rest.endTime);
         }, 0);
-
       return acc + restTime;
     }, 0);
-
-    setTotalTime(totalWorkTime - totalRestTime);
+    return totalWorkTime - totalRestTime;
   }, [attendances]);
+
+  const handleEdit = useCallback(
+    (workDate: string) => {
+      navigate(`/admin/attendances/edit/${workDate}/${staffId}`);
+    },
+    [navigate, staffId]
+  );
+
+  const getBadgeContent = useCallback((attendance: Attendance) => {
+    return new ChangeRequest(attendance.changeRequests).getUnapprovedCount();
+  }, []);
+
+  const getTableRowClassNameMemo = useCallback(
+    (
+      attendance: Attendance,
+      holidayCalendars: HolidayCalendar[],
+      companyHolidayCalendars: CompanyHolidayCalendar[]
+    ) =>
+      getTableRowClassName(
+        attendance,
+        holidayCalendars,
+        companyHolidayCalendars
+      ),
+    [holidayCalendars, companyHolidayCalendars]
+  );
 
   if (staff === null || !staffId) {
     return (
@@ -144,27 +163,17 @@ export default function AdminStaffAttendanceList() {
     );
   }
 
-  const handleEdit = (workDate: string) => {
-    navigate(`/admin/attendances/edit/${workDate}/${staffId}`);
-  };
-
-  const getBadgeContent = (attendance: Attendance) => {
-    return new ChangeRequest(attendance.changeRequests).getUnapprovedCount();
-  };
-
   return (
     <Container maxWidth="xl">
       <Stack spacing={1} sx={{ pt: 1 }}>
         <Box>
-          <Breadcrumbs>
-            <Link to="/" color="inherit">
-              TOP
-            </Link>
-            <Link to="/admin/attendances" color="inherit">
-              勤怠管理
-            </Link>
-            <Typography color="text.primary">勤怠一覧</Typography>
-          </Breadcrumbs>
+          <CommonBreadcrumbs
+            items={[
+              { label: "TOP", href: "/" },
+              { label: "勤怠管理", href: "/admin/attendances" },
+            ]}
+            current="勤怠一覧"
+          />
         </Box>
         <Typography variant="h4">
           {`${staff?.familyName || "(不明)"} さんの勤怠(${totalTime.toFixed(
@@ -215,7 +224,7 @@ export default function AdminStaffAttendanceList() {
                 {attendances.map((attendance, index) => (
                   <TableRow
                     key={index}
-                    className={getTableRowClassName(
+                    className={getTableRowClassNameMemo(
                       attendance,
                       holidayCalendars,
                       companyHolidayCalendars

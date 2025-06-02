@@ -13,10 +13,11 @@ import {
 } from "@mui/material";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
+import { AppConfigContext } from "@/context/AppConfigContext";
 import { AttendanceDate } from "@/lib/AttendanceDate";
 
 import useCloseDates from "../../hooks/useCloseDates/useCloseDates";
@@ -48,6 +49,7 @@ export default function DownloadForm() {
     loading: closeDateLoading,
     error: closeDateError,
   } = useCloseDates();
+  const { getHourlyPaidHolidayEnabled } = useContext(AppConfigContext);
 
   const { control, handleSubmit, setValue } = useForm<Inputs>({
     mode: "onChange",
@@ -72,8 +74,22 @@ export default function DownloadForm() {
         },
       }))
     ).then((res) => {
+      const hourlyPaidHolidayEnabled = getHourlyPaidHolidayEnabled();
       const exportData = [
-        "営業日,従業員コード,名前,休憩時間,出勤打刻,退勤打刻,直行,直帰,有給休暇,振替休日,摘要",
+        [
+          "営業日",
+          "従業員コード",
+          "名前",
+          "休憩時間",
+          "出勤打刻",
+          "退勤打刻",
+          "直行",
+          "直帰",
+          "有給休暇",
+          "振替休日",
+          ...(hourlyPaidHolidayEnabled ? ["時間単位休暇(h)"] : []),
+          "摘要",
+        ].join(","),
         ...selectedStaff
           .sort((a, b) => {
             const aSortKey = a.sortKey || "";
@@ -102,6 +118,7 @@ export default function DownloadForm() {
                     substituteHolidayDate,
                     rests,
                     remarks,
+                    hourlyPaidHolidayHours,
                   } = matchAttendance;
 
                   const totalRestTime =
@@ -138,6 +155,9 @@ export default function DownloadForm() {
                     returnDirectlyFlag ? 1 : 0,
                     paidHolidayFlag ? 1 : 0,
                     substituteHolidayDate ? 1 : 0,
+                    ...(hourlyPaidHolidayEnabled
+                      ? [hourlyPaidHolidayHours ?? ""]
+                      : []),
                     generateSummary(),
                   ].join(",");
                 }
@@ -153,6 +173,7 @@ export default function DownloadForm() {
                   "",
                   "",
                   "",
+                  ...(hourlyPaidHolidayEnabled ? [""] : []),
                   "",
                 ].join(",");
               }),
@@ -282,49 +303,82 @@ export default function DownloadForm() {
             </Stack>
           </Box>
           <Box>
-            <Controller
-              name="staffs"
-              control={control}
-              render={({ field }) => (
-                <Autocomplete
-                  {...field}
-                  value={selectedStaff}
-                  multiple
-                  limitTags={2}
-                  id="multiple-limit-tags"
-                  options={staffs}
-                  disableCloseOnSelect
-                  getOptionLabel={(option) =>
-                    `${option?.familyName || ""} ${option?.givenName || ""}`
-                  }
-                  defaultValue={[]}
-                  renderOption={(props, option, { selected }) => (
-                    <li {...props}>
-                      <Checkbox
-                        icon={icon}
-                        checkedIcon={checkedIcon}
-                        style={{ marginRight: 8 }}
-                        checked={selected}
-                      />
-                      {`${option?.familyName || ""} ${option?.givenName || ""}`}
-                    </li>
-                  )}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="対象者"
-                      placeholder="対象者を入力..."
-                      size="small"
+            <Stack spacing={1}>
+              <Box>
+                <Controller
+                  name="staffs"
+                  control={control}
+                  render={({ field }) => (
+                    <Autocomplete
+                      {...field}
+                      value={selectedStaff}
+                      multiple
+                      limitTags={2}
+                      id="multiple-limit-tags"
+                      options={staffs}
+                      disableCloseOnSelect
+                      getOptionLabel={(option) =>
+                        `${option?.familyName || ""} ${option?.givenName || ""}`
+                      }
+                      defaultValue={[]}
+                      renderOption={(props, option, { selected }) => (
+                        <li {...props}>
+                          <Checkbox
+                            icon={icon}
+                            checkedIcon={checkedIcon}
+                            style={{ marginRight: 8 }}
+                            checked={selected}
+                          />
+                          {`${option?.familyName || ""} ${
+                            option?.givenName || ""
+                          }`}
+                        </li>
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="対象者リスト"
+                          placeholder="対象者を入力..."
+                          size="small"
+                        />
+                      )}
+                      sx={{ width: "100%", minWidth: 300, maxWidth: 500 }}
+                      onChange={(_, value) => {
+                        setSelectedStaff(value);
+                        setValue("staffs", value);
+                      }}
                     />
                   )}
-                  sx={{ width: "500px" }}
-                  onChange={(_, value) => {
-                    setSelectedStaff(value);
-                    setValue("staffs", value);
-                  }}
                 />
-              )}
-            />
+              </Box>
+              <Stack direction="row" spacing={1} justifyContent="flex-end">
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => {
+                    setSelectedStaff(staffs);
+                    setValue("staffs", staffs);
+                  }}
+                  disabled={
+                    staffs.length === 0 ||
+                    selectedStaff.length === staffs.length
+                  }
+                >
+                  全選択
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => {
+                    setSelectedStaff([]);
+                    setValue("staffs", []);
+                  }}
+                  disabled={selectedStaff.length === 0}
+                >
+                  全解除
+                </Button>
+              </Stack>
+            </Stack>
           </Box>
         </Stack>
       </Box>

@@ -16,11 +16,15 @@ import {
 } from "@mui/material";
 import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
 
 import { SystemCommentInput } from "@/API";
+import { GoDirectlyFlagCheckbox } from "@/components/attendance_editor/GoDirectlyFlagCheckbox";
+import PaidHolidayFlagInputCommon from "@/components/attendance_editor/PaidHolidayFlagInput";
+import ReturnDirectlyFlagInput from "@/components/attendance_editor/ReturnDirectlyFlagInput";
+import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
 import { AttendanceDate } from "@/lib/AttendanceDate";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
@@ -43,11 +47,14 @@ import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
+import MoveDateItem from "../attendance_editor/MoveDateItem";
 import Title from "../Title/Title";
 import ChangeRequestDialog from "./ChangeRequestDialog/ChangeRequestDialog";
 // eslint-disable-next-line import/no-cycle
 import EditAttendanceHistoryList from "./EditAttendanceHistoryList/EditAttendanceHistoryList";
-import GoDirectlyFlagInput from "./GoDirectlyFlagInput";
+import HourlyPaidHolidayTimeItem, {
+  calcTotalHourlyPaidHolidayTime,
+} from "./items/HourlyPaidHolidayTimeItem";
 import ProductionTimeItem from "./items/ProductionTimeItem";
 // eslint-disable-next-line import/no-cycle
 import RemarksItem from "./items/RemarksItem";
@@ -59,16 +66,12 @@ import {
 import SeparatorItem from "./items/SeparatorItem";
 import StaffNameItem from "./items/StaffNameItem";
 import WorkDateItem from "./items/WorkDateItem";
-// eslint-disable-next-line import/no-cycle
 import {
   calcTotalWorkTime,
   WorkTimeItem,
 } from "./items/WorkTimeItem/WorkTimeItem";
 import { LunchRestTimeNotSetWarning } from "./LunchRestTimeNotSetWarning";
-import PaidHolidayFlagInput from "./PaidHolidayFlagInput";
-import ReturnDirectlyFlagInput from "./ReturnDirectlyFlagInput";
 import { SystemCommentList } from "./SystemCommentList";
-import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 
 const SaveButton = styled(Button)(({ theme }) => ({
   width: 150,
@@ -90,6 +93,7 @@ export default function AttendanceEditor() {
   const {
     getLunchRestStartTime,
     getLunchRestEndTime,
+    getHourlyPaidHolidayEnabled,
     loading: appConfigLoading,
   } = useAppConfig();
   const dispatch = useAppDispatchV2();
@@ -101,8 +105,6 @@ export default function AttendanceEditor() {
   const [staff, setStaff] = useState<StaffType | undefined | null>(undefined);
   const [workDate, setWorkDate] = useState<dayjs.Dayjs | null>(null);
   const [enabledSendMail, setEnabledSendMail] = useState<boolean>(true);
-  const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
-  const [visibleRestWarning, setVisibleRestWarning] = useState<boolean>(false);
 
   const logger = new Logger(
     "AttendanceEditor",
@@ -141,6 +143,17 @@ export default function AttendanceEditor() {
   } = useFieldArray({
     control,
     name: "systemComments",
+  });
+
+  const {
+    fields: hourlyPaidHolidayTimeFields,
+    remove: hourlyPaidHolidayTimeRemove,
+    append: hourlyPaidHolidayTimeAppend,
+    update: hourlyPaidHolidayTimeUpdate,
+    replace: hourlyPaidHolidayTimeReplace,
+  } = useFieldArray({
+    control,
+    name: "hourlyPaidHolidayTimes",
   });
 
   useEffect(() => {
@@ -188,46 +201,141 @@ export default function AttendanceEditor() {
     });
   }, [staff, targetStaffId, targetWorkDate]);
 
-  useEffect(() => {
-    watch((data) => {
-      const totalWorkTime = calcTotalWorkTime(data.startTime, data.endTime);
+  const lunchRestStartTime = useMemo(
+    () => getLunchRestStartTime().format("HH:mm"),
+    [getLunchRestStartTime]
+  );
+  const lunchRestEndTime = useMemo(
+    () => getLunchRestEndTime().format("HH:mm"),
+    [getLunchRestEndTime]
+  );
 
-      const totalRestTime =
-        data.rests?.reduce((acc, rest) => {
-          if (!rest) return acc;
+  const watchedData = watch();
 
-          const diff = calcTotalRestTime(rest.startTime, rest.endTime);
-          return acc + diff;
-        }, 0) ?? 0;
+  const totalWorkTime = useMemo(() => {
+    if (!watchedData.endTime) return 0;
+    return calcTotalWorkTime(watchedData.startTime, watchedData.endTime);
+  }, [watchedData.startTime, watchedData.endTime]);
 
-      setVisibleRestWarning(
-        !!(
-          data.startTime &&
-          data.endTime &&
-          totalWorkTime > 6 &&
-          totalRestTime === 0
-        )
-      );
+  const totalRestTime = useMemo(
+    () =>
+      watchedData.rests?.reduce((acc, rest) => {
+        if (!rest) return acc;
+        if (!rest.endTime) return acc;
 
-      const totalTime = totalWorkTime - totalRestTime;
-      setTotalProductionTime(totalTime);
-    });
-  }, [watch]);
+        const diff = calcTotalRestTime(rest.startTime, rest.endTime);
+        return acc + diff;
+      }, 0) ?? 0,
+    [watchedData.rests]
+  );
 
-  const onSubmit = async (data: AttendanceEditInputs) => {
-    console.log("data", data.systemComments);
+  const totalProductionTime = useMemo(
+    () => totalWorkTime - totalRestTime,
+    [totalWorkTime, totalRestTime]
+  );
 
-    if (attendance) {
-      await updateAttendance({
-        id: attendance.id,
-        staffId: attendance.staffId,
-        workDate: data.workDate,
+  // 合計時間単位休暇時間を計算
+  const totalHourlyPaidHolidayTime = useMemo(
+    () =>
+      watchedData.hourlyPaidHolidayTimes?.reduce((acc, time) => {
+        if (!time) return acc;
+        if (!time.endTime) return acc;
+
+        const diff = calcTotalHourlyPaidHolidayTime(
+          time.startTime,
+          time.endTime
+        );
+        return acc + diff;
+      }, 0) ?? 0,
+    [watchedData.hourlyPaidHolidayTimes]
+  );
+
+  const visibleRestWarning = useMemo(
+    () =>
+      !!(
+        watchedData.startTime &&
+        watchedData.endTime &&
+        totalWorkTime > 6 &&
+        totalRestTime === 0
+      ),
+    [watchedData.startTime, watchedData.endTime, totalWorkTime, totalRestTime]
+  );
+
+  const onSubmit = useCallback(
+    async (data: AttendanceEditInputs) => {
+      console.log("data", data.systemComments);
+
+      if (attendance) {
+        await updateAttendance({
+          id: attendance.id,
+          staffId: attendance.staffId,
+          workDate: data.workDate,
+          startTime: data.startTime,
+          endTime: data.endTime || null,
+          goDirectlyFlag: data.goDirectlyFlag,
+          returnDirectlyFlag: data.returnDirectlyFlag,
+          remarks: data.remarks,
+          revision: data.revision,
+          paidHolidayFlag: data.paidHolidayFlag,
+          substituteHolidayDate: data.substituteHolidayDate,
+          rests: data.rests.map((rest) => ({
+            startTime: rest.startTime,
+            endTime: rest.endTime,
+          })),
+          systemComments: data.systemComments.map(
+            ({ comment, confirmed, createdAt }) => ({
+              comment,
+              confirmed,
+              createdAt,
+            })
+          ),
+          hourlyPaidHolidayTimes:
+            (data.hourlyPaidHolidayTimes
+              ?.map((item) =>
+                item.startTime && item.endTime
+                  ? {
+                      startTime: item.startTime,
+                      endTime: item.endTime,
+                    }
+                  : null
+              )
+              .filter((item) => item !== null) as {
+              startTime: string;
+              endTime: string;
+            }[]) ?? [],
+        })
+          .then((res) => {
+            if (!staff || !res.histories) return;
+
+            if (enabledSendMail) {
+              new AttendanceEditMailSender(staff, res).changeRequest();
+            }
+
+            dispatch(setSnackbarSuccess(MESSAGE_CODE.S04001));
+          })
+          .catch((e) => {
+            console.log(e);
+            dispatch(setSnackbarError(MESSAGE_CODE.E04001));
+          });
+
+        return;
+      }
+
+      if (!targetStaffId || !targetWorkDate) {
+        dispatch(setSnackbarError(MESSAGE_CODE.E04001));
+        return;
+      }
+
+      await createAttendance({
+        staffId: targetStaffId,
+        workDate: new AttendanceDateTime()
+          .setDateString(targetWorkDate)
+          .toDataFormat(),
         startTime: data.startTime,
-        endTime: data.endTime || null,
+        endTime: data.endTime,
         goDirectlyFlag: data.goDirectlyFlag,
         returnDirectlyFlag: data.returnDirectlyFlag,
         remarks: data.remarks,
-        revision: data.revision,
         paidHolidayFlag: data.paidHolidayFlag,
         substituteHolidayDate: data.substituteHolidayDate,
         rests: data.rests.map((rest) => ({
@@ -241,9 +349,25 @@ export default function AttendanceEditor() {
             createdAt,
           })
         ),
+        hourlyPaidHolidayTimes:
+          (data.hourlyPaidHolidayTimes
+            ?.map((item) =>
+              item.startTime && item.endTime
+                ? {
+                    startTime: item.startTime,
+                    endTime: item.endTime,
+                  }
+                : null
+            )
+            .filter((item) => item !== null) as {
+            startTime: string;
+            endTime: string;
+          }[]) ?? [],
       })
         .then((res) => {
-          if (!staff || !res.histories) return;
+          if (!staff) {
+            return;
+          }
 
           if (enabledSendMail) {
             new AttendanceEditMailSender(staff, res).changeRequest();
@@ -251,58 +375,21 @@ export default function AttendanceEditor() {
 
           dispatch(setSnackbarSuccess(MESSAGE_CODE.S04001));
         })
-        .catch((e) => {
-          console.log(e);
+        .catch(() => {
           dispatch(setSnackbarError(MESSAGE_CODE.E04001));
         });
-
-      return;
-    }
-
-    if (!targetStaffId || !targetWorkDate) {
-      dispatch(setSnackbarError(MESSAGE_CODE.E04001));
-      return;
-    }
-
-    await createAttendance({
-      staffId: targetStaffId,
-      workDate: new AttendanceDateTime()
-        .setDateString(targetWorkDate)
-        .toDataFormat(),
-      startTime: data.startTime,
-      endTime: data.endTime,
-      goDirectlyFlag: data.goDirectlyFlag,
-      returnDirectlyFlag: data.returnDirectlyFlag,
-      remarks: data.remarks,
-      paidHolidayFlag: data.paidHolidayFlag,
-      substituteHolidayDate: data.substituteHolidayDate,
-      rests: data.rests.map((rest) => ({
-        startTime: rest.startTime,
-        endTime: rest.endTime,
-      })),
-      systemComments: data.systemComments.map(
-        ({ comment, confirmed, createdAt }) => ({
-          comment,
-          confirmed,
-          createdAt,
-        })
-      ),
-    })
-      .then((res) => {
-        if (!staff) {
-          return;
-        }
-
-        if (enabledSendMail) {
-          new AttendanceEditMailSender(staff, res).changeRequest();
-        }
-
-        dispatch(setSnackbarSuccess(MESSAGE_CODE.S04001));
-      })
-      .catch(() => {
-        dispatch(setSnackbarError(MESSAGE_CODE.E04001));
-      });
-  };
+    },
+    [
+      attendance,
+      staff,
+      enabledSendMail,
+      updateAttendance,
+      createAttendance,
+      targetStaffId,
+      targetWorkDate,
+      dispatch,
+    ]
+  );
 
   useEffect(() => {
     if (!attendance) return;
@@ -318,6 +405,11 @@ export default function AttendanceEditor() {
     setValue("paidHolidayFlag", attendance.paidHolidayFlag || false);
     setValue("substituteHolidayDate", attendance.substituteHolidayDate);
     setValue("revision", attendance.revision);
+    // 追加: 既存のhourlyPaidHolidayTimesがあれば維持、なければ空配列
+    setValue(
+      "hourlyPaidHolidayTimes",
+      getValues("hourlyPaidHolidayTimes") ?? []
+    );
 
     if (attendance.rests) {
       const rests = attendance.rests
@@ -357,14 +449,21 @@ export default function AttendanceEditor() {
 
       systemCommentReplace(systemComments);
     }
+
+    if (attendance.hourlyPaidHolidayTimes) {
+      const hourlyPaidHolidayTimes = attendance.hourlyPaidHolidayTimes
+        .filter((item): item is NonNullable<typeof item> => item !== null)
+        .map((item) => ({
+          startTime: item.startTime,
+          endTime: item.endTime,
+        }));
+      hourlyPaidHolidayTimeReplace(hourlyPaidHolidayTimes);
+    }
   }, [attendance]);
 
   if (appConfigLoading || staffsLoading || attendance === undefined) {
     return <LinearProgress />;
   }
-
-  const lunchRestStartTime = getLunchRestStartTime().format("HH:mm");
-  const lunchRestEndTime = getLunchRestEndTime().format("HH:mm");
 
   if (staffSError) {
     return (
@@ -414,6 +513,12 @@ export default function AttendanceEditor() {
         systemCommentFields,
         systemCommentUpdate,
         systemCommentReplace,
+        hourlyPaidHolidayTimeFields,
+        hourlyPaidHolidayTimeAppend,
+        hourlyPaidHolidayTimeRemove,
+        hourlyPaidHolidayTimeUpdate,
+        hourlyPaidHolidayTimeReplace,
+        hourlyPaidHolidayEnabled: getHourlyPaidHolidayEnabled(),
       }}
     >
       <Stack spacing={2} sx={{ pb: 5 }}>
@@ -466,23 +571,66 @@ export default function AttendanceEditor() {
             <SystemCommentList />
           </Stack>
           <Box>
-            <WorkDateItem staffId={targetStaffId} workDate={workDate} />
+            <WorkDateItem
+              staffId={targetStaffId}
+              workDate={workDate}
+              MoveDateItemComponent={MoveDateItem}
+            />
           </Box>
           <StaffNameItem />
-          <PaidHolidayFlagInput />
+          <PaidHolidayFlagInputCommon
+            label="有給休暇(1日)"
+            control={control}
+            setValue={setValue}
+            workDate={workDate ? workDate.toISOString() : undefined}
+            setPaidHolidayTimes={true}
+            disabled={changeRequests.length > 0}
+          />
+          {getHourlyPaidHolidayEnabled() && (
+            <Stack spacing={1}>
+              <Stack direction="row">
+                <Box
+                  sx={{ fontWeight: "bold", width: "150px" }}
+                >{`時間単位休暇(${hourlyPaidHolidayTimeFields.length}件)`}</Box>
+                <Stack spacing={1} sx={{ flexGrow: 2 }}>
+                  {hourlyPaidHolidayTimeFields.length === 0 && (
+                    <Box sx={{ color: "text.secondary", fontSize: 14 }}>
+                      時間単位休暇の時間帯を追加してください。
+                    </Box>
+                  )}
+                  {hourlyPaidHolidayTimeFields.map(
+                    (hourlyPaidHolidayTime, index) => (
+                      <HourlyPaidHolidayTimeItem
+                        key={hourlyPaidHolidayTime.id}
+                        time={hourlyPaidHolidayTime}
+                        index={index}
+                      />
+                    )
+                  )}
+                  <Box>
+                    <IconButton
+                      aria-label="add-hourly-paid-holiday-time"
+                      onClick={() =>
+                        hourlyPaidHolidayTimeAppend({
+                          startTime: null,
+                          endTime: null,
+                        })
+                      }
+                    >
+                      <AddAlarmIcon />
+                    </IconButton>
+                  </Box>
+                </Stack>
+              </Stack>
+            </Stack>
+          )}
           <SubstituteHolidayDateInput />
-          <Stack direction="row" alignItems={"center"}>
-            <Box sx={{ fontWeight: "bold", width: "150px" }}>直行</Box>
-            <Box>
-              <GoDirectlyFlagInput />
-            </Box>
-          </Stack>
-          <Stack direction="row" alignItems={"center"}>
-            <Box sx={{ fontWeight: "bold", width: "150px" }}>直帰</Box>
-            <Box>
-              <ReturnDirectlyFlagInput />
-            </Box>
-          </Stack>
+          <GoDirectlyFlagCheckbox
+            name="goDirectlyFlag"
+            control={control}
+            disabled={changeRequests.length > 0}
+          />
+          <ReturnDirectlyFlagInput />
           <WorkTimeItem />
           <Stack direction="row">
             <Box
@@ -526,11 +674,30 @@ export default function AttendanceEditor() {
             <SeparatorItem />
           </Box>
           <Box>
-            <ProductionTimeItem time={totalProductionTime} />
+            <ProductionTimeItem
+              time={totalProductionTime}
+              hourlyPaidHolidayHours={totalHourlyPaidHolidayTime}
+            />
           </Box>
           <Box>
             <RemarksItem />
           </Box>
+          {attendance?.updatedAt && (
+            <Stack direction="row" alignItems={"center"}>
+              <Box sx={{ fontWeight: "bold", width: "150px" }}>
+                最終更新日時
+              </Box>
+              <Box sx={{ flexGrow: 2 }}>
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  sx={{ pl: 1 }}
+                >
+                  {dayjs(attendance.updatedAt).format("YYYY/MM/DD HH:mm:ss")}
+                </Typography>
+              </Box>
+            </Stack>
+          )}
           <Box>
             <Stack direction="row" alignItems={"center"}>
               <Box sx={{ fontWeight: "bold", width: "150px" }}>メール設定</Box>

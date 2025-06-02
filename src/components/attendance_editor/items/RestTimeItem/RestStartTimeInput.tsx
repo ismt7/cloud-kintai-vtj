@@ -1,13 +1,12 @@
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import { Box, Chip, Stack } from "@mui/material";
-import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
+import { Box, Stack } from "@mui/material";
 import dayjs from "dayjs";
 import { useContext } from "react";
-import { Controller, FieldArrayWithId } from "react-hook-form";
+import { FieldArrayWithId } from "react-hook-form";
 
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 import { AttendanceEditInputs } from "@/pages/AttendanceEdit/common";
 import { AppConfigContext } from "@/context/AppConfigContext";
+import { CommonRestTimePicker } from "./CommonRestTimePicker";
 
 export default function RestStartTimeInput({
   index,
@@ -27,53 +26,25 @@ export default function RestStartTimeInput({
 
   return (
     <Stack spacing={1}>
-      <Controller
+      <CommonRestTimePicker
         name={`rests.${index}.startTime`}
+        value={rest.startTime}
+        workDate={workDate}
         control={control}
-        render={({ field }) => (
-          <TimePicker
-            value={rest.startTime ? dayjs(rest.startTime) : null}
-            ampm={false}
-            viewRenderers={{
-              hours: renderTimeViewClock,
-              minutes: renderTimeViewClock,
-            }}
-            slotProps={{
-              textField: { size: "small" },
-            }}
-            onChange={(newStartTime) => {
-              if (!newStartTime) return field.onChange(null);
-              if (!newStartTime.isValid()) return;
-
-              const formattedStartTime = newStartTime
-                .year(workDate.year())
-                .month(workDate.month())
-                .date(workDate.date())
-                .second(0)
-                .millisecond(0)
-                .toISOString();
-              field.onChange(formattedStartTime);
-            }}
-          />
-        )}
+        rest={rest}
+        index={index}
+        restUpdate={restUpdate}
+        chipLabel={lunchRestStartTime}
+        onChipClick={() => {
+          const startTime = dayjs(
+            `${workDate.format("YYYY-MM-DD")} ${lunchRestStartTime}`
+          )
+            .second(0)
+            .millisecond(0)
+            .toISOString();
+          restUpdate(index, { ...rest, startTime });
+        }}
       />
-      <Box>
-        <Chip
-          label={lunchRestStartTime}
-          variant="outlined"
-          color="success"
-          icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
-          onClick={() => {
-            const startTime = dayjs(
-              `${workDate.format("YYYY-MM-DD")} ${lunchRestStartTime}`
-            )
-              .second(0)
-              .millisecond(0)
-              .toISOString();
-            restUpdate(index, { ...rest, startTime });
-          }}
-        />
-      </Box>
     </Stack>
   );
 }

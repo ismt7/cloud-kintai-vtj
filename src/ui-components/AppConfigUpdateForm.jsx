@@ -36,6 +36,7 @@ export default function AppConfigUpdateForm(props) {
     lunchRestStartTime: "",
     lunchRestEndTime: "",
     officeMode: false,
+    hourlyPaidHolidayEnabled: false,
   };
   const [name, setName] = React.useState(initialValues.name);
   const [workStartTime, setWorkStartTime] = React.useState(
@@ -51,6 +52,8 @@ export default function AppConfigUpdateForm(props) {
     initialValues.lunchRestEndTime
   );
   const [officeMode, setOfficeMode] = React.useState(initialValues.officeMode);
+  const [hourlyPaidHolidayEnabled, setHourlyPaidHolidayEnabled] =
+    React.useState(initialValues.hourlyPaidHolidayEnabled);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = appConfigRecord
@@ -62,6 +65,7 @@ export default function AppConfigUpdateForm(props) {
     setLunchRestStartTime(cleanValues.lunchRestStartTime);
     setLunchRestEndTime(cleanValues.lunchRestEndTime);
     setOfficeMode(cleanValues.officeMode);
+    setHourlyPaidHolidayEnabled(cleanValues.hourlyPaidHolidayEnabled);
     setErrors({});
   };
   const [appConfigRecord, setAppConfigRecord] =
@@ -88,6 +92,7 @@ export default function AppConfigUpdateForm(props) {
     lunchRestStartTime: [],
     lunchRestEndTime: [],
     officeMode: [],
+    hourlyPaidHolidayEnabled: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -121,6 +126,7 @@ export default function AppConfigUpdateForm(props) {
           lunchRestStartTime: lunchRestStartTime ?? null,
           lunchRestEndTime: lunchRestEndTime ?? null,
           officeMode: officeMode ?? null,
+          hourlyPaidHolidayEnabled: hourlyPaidHolidayEnabled ?? null,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -187,6 +193,7 @@ export default function AppConfigUpdateForm(props) {
               lunchRestStartTime,
               lunchRestEndTime,
               officeMode,
+              hourlyPaidHolidayEnabled,
             };
             const result = onChange(modelFields);
             value = result?.name ?? value;
@@ -216,6 +223,7 @@ export default function AppConfigUpdateForm(props) {
               lunchRestStartTime,
               lunchRestEndTime,
               officeMode,
+              hourlyPaidHolidayEnabled,
             };
             const result = onChange(modelFields);
             value = result?.workStartTime ?? value;
@@ -245,6 +253,7 @@ export default function AppConfigUpdateForm(props) {
               lunchRestStartTime,
               lunchRestEndTime,
               officeMode,
+              hourlyPaidHolidayEnabled,
             };
             const result = onChange(modelFields);
             value = result?.workEndTime ?? value;
@@ -274,6 +283,7 @@ export default function AppConfigUpdateForm(props) {
               lunchRestStartTime: value,
               lunchRestEndTime,
               officeMode,
+              hourlyPaidHolidayEnabled,
             };
             const result = onChange(modelFields);
             value = result?.lunchRestStartTime ?? value;
@@ -305,6 +315,7 @@ export default function AppConfigUpdateForm(props) {
               lunchRestStartTime,
               lunchRestEndTime: value,
               officeMode,
+              hourlyPaidHolidayEnabled,
             };
             const result = onChange(modelFields);
             value = result?.lunchRestEndTime ?? value;
@@ -334,6 +345,7 @@ export default function AppConfigUpdateForm(props) {
               lunchRestStartTime,
               lunchRestEndTime,
               officeMode: value,
+              hourlyPaidHolidayEnabled,
             };
             const result = onChange(modelFields);
             value = result?.officeMode ?? value;
@@ -347,6 +359,41 @@ export default function AppConfigUpdateForm(props) {
         errorMessage={errors.officeMode?.errorMessage}
         hasError={errors.officeMode?.hasError}
         {...getOverrideProps(overrides, "officeMode")}
+      ></SwitchField>
+      <SwitchField
+        label="Hourly paid holiday enabled"
+        defaultChecked={false}
+        isDisabled={false}
+        isChecked={hourlyPaidHolidayEnabled}
+        onChange={(e) => {
+          let value = e.target.checked;
+          if (onChange) {
+            const modelFields = {
+              name,
+              workStartTime,
+              workEndTime,
+              lunchRestStartTime,
+              lunchRestEndTime,
+              officeMode,
+              hourlyPaidHolidayEnabled: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.hourlyPaidHolidayEnabled ?? value;
+          }
+          if (errors.hourlyPaidHolidayEnabled?.hasError) {
+            runValidationTasks("hourlyPaidHolidayEnabled", value);
+          }
+          setHourlyPaidHolidayEnabled(value);
+        }}
+        onBlur={() =>
+          runValidationTasks(
+            "hourlyPaidHolidayEnabled",
+            hourlyPaidHolidayEnabled
+          )
+        }
+        errorMessage={errors.hourlyPaidHolidayEnabled?.errorMessage}
+        hasError={errors.hourlyPaidHolidayEnabled?.hasError}
+        {...getOverrideProps(overrides, "hourlyPaidHolidayEnabled")}
       ></SwitchField>
       <Flex
         justifyContent="space-between"

@@ -12,7 +12,7 @@ import {
   UpdateAttendanceMutation,
 } from "@/API";
 import { createAttendance, updateAttendance } from "@/graphql/mutations";
-import { getAttendance, attendancesByStaffId } from "@/graphql/queries";
+import { attendancesByStaffId, getAttendance } from "@/graphql/queries";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 
 export class AttendanceDataManager {
@@ -143,6 +143,14 @@ export class AttendanceDataManager {
               endTime,
             }))
         : [],
+      hourlyPaidHolidayTimes: currentAttendance.hourlyPaidHolidayTimes
+        ? currentAttendance.hourlyPaidHolidayTimes
+            .filter((item): item is NonNullable<typeof item> => !!item)
+            .map(({ startTime, endTime }) => ({
+              startTime,
+              endTime,
+            }))
+        : [],
     };
 
     input.histories = currentAttendance.histories
@@ -162,6 +170,14 @@ export class AttendanceDataManager {
               createdAt: history.createdAt,
               rests: history.rests
                 ? history.rests
+                    .filter((item): item is NonNullable<typeof item> => !!item)
+                    .map(({ startTime, endTime }) => ({
+                      startTime,
+                      endTime,
+                    }))
+                : [],
+              hourlyPaidHolidayTimes: history.hourlyPaidHolidayTimes
+                ? history.hourlyPaidHolidayTimes
                     .filter((item): item is NonNullable<typeof item> => !!item)
                     .map(({ startTime, endTime }) => ({
                       startTime,

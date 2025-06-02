@@ -4,13 +4,14 @@ import { useContext, useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { AppConfigContext } from "@/context/AppConfigContext";
+import { AuthContext } from "@/context/AuthContext";
 import { AttendanceDate } from "@/lib/AttendanceDate";
 
 import { useAppDispatchV2 } from "../../app/hooks";
 import * as MESSAGE_CODE from "../../errors";
 import useAttendance from "../../hooks/useAttendance/useAttendance";
 import useStaffs, { StaffType } from "../../hooks/useStaffs/useStaffs";
-import { AuthContext } from "@/context/AuthContext";
 import {
   setSnackbarError,
   setSnackbarSuccess,
@@ -23,6 +24,7 @@ import sendChangeRequestMail from "./sendChangeRequestMail";
 
 export default function AttendanceEdit() {
   const { cognitoUser } = useContext(AuthContext);
+  const { getHourlyPaidHolidayEnabled } = useContext(AppConfigContext);
   const navigate = useNavigate();
   const dispatch = useAppDispatchV2();
   const { targetWorkDate } = useParams();
@@ -58,6 +60,19 @@ export default function AttendanceEdit() {
     name: "rests",
   });
 
+  const {
+    fields: hourlyPaidHolidayTimeFields,
+    append: hourlyPaidHolidayTimeAppend,
+    remove: hourlyPaidHolidayTimeRemove,
+    update: hourlyPaidHolidayTimeUpdate,
+    replace: hourlyPaidHolidayTimeReplace,
+  } = useFieldArray({
+    control,
+    name: "hourlyPaidHolidayTimes",
+  });
+
+  const hourlyPaidHolidayEnabled = getHourlyPaidHolidayEnabled();
+
   const onSubmit = async (data: AttendanceEditInputs) => {
     if (attendance) {
       await updateAttendance({
@@ -76,6 +91,11 @@ export default function AttendanceEdit() {
               startTime: rest.startTime,
               endTime: rest.endTime,
             })),
+            hourlyPaidHolidayTimes:
+              data.hourlyPaidHolidayTimes?.map((item) => ({
+                startTime: item.startTime ?? "",
+                endTime: item.endTime ?? "",
+              })) ?? [],
           },
         ],
         revision: attendance.revision,
@@ -121,6 +141,11 @@ export default function AttendanceEdit() {
               startTime: rest.startTime,
               endTime: rest.endTime,
             })),
+            hourlyPaidHolidayTimes:
+              data.hourlyPaidHolidayTimes?.map((item) => ({
+                startTime: item.startTime ?? "",
+                endTime: item.endTime ?? "",
+              })) ?? [],
           },
         ],
       })
@@ -182,6 +207,19 @@ export default function AttendanceEdit() {
                 }))
             : []
         );
+        setValue(
+          "hourlyPaidHolidayTimes",
+          res.hourlyPaidHolidayTimes
+            ? res.hourlyPaidHolidayTimes
+                .filter(
+                  (item): item is NonNullable<typeof item> => item !== null
+                )
+                .map((item) => ({
+                  startTime: item.startTime,
+                  endTime: item.endTime,
+                }))
+            : []
+        );
       })
       .catch(() => {
         dispatch(setSnackbarError(MESSAGE_CODE.E02001));
@@ -230,6 +268,13 @@ export default function AttendanceEdit() {
         restReplace,
         changeRequests,
         systemCommentFields: [],
+        // 時間単位休暇用のFieldArrayをContextに渡す
+        hourlyPaidHolidayTimeFields,
+        hourlyPaidHolidayTimeAppend,
+        hourlyPaidHolidayTimeRemove,
+        hourlyPaidHolidayTimeUpdate,
+        hourlyPaidHolidayTimeReplace,
+        hourlyPaidHolidayEnabled,
       }}
     >
       <Box sx={{ display: { xs: "block", md: "none" } }}>

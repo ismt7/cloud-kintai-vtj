@@ -1,31 +1,24 @@
-import Title from "@/components/common/Title";
-import {
-  Stack,
-  Button,
-  Typography,
-  TextField,
-  IconButton,
-  Checkbox,
-  FormControlLabel,
-  MenuItem,
-  Select,
-  Switch,
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { predefinedIcons } from "@/constants/icons";
-import { useState, useEffect, useContext } from "react";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import dayjs, { Dayjs } from "dayjs";
+import { Button, Stack, Typography } from "@mui/material";
 import { renderTimeViewClock } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import dayjs, { Dayjs } from "dayjs";
+import { useContext, useEffect, useState } from "react";
+
 import { useAppDispatchV2 } from "@/app/hooks";
+import Title from "@/components/common/Title";
+import { AppConfigContext } from "@/context/AppConfigContext";
+import { E14001, E14002, S14001, S14002 } from "@/errors";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "@/lib/reducers/snackbarReducer";
-import { E14001, E14002, S14001, S14002 } from "@/errors";
-import { AppConfigContext } from "@/context/AppConfigContext";
+
+import LinkListSection from "./LinkListSection";
+import OfficeModeSection from "./OfficeModeSection";
+import QuickInputSection from "./QuickInputSection";
+import ReasonListSection from "./ReasonListSection";
+import WorkingTimeSection from "./WorkingTimeSection";
 
 export default function AdminConfigManagement() {
   const {
@@ -41,6 +34,7 @@ export default function AdminConfigManagement() {
     getQuickInputEndTimes,
     getLunchRestStartTime,
     getLunchRestEndTime,
+    getHourlyPaidHolidayEnabled,
   } = useContext(AppConfigContext);
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
@@ -62,6 +56,8 @@ export default function AdminConfigManagement() {
     null
   );
   const [lunchRestEndTime, setLunchRestEndTime] = useState<Dayjs | null>(null);
+  const [hourlyPaidHolidayEnabled, setHourlyPaidHolidayEnabled] =
+    useState<boolean>(false);
   const dispatch = useAppDispatchV2();
 
   useEffect(() => {
@@ -86,6 +82,7 @@ export default function AdminConfigManagement() {
     );
     setLunchRestStartTime(getLunchRestStartTime());
     setLunchRestEndTime(getLunchRestEndTime());
+    setHourlyPaidHolidayEnabled(getHourlyPaidHolidayEnabled());
   }, [
     getStartTime,
     getEndTime,
@@ -97,6 +94,7 @@ export default function AdminConfigManagement() {
     getQuickInputEndTimes,
     getLunchRestStartTime,
     getLunchRestEndTime,
+    getHourlyPaidHolidayEnabled,
   ]);
 
   const handleAddLink = () => {
@@ -205,6 +203,12 @@ export default function AdminConfigManagement() {
     setQuickInputEndTimes(updatedEndTimes);
   };
 
+  const handleHourlyPaidHolidayEnabledChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setHourlyPaidHolidayEnabled(event.target.checked);
+  };
+
   const handleSave = async () => {
     if (startTime && endTime && lunchRestStartTime && lunchRestEndTime) {
       try {
@@ -234,6 +238,7 @@ export default function AdminConfigManagement() {
             })),
             lunchRestStartTime: lunchRestStartTime.format("HH:mm"),
             lunchRestEndTime: lunchRestEndTime.format("HH:mm"),
+            hourlyPaidHolidayEnabled,
           });
           dispatch(setSnackbarSuccess(S14002));
         } else {
@@ -252,6 +257,7 @@ export default function AdminConfigManagement() {
               enabled: reason.enabled,
             })),
             officeMode,
+            hourlyPaidHolidayEnabled,
           });
           dispatch(setSnackbarSuccess(S14001));
         }
@@ -268,316 +274,49 @@ export default function AdminConfigManagement() {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Stack spacing={2} sx={{ pb: 2 }}>
         <Title text="設定" />
-        <Typography variant="h6">勤務時間</Typography>
-        <Typography variant="body2" color="textSecondary">
-          所定の勤務時間を設定してください。
-        </Typography>
-        <Stack direction="row" spacing={2} alignItems="center">
-          <TimePicker
-            label="開始時間"
-            ampm={false}
-            viewRenderers={{
-              hours: renderTimeViewClock,
-              minutes: renderTimeViewClock,
-            }}
-            value={startTime}
-            views={["hours", "minutes"]}
-            format="HH:mm"
-            slotProps={{
-              textField: { size: "small" },
-            }}
-            sx={{ maxWidth: 200 }}
-            onChange={(newValue) => setStartTime(newValue)}
-          />
-          <Typography variant="body1">〜</Typography>
-          <TimePicker
-            label="終了時間"
-            ampm={false}
-            viewRenderers={{
-              hours: renderTimeViewClock,
-              minutes: renderTimeViewClock,
-            }}
-            value={endTime}
-            views={["hours", "minutes"]}
-            format="HH:mm"
-            slotProps={{
-              textField: { size: "small" },
-            }}
-            sx={{ maxWidth: 200 }}
-            onChange={(newValue) => setEndTime(newValue)}
-          />
-        </Stack>
-        <Typography variant="h6">昼休憩時間</Typography>
-        <Typography variant="body2" color="textSecondary">
-          昼休憩時間を設定してください。
-        </Typography>
-        <Stack direction="row" spacing={2} alignItems="center">
-          <TimePicker
-            label="開始時間"
-            ampm={false}
-            viewRenderers={{
-              hours: renderTimeViewClock,
-              minutes: renderTimeViewClock,
-            }}
-            value={lunchRestStartTime}
-            views={["hours", "minutes"]}
-            format="HH:mm"
-            slotProps={{
-              textField: { size: "small" },
-            }}
-            sx={{ maxWidth: 200 }}
-            onChange={(newValue) => setLunchRestStartTime(newValue)}
-          />
-          <Typography variant="body1">〜</Typography>
-          <TimePicker
-            label="終了時間"
-            ampm={false}
-            viewRenderers={{
-              hours: renderTimeViewClock,
-              minutes: renderTimeViewClock,
-            }}
-            value={lunchRestEndTime}
-            views={["hours", "minutes"]}
-            format="HH:mm"
-            slotProps={{
-              textField: { size: "small" },
-            }}
-            sx={{ maxWidth: 200 }}
-            onChange={(newValue) => setLunchRestEndTime(newValue)}
-          />
-        </Stack>
-        <Typography variant="h6">オフィスモード</Typography>
-        <Typography variant="body2" color="textSecondary">
-          オフィスモードを有効にすると、オフィスに設置した端末からQRコードを読み込み出退勤が可能になります。
-        </Typography>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={officeMode}
-              onChange={handleOfficeModeChange}
-              color="primary"
-            />
-          }
-          label={officeMode ? "有効" : "無効"}
+        <WorkingTimeSection
+          startTime={startTime}
+          endTime={endTime}
+          lunchRestStartTime={lunchRestStartTime}
+          lunchRestEndTime={lunchRestEndTime}
+          setStartTime={setStartTime}
+          setEndTime={setEndTime}
+          setLunchRestStartTime={setLunchRestStartTime}
+          setLunchRestEndTime={setLunchRestEndTime}
+          renderTimeViewClock={renderTimeViewClock}
         />
-        <Typography variant="h6">リンク集</Typography>
-        <Typography variant="body2" color="textSecondary">
-          ヘッダーのリンク集に表示するリンクを設定してください。
-          <br />
-          URL内で<code>{"{staffName}"}</code>
-          を使用すると、スタッフ名が動的に挿入されます。
-        </Typography>
-        <Stack spacing={2}>
-          {links.map((link, index) => (
-            <Stack direction="row" spacing={2} alignItems="center" key={index}>
-              <TextField
-                label="ラベル"
-                value={link.label}
-                onChange={(e) =>
-                  handleLinkChange(index, "label", e.target.value)
-                }
-                size="small"
-                sx={{ flex: 1 }}
-              />
-              <TextField
-                label="URL"
-                value={link.url}
-                onChange={(e) => handleLinkChange(index, "url", e.target.value)}
-                size="small"
-                sx={{ flex: 2 }}
-              />
-              <Select
-                value={link.icon}
-                onChange={(e) =>
-                  handleLinkChange(index, "icon", e.target.value)
-                }
-                size="small"
-                sx={{ flex: 1 }}
-              >
-                {predefinedIcons.map((icon) => (
-                  <MenuItem key={icon.value} value={icon.value}>
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                      {icon.component}
-                      <span>{icon.label}</span>
-                    </Stack>
-                  </MenuItem>
-                ))}
-              </Select>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={link.enabled}
-                    onChange={(e) =>
-                      handleLinkChange(index, "enabled", e.target.checked)
-                    }
-                  />
-                }
-                label="有効"
-              />
-              <IconButton onClick={() => handleRemoveLink(index)} color="error">
-                <DeleteIcon />
-              </IconButton>
-            </Stack>
-          ))}
-          <Button
-            variant="text"
-            size="small"
-            onClick={handleAddLink}
-            sx={{ alignSelf: "flex-start" }}
-          >
-            リンクを追加
-          </Button>
-        </Stack>
-        <Typography variant="h6">修正理由</Typography>
-        <Typography variant="body2" color="textSecondary">
-          修正理由のテキスト一覧を管理してください。
-        </Typography>
-        <Stack spacing={2}>
-          {reasons.map((reason, index) => (
-            <Stack direction="row" spacing={2} alignItems="center" key={index}>
-              <TextField
-                label={`理由 ${index + 1}`}
-                value={reason.reason}
-                onChange={(e) =>
-                  handleReasonChange(index, "reason", e.target.value)
-                }
-                size="small"
-                sx={{ flex: 1 }}
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={reason.enabled}
-                    onChange={(e) =>
-                      handleReasonChange(index, "enabled", e.target.checked)
-                    }
-                  />
-                }
-                label="有効"
-              />
-              <IconButton
-                onClick={() => handleRemoveReason(index)}
-                color="error"
-              >
-                <DeleteIcon />
-              </IconButton>
-            </Stack>
-          ))}
-          <Button
-            variant="text"
-            size="small"
-            onClick={handleAddReason}
-            sx={{ alignSelf: "flex-start" }}
-          >
-            理由を追加
-          </Button>
-        </Stack>
-        <Typography variant="h6">簡単時間入力</Typography>
-        <Typography variant="body2" color="textSecondary">
-          勤怠編集画面でボタンを押すと時刻が簡単に入力されます。
-          <br />
-          この機能は、勤務開始時刻と勤務終了時刻のみを設定できます。
-        </Typography>
-        <Stack direction="row" spacing={4}>
-          <Stack spacing={2} sx={{ flex: 1 }}>
-            <Typography variant="subtitle1">出勤時間</Typography>
-            {quickInputStartTimes.map((entry, index) => (
-              <Stack
-                direction="row"
-                spacing={2}
-                alignItems="center"
-                key={index}
-              >
-                <TimePicker
-                  label={`出勤時間 ${index + 1}`}
-                  ampm={false}
-                  value={entry.time}
-                  views={["hours", "minutes"]}
-                  format="HH:mm"
-                  slotProps={{
-                    textField: { size: "small" },
-                  }}
-                  sx={{ flex: 1 }}
-                  onChange={(newValue) =>
-                    handleQuickInputStartTimeChange(index, newValue)
-                  }
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={entry.enabled}
-                      onChange={() => handleQuickInputStartTimeToggle(index)}
-                    />
-                  }
-                  label="有効"
-                />
-                <IconButton
-                  onClick={() => handleRemoveQuickInputStartTime(index)}
-                  color="error"
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Stack>
-            ))}
-            <Button
-              variant="text"
-              size="small"
-              onClick={handleAddQuickInputStartTime}
-              sx={{ alignSelf: "flex-start" }}
-            >
-              出勤時間を追加
-            </Button>
-          </Stack>
-          <Stack spacing={2} sx={{ flex: 1 }}>
-            <Typography variant="subtitle1">退勤時間</Typography>
-            {quickInputEndTimes.map((entry, index) => (
-              <Stack
-                direction="row"
-                spacing={2}
-                alignItems="center"
-                key={index}
-              >
-                <TimePicker
-                  label={`退勤時間 ${index + 1}`}
-                  ampm={false}
-                  value={entry.time}
-                  views={["hours", "minutes"]}
-                  format="HH:mm"
-                  slotProps={{
-                    textField: { size: "small" },
-                  }}
-                  sx={{ flex: 1 }}
-                  onChange={(newValue) =>
-                    handleQuickInputEndTimeChange(index, newValue)
-                  }
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={entry.enabled}
-                      onChange={() => handleQuickInputEndTimeToggle(index)}
-                    />
-                  }
-                  label="有効"
-                />
-                <IconButton
-                  onClick={() => handleRemoveQuickInputEndTime(index)}
-                  color="error"
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Stack>
-            ))}
-            <Button
-              variant="text"
-              size="small"
-              onClick={handleAddQuickInputEndTime}
-              sx={{ alignSelf: "flex-start" }}
-            >
-              退勤時間を追加
-            </Button>
-          </Stack>
-        </Stack>
+        <OfficeModeSection
+          officeMode={officeMode}
+          onOfficeModeChange={handleOfficeModeChange}
+          hourlyPaidHolidayEnabled={hourlyPaidHolidayEnabled}
+          onHourlyPaidHolidayEnabledChange={
+            handleHourlyPaidHolidayEnabledChange
+          }
+        />
+        <LinkListSection
+          links={links}
+          onAddLink={handleAddLink}
+          onLinkChange={handleLinkChange}
+          onRemoveLink={handleRemoveLink}
+        />
+        <ReasonListSection
+          reasons={reasons}
+          onAddReason={handleAddReason}
+          onReasonChange={handleReasonChange}
+          onRemoveReason={handleRemoveReason}
+        />
+        <QuickInputSection
+          quickInputStartTimes={quickInputStartTimes}
+          quickInputEndTimes={quickInputEndTimes}
+          onAddQuickInputStartTime={handleAddQuickInputStartTime}
+          onQuickInputStartTimeChange={handleQuickInputStartTimeChange}
+          onQuickInputStartTimeToggle={handleQuickInputStartTimeToggle}
+          onRemoveQuickInputStartTime={handleRemoveQuickInputStartTime}
+          onAddQuickInputEndTime={handleAddQuickInputEndTime}
+          onQuickInputEndTimeChange={handleQuickInputEndTimeChange}
+          onQuickInputEndTimeToggle={handleQuickInputEndTimeToggle}
+          onRemoveQuickInputEndTime={handleRemoveQuickInputEndTime}
+        />
         <Typography variant="body2" color="textSecondary">
           スタッフ側への設定反映には数分程度かかる場合があります。
         </Typography>

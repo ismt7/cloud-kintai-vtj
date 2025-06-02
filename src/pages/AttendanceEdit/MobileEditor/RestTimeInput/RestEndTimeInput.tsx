@@ -1,10 +1,16 @@
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+/**
+ * 休憩終了時刻入力コンポーネント。
+ * MaterialUIのTimePickerを利用し、休憩終了時刻を選択・編集できる。
+ * デフォルトの昼休憩終了時刻をChipで選択可能。
+ *
+ * @packageDocumentation
+ */
+
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import ClearIcon from "@mui/icons-material/Clear";
-import { Box, Button, Chip, Stack, styled } from "@mui/material";
+import { Box, Chip, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import {
   Control,
   Controller,
@@ -12,31 +18,44 @@ import {
   UseFieldArrayUpdate,
 } from "react-hook-form";
 
-import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AppConfigContext } from "@/context/AppConfigContext";
+import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 
 import { AttendanceEditInputs } from "../../common";
 
-const ClearButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.error.contrastText,
-  backgroundColor: theme.palette.error.main,
-  boxShadow: "none",
-  "&:active": {
-    color: theme.palette.error.main,
-    backgroundColor: theme.palette.error.contrastText,
-    border: `3px solid ${theme.palette.error.main}`,
-  },
-}));
-
+/**
+ * RestEndTimeInputのプロパティ型定義。
+ */
 type RestEndTimeInputProps = {
+  /**
+   * 勤務日(dayjsオブジェクト)
+   */
   workDate: dayjs.Dayjs;
+  /**
+   * 休憩データ
+   */
   rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
+  /**
+   * 休憩配列のインデックス
+   */
   index: number;
+  /**
+   * react-hook-formのcontrol
+   */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
+  /**
+   * 休憩データの更新関数
+   */
   restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
 };
 
+/**
+ * 休憩終了時刻入力用コンポーネント。
+ *
+ * @param props RestEndTimeInputProps
+ * @returns JSX.Element
+ */
 export default function RestEndTimeInput({
   workDate,
   rest,
@@ -46,26 +65,7 @@ export default function RestEndTimeInput({
 }: RestEndTimeInputProps) {
   const { getLunchRestEndTime } = useContext(AppConfigContext);
 
-  const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
-
   const lunchRestEndTime = getLunchRestEndTime().format("H:mm");
-
-  if (!enableEndTime) {
-    return (
-      <Box>
-        <Button
-          variant="outlined"
-          startIcon={<AddCircleOutlineIcon />}
-          onClick={() => {
-            setEnableEndTime(true);
-          }}
-          sx={{ my: 1.2 }}
-        >
-          終了時間を追加
-        </Button>
-      </Box>
-    );
-  }
 
   return (
     <Stack direction="column" spacing={1}>
@@ -109,23 +109,16 @@ export default function RestEndTimeInput({
           />
         </Box>
       </Stack>
-      <Box>
-        <ClearButton
-          variant="contained"
-          size="small"
-          startIcon={<ClearIcon />}
-          onClick={() => {
-            restUpdate(index, { ...rest, endTime: null });
-            setEnableEndTime(false);
-          }}
-        >
-          終了時間をクリア
-        </ClearButton>
-      </Box>
     </Stack>
   );
 }
 
+/**
+ * デフォルトの昼休憩終了時刻を選択するChipコンポーネント。
+ *
+ * @param props index, workDate, restUpdate, rest, lunchRestEndTime
+ * @returns JSX.Element
+ */
 function DefaultEndTimeChip({
   index,
   workDate,

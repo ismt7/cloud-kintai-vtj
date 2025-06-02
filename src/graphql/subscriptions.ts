@@ -62,6 +62,7 @@ export const onCreateAppConfig = /* GraphQL */ `subscription OnCreateAppConfig($
     lunchRestStartTime
     lunchRestEndTime
     officeMode
+    hourlyPaidHolidayEnabled
     links {
       label
       url
@@ -102,6 +103,7 @@ export const onUpdateAppConfig = /* GraphQL */ `subscription OnUpdateAppConfig($
     lunchRestStartTime
     lunchRestEndTime
     officeMode
+    hourlyPaidHolidayEnabled
     links {
       label
       url
@@ -142,6 +144,7 @@ export const onDeleteAppConfig = /* GraphQL */ `subscription OnDeleteAppConfig($
     lunchRestStartTime
     lunchRestEndTime
     officeMode
+    hourlyPaidHolidayEnabled
     links {
       label
       url
@@ -411,8 +414,14 @@ export const onCreateAttendance = /* GraphQL */ `subscription OnCreateAttendance
       endTime
       __typename
     }
+    hourlyPaidHolidayTimes {
+      startTime
+      endTime
+      __typename
+    }
     remarks
     paidHolidayFlag
+    hourlyPaidHolidayHours
     substituteHolidayDate
     histories {
       staffId
@@ -426,8 +435,14 @@ export const onCreateAttendance = /* GraphQL */ `subscription OnCreateAttendance
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       createdAt
@@ -443,8 +458,14 @@ export const onCreateAttendance = /* GraphQL */ `subscription OnCreateAttendance
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       completed
@@ -484,8 +505,14 @@ export const onUpdateAttendance = /* GraphQL */ `subscription OnUpdateAttendance
       endTime
       __typename
     }
+    hourlyPaidHolidayTimes {
+      startTime
+      endTime
+      __typename
+    }
     remarks
     paidHolidayFlag
+    hourlyPaidHolidayHours
     substituteHolidayDate
     histories {
       staffId
@@ -499,8 +526,14 @@ export const onUpdateAttendance = /* GraphQL */ `subscription OnUpdateAttendance
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       createdAt
@@ -516,8 +549,14 @@ export const onUpdateAttendance = /* GraphQL */ `subscription OnUpdateAttendance
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       completed
@@ -557,8 +596,14 @@ export const onDeleteAttendance = /* GraphQL */ `subscription OnDeleteAttendance
       endTime
       __typename
     }
+    hourlyPaidHolidayTimes {
+      startTime
+      endTime
+      __typename
+    }
     remarks
     paidHolidayFlag
+    hourlyPaidHolidayHours
     substituteHolidayDate
     histories {
       staffId
@@ -572,8 +617,14 @@ export const onDeleteAttendance = /* GraphQL */ `subscription OnDeleteAttendance
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       createdAt
@@ -589,8 +640,14 @@ export const onDeleteAttendance = /* GraphQL */ `subscription OnDeleteAttendance
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       completed

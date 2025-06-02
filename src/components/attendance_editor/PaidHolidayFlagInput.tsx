@@ -1,61 +1,90 @@
 import { Box, Checkbox, Stack } from "@mui/material";
-import { useContext } from "react";
-import { Controller } from "react-hook-form";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import dayjs from "dayjs";
+import { Control, Controller, UseFormSetValue } from "react-hook-form";
 
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
-import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 
-export default function PaidHolidayFlagInput() {
-  const { workDate, control, setValue } = useContext(AttendanceEditContext);
+import PaidHolidayFlagInputMobile from "./PaidHolidayFlagInputMobile";
 
-  if (!workDate || !setValue || !control) {
-    return null;
+interface PaidHolidayFlagInputProps {
+  label?: string;
+  disabled?: boolean;
+  control: Control<any>;
+  setValue: UseFormSetValue<any>;
+  workDate?: string;
+  setPaidHolidayTimes?: boolean;
+}
+
+export default function PaidHolidayFlagInput({
+  label = "有給休暇",
+  disabled = false,
+  control,
+  setValue,
+  workDate,
+  setPaidHolidayTimes = false,
+}: PaidHolidayFlagInputProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  if (isMobile) {
+    return (
+      <PaidHolidayFlagInputMobile
+        {...{
+          label,
+          disabled,
+          control,
+          setValue,
+          workDate,
+          setPaidHolidayTimes,
+        }}
+      />
+    );
   }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, field: any) => {
+    setValue("paidHolidayFlag", e.target.checked);
+    field.onChange(e);
+
+    if (!e.target.checked || !setPaidHolidayTimes || !workDate) return;
+
+    const workDayjs = dayjs(workDate);
+    setValue(
+      "startTime",
+      new AttendanceDateTime().setDate(workDayjs).setWorkStart().toISOString()
+    );
+    setValue(
+      "endTime",
+      new AttendanceDateTime().setDate(workDayjs).setWorkEnd().toISOString()
+    );
+    setValue("rests", [
+      {
+        startTime: new AttendanceDateTime()
+          .setDate(workDayjs)
+          .setRestStart()
+          .toISOString(),
+        endTime: new AttendanceDateTime()
+          .setDate(workDayjs)
+          .setRestEnd()
+          .toISOString(),
+      },
+    ]);
+  };
 
   return (
     <Stack direction="row" alignItems={"center"}>
-      <Box sx={{ fontWeight: "bold", width: "150px" }}>有給休暇</Box>
+      <Box sx={{ fontWeight: "bold", width: "150px" }}>{label}</Box>
       <Box>
         <Controller
           name="paidHolidayFlag"
           control={control}
+          disabled={disabled}
           render={({ field }) => (
             <Checkbox
               {...field}
               checked={field.value || false}
-              onChange={(e) => {
-                setValue("paidHolidayFlag", e.target.checked);
-                field.onChange(e);
-
-                if (!e.target.checked) return;
-
-                setValue(
-                  "startTime",
-                  new AttendanceDateTime()
-                    .setDate(workDate)
-                    .setWorkStart()
-                    .toISOString()
-                );
-                setValue(
-                  "endTime",
-                  new AttendanceDateTime()
-                    .setDate(workDate)
-                    .setWorkEnd()
-                    .toISOString()
-                );
-                setValue("rests", [
-                  {
-                    startTime: new AttendanceDateTime()
-                      .setDate(workDate)
-                      .setRestStart()
-                      .toISOString(),
-                    endTime: new AttendanceDateTime()
-                      .setDate(workDate)
-                      .setRestEnd()
-                      .toISOString(),
-                  },
-                ]);
-              }}
+              onChange={(e) => handleChange(e, field)}
             />
           )}
         />
