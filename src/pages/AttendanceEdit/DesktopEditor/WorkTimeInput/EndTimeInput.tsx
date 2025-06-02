@@ -1,20 +1,20 @@
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import ClearIcon from "@mui/icons-material/Clear";
-import { Box, Button, IconButton, Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
 
-import { AttendanceEditContext } from "../../AttendanceEditProvider";
-import { AppConfigContext } from "@/context/AppConfigContext";
 import QuickInputChips from "@/components/QuickInputChips";
+import { AppConfigContext } from "@/context/AppConfigContext";
+
+import { AttendanceEditContext } from "../../AttendanceEditProvider";
 
 export default function EndTimeInput() {
   const { getQuickInputEndTimes } = useContext(AppConfigContext);
-  const { workDate, attendance, control, setValue, changeRequests } =
-    useContext(AttendanceEditContext);
-  const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
+  const { workDate, control, setValue, changeRequests } = useContext(
+    AttendanceEditContext
+  );
+
   const [quickInputEndTimes, setQuickInputEndTimes] = useState<
     { time: string; enabled: boolean }[]
   >([]);
@@ -31,25 +31,7 @@ export default function EndTimeInput() {
     }
   }, [getQuickInputEndTimes]);
 
-  useEffect(() => {
-    setEnableEndTime(!!attendance?.endTime);
-  }, [attendance]);
-
   if (!workDate || !control || !setValue) return null;
-
-  if (!enableEndTime) {
-    return (
-      <Button
-        variant="outlined"
-        startIcon={<AddCircleOutlineIcon />}
-        onClick={() => {
-          setEnableEndTime(true);
-        }}
-      >
-        終了時間を追加
-      </Button>
-    );
-  }
 
   return (
     <Stack direction="row" spacing={1}>
@@ -96,17 +78,6 @@ export default function EndTimeInput() {
           />
         </Box>
       </Stack>
-      <Box>
-        <IconButton
-          disabled={changeRequests.length > 0}
-          onClick={() => {
-            setValue("endTime", null, { shouldDirty: true });
-            setEnableEndTime(false);
-          }}
-        >
-          <ClearIcon />
-        </IconButton>
-      </Box>
     </Stack>
   );
 }

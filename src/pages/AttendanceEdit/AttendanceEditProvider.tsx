@@ -53,6 +53,27 @@ type AttendanceEditContextProps = {
     AttendanceEditInputs,
     "systemComments"
   >;
+  // --- 時間単位休暇時間帯のFieldArray操作もContextで提供 ---
+  hourlyPaidHolidayTimeFields: FieldArrayWithId<
+    AttendanceEditInputs,
+    "hourlyPaidHolidayTimes",
+    "id"
+  >[];
+  hourlyPaidHolidayTimeAppend: UseFieldArrayAppend<
+    AttendanceEditInputs,
+    "hourlyPaidHolidayTimes"
+  >;
+  hourlyPaidHolidayTimeRemove: UseFieldArrayRemove;
+  hourlyPaidHolidayTimeUpdate: UseFieldArrayUpdate<
+    AttendanceEditInputs,
+    "hourlyPaidHolidayTimes"
+  >;
+  hourlyPaidHolidayTimeReplace: UseFieldArrayReplace<
+    AttendanceEditInputs,
+    "hourlyPaidHolidayTimes"
+  >;
+  // 時間単位休暇の有効フラグ
+  hourlyPaidHolidayEnabled: boolean;
 };
 
 export const AttendanceEditContext = createContext<AttendanceEditContextProps>({
@@ -66,6 +87,12 @@ export const AttendanceEditContext = createContext<AttendanceEditContextProps>({
   restFields: [],
   changeRequests: [],
   systemCommentFields: [],
+  hourlyPaidHolidayTimeFields: [],
+  hourlyPaidHolidayTimeAppend: () => {},
+  hourlyPaidHolidayTimeRemove: () => {},
+  hourlyPaidHolidayTimeUpdate: () => {},
+  hourlyPaidHolidayTimeReplace: () => {},
+  hourlyPaidHolidayEnabled: false,
 });
 
 export default function AttendanceEditProvider({

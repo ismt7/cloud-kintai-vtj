@@ -12,16 +12,19 @@ import {
   Stack,
   styled,
   Switch,
-  TextField,
   Typography,
 } from "@mui/material";
 import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
 
 import { SystemCommentInput } from "@/API";
+import { GoDirectlyFlagCheckbox } from "@/components/attendance_editor/GoDirectlyFlagCheckbox";
+import PaidHolidayFlagInputCommon from "@/components/attendance_editor/PaidHolidayFlagInput";
+import ReturnDirectlyFlagInput from "@/components/attendance_editor/ReturnDirectlyFlagInput";
+import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 import fetchStaff from "@/hooks/useStaff/fetchStaff";
 import { AttendanceDate } from "@/lib/AttendanceDate";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
@@ -44,11 +47,14 @@ import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
+import MoveDateItem from "../attendance_editor/MoveDateItem";
 import Title from "../Title/Title";
 import ChangeRequestDialog from "./ChangeRequestDialog/ChangeRequestDialog";
 // eslint-disable-next-line import/no-cycle
 import EditAttendanceHistoryList from "./EditAttendanceHistoryList/EditAttendanceHistoryList";
-import GoDirectlyFlagInput from "./GoDirectlyFlagInput";
+import HourlyPaidHolidayTimeItem, {
+  calcTotalHourlyPaidHolidayTime,
+} from "./items/HourlyPaidHolidayTimeItem";
 import ProductionTimeItem from "./items/ProductionTimeItem";
 // eslint-disable-next-line import/no-cycle
 import RemarksItem from "./items/RemarksItem";
@@ -60,16 +66,12 @@ import {
 import SeparatorItem from "./items/SeparatorItem";
 import StaffNameItem from "./items/StaffNameItem";
 import WorkDateItem from "./items/WorkDateItem";
-// eslint-disable-next-line import/no-cycle
 import {
   calcTotalWorkTime,
   WorkTimeItem,
 } from "./items/WorkTimeItem/WorkTimeItem";
 import { LunchRestTimeNotSetWarning } from "./LunchRestTimeNotSetWarning";
-import PaidHolidayFlagInput from "./PaidHolidayFlagInput";
-import ReturnDirectlyFlagInput from "./ReturnDirectlyFlagInput";
 import { SystemCommentList } from "./SystemCommentList";
-import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 
 const SaveButton = styled(Button)(({ theme }) => ({
   width: 150,
@@ -143,6 +145,17 @@ export default function AttendanceEditor() {
     name: "systemComments",
   });
 
+  const {
+    fields: hourlyPaidHolidayTimeFields,
+    remove: hourlyPaidHolidayTimeRemove,
+    append: hourlyPaidHolidayTimeAppend,
+    update: hourlyPaidHolidayTimeUpdate,
+    replace: hourlyPaidHolidayTimeReplace,
+  } = useFieldArray({
+    control,
+    name: "hourlyPaidHolidayTimes",
+  });
+
   useEffect(() => {
     if (!targetStaffId) return;
 
@@ -208,6 +221,8 @@ export default function AttendanceEditor() {
     () =>
       watchedData.rests?.reduce((acc, rest) => {
         if (!rest) return acc;
+        if (!rest.endTime) return acc;
+
         const diff = calcTotalRestTime(rest.startTime, rest.endTime);
         return acc + diff;
       }, 0) ?? 0,
@@ -217,6 +232,22 @@ export default function AttendanceEditor() {
   const totalProductionTime = useMemo(
     () => totalWorkTime - totalRestTime,
     [totalWorkTime, totalRestTime]
+  );
+
+  // 合計時間単位休暇時間を計算
+  const totalHourlyPaidHolidayTime = useMemo(
+    () =>
+      watchedData.hourlyPaidHolidayTimes?.reduce((acc, time) => {
+        if (!time) return acc;
+        if (!time.endTime) return acc;
+
+        const diff = calcTotalHourlyPaidHolidayTime(
+          time.startTime,
+          time.endTime
+        );
+        return acc + diff;
+      }, 0) ?? 0,
+    [watchedData.hourlyPaidHolidayTimes]
   );
 
   const visibleRestWarning = useMemo(
@@ -247,7 +278,6 @@ export default function AttendanceEditor() {
           revision: data.revision,
           paidHolidayFlag: data.paidHolidayFlag,
           substituteHolidayDate: data.substituteHolidayDate,
-          hourlyPaidHolidayHours: data.hourlyPaidHolidayHours,
           rests: data.rests.map((rest) => ({
             startTime: rest.startTime,
             endTime: rest.endTime,
@@ -259,6 +289,20 @@ export default function AttendanceEditor() {
               createdAt,
             })
           ),
+          hourlyPaidHolidayTimes:
+            (data.hourlyPaidHolidayTimes
+              ?.map((item) =>
+                item.startTime && item.endTime
+                  ? {
+                      startTime: item.startTime,
+                      endTime: item.endTime,
+                    }
+                  : null
+              )
+              .filter((item) => item !== null) as {
+              startTime: string;
+              endTime: string;
+            }[]) ?? [],
         })
           .then((res) => {
             if (!staff || !res.histories) return;
@@ -294,7 +338,6 @@ export default function AttendanceEditor() {
         remarks: data.remarks,
         paidHolidayFlag: data.paidHolidayFlag,
         substituteHolidayDate: data.substituteHolidayDate,
-        hourlyPaidHolidayHours: data.hourlyPaidHolidayHours,
         rests: data.rests.map((rest) => ({
           startTime: rest.startTime,
           endTime: rest.endTime,
@@ -306,6 +349,20 @@ export default function AttendanceEditor() {
             createdAt,
           })
         ),
+        hourlyPaidHolidayTimes:
+          (data.hourlyPaidHolidayTimes
+            ?.map((item) =>
+              item.startTime && item.endTime
+                ? {
+                    startTime: item.startTime,
+                    endTime: item.endTime,
+                  }
+                : null
+            )
+            .filter((item) => item !== null) as {
+            startTime: string;
+            endTime: string;
+          }[]) ?? [],
       })
         .then((res) => {
           if (!staff) {
@@ -348,7 +405,11 @@ export default function AttendanceEditor() {
     setValue("paidHolidayFlag", attendance.paidHolidayFlag || false);
     setValue("substituteHolidayDate", attendance.substituteHolidayDate);
     setValue("revision", attendance.revision);
-    setValue("hourlyPaidHolidayHours", attendance.hourlyPaidHolidayHours || 0);
+    // 追加: 既存のhourlyPaidHolidayTimesがあれば維持、なければ空配列
+    setValue(
+      "hourlyPaidHolidayTimes",
+      getValues("hourlyPaidHolidayTimes") ?? []
+    );
 
     if (attendance.rests) {
       const rests = attendance.rests
@@ -387,6 +448,16 @@ export default function AttendanceEditor() {
         );
 
       systemCommentReplace(systemComments);
+    }
+
+    if (attendance.hourlyPaidHolidayTimes) {
+      const hourlyPaidHolidayTimes = attendance.hourlyPaidHolidayTimes
+        .filter((item): item is NonNullable<typeof item> => item !== null)
+        .map((item) => ({
+          startTime: item.startTime,
+          endTime: item.endTime,
+        }));
+      hourlyPaidHolidayTimeReplace(hourlyPaidHolidayTimes);
     }
   }, [attendance]);
 
@@ -442,6 +513,12 @@ export default function AttendanceEditor() {
         systemCommentFields,
         systemCommentUpdate,
         systemCommentReplace,
+        hourlyPaidHolidayTimeFields,
+        hourlyPaidHolidayTimeAppend,
+        hourlyPaidHolidayTimeRemove,
+        hourlyPaidHolidayTimeUpdate,
+        hourlyPaidHolidayTimeReplace,
+        hourlyPaidHolidayEnabled: getHourlyPaidHolidayEnabled(),
       }}
     >
       <Stack spacing={2} sx={{ pb: 5 }}>
@@ -494,46 +571,66 @@ export default function AttendanceEditor() {
             <SystemCommentList />
           </Stack>
           <Box>
-            <WorkDateItem staffId={targetStaffId} workDate={workDate} />
+            <WorkDateItem
+              staffId={targetStaffId}
+              workDate={workDate}
+              MoveDateItemComponent={MoveDateItem}
+            />
           </Box>
           <StaffNameItem />
-          <PaidHolidayFlagInput />
+          <PaidHolidayFlagInputCommon
+            label="有給休暇(1日)"
+            control={control}
+            setValue={setValue}
+            workDate={workDate ? workDate.toISOString() : undefined}
+            setPaidHolidayTimes={true}
+            disabled={changeRequests.length > 0}
+          />
           {getHourlyPaidHolidayEnabled() && (
-            <Stack direction="row" spacing={0} alignItems={"center"}>
-              <Typography
-                variant="body1"
-                sx={{ fontWeight: "bold", width: "150px" }}
-              >
-                時間単位休暇
-              </Typography>
-              <Box sx={{ display: "flex", alignItems: "center", flexGrow: 2 }}>
-                <TextField
-                  type="number"
-                  size="small"
-                  sx={{ width: 120 }}
-                  inputProps={{ min: 0, step: 1 }}
-                  {...register("hourlyPaidHolidayHours", {
-                    valueAsNumber: true,
-                  })}
-                  value={watch("hourlyPaidHolidayHours") ?? ""}
-                />
-                <Box sx={{ ml: 1 }}>時間(h)</Box>
-              </Box>
+            <Stack spacing={1}>
+              <Stack direction="row">
+                <Box
+                  sx={{ fontWeight: "bold", width: "150px" }}
+                >{`時間単位休暇(${hourlyPaidHolidayTimeFields.length}件)`}</Box>
+                <Stack spacing={1} sx={{ flexGrow: 2 }}>
+                  {hourlyPaidHolidayTimeFields.length === 0 && (
+                    <Box sx={{ color: "text.secondary", fontSize: 14 }}>
+                      時間単位休暇の時間帯を追加してください。
+                    </Box>
+                  )}
+                  {hourlyPaidHolidayTimeFields.map(
+                    (hourlyPaidHolidayTime, index) => (
+                      <HourlyPaidHolidayTimeItem
+                        key={hourlyPaidHolidayTime.id}
+                        time={hourlyPaidHolidayTime}
+                        index={index}
+                      />
+                    )
+                  )}
+                  <Box>
+                    <IconButton
+                      aria-label="add-hourly-paid-holiday-time"
+                      onClick={() =>
+                        hourlyPaidHolidayTimeAppend({
+                          startTime: null,
+                          endTime: null,
+                        })
+                      }
+                    >
+                      <AddAlarmIcon />
+                    </IconButton>
+                  </Box>
+                </Stack>
+              </Stack>
             </Stack>
           )}
           <SubstituteHolidayDateInput />
-          <Stack direction="row" alignItems={"center"}>
-            <Box sx={{ fontWeight: "bold", width: "150px" }}>直行</Box>
-            <Box>
-              <GoDirectlyFlagInput />
-            </Box>
-          </Stack>
-          <Stack direction="row" alignItems={"center"}>
-            <Box sx={{ fontWeight: "bold", width: "150px" }}>直帰</Box>
-            <Box>
-              <ReturnDirectlyFlagInput />
-            </Box>
-          </Stack>
+          <GoDirectlyFlagCheckbox
+            name="goDirectlyFlag"
+            control={control}
+            disabled={changeRequests.length > 0}
+          />
+          <ReturnDirectlyFlagInput />
           <WorkTimeItem />
           <Stack direction="row">
             <Box
@@ -579,7 +676,7 @@ export default function AttendanceEditor() {
           <Box>
             <ProductionTimeItem
               time={totalProductionTime}
-              hourlyPaidHolidayHours={watch("hourlyPaidHolidayHours")}
+              hourlyPaidHolidayHours={totalHourlyPaidHolidayTime}
             />
           </Box>
           <Box>

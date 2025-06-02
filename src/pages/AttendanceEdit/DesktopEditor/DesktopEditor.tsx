@@ -1,13 +1,20 @@
+import AddAlarmIcon from "@mui/icons-material/AddAlarm";
 import {
   Box,
   Button,
   CircularProgress,
   Container,
   Divider,
+  IconButton,
   Stack,
   styled,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
+
+import { GoDirectlyFlagCheckbox } from "@/components/attendance_editor/GoDirectlyFlagCheckbox";
+import HourlyPaidHolidayTimeItem, {
+  calcTotalHourlyPaidHolidayTime,
+} from "@/components/attendance_editor/items/HourlyPaidHolidayTimeItem";
 
 import ProductionTimeItem from "../../../components/attendance_editor/items/ProductionTimeItem";
 import StaffNameItem from "../../../components/attendance_editor/items/StaffNameItem";
@@ -15,7 +22,6 @@ import Title from "../../../components/Title/Title";
 import AttendanceEditBreadcrumb from "../AttendanceEditBreadcrumb";
 import { AttendanceEditContext } from "../AttendanceEditProvider";
 import ChangeRequestingAlert from "./ChangeRequestingMessage";
-import GoDirectlyFlagInput from "./GoDirectlyFlagInput";
 import NoDataAlert from "./NoDataAlert";
 import PaidHolidayFlagInput from "./PaidHolidayFlagInput";
 import RemarksInput from "./RemarksInput";
@@ -68,30 +74,45 @@ export default function DesktopEditor() {
     isValid,
     isSubmitting,
     changeRequests,
+    hourlyPaidHolidayTimeFields,
+    hourlyPaidHolidayTimeAppend,
   } = useContext(AttendanceEditContext);
+  const { hourlyPaidHolidayEnabled } = useContext(AttendanceEditContext);
   const [totalProductionTime, setTotalProductionTime] = useState<number>(0);
+  const [totalHourlyPaidHolidayTime, setTotalHourlyPaidHolidayTime] =
+    useState<number>(0);
 
   useEffect(() => {
     if (!watch) return;
 
-    watch((data) => {
+    const unsubscribe = watch((data) => {
       if (!data.endTime) {
         setTotalProductionTime(0);
-        return;
+      } else {
+        const totalWorkTime = calcTotalWorkTime(data.startTime, data.endTime);
+        const totalRestTime =
+          data.rests?.reduce((acc, rest) => {
+            if (!rest) return acc;
+            const diff = calcTotalRestTime(rest.startTime, rest.endTime);
+            return acc + diff;
+          }, 0) ?? 0;
+        const totalTime = totalWorkTime - totalRestTime;
+        setTotalProductionTime(totalTime);
       }
-      const totalWorkTime = calcTotalWorkTime(data.startTime, data.endTime);
-
-      const totalRestTime =
-        data.rests?.reduce((acc, rest) => {
-          if (!rest) return acc;
-
-          const diff = calcTotalRestTime(rest.startTime, rest.endTime);
+      // 合計時間単位休暇時間
+      const totalHourly =
+        data.hourlyPaidHolidayTimes?.reduce((acc, time) => {
+          if (!time) return acc;
+          if (!time.endTime) return acc;
+          const diff = calcTotalHourlyPaidHolidayTime(
+            time.startTime,
+            time.endTime
+          );
           return acc + diff;
         }, 0) ?? 0;
-
-      const totalTime = totalWorkTime - totalRestTime;
-      setTotalProductionTime(totalTime);
+      setTotalHourlyPaidHolidayTime(totalHourly);
     });
+    return typeof unsubscribe === "function" ? unsubscribe : undefined;
   }, [watch]);
 
   if (!staff || !control || !setValue || !watch || !handleSubmit || !register) {
@@ -112,12 +133,58 @@ export default function DesktopEditor() {
           <WorkDateItem />
           <StaffNameItem />
           <PaidHolidayFlagInput />
+          {/* 時間単位休暇セクション追加 */}
+          {hourlyPaidHolidayEnabled && (
+            <Box>
+              <Stack direction="row">
+                <Box
+                  sx={{ fontWeight: "bold", width: "150px" }}
+                >{`時間単位休暇(${hourlyPaidHolidayTimeFields.length}件)`}</Box>
+                <Stack spacing={1} sx={{ flexGrow: 2 }}>
+                  {hourlyPaidHolidayTimeFields.length === 0 && (
+                    <Box sx={{ color: "text.secondary", fontSize: 14 }}>
+                      時間単位休暇の時間帯を追加してください。
+                    </Box>
+                  )}
+                  {hourlyPaidHolidayTimeFields.map(
+                    (hourlyPaidHolidayTime, index) => (
+                      <HourlyPaidHolidayTimeItem
+                        key={hourlyPaidHolidayTime.id}
+                        time={hourlyPaidHolidayTime}
+                        index={index}
+                      />
+                    )
+                  )}
+                  <Box>
+                    <IconButton
+                      aria-label="add-hourly-paid-holiday-time"
+                      onClick={() =>
+                        hourlyPaidHolidayTimeAppend({
+                          startTime: null,
+                          endTime: null,
+                        })
+                      }
+                    >
+                      <AddAlarmIcon />
+                    </IconButton>
+                  </Box>
+                </Stack>
+              </Stack>
+            </Box>
+          )}
           <SubstituteHolidayDateInput />
-          <GoDirectlyFlagInput />
+          <GoDirectlyFlagCheckbox
+            name="goDirectlyFlag"
+            control={control}
+            disabled={changeRequests.length > 0}
+          />
           <ReturnDirectlyFlagInput />
           <WorkTimeInput />
           <RestTimeItem />
-          <ProductionTimeItem time={totalProductionTime} />
+          <ProductionTimeItem
+            time={totalProductionTime}
+            hourlyPaidHolidayHours={totalHourlyPaidHolidayTime}
+          />
           <RemarksInput />
           <Divider />
           <StaffCommentInput register={register} setValue={setValue} />

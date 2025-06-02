@@ -1,20 +1,30 @@
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 
-import MoveDateItem from "../MoveDateItem";
+export type WorkDateItemProps = {
+  workDate: dayjs.Dayjs | null;
+  staffId?: string;
+  MoveDateItemComponent: React.ComponentType<any>;
+};
 
 export default function WorkDateItem({
-  staffId,
   workDate,
-}: {
-  staffId: string;
-  workDate: dayjs.Dayjs | null;
-}) {
+  staffId,
+  MoveDateItemComponent,
+}: WorkDateItemProps) {
+  if (!workDate) return null;
+
   return (
     <Stack direction="row" alignItems={"center"}>
-      <Box sx={{ fontWeight: "bold", width: "150px" }}>勤務日</Box>
+      <Typography variant="body1" sx={{ fontWeight: "bold", width: "150px" }}>
+        勤務日
+      </Typography>
       <Box>
-        <MoveDateItem staffId={staffId} workDate={workDate} />
+        {staffId ? (
+          <MoveDateItemComponent workDate={workDate} staffId={staffId} />
+        ) : (
+          <MoveDateItemComponent workDate={workDate} />
+        )}
       </Box>
     </Stack>
   );

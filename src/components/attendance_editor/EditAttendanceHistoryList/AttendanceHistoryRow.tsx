@@ -10,8 +10,9 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
+import { AppConfigContext } from "@/context/AppConfigContext";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 
 import { AttendanceHistory } from "../../../API";
@@ -22,6 +23,8 @@ export function AttendanceHistoryRow({
   history: AttendanceHistory;
 }) {
   const [open, setOpen] = useState(false);
+  const { getHourlyPaidHolidayEnabled } = useContext(AppConfigContext);
+  const hourlyPaidHolidayEnabled = getHourlyPaidHolidayEnabled();
   const rests = history.rests
     ? history.rests.filter(
         (item): item is NonNullable<typeof item> => item !== null
@@ -84,6 +87,55 @@ export function AttendanceHistoryRow({
                   ))}
                 </TableBody>
               </Table>
+            )}
+            {/* 時間単位休暇セクションをフラグで制御 */}
+            {hourlyPaidHolidayEnabled && (
+              <>
+                <Typography variant="h6" sx={{ mt: 2 }}>
+                  時間単位休暇
+                </Typography>
+                {!history.hourlyPaidHolidayTimes ||
+                history.hourlyPaidHolidayTimes.filter(
+                  (item): item is NonNullable<typeof item> => item !== null
+                ).length === 0 ? (
+                  <Typography variant="body1">登録はありません</Typography>
+                ) : (
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell sx={{ width: 100 }}>開始</TableCell>
+                        <TableCell sx={{ width: 100 }}>終了</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {history.hourlyPaidHolidayTimes &&
+                        history.hourlyPaidHolidayTimes
+                          .filter(
+                            (item): item is NonNullable<typeof item> =>
+                              item !== null
+                          )
+                          .map((holiday, index) => (
+                            <TableRow key={index}>
+                              <TableCell>
+                                {holiday.startTime
+                                  ? new AttendanceDateTime()
+                                      .setDateString(holiday.startTime)
+                                      .toTimeFormat()
+                                  : "(なし)"}
+                              </TableCell>
+                              <TableCell>
+                                {holiday.endTime
+                                  ? new AttendanceDateTime()
+                                      .setDateString(holiday.endTime)
+                                      .toTimeFormat()
+                                  : "(なし)"}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </>
             )}
           </Collapse>
         </TableCell>

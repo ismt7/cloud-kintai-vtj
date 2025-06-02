@@ -5,12 +5,18 @@ export type RestInputs = {
   endTime: Rest["endTime"] | null;
 };
 
+export type HourlyPaidHolidayTimeInputs = {
+  startTime: string | null;
+  endTime: string | null;
+};
+
 export type AttendanceEditInputs = {
   workDate?: UpdateAttendanceInput["workDate"] | null;
   startTime: UpdateAttendanceInput["startTime"];
   endTime: UpdateAttendanceInput["endTime"];
   paidHolidayFlag: UpdateAttendanceInput["paidHolidayFlag"];
-  hourlyPaidHolidayHours: UpdateAttendanceInput["hourlyPaidHolidayHours"];
+  // hourlyPaidHolidayHours: UpdateAttendanceInput["hourlyPaidHolidayHours"];
+  hourlyPaidHolidayTimes?: HourlyPaidHolidayTimeInputs[];
   substituteHolidayDate: UpdateAttendanceInput["substituteHolidayDate"];
   goDirectlyFlag: UpdateAttendanceInput["goDirectlyFlag"];
   returnDirectlyFlag: UpdateAttendanceInput["returnDirectlyFlag"];
@@ -27,7 +33,8 @@ export const defaultValues: AttendanceEditInputs = {
   startTime: undefined,
   endTime: undefined,
   paidHolidayFlag: undefined,
-  hourlyPaidHolidayHours: undefined,
+  // hourlyPaidHolidayHours: undefined,
+  hourlyPaidHolidayTimes: [],
   substituteHolidayDate: undefined,
   goDirectlyFlag: undefined,
   returnDirectlyFlag: undefined,

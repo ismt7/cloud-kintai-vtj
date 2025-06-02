@@ -7,10 +7,10 @@ import { FieldArrayWithId } from "react-hook-form";
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 import { AttendanceEditInputs } from "@/pages/AttendanceEdit/common";
 
-import RestEndTimeInput from "./RestEndTimeInput";
-import RestStartTimeInput from "./RestStartTimeInput";
+import HourlyPaidHolidayEndTimeInput from "./HourlyPaidHolidayEndTimeInput";
+import HourlyPaidHolidayStartTimeInput from "./HourlyPaidHolidayStartTimeInput";
 
-export function calcTotalRestTime(
+export function calcTotalHourlyPaidHolidayTime(
   startTime: string | null | undefined,
   endTime: string | null | undefined
 ) {
@@ -21,50 +21,51 @@ export function calcTotalRestTime(
   return diff;
 }
 
-export function RestTimeItem({
-  rest,
+export default function HourlyPaidHolidayTimeItem({
+  time,
   index,
 }: {
-  rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
+  time: FieldArrayWithId<AttendanceEditInputs, "hourlyPaidHolidayTimes", "id">;
   index: number;
 }) {
-  const { restRemove } = useContext(AttendanceEditContext);
-  const [totalRestTime, setTotalRestTime] = useState<number>(0);
+  const { hourlyPaidHolidayTimeRemove } = useContext(AttendanceEditContext);
+
+  const [totalHourlyPaidHolidayTime, setTotalHourlyPaidHolidayTime] =
+    useState<number>(0);
 
   useEffect(() => {
-    if (!rest.endTime) {
-      setTotalRestTime(0);
+    if (!time.endTime) {
+      setTotalHourlyPaidHolidayTime(0);
       return;
     }
 
-    const diff = calcTotalRestTime(rest.startTime, rest.endTime);
-    setTotalRestTime(diff);
-  }, [rest]);
-
-  if (!restRemove) {
-    return null;
-  }
+    setTotalHourlyPaidHolidayTime(
+      calcTotalHourlyPaidHolidayTime(time.startTime, time.endTime)
+    );
+  }, [time]);
 
   return (
     <Box>
       <Stack direction="row" spacing={1}>
-        <RestStartTimeInput index={index} rest={rest} />
+        <HourlyPaidHolidayStartTimeInput index={index} time={time} />
         <Box>
           <Typography variant="body1" sx={{ my: 1 }}>
             ～
           </Typography>
         </Box>
-        <RestEndTimeInput index={index} rest={rest} />
+        <HourlyPaidHolidayEndTimeInput index={index} time={time} />
         <Box>
           <IconButton
-            aria-label="staff-search"
-            onClick={() => restRemove(index)}
+            aria-label="delete-hourly-paid-holiday-time"
+            onClick={() => hourlyPaidHolidayTimeRemove(index)}
           >
             <DeleteIcon />
           </IconButton>
         </Box>
         <Box sx={{ flexGrow: 1 }} textAlign={"right"}>
-          {`${totalRestTime.toFixed(1)} 時間`}
+          <Typography variant="body1">
+            {`${totalHourlyPaidHolidayTime.toFixed(1)} 時間`}
+          </Typography>
         </Box>
       </Stack>
     </Box>

@@ -1,50 +1,40 @@
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import ClearIcon from "@mui/icons-material/Clear";
-import { Box, Button, Chip, Stack, styled } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
-import {
-  Control,
-  Controller,
-  UseFormGetValues,
-  UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
+import { Control, Controller, UseFormSetValue } from "react-hook-form";
 
+import QuickInputChips from "@/components/QuickInputChips";
 import { AppConfigContext } from "@/context/AppConfigContext";
 
 import { AttendanceEditInputs } from "../../common";
-import QuickInputChips from "@/components/QuickInputChips";
 
-const ClearButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.error.contrastText,
-  borderColor: theme.palette.error.main,
-  boxShadow: "none",
-  "&:hover": {
-    backgroundColor: theme.palette.error.main,
-    color: theme.palette.error.contrastText,
-    border: `3px solid ${theme.palette.error.main}`,
-  },
-}));
-
+/**
+ * 勤務終了時刻の入力コンポーネント（モバイル用）。
+ *
+ * @param workDate 勤務日（dayjsオブジェクトまたはnull）
+ * @param control react-hook-formのControlオブジェクト
+ * @param setValue react-hook-formのsetValue関数
+ * @returns 勤務終了時刻入力UI
+ */
 export default function EndTimeInput({
   workDate,
   control,
   setValue,
-  getValues,
-  watch,
 }: {
   workDate: dayjs.Dayjs | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<AttendanceEditInputs, any>;
   setValue: UseFormSetValue<AttendanceEditInputs>;
-  getValues: UseFormGetValues<AttendanceEditInputs>;
-  watch: UseFormWatch<AttendanceEditInputs>;
 }) {
+  /**
+   * クイック入力用の終了時刻リストを取得するContext関数
+   */
   const { getQuickInputEndTimes } = useContext(AppConfigContext);
-  const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
+
+  /**
+   * クイック入力用の終了時刻リストのstate
+   */
   const [quickInputEndTimes, setQuickInputEndTimes] = useState<
     { time: string; enabled: boolean }[]
   >([]);
@@ -61,20 +51,11 @@ export default function EndTimeInput({
     }
   }, [getQuickInputEndTimes]);
 
-  useEffect(() => {
-    const endTime = getValues("endTime");
-    setEnableEndTime(!!endTime);
-
-    watch((data) => {
-      setEnableEndTime(!!data.endTime);
-    });
-  }, [watch]);
-
   if (!workDate) {
     return null;
   }
 
-  return enableEndTime ? (
+  return (
     <Stack direction="column" spacing={1}>
       <Stack spacing={1}>
         <Controller
@@ -87,6 +68,9 @@ export default function EndTimeInput({
               viewRenderers={{
                 hours: renderTimeViewClock,
                 minutes: renderTimeViewClock,
+              }}
+              slotProps={{
+                textField: { size: "small" },
               }}
               onChange={(value) => {
                 field.onChange(
@@ -112,31 +96,6 @@ export default function EndTimeInput({
           />
         </Box>
       </Stack>
-      <Box>
-        <ClearButton
-          variant="contained"
-          color="error"
-          size="small"
-          startIcon={<ClearIcon />}
-          onClick={() => {
-            setValue("endTime", null);
-            setEnableEndTime(false);
-          }}
-        >
-          終了時間をクリア
-        </ClearButton>
-      </Box>
     </Stack>
-  ) : (
-    <Button
-      variant="outlined"
-      startIcon={<AddCircleOutlineIcon />}
-      onClick={() => {
-        setEnableEndTime(true);
-      }}
-      sx={{ my: 1.4 }}
-    >
-      終了時間を追加
-    </Button>
   );
 }

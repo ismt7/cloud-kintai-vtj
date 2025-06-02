@@ -1,20 +1,18 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Box, LinearProgress, Stack } from "@mui/material";
+import { useCallback, useEffect, useMemo } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 
-import { useEffect } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { useCallback, useMemo } from "react";
-
-import { AuthContext } from "./context/AuthContext";
 import SnackbarGroup from "./components/ snackbar/SnackbarGroup";
 import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
-import useCognitoUser from "./hooks/useCognitoUser";
-import useAppConfig from "./hooks/useAppConfig/useAppConfig";
 import { AppConfigContext } from "./context/AppConfigContext";
-import useHolidayCalendar from "./hooks/useHolidayCalendars/useHolidayCalendars";
-import useCompanyHolidayCalendar from "./hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
 import { AppContext } from "./context/AppContext";
+import { AuthContext } from "./context/AuthContext";
+import useAppConfig from "./hooks/useAppConfig/useAppConfig";
+import useCognitoUser from "./hooks/useCognitoUser";
+import useCompanyHolidayCalendar from "./hooks/useCompanyHolidayCalendars/useCompanyHolidayCalendars";
+import useHolidayCalendar from "./hooks/useHolidayCalendars/useHolidayCalendars";
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -230,7 +228,9 @@ export default function Layout() {
     cognitoUserLoading ||
     appConfigLoading ||
     holidayCalendarLoading ||
-    companyHolidayCalendarLoading
+    companyHolidayCalendarLoading ||
+    authStatus === "configuring" ||
+    authStatus === "unauthenticated"
   ) {
     return <LinearProgress />;
   }

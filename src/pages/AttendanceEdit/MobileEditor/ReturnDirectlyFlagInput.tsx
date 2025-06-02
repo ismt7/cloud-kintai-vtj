@@ -1,8 +1,9 @@
 import { Switch } from "@mui/material";
-import { Control, Controller } from "react-hook-form";
+import { Control } from "react-hook-form";
+
+import ReturnDirectlyFlagInputBase from "@/components/common/ReturnDirectlyFlagInputBase";
 
 import { AttendanceEditInputs } from "../common";
-import { Label } from "./Label";
 
 export function ReturnDirectlyFlagInput({
   control,
@@ -11,15 +12,10 @@ export function ReturnDirectlyFlagInput({
   control: Control<AttendanceEditInputs, any>;
 }) {
   return (
-    <>
-      <Label variant="body1">直帰</Label>
-      <Controller
-        name="returnDirectlyFlag"
-        control={control}
-        render={({ field }) => (
-          <Switch checked={field.value || false} {...field} />
-        )}
-      />
-    </>
+    <ReturnDirectlyFlagInputBase
+      control={control}
+      inputComponent={Switch}
+      layout="inline"
+    />
   );
 }

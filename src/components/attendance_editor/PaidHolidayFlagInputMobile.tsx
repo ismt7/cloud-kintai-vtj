@@ -1,12 +1,8 @@
 import { Box, Checkbox, Stack } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import dayjs from "dayjs";
 import { Control, Controller, UseFormSetValue } from "react-hook-form";
 
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
-
-import PaidHolidayFlagInputMobile from "./PaidHolidayFlagInputMobile";
 
 interface PaidHolidayFlagInputProps {
   label?: string;
@@ -17,7 +13,7 @@ interface PaidHolidayFlagInputProps {
   setPaidHolidayTimes?: boolean;
 }
 
-export default function PaidHolidayFlagInput({
+export default function PaidHolidayFlagInputMobile({
   label = "有給休暇",
   disabled = false,
   control,
@@ -25,23 +21,7 @@ export default function PaidHolidayFlagInput({
   workDate,
   setPaidHolidayTimes = false,
 }: PaidHolidayFlagInputProps) {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-  if (isMobile) {
-    return (
-      <PaidHolidayFlagInputMobile
-        {...{
-          label,
-          disabled,
-          control,
-          setValue,
-          workDate,
-          setPaidHolidayTimes,
-        }}
-      />
-    );
-  }
+  if (!control || !setValue) return null;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, field: any) => {
     setValue("paidHolidayFlag", e.target.checked);
@@ -73,8 +53,8 @@ export default function PaidHolidayFlagInput({
   };
 
   return (
-    <Stack direction="row" alignItems={"center"}>
-      <Box sx={{ fontWeight: "bold", width: "150px" }}>{label}</Box>
+    <Stack direction="column" alignItems={"flex-start"}>
+      <Box sx={{ fontWeight: "bold", mb: 1 }}>{label}</Box>
       <Box>
         <Controller
           name="paidHolidayFlag"

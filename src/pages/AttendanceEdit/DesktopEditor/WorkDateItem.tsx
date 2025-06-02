@@ -1,22 +1,13 @@
-import { Box, Stack, Typography } from "@mui/material";
 import { useContext } from "react";
 
 import { AttendanceEditContext } from "../AttendanceEditProvider";
+import WorkDateItem from "@/components/attendance_editor/items/WorkDateItem";
 import MoveDateItem from "../MoveDateItem";
 
-export default function WorkDateItem() {
+export default function WorkDateItemWrapper() {
   const { workDate } = useContext(AttendanceEditContext);
-
   if (!workDate) return null;
-
   return (
-    <Stack direction="row" alignItems={"center"}>
-      <Typography variant="body1" sx={{ fontWeight: "bold", width: "150px" }}>
-        勤務日
-      </Typography>
-      <Box>
-        <MoveDateItem workDate={workDate} />
-      </Box>
-    </Stack>
+    <WorkDateItem workDate={workDate} MoveDateItemComponent={MoveDateItem} />
   );
 }
