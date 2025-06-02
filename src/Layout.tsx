@@ -61,6 +61,10 @@ export default function Layout() {
     const url = new URL(window.location.href);
     if (url.pathname === "/login") return;
 
+    if (authStatus === "configuring") {
+      return;
+    }
+
     if (authStatus === "unauthenticated") {
       navigate("/login");
       return;
@@ -229,8 +233,7 @@ export default function Layout() {
     appConfigLoading ||
     holidayCalendarLoading ||
     companyHolidayCalendarLoading ||
-    authStatus === "configuring" ||
-    authStatus === "unauthenticated"
+    authStatus === "configuring"
   ) {
     return <LinearProgress />;
   }
