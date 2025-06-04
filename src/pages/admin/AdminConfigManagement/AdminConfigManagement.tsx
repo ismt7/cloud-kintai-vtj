@@ -1,7 +1,14 @@
-import { Button, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  FormControlLabel,
+  Stack,
+  Switch,
+  Typography,
+} from "@mui/material";
 import { renderTimeViewClock } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import dayjs, { Dayjs } from "dayjs";
 import { useContext, useEffect, useState } from "react";
 
@@ -21,6 +28,7 @@ import ReasonListSection from "./ReasonListSection";
 import WorkingTimeSection from "./WorkingTimeSection";
 
 export default function AdminConfigManagement() {
+  // AppConfigContextからamPmHolidayEnabledのgetterを取得
   const {
     fetchConfig,
     saveConfig,
@@ -35,6 +43,11 @@ export default function AdminConfigManagement() {
     getLunchRestStartTime,
     getLunchRestEndTime,
     getHourlyPaidHolidayEnabled,
+    getAmHolidayStartTime,
+    getAmHolidayEndTime,
+    getPmHolidayStartTime,
+    getPmHolidayEndTime,
+    getAmPmHolidayEnabled,
   } = useContext(AppConfigContext);
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
@@ -58,6 +71,19 @@ export default function AdminConfigManagement() {
   const [lunchRestEndTime, setLunchRestEndTime] = useState<Dayjs | null>(null);
   const [hourlyPaidHolidayEnabled, setHourlyPaidHolidayEnabled] =
     useState<boolean>(false);
+  const [amHolidayStartTime, setAmHolidayStartTime] = useState<Dayjs | null>(
+    dayjs("09:00", "HH:mm")
+  );
+  const [amHolidayEndTime, setAmHolidayEndTime] = useState<Dayjs | null>(
+    dayjs("12:00", "HH:mm")
+  );
+  const [pmHolidayStartTime, setPmHolidayStartTime] = useState<Dayjs | null>(
+    dayjs("13:00", "HH:mm")
+  );
+  const [pmHolidayEndTime, setPmHolidayEndTime] = useState<Dayjs | null>(
+    dayjs("18:00", "HH:mm")
+  );
+  const [amPmHolidayEnabled, setAmPmHolidayEnabled] = useState<boolean>(true);
   const dispatch = useAppDispatchV2();
 
   useEffect(() => {
@@ -83,6 +109,18 @@ export default function AdminConfigManagement() {
     setLunchRestStartTime(getLunchRestStartTime());
     setLunchRestEndTime(getLunchRestEndTime());
     setHourlyPaidHolidayEnabled(getHourlyPaidHolidayEnabled());
+    // fetchConfigで午前休・午後休の時間帯があればセット
+    if (typeof getAmHolidayStartTime === "function" && getAmHolidayStartTime())
+      setAmHolidayStartTime(getAmHolidayStartTime());
+    if (typeof getAmHolidayEndTime === "function" && getAmHolidayEndTime())
+      setAmHolidayEndTime(getAmHolidayEndTime());
+    if (typeof getPmHolidayStartTime === "function" && getPmHolidayStartTime())
+      setPmHolidayStartTime(getPmHolidayStartTime());
+    if (typeof getPmHolidayEndTime === "function" && getPmHolidayEndTime())
+      setPmHolidayEndTime(getPmHolidayEndTime());
+    // 取得時に有効無効もセット（configに値があれば）
+    if (typeof getAmPmHolidayEnabled === "function")
+      setAmPmHolidayEnabled(getAmPmHolidayEnabled());
   }, [
     getStartTime,
     getEndTime,
@@ -95,6 +133,11 @@ export default function AdminConfigManagement() {
     getLunchRestStartTime,
     getLunchRestEndTime,
     getHourlyPaidHolidayEnabled,
+    getAmHolidayStartTime,
+    getAmHolidayEndTime,
+    getPmHolidayStartTime,
+    getPmHolidayEndTime,
+    getAmPmHolidayEnabled,
   ]);
 
   const handleAddLink = () => {
@@ -210,7 +253,16 @@ export default function AdminConfigManagement() {
   };
 
   const handleSave = async () => {
-    if (startTime && endTime && lunchRestStartTime && lunchRestEndTime) {
+    if (
+      startTime &&
+      endTime &&
+      lunchRestStartTime &&
+      lunchRestEndTime &&
+      amHolidayStartTime &&
+      amHolidayEndTime &&
+      pmHolidayStartTime &&
+      pmHolidayEndTime
+    ) {
       try {
         if (id) {
           await saveConfig({
@@ -239,6 +291,11 @@ export default function AdminConfigManagement() {
             lunchRestStartTime: lunchRestStartTime.format("HH:mm"),
             lunchRestEndTime: lunchRestEndTime.format("HH:mm"),
             hourlyPaidHolidayEnabled,
+            amHolidayStartTime: amHolidayStartTime.format("HH:mm"),
+            amHolidayEndTime: amHolidayEndTime.format("HH:mm"),
+            pmHolidayStartTime: pmHolidayStartTime.format("HH:mm"),
+            pmHolidayEndTime: pmHolidayEndTime.format("HH:mm"),
+            amPmHolidayEnabled,
           });
           dispatch(setSnackbarSuccess(S14002));
         } else {
@@ -258,6 +315,11 @@ export default function AdminConfigManagement() {
             })),
             officeMode,
             hourlyPaidHolidayEnabled,
+            amHolidayStartTime: amHolidayStartTime.format("HH:mm"),
+            amHolidayEndTime: amHolidayEndTime.format("HH:mm"),
+            pmHolidayStartTime: pmHolidayStartTime.format("HH:mm"),
+            pmHolidayEndTime: pmHolidayEndTime.format("HH:mm"),
+            amPmHolidayEnabled,
           });
           dispatch(setSnackbarSuccess(S14001));
         }
@@ -285,6 +347,69 @@ export default function AdminConfigManagement() {
           setLunchRestEndTime={setLunchRestEndTime}
           renderTimeViewClock={renderTimeViewClock}
         />
+        <Typography variant="h6">午前/午後休暇(β版)</Typography>
+        <Typography variant="body2" color="textSecondary">
+          この機能が有効な場合、午前休暇と午後休暇の時間帯を設定できます。
+          <br />
+          午前休暇は通常の勤務時間の前半、午後休暇は後半に適用されます。
+          <br />
+          ベータ(β)版は、まだ完全ではないため、予期しない動作が発生する可能性があります。
+        </Typography>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={amPmHolidayEnabled}
+              onChange={(_, checked) => setAmPmHolidayEnabled(checked)}
+              color="primary"
+            />
+          }
+          label={amPmHolidayEnabled ? "有効" : "無効"}
+          sx={{ mb: 1 }}
+        />
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography variant="subtitle1">午前</Typography>
+          <TimePicker
+            label="開始"
+            value={amHolidayStartTime}
+            onChange={setAmHolidayStartTime}
+            ampm={false}
+            format="HH:mm"
+            slotProps={{ textField: { size: "small" } }}
+            disabled={!amPmHolidayEnabled}
+          />
+          <Typography>〜</Typography>
+          <TimePicker
+            label="終了"
+            value={amHolidayEndTime}
+            onChange={setAmHolidayEndTime}
+            ampm={false}
+            format="HH:mm"
+            slotProps={{ textField: { size: "small" } }}
+            disabled={!amPmHolidayEnabled}
+          />
+        </Stack>
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography variant="subtitle1">午後</Typography>
+          <TimePicker
+            label="開始"
+            value={pmHolidayStartTime}
+            onChange={setPmHolidayStartTime}
+            ampm={false}
+            format="HH:mm"
+            slotProps={{ textField: { size: "small" } }}
+            disabled={!amPmHolidayEnabled}
+          />
+          <Typography>〜</Typography>
+          <TimePicker
+            label="終了"
+            value={pmHolidayEndTime}
+            onChange={setPmHolidayEndTime}
+            ampm={false}
+            format="HH:mm"
+            slotProps={{ textField: { size: "small" } }}
+            disabled={!amPmHolidayEnabled}
+          />
+        </Stack>
         <OfficeModeSection
           officeMode={officeMode}
           onOfficeModeChange={handleOfficeModeChange}
