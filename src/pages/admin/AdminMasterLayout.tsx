@@ -1,11 +1,6 @@
-import {
-  Box,
-  Container,
-  ListItemButton,
-  Stack,
-  Typography,
-} from "@mui/material";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Box, Container, ListItemButton, Stack } from "@mui/material";
+import { Outlet, useNavigate } from "react-router-dom";
+
 import CommonBreadcrumbs from "@/components/common/CommonBreadcrumbs";
 
 export default function AdminMasterLayout() {
