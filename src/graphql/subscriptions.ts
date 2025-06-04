@@ -61,6 +61,11 @@ export const onCreateAppConfig = /* GraphQL */ `subscription OnCreateAppConfig($
     workEndTime
     lunchRestStartTime
     lunchRestEndTime
+    amHolidayStartTime
+    amHolidayEndTime
+    pmHolidayStartTime
+    pmHolidayEndTime
+    amPmHolidayEnabled
     officeMode
     hourlyPaidHolidayEnabled
     links {
@@ -102,6 +107,11 @@ export const onUpdateAppConfig = /* GraphQL */ `subscription OnUpdateAppConfig($
     workEndTime
     lunchRestStartTime
     lunchRestEndTime
+    amHolidayStartTime
+    amHolidayEndTime
+    pmHolidayStartTime
+    pmHolidayEndTime
+    amPmHolidayEnabled
     officeMode
     hourlyPaidHolidayEnabled
     links {
@@ -143,6 +153,11 @@ export const onDeleteAppConfig = /* GraphQL */ `subscription OnDeleteAppConfig($
     workEndTime
     lunchRestStartTime
     lunchRestEndTime
+    amHolidayStartTime
+    amHolidayEndTime
+    pmHolidayStartTime
+    pmHolidayEndTime
+    amPmHolidayEnabled
     officeMode
     hourlyPaidHolidayEnabled
     links {

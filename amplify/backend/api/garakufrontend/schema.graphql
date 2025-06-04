@@ -155,6 +155,11 @@ type AppConfig @model {
   workEndTime: String
   lunchRestStartTime: String
   lunchRestEndTime: String
+  amHolidayStartTime: String
+  amHolidayEndTime: String
+  pmHolidayStartTime: String
+  pmHolidayEndTime: String
+  amPmHolidayEnabled: Boolean
   officeMode: Boolean
   hourlyPaidHolidayEnabled: Boolean
   links: [Link]
