@@ -11,7 +11,7 @@ import dotenv from "dotenv";
  * See https://playwright.dev/docs/test-configuration.
  */
 
-dotenv.config();
+dotenv.config({ path: ".env.local" });
 
 export default defineConfig({
   testDir: "./tests",
