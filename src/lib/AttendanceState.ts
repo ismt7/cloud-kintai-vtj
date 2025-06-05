@@ -21,6 +21,12 @@ export enum AttendanceStatus {
   None = "",
 }
 
+/**
+ * 勤怠情報の状態を判定するクラス。
+ *
+ * スタッフ情報、勤怠データ、休日カレンダー、会社休日カレンダーを元に、
+ * 勤怠の状態（OK、エラー、申請中、遅刻、勤務中、なし）を判定する。
+ */
 export class AttendanceState {
   private today = dayjs();
 
