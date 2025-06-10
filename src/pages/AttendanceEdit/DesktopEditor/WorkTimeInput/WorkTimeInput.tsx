@@ -54,7 +54,7 @@ export function WorkTimeInput() {
           <Box>
             <Stack direction="row" spacing={1}>
               <Box>
-                <StartTimeInput />
+                <StartTimeInput dataTestId="desktop-start-time-input" />
               </Box>
               <Box>
                 <Typography variant="body1" sx={{ py: 1 }}>
@@ -62,7 +62,7 @@ export function WorkTimeInput() {
                 </Typography>
               </Box>
               <Box>
-                <EndTimeInput />
+                <EndTimeInput dataTestId="desktop-end-time-input" />
               </Box>
             </Stack>
           </Box>
