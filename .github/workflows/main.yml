@@ -5,6 +5,7 @@ on:
     - cron: "0 18 * * *" # 毎日03:00(JST)に実行（GitHub ActionsはUTC）
 jobs:
   playwright-test:
+    if: github.ref == 'refs/heads/develop'
     name: Run Playwright tests daily
     runs-on: ubuntu-latest
     steps:
