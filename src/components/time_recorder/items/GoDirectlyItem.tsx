@@ -35,6 +35,7 @@ export default function GoDirectlyItem({
 
   return (
     <GoDirectlyButton
+      data-testid="go-directly-button"
       onClick={() => {
         setDisabled(true);
         onClick();
