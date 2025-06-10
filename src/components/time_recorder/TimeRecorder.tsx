@@ -330,7 +330,11 @@ export default function TimeRecorder() {
     >
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          <Typography variant="h6" textAlign="center">
+          <Typography
+            variant="h6"
+            textAlign="center"
+            data-testid="work-status-text"
+          >
             {workStatus.text || "読み込み中..."}
           </Typography>
         </Grid>
@@ -340,7 +344,14 @@ export default function TimeRecorder() {
         <Grid item xs={12}>
           <FormControlLabel
             control={
-              <DirectSwitch onChange={() => setDirectMode(!directMode)} />
+              <DirectSwitch
+                onChange={() => setDirectMode(!directMode)}
+                inputProps={
+                  {
+                    "data-testid": "direct-mode-switch",
+                  } as React.InputHTMLAttributes<HTMLInputElement>
+                }
+              />
             }
             label="直行/直帰モード"
           />
@@ -427,25 +438,36 @@ function TimeElapsedErrorDialog({
       open={open}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
+      data-testid="time-elapsed-error-dialog"
     >
       <DialogTitle id="alert-dialog-title">
-        1週間以上経過した打刻エラーがあります
+        <span data-testid="time-elapsed-error-dialog-title-text">
+          1週間以上経過した打刻エラーがあります
+        </span>
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          1週間以上経過した打刻エラーがあります。
+          <span data-testid="time-elapsed-error-dialog-description-text">
+            1週間以上経過した打刻エラーがあります。
+          </span>
           <br />
           勤怠一覧を確認して打刻修正を申請してください。
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>あとで</Button>
+        <Button
+          onClick={handleClose}
+          data-testid="time-elapsed-error-dialog-later-btn"
+        >
+          あとで
+        </Button>
         <Button
           variant="contained"
           onClick={() => {
             handleClose();
             window.open("/attendance/list", "_blank");
           }}
+          data-testid="time-elapsed-error-dialog-confirm-btn"
         >
           確認する
         </Button>
