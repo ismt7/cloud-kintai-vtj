@@ -111,12 +111,10 @@ export default function Layout() {
     }
 
     if (authStatus !== "authenticated") {
-      fetchAllHolidayCalendars();
-      fetchAllCompanyHolidayCalendars();
       return;
     }
 
-    const isMailVerified = user?.attributes?.email_verified ? true : false;
+    const isMailVerified = user.attributes?.email_verified ? true : false;
     if (isMailVerified) return;
 
     alert(
@@ -128,14 +126,7 @@ export default function Layout() {
     } catch (error) {
       console.error(error);
     }
-  }, [
-    authStatus,
-    user,
-    navigate,
-    fetchAllHolidayCalendars,
-    fetchAllCompanyHolidayCalendars,
-    signOut,
-  ]);
+  }, [authStatus]);
 
   /**
    * cookieを設定する関数
