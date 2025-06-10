@@ -14,7 +14,7 @@ import updateHolidayCalendarData from "./updateHolidayCalendarData";
 const LOCAL_STORAGE_KEY = "holidayCalendars";
 
 export default function useHolidayCalendar() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [holidayCalendars, setHolidayCalendars] = useState<HolidayCalendar[]>(
     []
@@ -25,6 +25,7 @@ export default function useHolidayCalendar() {
     if (cached) {
       setHolidayCalendars(JSON.parse(cached));
     }
+    setLoading(false);
   }, []);
 
   const saveToLocalStorage = (data: HolidayCalendar[]) => {
