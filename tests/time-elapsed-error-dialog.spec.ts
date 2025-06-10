@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 const basePath = process.env.VITE_BASE_PATH || "http://localhost:5173";
 
-test.use({ storageState: "playwright/.auth/user.json" });
+test.use({ storageState: "playwright/.auth/lazy-user.json" });
 
 test.describe.configure({ retries: 2 });
 

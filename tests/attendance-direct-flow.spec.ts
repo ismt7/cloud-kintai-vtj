@@ -4,7 +4,7 @@ const basePath = process.env.VITE_BASE_PATH || "http://localhost:5173";
 
 test.describe.configure({ retries: 0 });
 
-test.use({ storageState: "playwright/.auth/user.json" });
+test.use({ storageState: "playwright/.auth/out-user.json" });
 
 test.describe("直行/直帰モード(ON)", () => {
   test("直行", async ({ page }) => {
