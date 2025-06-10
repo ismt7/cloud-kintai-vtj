@@ -1,7 +1,8 @@
-import { Box, Typography, CircularProgress } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { FieldArrayWithId } from "react-hook-form";
+
 import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
-import { useEffect } from "react";
+
 import { AttendanceEditInputs } from "../../common";
 
 export default function NoRestTimeMessage({

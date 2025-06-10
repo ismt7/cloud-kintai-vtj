@@ -15,8 +15,10 @@ import {
 } from "@mui/material";
 import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
-import { useContext, useEffect, useMemo, useState, useCallback } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 
+import { AppContext } from "@/context/AppContext";
+import { AuthContext } from "@/context/AuthContext";
 import { AttendanceDate } from "@/lib/AttendanceDate";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AttendanceState, AttendanceStatus } from "@/lib/AttendanceState";
@@ -47,8 +49,6 @@ import RestStartItem from "./items/RestStartItem";
 import ReturnDirectly from "./items/ReturnDirectlyItem";
 import { RestTimeMessage } from "./RestTimeMessage";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
-import { AuthContext } from "@/context/AuthContext";
-import { AppContext } from "@/context/AppContext";
 
 const DirectSwitch = styled(Switch)(({ theme }) => ({
   padding: 8,
@@ -259,52 +259,45 @@ export default function TimeRecorder() {
           holidayCalendars,
           companyHolidayCalendars
         ).get();
-        logger.debug("Attendance status for error count:", {
-          attendance,
-          status,
-        });
         return status;
       })
       .filter((status) => status === AttendanceStatus.Error).length;
 
-    logger.debug("Total error count:", errorCount);
     setIsAttendanceError(errorCount > 0);
 
     // 1週間以上前にエラーがあるかチェック
-    const timeElapsedErrorCount = attendances
-      ?.filter((attendance) => {
-        const { workDate } = attendance;
-        const isAfterOneWeek = dayjs().isAfter(dayjs(workDate).add(1, "week"));
-        logger.debug("Checking time elapsed for attendance:", {
-          workDate,
-          isAfterOneWeek,
-        });
-        return isAfterOneWeek;
-      })
-      .map((attendance) => {
-        const status = new AttendanceState(
-          staff,
-          attendance,
-          holidayCalendars,
-          companyHolidayCalendars
-        ).get();
-        logger.debug("Attendance status for time elapsed error count:", {
-          attendance,
-          status,
-        });
-        return status;
-      })
-      .filter((status) => status === AttendanceStatus.Error).length;
+    const timeElapsedErrorCount = attendances.filter((attendance) => {
+      const { workDate } = attendance;
+      const isAfterOneWeek = dayjs().isAfter(dayjs(workDate).add(1, "week"));
+      if (!isAfterOneWeek) return false;
+      const status = new AttendanceState(
+        staff,
+        attendance,
+        holidayCalendars,
+        companyHolidayCalendars
+      ).get();
+      logger.debug("Attendance status for time elapsed error count:", {
+        workDate,
+        status,
+      });
+      return status === AttendanceStatus.Error;
+    }).length;
 
     logger.debug("Total time elapsed error count:", timeElapsedErrorCount);
     setIsTimeElapsedError(timeElapsedErrorCount > 0);
-  }, [attendancesLoading, staff, holidayCalendars, companyHolidayCalendars]);
+  }, [
+    attendanceLoading,
+    attendancesLoading,
+    staff,
+    holidayCalendars,
+    companyHolidayCalendars,
+  ]);
 
   useEffect(() => {
     setWorkStatus(getWorkStatus(attendance));
   }, [attendance]);
 
-  if (attendanceLoading || attendancesLoading || workStatus === undefined) {
+  if (attendanceLoading || workStatus === undefined) {
     return (
       <Box
         sx={{
@@ -330,7 +323,11 @@ export default function TimeRecorder() {
     >
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          <Typography variant="h6" textAlign="center">
+          <Typography
+            variant="h6"
+            textAlign="center"
+            data-testid="work-status-text"
+          >
             {workStatus.text || "読み込み中..."}
           </Typography>
         </Grid>
@@ -340,7 +337,14 @@ export default function TimeRecorder() {
         <Grid item xs={12}>
           <FormControlLabel
             control={
-              <DirectSwitch onChange={() => setDirectMode(!directMode)} />
+              <DirectSwitch
+                onChange={() => setDirectMode(!directMode)}
+                inputProps={
+                  {
+                    "data-testid": "direct-mode-switch",
+                  } as React.InputHTMLAttributes<HTMLInputElement>
+                }
+              />
             }
             label="直行/直帰モード"
           />
@@ -427,25 +431,36 @@ function TimeElapsedErrorDialog({
       open={open}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
+      data-testid="time-elapsed-error-dialog"
     >
       <DialogTitle id="alert-dialog-title">
-        1週間以上経過した打刻エラーがあります
+        <span data-testid="time-elapsed-error-dialog-title-text">
+          1週間以上経過した打刻エラーがあります
+        </span>
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          1週間以上経過した打刻エラーがあります。
+          <span data-testid="time-elapsed-error-dialog-description-text">
+            1週間以上経過した打刻エラーがあります。
+          </span>
           <br />
           勤怠一覧を確認して打刻修正を申請してください。
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>あとで</Button>
+        <Button
+          onClick={handleClose}
+          data-testid="time-elapsed-error-dialog-later-btn"
+        >
+          あとで
+        </Button>
         <Button
           variant="contained"
           onClick={() => {
             handleClose();
             window.open("/attendance/list", "_blank");
           }}
+          data-testid="time-elapsed-error-dialog-confirm-btn"
         >
           確認する
         </Button>

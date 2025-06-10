@@ -9,7 +9,9 @@ import { AppConfigContext } from "@/context/AppConfigContext";
 
 import { AttendanceEditContext } from "../../AttendanceEditProvider";
 
-export default function EndTimeInput() {
+export default function EndTimeInput({
+  dataTestId = "end-time-input",
+}: { dataTestId?: string } = {}) {
   const { getQuickInputEndTimes } = useContext(AppConfigContext);
   const { workDate, control, setValue, changeRequests } = useContext(
     AttendanceEditContext
@@ -49,7 +51,10 @@ export default function EndTimeInput() {
                 minutes: renderTimeViewClock,
               }}
               slotProps={{
-                textField: { size: "small" },
+                textField: {
+                  size: "small",
+                  inputProps: { "data-testid": dataTestId },
+                },
               }}
               onChange={(value) => {
                 if (!value) return null;

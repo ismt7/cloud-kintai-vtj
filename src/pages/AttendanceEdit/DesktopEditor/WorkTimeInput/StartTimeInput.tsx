@@ -9,7 +9,11 @@ import { AppConfigContext } from "@/context/AppConfigContext";
 
 import { AttendanceEditContext } from "../../AttendanceEditProvider";
 
-export default function StartTimeInput() {
+export default function StartTimeInput({
+  dataTestId = "start-time-input",
+}: {
+  dataTestId?: string;
+} = {}) {
   const { workDate, control, setValue, changeRequests } = useContext(
     AttendanceEditContext
   );
@@ -45,7 +49,10 @@ export default function StartTimeInput() {
               minutes: renderTimeViewClock,
             }}
             slotProps={{
-              textField: { size: "small" },
+              textField: {
+                size: "small",
+                inputProps: { "data-testid": dataTestId },
+              },
             }}
             onChange={(value) => {
               if (!value || !value.isValid()) {
