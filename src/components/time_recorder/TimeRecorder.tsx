@@ -15,8 +15,10 @@ import {
 } from "@mui/material";
 import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
-import { useContext, useEffect, useMemo, useState, useCallback } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 
+import { AppContext } from "@/context/AppContext";
+import { AuthContext } from "@/context/AuthContext";
 import { AttendanceDate } from "@/lib/AttendanceDate";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AttendanceState, AttendanceStatus } from "@/lib/AttendanceState";
@@ -47,8 +49,6 @@ import RestStartItem from "./items/RestStartItem";
 import ReturnDirectly from "./items/ReturnDirectlyItem";
 import { RestTimeMessage } from "./RestTimeMessage";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
-import { AuthContext } from "@/context/AuthContext";
-import { AppContext } from "@/context/AppContext";
 
 const DirectSwitch = styled(Switch)(({ theme }) => ({
   padding: 8,
@@ -259,52 +259,45 @@ export default function TimeRecorder() {
           holidayCalendars,
           companyHolidayCalendars
         ).get();
-        logger.debug("Attendance status for error count:", {
-          attendance,
-          status,
-        });
         return status;
       })
       .filter((status) => status === AttendanceStatus.Error).length;
 
-    logger.debug("Total error count:", errorCount);
     setIsAttendanceError(errorCount > 0);
 
     // 1週間以上前にエラーがあるかチェック
-    const timeElapsedErrorCount = attendances
-      ?.filter((attendance) => {
-        const { workDate } = attendance;
-        const isAfterOneWeek = dayjs().isAfter(dayjs(workDate).add(1, "week"));
-        logger.debug("Checking time elapsed for attendance:", {
-          workDate,
-          isAfterOneWeek,
-        });
-        return isAfterOneWeek;
-      })
-      .map((attendance) => {
-        const status = new AttendanceState(
-          staff,
-          attendance,
-          holidayCalendars,
-          companyHolidayCalendars
-        ).get();
-        logger.debug("Attendance status for time elapsed error count:", {
-          attendance,
-          status,
-        });
-        return status;
-      })
-      .filter((status) => status === AttendanceStatus.Error).length;
+    const timeElapsedErrorCount = attendances.filter((attendance) => {
+      const { workDate } = attendance;
+      const isAfterOneWeek = dayjs().isAfter(dayjs(workDate).add(1, "week"));
+      if (!isAfterOneWeek) return false;
+      const status = new AttendanceState(
+        staff,
+        attendance,
+        holidayCalendars,
+        companyHolidayCalendars
+      ).get();
+      logger.debug("Attendance status for time elapsed error count:", {
+        workDate,
+        status,
+      });
+      return status === AttendanceStatus.Error;
+    }).length;
 
     logger.debug("Total time elapsed error count:", timeElapsedErrorCount);
     setIsTimeElapsedError(timeElapsedErrorCount > 0);
-  }, [attendancesLoading, staff, holidayCalendars, companyHolidayCalendars]);
+  }, [
+    attendanceLoading,
+    attendancesLoading,
+    staff,
+    holidayCalendars,
+    companyHolidayCalendars,
+  ]);
 
   useEffect(() => {
     setWorkStatus(getWorkStatus(attendance));
   }, [attendance]);
 
-  if (attendanceLoading || attendancesLoading || workStatus === undefined) {
+  if (attendanceLoading || workStatus === undefined) {
     return (
       <Box
         sx={{
