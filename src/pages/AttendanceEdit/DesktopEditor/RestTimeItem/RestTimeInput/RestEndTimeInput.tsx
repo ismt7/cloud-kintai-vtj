@@ -47,7 +47,10 @@ export default function RestEndTimeInput({
                 minutes: renderTimeViewClock,
               }}
               slotProps={{
-                textField: { size: "small" },
+                textField: {
+                  size: "small",
+                  inputProps: { "data-testid": `rest-end-time-input-${index}` },
+                },
               }}
               onChange={(newEndTime) => {
                 if (!newEndTime) {
@@ -125,6 +128,7 @@ function DefaultEndTimeChip({
       disabled={changeRequests.length > 0}
       icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
       onClick={clickHandler}
+      data-testid={`rest-lunch-end-chip-${index}`}
     />
   );
 }
