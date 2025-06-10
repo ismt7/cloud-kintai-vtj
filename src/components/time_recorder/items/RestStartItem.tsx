@@ -35,6 +35,7 @@ export default function RestStartItem({
         onClick();
       }}
       disabled={disabled}
+      data-testid="rest-start-button"
     >
       休憩開始
     </RestStartButton>
