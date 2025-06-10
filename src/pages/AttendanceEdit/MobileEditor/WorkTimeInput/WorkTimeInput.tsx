@@ -19,7 +19,7 @@ export function WorkTimeInput() {
       <Typography variant="body1" sx={{ fontWeight: "bold" }}>
         開始時刻
       </Typography>
-      <StartTimeInput />
+      <StartTimeInput dataTestId="mobile-start-time-input" />
       <Divider />
       <Typography variant="body1" sx={{ fontWeight: "bold" }}>
         終了時刻
