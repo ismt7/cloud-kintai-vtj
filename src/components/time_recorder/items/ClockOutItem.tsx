@@ -36,6 +36,7 @@ export default function ClockOutItem({
 
   return (
     <ClockOutButton
+      data-testid="clock-out-button"
       onClick={() => {
         setDisabled(true);
         onClick();
