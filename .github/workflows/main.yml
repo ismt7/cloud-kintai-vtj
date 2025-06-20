@@ -28,3 +28,5 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         run: npx playwright test
+        env:
+          VITE_BASE_PATH: ${{ secrets.VITE_BASE_PATH }}
