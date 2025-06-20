@@ -11,8 +11,10 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
+import { useState } from "react";
 
 import CommonBreadcrumbs from "@/components/common/CommonBreadcrumbs";
 
@@ -44,6 +46,8 @@ export default function AdminStaff() {
     updateStaff,
     deleteStaff,
   } = useStaffs();
+
+  const [searchName, setSearchName] = useState("");
 
   if (staffLoading) {
     return <LinearProgress />;
@@ -82,6 +86,13 @@ export default function AdminStaff() {
           <Typography variant="body2" color="text.secondary">
             まれにユーザー情報が同期されない場合があります。その際は適宜同期を行ってください。
           </Typography>
+          <TextField
+            label="スタッフ名で検索"
+            variant="outlined"
+            size="small"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+          />
           <TableContainer>
             <Table size="small">
               <TableHead>
@@ -99,10 +110,15 @@ export default function AdminStaff() {
               </TableHead>
               <TableBody>
                 {staffs
+                  .filter((staff) => {
+                    const fullName = `${staff.familyName || ""}${
+                      staff.givenName || ""
+                    }`;
+                    return fullName.includes(searchName);
+                  })
                   .sort((a, b) => {
                     const aSortKey = a.sortKey || "";
                     const bSortKey = b.sortKey || "";
-
                     return aSortKey.localeCompare(bSortKey);
                   })
                   .map((staff, index) => (
