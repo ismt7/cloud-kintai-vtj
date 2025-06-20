@@ -30,6 +30,9 @@ test.describe("直行/直帰モード(ON)", () => {
   test("直帰ボタンをクリック", async ({ page }) => {
     await page.goto(`${basePath}/`);
     await page.click('[data-testid="direct-mode-switch"]');
+    await expect(
+      page.locator('[data-testid="return-directly-button"]')
+    ).toBeVisible();
     await page.click('[data-testid="return-directly-button"]');
     await expect(page.locator('[data-testid="work-status-text"]')).toHaveText(
       "勤務終了"
