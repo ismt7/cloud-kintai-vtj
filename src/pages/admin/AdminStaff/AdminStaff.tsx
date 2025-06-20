@@ -13,7 +13,8 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+
+import CommonBreadcrumbs from "@/components/common/CommonBreadcrumbs";
 
 import { useAppDispatchV2 } from "../../../app/hooks";
 import Title from "../../../components/Title/Title";
@@ -30,7 +31,6 @@ import { StaffNameTableCell } from "./StaffNameTableCell";
 import { StatusTableCell } from "./StatusTableCell";
 import SyncCognitoUser from "./SyncCognitoUser";
 import { UpdatedAtTableCell } from "./UpdatedAtTableCell";
-import CommonBreadcrumbs from "@/components/common/CommonBreadcrumbs";
 
 export default function AdminStaff() {
   const dispatch = useAppDispatchV2();
