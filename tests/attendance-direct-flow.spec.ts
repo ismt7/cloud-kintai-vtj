@@ -1,4 +1,11 @@
-import { expect, test } from "@playwright/test";
+/**
+ * 直行/直帰モードのE2Eテスト。
+ * - 直行/直帰モードのUI表示とボタン動作を検証する。
+ * - Playwrightを使用。
+ * @module tests/attendance-direct-flow
+ */
+
+import { expect, Page, test } from "@playwright/test";
 
 const basePath = process.env.VITE_BASE_PATH || "http://localhost:5173";
 
@@ -6,36 +13,51 @@ test.describe.configure({ retries: 0 });
 
 test.use({ storageState: "playwright/.auth/out-user.json" });
 
-test.describe("直行/直帰モード(ON)", () => {
-  test("直行", async ({ page }) => {
+async function toggleDirectMode(page: Page) {
+  await page.click('[data-testid="direct-mode-switch"]');
+}
+
+test.describe.serial("直行/直帰モード(ON)", () => {
+  test("直行/直帰", async ({ page }) => {
     await page.goto(`${basePath}/`);
-    await page.click('[data-testid="direct-mode-switch"]');
+
+    await toggleDirectMode(page);
+
     await expect(
       page.locator('[data-testid="go-directly-button"]')
     ).toBeVisible();
+
     await expect(
       page.locator('[data-testid="return-directly-button"]')
     ).toBeVisible();
   });
 
-  test("直行ボタンをクリック", async ({ page }) => {
+  test("直行をクリック", async ({ page }) => {
     await page.goto(`${basePath}/`);
-    await page.click('[data-testid="direct-mode-switch"]');
+    await toggleDirectMode(page);
     await page.click('[data-testid="go-directly-button"]');
     await expect(page.locator('[data-testid="work-status-text"]')).toHaveText(
       "勤務中"
     );
+
+    await expect(page.locator("body")).toContainText("出勤(直行)しました");
   });
 
-  test("直帰ボタンをクリック", async ({ page }) => {
+  test("直帰をクリック", async ({ page }) => {
     await page.goto(`${basePath}/`);
-    await page.click('[data-testid="direct-mode-switch"]');
+
+    await toggleDirectMode(page);
+
     await expect(
       page.locator('[data-testid="return-directly-button"]')
     ).toBeVisible();
+
     await page.click('[data-testid="return-directly-button"]');
+
     await expect(page.locator('[data-testid="work-status-text"]')).toHaveText(
       "勤務終了"
     );
+
+    await expect(page.locator("body")).toContainText("退勤(直帰)しました");
   });
 });
