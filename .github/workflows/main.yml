@@ -2,7 +2,7 @@ name: Playwright Daily Test
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *" # 毎日09:00(JST)に実行（GitHub ActionsはUTC）
+    - cron: "0 0 * * 1-5" # 平日09:00(JST)に実行（GitHub ActionsはUTC、1-5は月曜〜金曜）
 jobs:
   playwright-test:
     if: github.ref == 'refs/heads/develop'
