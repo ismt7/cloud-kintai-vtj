@@ -9,83 +9,57 @@ import {
   FormControlLabel,
   Grid,
   LinearProgress,
-  styled,
-  Switch,
   Typography,
 } from "@mui/material";
 import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 
+import { Staff } from "@/API";
 import { AppContext } from "@/context/AppContext";
 import { AuthContext } from "@/context/AuthContext";
 import { AttendanceDate } from "@/lib/AttendanceDate";
-import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AttendanceState, AttendanceStatus } from "@/lib/AttendanceState";
 
-import { Staff } from "../../API";
 import { useAppDispatchV2 } from "../../app/hooks";
 import * as MESSAGE_CODE from "../../errors";
-import useAttendance, {
-  GoDirectlyFlag,
-  ReturnDirectlyFlag,
-} from "../../hooks/useAttendance/useAttendance";
+import useAttendance from "../../hooks/useAttendance/useAttendance";
 import { getWorkStatus } from "../../hooks/useAttendance/WorkStatus";
 import useAttendances from "../../hooks/useAttendances/useAttendances";
 import fetchStaff from "../../hooks/useStaff/fetchStaff";
-import { TimeRecordMailSender } from "../../lib/mail/TimeRecordMailSender";
 import {
   setSnackbarError,
   setSnackbarSuccess,
 } from "../../lib/reducers/snackbarReducer";
 import Clock from "../clock/Clock";
 import { AttendanceErrorAlert } from "./AttendanceErrorAlert";
+import { clockInCallback } from "./clockInCallback";
+import { clockOutCallback } from "./clockOutCallback";
 import { WorkStatus } from "./common";
+import { DirectSwitch } from "./DirectSwitch";
+import { goDirectlyCallback } from "./goDirectlyCallback";
 import ClockInItem from "./items/ClockInItem";
 import ClockOutItem from "./items/ClockOutItem";
 import GoDirectlyItem from "./items/GoDirectlyItem";
 import RestEndItem from "./items/RestEndItem";
 import RestStartItem from "./items/RestStartItem";
 import ReturnDirectly from "./items/ReturnDirectlyItem";
+import { restEndCallback } from "./restEndCallback";
+import { restStartCallback } from "./restStartCallback";
 import { RestTimeMessage } from "./RestTimeMessage";
+import { returnDirectlyCallback } from "./returnDirectlyCallback";
 import TimeRecorderRemarks from "./TimeRecorderRemarks";
 
-const DirectSwitch = styled(Switch)(({ theme }) => ({
-  padding: 8,
-  "& .MuiSwitch-track": {
-    borderRadius: 22 / 2,
-    "&::before, &::after": {
-      content: '""',
-      position: "absolute",
-      top: "50%",
-      transform: "translateY(-50%)",
-      width: 16,
-      height: 16,
-    },
-    "&::before": {
-      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
-        theme.palette.getContrastText(theme.palette.primary.main)
-      )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
-      left: 12,
-    },
-    "&::after": {
-      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
-        theme.palette.getContrastText(theme.palette.primary.main)
-      )}" d="M19,13H5V11H19V13Z" /></svg>')`,
-      right: 12,
-    },
-  },
-  "& .MuiSwitch-thumb": {
-    boxShadow: "none",
-    width: 16,
-    height: 16,
-    margin: 2,
-  },
-}));
-
-export default function TimeRecorder() {
+/**
+ * 勤怠打刻用のメインコンポーネント。
+ * ユーザーの勤怠状態に応じて打刻・休憩・直行直帰などの操作UIを表示する。
+ * @returns {JSX.Element} 勤怠打刻UI
+ */
+export default function TimeRecorder(): JSX.Element {
   const { cognitoUser } = useContext(AuthContext);
+
   const dispatch = useAppDispatchV2();
+
   const {
     attendance,
     loading: attendanceLoading,
@@ -96,11 +70,13 @@ export default function TimeRecorder() {
     restEnd,
     updateRemarks,
   } = useAttendance();
+
   const {
     attendances,
     getAttendances,
     loading: attendancesLoading,
   } = useAttendances();
+
   const { holidayCalendars, companyHolidayCalendars } = useContext(AppContext);
 
   const [workStatus, setWorkStatus] = useState<WorkStatus | null | undefined>(
@@ -113,97 +89,52 @@ export default function TimeRecorder() {
   const [lastActiveTime, setLastActiveTime] = useState(dayjs());
 
   const today = useMemo(() => dayjs().format(AttendanceDate.DataFormat), []);
+
   const logger = useMemo(
     () => new Logger("TimeRecorder", "DEBUG"),
     // () => new Logger("TimeRecorder", import.meta.env.DEV ? "DEBUG" : "ERROR"),
     []
   );
 
-  const handleClockIn = useCallback(() => {
-    if (!cognitoUser) return;
+  const handleClockIn = useCallback(
+    () => clockInCallback(cognitoUser, today, clockIn, dispatch, staff, logger),
+    [cognitoUser, clockIn, dispatch, staff]
+  );
 
-    const now = dayjs().second(0).millisecond(0).toISOString();
-    clockIn(cognitoUser.id, today, now)
-      .then((res) => {
-        dispatch(setSnackbarSuccess(MESSAGE_CODE.S01001));
-        new TimeRecordMailSender(cognitoUser, res, staff).clockIn();
-      })
-      .catch((e) => {
-        logger.debug(e);
-        dispatch(setSnackbarError(MESSAGE_CODE.E01001));
-      });
-  }, [cognitoUser, today, clockIn, dispatch, staff, logger]);
+  const handleClockOut = useCallback(
+    () =>
+      clockOutCallback(cognitoUser, today, clockOut, dispatch, staff, logger),
+    [cognitoUser, clockOut, dispatch, staff]
+  );
 
-  const handleClockOut = useCallback(() => {
-    if (!cognitoUser) return;
+  const handleGoDirectly = useCallback(
+    () =>
+      goDirectlyCallback(cognitoUser, today, staff, dispatch, clockIn, logger),
+    [cognitoUser, staff, dispatch, clockIn]
+  );
 
-    const now = dayjs().second(0).millisecond(0).toISOString();
-    clockOut(cognitoUser.id, today, now)
-      .then((res) => {
-        dispatch(setSnackbarSuccess(MESSAGE_CODE.S01002));
-        new TimeRecordMailSender(cognitoUser, res, staff).clockOut();
-      })
-      .catch((e) => {
-        logger.debug(e);
-        dispatch(setSnackbarError(MESSAGE_CODE.E01002));
-      });
-  }, [cognitoUser, today, clockOut, dispatch, staff, logger]);
+  const handleReturnDirectly = useCallback(
+    () =>
+      returnDirectlyCallback(
+        cognitoUser,
+        today,
+        staff,
+        dispatch,
+        clockOut,
+        logger
+      ),
+    [cognitoUser, staff, dispatch, clockOut]
+  );
 
-  const handleGoDirectly = useCallback(() => {
-    if (!cognitoUser) return;
+  const handleRestStart = useCallback(
+    () => restStartCallback(cognitoUser, today, dispatch, restStart, logger),
+    [cognitoUser, restStart, dispatch]
+  );
 
-    const now = new AttendanceDateTime().setWorkStart().toISOString();
-
-    clockIn(cognitoUser.id, today, now, GoDirectlyFlag.YES)
-      .then((res) => {
-        dispatch(setSnackbarSuccess(MESSAGE_CODE.S01003));
-        new TimeRecordMailSender(cognitoUser, res, staff).clockIn();
-      })
-      .catch((e) => {
-        logger.debug(e);
-        dispatch(setSnackbarError(MESSAGE_CODE.E01005));
-      });
-  }, [cognitoUser, today, clockIn, dispatch, staff, logger]);
-
-  const handleReturnDirectly = useCallback(() => {
-    if (!cognitoUser) return;
-
-    const now = new AttendanceDateTime().setWorkEnd().toISOString();
-
-    clockOut(cognitoUser.id, today, now, ReturnDirectlyFlag.YES)
-      .then((res) => {
-        dispatch(setSnackbarSuccess(MESSAGE_CODE.S01004));
-        new TimeRecordMailSender(cognitoUser, res, staff).clockOut();
-      })
-      .catch((e) => {
-        logger.debug(e);
-        dispatch(setSnackbarError(MESSAGE_CODE.E01006));
-      });
-  }, [cognitoUser, today, clockOut, dispatch, staff, logger]);
-
-  const handleRestStart = useCallback(() => {
-    if (!cognitoUser) return;
-
-    const now = dayjs().second(0).millisecond(0).toISOString();
-    restStart(cognitoUser.id, today, now)
-      .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S01005)))
-      .catch((e) => {
-        logger.debug(e);
-        dispatch(setSnackbarError(MESSAGE_CODE.E01003));
-      });
-  }, [cognitoUser, today, restStart, dispatch, logger]);
-
-  const handleRestEnd = useCallback(() => {
-    if (!cognitoUser) return;
-
-    const now = dayjs().second(0).millisecond(0).toISOString();
-    restEnd(cognitoUser.id, today, now)
-      .then(() => dispatch(setSnackbarSuccess(MESSAGE_CODE.S01006)))
-      .catch((e) => {
-        logger.debug(e);
-        dispatch(setSnackbarError(MESSAGE_CODE.E01004));
-      });
-  }, [cognitoUser, today, restEnd, dispatch, logger]);
+  const handleRestEnd = useCallback(
+    () => restEndCallback(cognitoUser, today, restEnd, dispatch, logger),
+    [cognitoUser, restEnd, dispatch]
+  );
 
   const handleVisibilityChange = useMemo(() => {
     return () => {
@@ -311,7 +242,7 @@ export default function TimeRecorder() {
 
   if (workStatus === null) {
     dispatch(setSnackbarError(MESSAGE_CODE.E00001));
-    return null;
+    return <></>;
   }
 
   return (
@@ -411,11 +342,16 @@ export default function TimeRecorder() {
   );
 }
 
+/**
+ * 1週間以上経過した打刻エラーがある場合に表示するダイアログコンポーネント。
+ * @param isTimeElapsedError - エラーが存在するかどうかのフラグ
+ * @returns {JSX.Element} ダイアログUI
+ */
 function TimeElapsedErrorDialog({
   isTimeElapsedError,
 }: {
   isTimeElapsedError: boolean;
-}) {
+}): JSX.Element {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
