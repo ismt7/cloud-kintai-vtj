@@ -8,6 +8,8 @@ import { Controller } from "react-hook-form";
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 import useAppConfig from "@/hooks/useAppConfig/useAppConfig";
 import { AppConfigContext } from "@/context/AppConfigContext";
+import TimeInputBase from "./TimeInputBase";
+import { AttendanceEditInputs } from "@/pages/AttendanceEdit/common";
 
 export default function StartTimeInput() {
   const { workDate, control, setValue } = useContext(AttendanceEditContext);
@@ -31,56 +33,13 @@ export default function StartTimeInput() {
   }
 
   return (
-    <Stack spacing={1}>
-      <Controller
-        name="startTime"
-        control={control}
-        render={({ field }) => (
-          <TimePicker
-            ampm={false}
-            value={(() => (field.value ? dayjs(field.value) : null))()}
-            viewRenderers={{
-              hours: renderTimeViewClock,
-              minutes: renderTimeViewClock,
-            }}
-            slotProps={{
-              textField: { size: "small" },
-            }}
-            onChange={(value) => {
-              field.onChange(
-                value && value.isValid()
-                  ? value
-                      .year(workDate.year())
-                      .month(workDate.month())
-                      .date(workDate.date())
-                      .second(0)
-                      .millisecond(0)
-                      .toISOString()
-                  : null
-              );
-            }}
-          />
-        )}
-      />
-      <Box>
-        <Stack direction="row" spacing={1}>
-          {quickInputStartTimes.map((entry, index) => (
-            <Chip
-              key={index}
-              label={entry.time}
-              color="success"
-              variant="outlined"
-              icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
-              onClick={() => {
-                const startTime = dayjs(
-                  `${workDate.format("YYYY-MM-DD")} ${entry.time}`
-                ).toISOString();
-                setValue("startTime", startTime);
-              }}
-            />
-          ))}
-        </Stack>
-      </Box>
-    </Stack>
+    <TimeInputBase<"startTime">
+      name="startTime"
+      control={control}
+      setValue={setValue}
+      workDate={workDate}
+      quickInputTimes={quickInputStartTimes}
+      chipColor={() => "success"}
+    />
   );
 }

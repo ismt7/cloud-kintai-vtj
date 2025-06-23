@@ -67,7 +67,13 @@ export const createAppConfig = /* GraphQL */ `mutation CreateAppConfig(
     workEndTime
     lunchRestStartTime
     lunchRestEndTime
+    amHolidayStartTime
+    amHolidayEndTime
+    pmHolidayStartTime
+    pmHolidayEndTime
+    amPmHolidayEnabled
     officeMode
+    hourlyPaidHolidayEnabled
     links {
       label
       url
@@ -110,7 +116,13 @@ export const updateAppConfig = /* GraphQL */ `mutation UpdateAppConfig(
     workEndTime
     lunchRestStartTime
     lunchRestEndTime
+    amHolidayStartTime
+    amHolidayEndTime
+    pmHolidayStartTime
+    pmHolidayEndTime
+    amPmHolidayEnabled
     officeMode
+    hourlyPaidHolidayEnabled
     links {
       label
       url
@@ -153,7 +165,13 @@ export const deleteAppConfig = /* GraphQL */ `mutation DeleteAppConfig(
     workEndTime
     lunchRestStartTime
     lunchRestEndTime
+    amHolidayStartTime
+    amHolidayEndTime
+    pmHolidayStartTime
+    pmHolidayEndTime
+    amPmHolidayEnabled
     officeMode
+    hourlyPaidHolidayEnabled
     links {
       label
       url
@@ -448,8 +466,14 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
       endTime
       __typename
     }
+    hourlyPaidHolidayTimes {
+      startTime
+      endTime
+      __typename
+    }
     remarks
     paidHolidayFlag
+    hourlyPaidHolidayHours
     substituteHolidayDate
     histories {
       staffId
@@ -463,8 +487,14 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       createdAt
@@ -480,8 +510,14 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       completed
@@ -522,8 +558,14 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
       endTime
       __typename
     }
+    hourlyPaidHolidayTimes {
+      startTime
+      endTime
+      __typename
+    }
     remarks
     paidHolidayFlag
+    hourlyPaidHolidayHours
     substituteHolidayDate
     histories {
       staffId
@@ -537,8 +579,14 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       createdAt
@@ -554,8 +602,14 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       completed
@@ -596,8 +650,14 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
       endTime
       __typename
     }
+    hourlyPaidHolidayTimes {
+      startTime
+      endTime
+      __typename
+    }
     remarks
     paidHolidayFlag
+    hourlyPaidHolidayHours
     substituteHolidayDate
     histories {
       staffId
@@ -611,8 +671,14 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       createdAt
@@ -628,8 +694,14 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       completed

@@ -58,7 +58,13 @@ export const getAppConfig = /* GraphQL */ `query GetAppConfig($id: ID!) {
     workEndTime
     lunchRestStartTime
     lunchRestEndTime
+    amHolidayStartTime
+    amHolidayEndTime
+    pmHolidayStartTime
+    pmHolidayEndTime
+    amPmHolidayEnabled
     officeMode
+    hourlyPaidHolidayEnabled
     links {
       label
       url
@@ -103,7 +109,13 @@ export const listAppConfigs = /* GraphQL */ `query ListAppConfigs(
       workEndTime
       lunchRestStartTime
       lunchRestEndTime
+      amHolidayStartTime
+      amHolidayEndTime
+      pmHolidayStartTime
+      pmHolidayEndTime
+      amPmHolidayEnabled
       officeMode
+      hourlyPaidHolidayEnabled
       links {
         label
         url
@@ -367,8 +379,14 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
       endTime
       __typename
     }
+    hourlyPaidHolidayTimes {
+      startTime
+      endTime
+      __typename
+    }
     remarks
     paidHolidayFlag
+    hourlyPaidHolidayHours
     substituteHolidayDate
     histories {
       staffId
@@ -382,8 +400,14 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       createdAt
@@ -399,8 +423,14 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayFlag
       substituteHolidayDate
       completed
@@ -443,8 +473,14 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayDate
       histories {
         staffId
@@ -458,8 +494,14 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
           endTime
           __typename
         }
+        hourlyPaidHolidayTimes {
+          startTime
+          endTime
+          __typename
+        }
         remarks
         paidHolidayFlag
+        hourlyPaidHolidayHours
         substituteHolidayFlag
         substituteHolidayDate
         createdAt
@@ -475,8 +517,14 @@ export const listAttendances = /* GraphQL */ `query ListAttendances(
           endTime
           __typename
         }
+        hourlyPaidHolidayTimes {
+          startTime
+          endTime
+          __typename
+        }
         remarks
         paidHolidayFlag
+        hourlyPaidHolidayHours
         substituteHolidayFlag
         substituteHolidayDate
         completed
@@ -532,8 +580,14 @@ export const attendancesByStaffId = /* GraphQL */ `query AttendancesByStaffId(
         endTime
         __typename
       }
+      hourlyPaidHolidayTimes {
+        startTime
+        endTime
+        __typename
+      }
       remarks
       paidHolidayFlag
+      hourlyPaidHolidayHours
       substituteHolidayDate
       histories {
         staffId
@@ -547,8 +601,14 @@ export const attendancesByStaffId = /* GraphQL */ `query AttendancesByStaffId(
           endTime
           __typename
         }
+        hourlyPaidHolidayTimes {
+          startTime
+          endTime
+          __typename
+        }
         remarks
         paidHolidayFlag
+        hourlyPaidHolidayHours
         substituteHolidayFlag
         substituteHolidayDate
         createdAt
@@ -564,8 +624,14 @@ export const attendancesByStaffId = /* GraphQL */ `query AttendancesByStaffId(
           endTime
           __typename
         }
+        hourlyPaidHolidayTimes {
+          startTime
+          endTime
+          __typename
+        }
         remarks
         paidHolidayFlag
+        hourlyPaidHolidayHours
         substituteHolidayFlag
         substituteHolidayDate
         completed

@@ -11,6 +11,8 @@ import deleteCompanyHolidayCalendarData from "./deleteCompanyHolidayCalendarData
 import fetchCompanyHolidayCalendars from "./fetchCompanyHolidayCalendars";
 import updateCompanyHolidayCalendarData from "./updateCompanyHolidayCalendarData";
 
+const LOCAL_STORAGE_KEY = "companyHolidayCalendars";
+
 export default function useCompanyHolidayCalendars() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -18,12 +20,27 @@ export default function useCompanyHolidayCalendars() {
     CompanyHolidayCalendar[]
   >([]);
 
+  useEffect(() => {
+    const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (cached) {
+      setCompanyHolidayCalendars(JSON.parse(cached));
+    }
+  }, []);
+
+  const saveToLocalStorage = (data: CompanyHolidayCalendar[]) => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+  };
+
   const createCompanyHolidayCalendar = async (
     input: CreateCompanyHolidayCalendarInput
   ) =>
     createCompanyHolidayCalendarsData(input)
       .then((res) => {
-        setCompanyHolidayCalendars((prev) => [...prev, res]);
+        setCompanyHolidayCalendars((prev) => {
+          const updated = [...prev, res];
+          saveToLocalStorage(updated);
+          return updated;
+        });
         return res;
       })
       .catch((e) => {
@@ -35,11 +52,13 @@ export default function useCompanyHolidayCalendars() {
   ) =>
     updateCompanyHolidayCalendarData(input)
       .then((res) => {
-        setCompanyHolidayCalendars((prev) =>
-          prev.map((companyHolidayCalendar) =>
+        setCompanyHolidayCalendars((prev) => {
+          const updated = prev.map((companyHolidayCalendar) =>
             companyHolidayCalendar.id === res.id ? res : companyHolidayCalendar
-          )
-        );
+          );
+          saveToLocalStorage(updated);
+          return updated;
+        });
         return res;
       })
       .catch((e) => {
@@ -51,11 +70,13 @@ export default function useCompanyHolidayCalendars() {
   ) =>
     deleteCompanyHolidayCalendarData(input)
       .then((res) => {
-        setCompanyHolidayCalendars((prev) =>
-          prev.filter(
+        setCompanyHolidayCalendars((prev) => {
+          const updated = prev.filter(
             (companyHolidayCalendar) => companyHolidayCalendar.id !== res.id
-          )
-        );
+          );
+          saveToLocalStorage(updated);
+          return updated;
+        });
         return res;
       })
       .catch((e) => {
@@ -67,7 +88,11 @@ export default function useCompanyHolidayCalendars() {
   ) =>
     Promise.all(inputs.map((input) => createCompanyHolidayCalendarsData(input)))
       .then((res) => {
-        setCompanyHolidayCalendars((prev) => [...prev, ...res]);
+        setCompanyHolidayCalendars((prev) => {
+          const updated = [...prev, ...res];
+          saveToLocalStorage(updated);
+          return updated;
+        });
         return res;
       })
       .catch((e) => {
@@ -80,6 +105,7 @@ export default function useCompanyHolidayCalendars() {
     try {
       const calendars = await fetchCompanyHolidayCalendars();
       setCompanyHolidayCalendars(calendars);
+      saveToLocalStorage(calendars);
       return calendars;
     } catch (e) {
       setError(e as Error);

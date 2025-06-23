@@ -1,3 +1,5 @@
+import "@/lib/dayjs-locale";
+
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Box, IconButton, Stack } from "@mui/material";
@@ -38,7 +40,7 @@ export default function MoveDateItem({
       </Box>
       <DatePicker
         value={workDate}
-        format={AttendanceDate.DisplayFormat}
+        format={AttendanceDate.DatePickerFormat}
         slotProps={{
           textField: { size: "small" },
         }}

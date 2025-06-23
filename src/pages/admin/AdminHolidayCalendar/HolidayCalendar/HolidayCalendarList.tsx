@@ -1,7 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   IconButton,
-  LinearProgress,
   Stack,
   Table,
   TableBody,
@@ -11,7 +10,9 @@ import {
   TableRow,
 } from "@mui/material";
 import dayjs from "dayjs";
+import { useContext } from "react";
 
+import { AppContext } from "@/context/AppContext";
 import { AttendanceDate } from "@/lib/AttendanceDate";
 import { HolidayCalenderMessage } from "@/lib/message/HolidayCalenderMessage";
 import { MessageStatus } from "@/lib/message/Message";
@@ -29,8 +30,6 @@ import {
 import { AddHolidayCalendar } from "./AddHolidayCalendar";
 import { CSVFilePicker } from "./CSVFilePicker";
 import HolidayCalendarEdit from "./HolidayCalendarEdit";
-import { useContext } from "react";
-import { AppContext } from "@/context/AppContext";
 
 export function sortCalendar(
   a: HolidayCalendar | CompanyHolidayCalendar,
@@ -40,8 +39,6 @@ export function sortCalendar(
 }
 
 export default function HolidayCalendarList() {
-  const dispatch = useAppDispatchV2();
-
   const {
     holidayCalendars,
     bulkCreateHolidayCalendar,

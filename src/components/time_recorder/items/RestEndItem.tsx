@@ -35,6 +35,7 @@ export default function RestEndItem({
         onClick();
       }}
       disabled={disabled}
+      data-testid="rest-end-button"
     >
       休憩終了
     </RestEndButton>

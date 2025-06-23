@@ -9,9 +9,10 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from "@mui/material";
 import dayjs from "dayjs";
-import { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useAppDispatchV2 } from "@/app/hooks";
@@ -32,6 +33,7 @@ export default function AttendanceDailyList() {
   const { attendanceDailyList, error, loading } = useAttendanceDaily();
   const today = dayjs().format(AttendanceDate.QueryParamFormat);
   const dispatch = useAppDispatchV2();
+  const [searchName, setSearchName] = useState("");
 
   useEffect(() => {
     if (error) {
@@ -63,6 +65,14 @@ export default function AttendanceDailyList() {
     return summaryMessage.join(" ");
   }, []);
 
+  const filteredAttendanceList = useMemo(() => {
+    if (!searchName) return sortedAttendanceList;
+    return sortedAttendanceList.filter((row) => {
+      const fullName = `${row.familyName || ""}${row.givenName || ""}`;
+      return fullName.includes(searchName);
+    });
+  }, [searchName, sortedAttendanceList]);
+
   if (loading) {
     return <LinearProgress sx={{ width: "100%" }} />;
   }
@@ -70,6 +80,14 @@ export default function AttendanceDailyList() {
   return (
     <Stack direction="column" spacing={1}>
       <MoveDateItem workDate={dayjs(targetWorkDate || today)} />
+      <TextField
+        label="スタッフ名で検索"
+        variant="outlined"
+        size="small"
+        value={searchName}
+        onChange={(e) => setSearchName(e.target.value)}
+        sx={{ width: 300, mb: 1 }}
+      />
       <TableContainer>
         <Table size="small">
           <TableHead>
@@ -89,7 +107,7 @@ export default function AttendanceDailyList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedAttendanceList.map((row, index) => (
+            {filteredAttendanceList.map((row, index) => (
               <TableRow key={index} className="attendance-row">
                 <ActionsTableCell row={row} />
                 <TableCell>{`${row.familyName} ${row.givenName}`}</TableCell>

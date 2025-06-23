@@ -1,7 +1,6 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import PersonIcon from "@mui/icons-material/Person";
 import {
-  Breadcrumbs,
   Chip,
   Grid,
   LinearProgress,
@@ -12,6 +11,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
+import CommonBreadcrumbs from "@/components/common/CommonBreadcrumbs";
 import useDocuments from "../../../hooks/useDocuments/useDocuments";
 import { FilterGrid } from "./FilterGrid";
 import { SearchGrid } from "./SearchGrid";
@@ -34,12 +34,10 @@ export default function ListDocument() {
 
   return (
     <>
-      <Breadcrumbs>
-        <Link href="/" color="inherit">
-          TOP
-        </Link>
-        <Typography color="text.primary">ドキュメント一覧</Typography>
-      </Breadcrumbs>
+      <CommonBreadcrumbs
+        items={[{ label: "TOP", href: "/" }]}
+        current="ドキュメント一覧"
+      />
       <Grid container rowSpacing={{ xs: 2 }} columnSpacing={{ md: 2 }}>
         <SearchGrid setSearchKeyword={setSearchKeyword} />
         <FilterGrid

@@ -9,9 +9,11 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 import { Logger } from "aws-amplify";
 import dayjs from "dayjs";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import { AppContext } from "@/context/AppContext";
+import { AuthContext } from "@/context/AuthContext";
 import { AttendanceDate } from "@/lib/AttendanceDate";
 import { calcTotalRestTime } from "@/pages/AttendanceEdit/DesktopEditor/RestTimeItem/RestTimeInput/RestTimeInput";
 import { calcTotalWorkTime } from "@/pages/AttendanceEdit/DesktopEditor/WorkTimeInput/WorkTimeInput";
@@ -25,8 +27,6 @@ import { setSnackbarError } from "../../lib/reducers/snackbarReducer";
 import Title from "../Title/Title";
 import DesktopList from "./DesktopList";
 import MobileList from "./MobileList/MobileList";
-import { AuthContext } from "@/context/AuthContext";
-import { AppContext } from "@/context/AppContext";
 
 const DescriptionTypography = styled(Typography)(({ theme }) => ({
   padding: "0px 40px",
@@ -47,7 +47,6 @@ export default function AttendanceTable() {
   } = useAttendances();
 
   const [staff, setStaff] = useState<Staff | null | undefined>(undefined);
-  const [totalTime, setTotalTime] = useState<number>(0);
 
   const logger = new Logger(
     "AttendanceList",
@@ -72,10 +71,9 @@ export default function AttendanceTable() {
       });
   }, [cognitoUser]);
 
-  useEffect(() => {
+  const totalTime = useMemo(() => {
     const totalWorkTime = attendances.reduce((acc, attendance) => {
       if (!attendance.startTime || !attendance.endTime) return acc;
-
       const workTime = calcTotalWorkTime(
         attendance.startTime,
         attendance.endTime
@@ -85,19 +83,15 @@ export default function AttendanceTable() {
 
     const totalRestTime = attendances.reduce((acc, attendance) => {
       if (!attendance.rests) return acc;
-
       const restTime = attendance.rests
         .filter((item): item is NonNullable<typeof item> => !!item)
         .reduce((acc, rest) => {
           if (!rest.startTime || !rest.endTime) return acc;
-
           return acc + calcTotalRestTime(rest.startTime, rest.endTime);
         }, 0);
-
       return acc + restTime;
     }, 0);
-
-    setTotalTime(totalWorkTime - totalRestTime);
+    return totalWorkTime - totalRestTime;
   }, [attendances]);
 
   if (attendanceLoading) {

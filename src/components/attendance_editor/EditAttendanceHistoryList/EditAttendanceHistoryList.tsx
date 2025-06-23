@@ -62,24 +62,18 @@ export default function EditAttendanceHistoryList() {
             <Table size="small" sx={{ width: 1500, overflowY: "auto" }}>
               <TableHead>
                 <TableRow>
-                  <TableCell />
-                  <TableCell>勤務日</TableCell>
-                  <TableCell>勤務時間</TableCell>
-                  <TableCell sx={{ writingMode: "vertical-rl" }}>
-                    有給休暇
-                  </TableCell>
-                  <TableCell sx={{ writingMode: "vertical-rl" }}>
-                    振替休日
-                  </TableCell>
-                  <TableCell sx={{ writingMode: "vertical-rl" }}>
-                    直行
-                  </TableCell>
-                  <TableCell sx={{ writingMode: "vertical-rl" }}>
-                    直帰
-                  </TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }} />
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>勤務日</TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>勤務時間</TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>有給休暇</TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>振替休日</TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>直行</TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>直帰</TableCell>
                   <TableCell sx={{ whiteSpace: "nowrap" }}>備考</TableCell>
-                  <TableCell>作成日時</TableCell>
-                  <TableCell>スタッフID</TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>作成日時</TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    スタッフID
+                  </TableCell>
                   <TableCell sx={{ flexGrow: 1 }} />
                 </TableRow>
               </TableHead>

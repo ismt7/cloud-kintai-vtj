@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useMemo } from "react";
 
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 
@@ -11,11 +11,9 @@ export function calcTotalWorkTime(
   startTime: string | null | undefined,
   endTime: string | null | undefined
 ) {
-  if (!startTime) return 0;
+  if (!startTime || !endTime) return 0;
 
-  const now = dayjs();
-  const diff = dayjs(endTime || now).diff(dayjs(startTime), "hour", true);
-
+  const diff = dayjs(endTime).diff(dayjs(startTime), "hour", true);
   return diff;
 }
 
@@ -25,14 +23,17 @@ export function WorkTimeItem() {
   );
   const [totalWorkTime, setTotalWorkTime] = useState<number>(0);
 
+  const memoizedCalcTotalWorkTime = useMemo(() => calcTotalWorkTime, []);
+
   useEffect(() => {
     if (!watch) return;
 
-    watch((data) => {
-      const diff = calcTotalWorkTime(data.startTime, data.endTime);
+    const unsubscribe = watch((data) => {
+      const diff = memoizedCalcTotalWorkTime(data.startTime, data.endTime);
       setTotalWorkTime(diff);
     });
-  }, [watch]);
+    return typeof unsubscribe === "function" ? unsubscribe : undefined;
+  }, [watch, memoizedCalcTotalWorkTime]);
 
   if (!workDate || !control || !setValue || !getValues || !watch) {
     return null;
@@ -47,7 +48,6 @@ export function WorkTimeItem() {
       <Box sx={{ fontWeight: "bold", width: "150px" }}>勤務時間</Box>
       <Box sx={{ flexGrow: 1 }}>
         <Stack direction="row" spacing={2} alignItems={"center"}>
-          <Box sx={{ width: 33, height: 40 }} />
           <Box>
             <Stack direction="row" spacing={1}>
               <Box>

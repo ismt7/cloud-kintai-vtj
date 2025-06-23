@@ -1,49 +1,34 @@
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import ClearIcon from "@mui/icons-material/Clear";
-import { Box, Button, Chip, IconButton, Stack } from "@mui/material";
+import { Box, Chip, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Controller, FieldArrayWithId } from "react-hook-form";
 
+import { AppConfigContext } from "@/context/AppConfigContext";
 import { AttendanceDateTime } from "@/lib/AttendanceDateTime";
 import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 
 import { AttendanceEditInputs } from "../../../common";
-import { AppConfigContext } from "@/context/AppConfigContext";
 
+/**
+ * 休憩終了時刻の入力コンポーネント。
+ * @param rest 休憩データ
+ * @param index 休憩配列のインデックス
+ * @returns JSX.Element | null
+ */
 export default function RestEndTimeInput({
   rest,
   index,
+  testIdPrefix = "desktop",
 }: {
   rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
   index: number;
+  testIdPrefix?: string;
 }) {
   const { workDate, control, restUpdate, changeRequests } = useContext(
     AttendanceEditContext
   );
-  const [enableEndTime, setEnableEndTime] = useState<boolean>(false);
-
-  useEffect(() => {
-    setEnableEndTime(!!rest.endTime);
-  }, [rest]);
-
-  if (!enableEndTime) {
-    return (
-      <Box>
-        <Button
-          variant="outlined"
-          startIcon={<AddCircleOutlineIcon />}
-          onClick={() => {
-            setEnableEndTime(true);
-          }}
-        >
-          終了時間を追加
-        </Button>
-      </Box>
-    );
-  }
 
   if (!workDate || !control || !restUpdate) return null;
 
@@ -63,7 +48,12 @@ export default function RestEndTimeInput({
                 minutes: renderTimeViewClock,
               }}
               slotProps={{
-                textField: { size: "small" },
+                textField: {
+                  size: "small",
+                  inputProps: {
+                    "data-testid": `rest-end-time-input-${testIdPrefix}-${index}`,
+                  },
+                },
               }}
               onChange={(newEndTime) => {
                 if (!newEndTime) {
@@ -91,17 +81,16 @@ export default function RestEndTimeInput({
           <DefaultEndTimeChip index={index} rest={rest} />
         </Box>
       </Stack>
-      <Box>
-        <ClearButton
-          index={index}
-          rest={rest}
-          setEnableEndTime={setEnableEndTime}
-        />
-      </Box>
     </Stack>
   );
 }
 
+/**
+ * デフォルトの休憩終了時刻を設定するチップコンポーネント。
+ * @param index 休憩配列のインデックス
+ * @param rest 休憩データ
+ * @returns JSX.Element | null
+ */
 function DefaultEndTimeChip({
   index,
   rest,
@@ -134,31 +123,7 @@ function DefaultEndTimeChip({
       disabled={changeRequests.length > 0}
       icon={<AddCircleOutlineOutlinedIcon fontSize="small" />}
       onClick={clickHandler}
+      data-testid={`rest-lunch-end-chip-${index}`}
     />
-  );
-}
-
-function ClearButton({
-  index,
-  rest,
-  setEnableEndTime,
-}: {
-  index: number;
-  rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
-  setEnableEndTime: (enable: boolean) => void;
-}) {
-  const { restUpdate, changeRequests } = useContext(AttendanceEditContext);
-
-  if (!restUpdate) return null;
-
-  const handleClick = () => {
-    restUpdate(index, { ...rest, endTime: null });
-    setEnableEndTime(false);
-  };
-
-  return (
-    <IconButton onClick={handleClick} disabled={changeRequests.length > 0}>
-      <ClearIcon />
-    </IconButton>
   );
 }

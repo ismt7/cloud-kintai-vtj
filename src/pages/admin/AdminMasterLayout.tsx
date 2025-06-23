@@ -1,12 +1,7 @@
-import {
-  Box,
-  Breadcrumbs,
-  Container,
-  ListItemButton,
-  Stack,
-  Typography,
-} from "@mui/material";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Box, Container, ListItemButton, Stack } from "@mui/material";
+import { Outlet, useNavigate } from "react-router-dom";
+
+import CommonBreadcrumbs from "@/components/common/CommonBreadcrumbs";
 
 export default function AdminMasterLayout() {
   const navigate = useNavigate();
@@ -48,12 +43,10 @@ export default function AdminMasterLayout() {
         <Box sx={{ flexGrow: 2 }}>
           <Stack spacing={1} sx={{ px: 5 }}>
             <Box>
-              <Breadcrumbs>
-                <Link to="/" color="inherit">
-                  TOP
-                </Link>
-                <Typography color="text.primary">マスタ管理</Typography>
-              </Breadcrumbs>
+              <CommonBreadcrumbs
+                items={[{ label: "TOP", href: "/" }]}
+                current="マスタ管理"
+              />
             </Box>
             <Box>
               <Outlet />

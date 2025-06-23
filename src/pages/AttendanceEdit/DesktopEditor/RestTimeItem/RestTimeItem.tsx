@@ -33,6 +33,7 @@ export default function RestTimeItem() {
         <Box>
           <IconButton
             aria-label="staff-search"
+            data-testid="add-rest-time"
             disabled={changeRequests.length > 0}
             onClick={() =>
               restAppend({

@@ -1,9 +1,10 @@
 import { Box, Stack, Tab, Tabs, Typography } from "@mui/material";
 import { useState } from "react";
 
+import Title from "@/components/common/Title";
+
 import CompanyHolidayCalendarList from "../CompanyHolidayCalendar/CompanyHolidayCalendarList";
 import HolidayCalendarList from "./HolidayCalendarList";
-import Title from "@/components/common/Title";
 
 interface TabPanelProps {
   children?: React.ReactNode;

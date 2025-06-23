@@ -1,5 +1,6 @@
-import { Box, Breadcrumbs, Container, Stack, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Box, Container, Stack } from "@mui/material";
+
+import CommonBreadcrumbs from "@/components/common/CommonBreadcrumbs";
 
 import AttendanceDailyList from "../../components/AttendanceDailyList/AttendanceDailyList";
 import DownloadForm from "../../components/download_form/DownloadForm";
@@ -9,12 +10,10 @@ export default function AdminAttendance() {
     <Container maxWidth="xl">
       <Stack spacing={2} sx={{ pt: 1 }}>
         <Box>
-          <Breadcrumbs>
-            <Link to="/" color="inherit">
-              TOP
-            </Link>
-            <Typography color="text.primary">勤怠管理</Typography>
-          </Breadcrumbs>
+          <CommonBreadcrumbs
+            items={[{ label: "TOP", href: "/" }]}
+            current="勤怠管理"
+          />
         </Box>
         <Stack spacing={1}>
           <Box>

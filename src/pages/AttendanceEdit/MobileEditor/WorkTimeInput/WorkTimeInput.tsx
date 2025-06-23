@@ -7,11 +7,9 @@ import { Label } from "../Label";
 import EndTimeInput from "./EndTimeInput";
 
 export function WorkTimeInput() {
-  const { workDate, control, setValue, getValues, watch } = useContext(
-    AttendanceEditContext
-  );
+  const { workDate, control, setValue } = useContext(AttendanceEditContext);
 
-  if (!workDate || !control || !setValue || !getValues || !watch) {
+  if (!workDate || !control || !setValue) {
     return null;
   }
 
@@ -21,18 +19,12 @@ export function WorkTimeInput() {
       <Typography variant="body1" sx={{ fontWeight: "bold" }}>
         開始時刻
       </Typography>
-      <StartTimeInput />
+      <StartTimeInput dataTestId="mobile-start-time-input" />
       <Divider />
       <Typography variant="body1" sx={{ fontWeight: "bold" }}>
         終了時刻
       </Typography>
-      <EndTimeInput
-        workDate={workDate}
-        control={control}
-        setValue={setValue}
-        getValues={getValues}
-        watch={watch}
-      />
+      <EndTimeInput workDate={workDate} control={control} setValue={setValue} />
     </>
   );
 }

@@ -28,29 +28,33 @@ export function RestTimeItem({
   rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
   index: number;
 }) {
-  const { workDate, watch, control, getValues, restRemove, restUpdate } =
-    useContext(AttendanceEditContext);
+  const { restRemove } = useContext(AttendanceEditContext);
   const [totalRestTime, setTotalRestTime] = useState<number>(0);
 
   useEffect(() => {
+    if (!rest.endTime) {
+      setTotalRestTime(0);
+      return;
+    }
+
     const diff = calcTotalRestTime(rest.startTime, rest.endTime);
     setTotalRestTime(diff);
   }, [rest]);
 
-  if (
-    !workDate ||
-    !control ||
-    !getValues ||
-    !watch ||
-    !restRemove ||
-    !restUpdate
-  ) {
+  if (!restRemove) {
     return null;
   }
 
   return (
     <Box>
       <Stack direction="row" spacing={1}>
+        <RestStartTimeInput index={index} rest={rest} />
+        <Box>
+          <Typography variant="body1" sx={{ my: 1 }}>
+            ～
+          </Typography>
+        </Box>
+        <RestEndTimeInput index={index} rest={rest} />
         <Box>
           <IconButton
             aria-label="staff-search"
@@ -59,13 +63,6 @@ export function RestTimeItem({
             <DeleteIcon />
           </IconButton>
         </Box>
-        <RestStartTimeInput index={index} rest={rest} />
-        <Box>
-          <Typography variant="body1" sx={{ my: 1 }}>
-            ～
-          </Typography>
-        </Box>
-        <RestEndTimeInput index={index} rest={rest} />
         <Box sx={{ flexGrow: 1 }} textAlign={"right"}>
           {`${totalRestTime.toFixed(1)} 時間`}
         </Box>

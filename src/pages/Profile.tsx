@@ -1,6 +1,5 @@
 import {
   Box,
-  Breadcrumbs,
   Button,
   CircularProgress,
   Container,
@@ -37,6 +36,7 @@ import {
   StaffType,
 } from "../hooks/useStaffs/useStaffs";
 import { AuthContext } from "../context/AuthContext";
+import CommonBreadcrumbs from "@/components/common/CommonBreadcrumbs";
 
 const NotificationSwitch = styled(Switch)(({ theme }) => ({
   padding: 8,
@@ -142,12 +142,10 @@ export default function Profile() {
   return (
     <Container maxWidth="xl" sx={{ pt: 2 }}>
       <Stack direction="column" spacing={2}>
-        <Breadcrumbs>
-          <Link href="/" color="inherit">
-            TOP
-          </Link>
-          <Typography color="text.primary">個人設定</Typography>
-        </Breadcrumbs>
+        <CommonBreadcrumbs
+          items={[{ label: "TOP", href: "/" }]}
+          current="個人設定"
+        />
         <Title>個人設定</Title>
         <TableContainer>
           <Table>

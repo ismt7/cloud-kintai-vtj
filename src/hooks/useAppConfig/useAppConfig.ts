@@ -1,9 +1,13 @@
-import { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import { AppConfigDataManager } from "./AppConfigDataManager";
+import { useEffect, useState } from "react";
+
 import { AppConfig, CreateAppConfigInput, UpdateAppConfigInput } from "@/API";
 
-// 特定の項目だけを選択して型定義
+import { AppConfigDataManager } from "./AppConfigDataManager";
+
+/**
+ * アプリケーション設定の一部項目のみを抽出した型。
+ */
 export type DefaultAppConfig = Pick<
   AppConfig,
   | "name"
@@ -18,6 +22,9 @@ export type DefaultAppConfig = Pick<
   | "quickInputEndTimes"
 >;
 
+/**
+ * デフォルトのアプリケーション設定値。
+ */
 export const DEFAULT_CONFIG: DefaultAppConfig = {
   name: "default",
   workStartTime: "09:00",
@@ -33,6 +40,11 @@ export const DEFAULT_CONFIG: DefaultAppConfig = {
 
 const LOCAL_STORAGE_KEY = "appConfig";
 
+/**
+ * アプリケーション設定を取得・保存・管理するカスタムフック。
+ *
+ * @returns 設定データ、ローディング状態、各種getter・setter関数
+ */
 export default function useAppConfig() {
   const [config, setConfig] = useState<AppConfig | null>(null);
   const [loading, setLoading] = useState(false);
@@ -46,6 +58,9 @@ export default function useAppConfig() {
     }
   }, []);
 
+  /**
+   * 設定をバックエンドから取得し、ローカルストレージにキャッシュする。
+   */
   const fetchConfig = async () => {
     setLoading(true);
     try {
@@ -60,6 +75,11 @@ export default function useAppConfig() {
     }
   };
 
+  /**
+   * 設定を新規作成または更新し、ローカルストレージにキャッシュする。
+   *
+   * @param newConfig 新しい設定データ
+   */
   const saveConfig = async (
     newConfig: CreateAppConfigInput | UpdateAppConfigInput
   ) => {
@@ -87,17 +107,33 @@ export default function useAppConfig() {
     }
   };
 
+  /**
+   * 勤務開始時刻を取得する。
+   * @returns dayjsオブジェクト
+   */
   const getStartTime = () =>
     config
       ? dayjs(config.workStartTime, "HH:mm")
       : dayjs(DEFAULT_CONFIG.workStartTime, "HH:mm");
+  /**
+   * 勤務終了時刻を取得する。
+   * @returns dayjsオブジェクト
+   */
   const getEndTime = () =>
     config
       ? dayjs(config.workEndTime, "HH:mm")
       : dayjs(DEFAULT_CONFIG.workEndTime, "HH:mm");
 
+  /**
+   * 設定IDを取得する。
+   * @returns 設定IDまたはnull
+   */
   const getConfigId = () => config?.id || null;
 
+  /**
+   * リンク情報を取得する。
+   * @returns リンク配列
+   */
   const getLinks = () => {
     if (config && config.links) {
       return config.links.map((link) => ({
@@ -110,6 +146,10 @@ export default function useAppConfig() {
     return [];
   };
 
+  /**
+   * 利用可能な理由一覧を取得する。
+   * @returns 理由配列
+   */
   const getReasons = () => {
     if (config && config.reasons) {
       return config.reasons
@@ -122,8 +162,17 @@ export default function useAppConfig() {
     return [];
   };
 
+  /**
+   * オフィスモードの有効/無効を取得する。
+   * @returns boolean
+   */
   const getOfficeMode = () => config?.officeMode || false;
 
+  /**
+   * クイック入力の開始時刻一覧を取得する。
+   * @param onlyEnabled 有効なもののみ取得する場合true
+   * @returns 時刻配列
+   */
   const getQuickInputStartTimes = (onlyEnabled = false) => {
     if (config && config.quickInputStartTimes) {
       return config.quickInputStartTimes
@@ -136,6 +185,11 @@ export default function useAppConfig() {
     return [];
   };
 
+  /**
+   * クイック入力の終了時刻一覧を取得する。
+   * @param onlyEnabled 有効なもののみ取得する場合true
+   * @returns 時刻配列
+   */
   const getQuickInputEndTimes = (onlyEnabled = false) => {
     if (config && config.quickInputEndTimes) {
       return config.quickInputEndTimes
@@ -148,13 +202,71 @@ export default function useAppConfig() {
     return [];
   };
 
+  /**
+   * 昼休憩開始時刻を取得する。
+   * @returns dayjsオブジェクト
+   */
   const getLunchRestStartTime = () =>
     config
       ? dayjs(config.lunchRestStartTime, "HH:mm")
       : dayjs("12:00", "HH:mm");
 
+  /**
+   * 昼休憩終了時刻を取得する。
+   * @returns dayjsオブジェクト
+   */
   const getLunchRestEndTime = () =>
     config ? dayjs(config.lunchRestEndTime, "HH:mm") : dayjs("13:00", "HH:mm");
+
+  /**
+   * 時間単位有給休暇の有効/無効を取得する。
+   * @returns boolean
+   */
+  const getHourlyPaidHolidayEnabled = () => {
+    return config?.hourlyPaidHolidayEnabled ?? false;
+  };
+
+  /**
+   * 午前休開始時刻を取得する。
+   * @returns dayjsオブジェクト
+   */
+  const getAmHolidayStartTime = () =>
+    config && config.amHolidayStartTime
+      ? dayjs(config.amHolidayStartTime, "HH:mm")
+      : dayjs("09:00", "HH:mm");
+  /**
+   * 午前休終了時刻を取得する。
+   * @returns dayjsオブジェクト
+   */
+  const getAmHolidayEndTime = () =>
+    config && config.amHolidayEndTime
+      ? dayjs(config.amHolidayEndTime, "HH:mm")
+      : dayjs("12:00", "HH:mm");
+  /**
+   * 午後休開始時刻を取得する。
+   * @returns dayjsオブジェクト
+   */
+  const getPmHolidayStartTime = () =>
+    config && config.pmHolidayStartTime
+      ? dayjs(config.pmHolidayStartTime, "HH:mm")
+      : dayjs("13:00", "HH:mm");
+  /**
+   * 午後休終了時刻を取得する。
+   * @returns dayjsオブジェクト
+   */
+  const getPmHolidayEndTime = () =>
+    config && config.pmHolidayEndTime
+      ? dayjs(config.pmHolidayEndTime, "HH:mm")
+      : dayjs("18:00", "HH:mm");
+
+  /**
+   * 午前午後休の有効/無効を取得する。
+   * @returns boolean
+   */
+  const getAmPmHolidayEnabled = () =>
+    config && typeof config.amPmHolidayEnabled === "boolean"
+      ? config.amPmHolidayEnabled
+      : false;
 
   return {
     config,
@@ -171,5 +283,11 @@ export default function useAppConfig() {
     getQuickInputEndTimes,
     getLunchRestStartTime,
     getLunchRestEndTime,
+    getHourlyPaidHolidayEnabled,
+    getAmHolidayStartTime,
+    getAmHolidayEndTime,
+    getPmHolidayStartTime,
+    getPmHolidayEndTime,
+    getAmPmHolidayEnabled,
   };
 }

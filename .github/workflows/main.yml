@@ -1,18 +1,46 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+name: Playwright Daily Test
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 1-5" # 平日09:00(JST)に実行（GitHub ActionsはUTC、1-5は月曜〜金曜）
 jobs:
-  Explore-GitHub-Actions:
-    runs-on: ubuntu-latest
+  playwright-test:
+    if: github.ref == 'refs/heads/develop'
+    name: Run Playwright tests daily
+    runs-on: ubuntu-22.04
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
         uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Cache npm
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          VITE_BASE_PATH: ${{ secrets.VITE_BASE_PATH }}
+          PLAYWRIGHT_LAZY_USER_EMAIL: ${{ secrets.PLAYWRIGHT_LAZY_USER_EMAIL }}
+          PLAYWRIGHT_LAZY_USER_PASSWORD: ${{ secrets.PLAYWRIGHT_LAZY_USER_PASSWORD }}
+          PLAYWRIGHT_LOGIN_EMAIL: ${{ secrets.PLAYWRIGHT_LOGIN_EMAIL }}
+          PLAYWRIGHT_LOGIN_PASSWORD: ${{ secrets.PLAYWRIGHT_LOGIN_PASSWORD }}
+          PLAYWRIGHT_OUT_USER_EMAIL: ${{ secrets.PLAYWRIGHT_OUT_USER_EMAIL }}
+          PLAYWRIGHT_OUT_USER_PASSWORD: ${{ secrets.PLAYWRIGHT_OUT_USER_PASSWORD }}
+          PLAYWRIGHT_ADMIN_EMAIL: ${{ secrets.PLAYWRIGHT_ADMIN_EMAIL }}
+          PLAYWRIGHT_ADMIN_PASSWORD: ${{ secrets.PLAYWRIGHT_ADMIN_PASSWORD }}
+      - name: Upload test-results artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results

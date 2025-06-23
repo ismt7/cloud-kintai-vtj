@@ -28,7 +28,13 @@ export declare type AppConfigUpdateFormInputValues = {
     workEndTime?: string;
     lunchRestStartTime?: string;
     lunchRestEndTime?: string;
+    amHolidayStartTime?: string;
+    amHolidayEndTime?: string;
+    pmHolidayStartTime?: string;
+    pmHolidayEndTime?: string;
+    amPmHolidayEnabled?: boolean;
     officeMode?: boolean;
+    hourlyPaidHolidayEnabled?: boolean;
 };
 export declare type AppConfigUpdateFormValidationValues = {
     name?: ValidationFunction<string>;
@@ -36,7 +42,13 @@ export declare type AppConfigUpdateFormValidationValues = {
     workEndTime?: ValidationFunction<string>;
     lunchRestStartTime?: ValidationFunction<string>;
     lunchRestEndTime?: ValidationFunction<string>;
+    amHolidayStartTime?: ValidationFunction<string>;
+    amHolidayEndTime?: ValidationFunction<string>;
+    pmHolidayStartTime?: ValidationFunction<string>;
+    pmHolidayEndTime?: ValidationFunction<string>;
+    amPmHolidayEnabled?: ValidationFunction<boolean>;
     officeMode?: ValidationFunction<boolean>;
+    hourlyPaidHolidayEnabled?: ValidationFunction<boolean>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type AppConfigUpdateFormOverridesProps = {
@@ -46,7 +58,13 @@ export declare type AppConfigUpdateFormOverridesProps = {
     workEndTime?: PrimitiveOverrideProps<TextFieldProps>;
     lunchRestStartTime?: PrimitiveOverrideProps<TextFieldProps>;
     lunchRestEndTime?: PrimitiveOverrideProps<TextFieldProps>;
+    amHolidayStartTime?: PrimitiveOverrideProps<TextFieldProps>;
+    amHolidayEndTime?: PrimitiveOverrideProps<TextFieldProps>;
+    pmHolidayStartTime?: PrimitiveOverrideProps<TextFieldProps>;
+    pmHolidayEndTime?: PrimitiveOverrideProps<TextFieldProps>;
+    amPmHolidayEnabled?: PrimitiveOverrideProps<SwitchFieldProps>;
     officeMode?: PrimitiveOverrideProps<SwitchFieldProps>;
+    hourlyPaidHolidayEnabled?: PrimitiveOverrideProps<SwitchFieldProps>;
 } & EscapeHatchProps;
 export declare type AppConfigUpdateFormProps = React.PropsWithChildren<{
     overrides?: AppConfigUpdateFormOverridesProps | undefined | null;

@@ -4,6 +4,7 @@ import Layout from "./Layout";
 import AdminAttendance from "./pages/admin/AdminAttendance";
 import AdminAttendanceEditor from "./pages/admin/AdminAttendanceEditor";
 import AdminAttendancePrint from "./pages/admin/AdminAttendancePrint";
+import AdminConfigManagement from "./pages/admin/AdminConfigManagement/AdminConfigManagement";
 import AdminHolidayCalendar from "./pages/admin/AdminHolidayCalendar/HolidayCalendar/AdminHolidayCalendar";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminMasterLayout from "./pages/admin/AdminMasterLayout";
@@ -19,13 +20,12 @@ import DocumentView from "./pages/Document/DocumentView/DocumentView";
 import ListDocument from "./pages/Document/ListDocument/ListDocument";
 import List from "./pages/List";
 import Login from "./pages/Login/Login";
+import OfficeLayout from "./pages/office/OfficeLayout";
+import OfficePage from "./pages/office/OfficePage";
+import OfficeQRRegister from "./pages/office/qr/OfficeQRRegister";
+import OfficeQRView from "./pages/office/qr/OfficeQRView";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
-import OfficePage from "./pages/office/OfficePage";
-import OfficeQRView from "./pages/office/qr/OfficeQRView";
-import OfficeQRRegister from "./pages/office/qr/OfficeQRRegister";
-import OfficeLayout from "./pages/office/OfficeLayout";
-import AdminConfigManagement from "./pages/admin/AdminConfigManagement/AdminConfigManagement";
 
 const router = createBrowserRouter([
   {

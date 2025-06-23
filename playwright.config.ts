@@ -11,7 +11,7 @@ import dotenv from "dotenv";
  * See https://playwright.dev/docs/test-configuration.
  */
 
-dotenv.config();
+dotenv.config({ path: ".env.local" });
 
 export default defineConfig({
   testDir: "./tests",
@@ -20,7 +20,7 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
@@ -35,6 +35,7 @@ export default defineConfig({
       username: "kintai",
       password: "kintaidev",
     },
+    screenshot: "only-on-failure",
   },
 
   /* Configure projects for major browsers */
@@ -45,28 +46,25 @@ export default defineConfig({
       name: "chromium",
       use: {
         ...devices["Desktop Chrome"],
-        storageState: "playwright/.auth/user.json",
       },
       dependencies: ["setup"],
     },
 
-    {
-      name: "firefox",
-      use: {
-        ...devices["Desktop Firefox"],
-        storageState: "playwright/.auth/user.json",
-      },
-      dependencies: ["setup"],
-    },
+    // {
+    //   name: "firefox",
+    //   use: {
+    //     ...devices["Desktop Firefox"],
+    //   },
+    //   dependencies: ["setup"],
+    // },
 
-    {
-      name: "webkit",
-      use: {
-        ...devices["Desktop Safari"],
-        storageState: "playwright/.auth/user.json",
-      },
-      dependencies: ["setup"],
-    },
+    // {
+    //   name: "webkit",
+    //   use: {
+    //     ...devices["Desktop Safari"],
+    //   },
+    //   dependencies: ["setup"],
+    // },
 
     /* Test against mobile viewports. */
     // {

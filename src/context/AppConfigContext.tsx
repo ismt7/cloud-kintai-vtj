@@ -1,7 +1,8 @@
-import { createContext } from "react";
-import { DEFAULT_CONFIG } from "@/hooks/useAppConfig/useAppConfig";
 import dayjs from "dayjs";
+import { createContext } from "react";
+
 import { CreateAppConfigInput, UpdateAppConfigInput } from "@/API";
+import { DEFAULT_CONFIG } from "@/hooks/useAppConfig/useAppConfig";
 
 type AppConfigContextProps = {
   fetchConfig: () => Promise<void>;
@@ -32,6 +33,12 @@ type AppConfigContextProps = {
   }[];
   getLunchRestStartTime: () => dayjs.Dayjs;
   getLunchRestEndTime: () => dayjs.Dayjs;
+  getHourlyPaidHolidayEnabled: () => boolean;
+  getAmHolidayStartTime: () => dayjs.Dayjs;
+  getAmHolidayEndTime: () => dayjs.Dayjs;
+  getPmHolidayStartTime: () => dayjs.Dayjs;
+  getPmHolidayEndTime: () => dayjs.Dayjs;
+  getAmPmHolidayEnabled: () => boolean;
 };
 
 export const AppConfigContext = createContext<AppConfigContextProps>({
@@ -52,4 +59,10 @@ export const AppConfigContext = createContext<AppConfigContextProps>({
   getLunchRestStartTime: () =>
     dayjs(DEFAULT_CONFIG.lunchRestStartTime, "HH:mm"),
   getLunchRestEndTime: () => dayjs(DEFAULT_CONFIG.lunchRestEndTime, "HH:mm"),
+  getHourlyPaidHolidayEnabled: () => false,
+  getAmHolidayStartTime: () => dayjs("09:00", "HH:mm"),
+  getAmHolidayEndTime: () => dayjs("12:00", "HH:mm"),
+  getPmHolidayStartTime: () => dayjs("13:00", "HH:mm"),
+  getPmHolidayEndTime: () => dayjs("18:00", "HH:mm"),
+  getAmPmHolidayEnabled: () => false,
 });

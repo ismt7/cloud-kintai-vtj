@@ -35,6 +35,7 @@ export default function ClockInItem({
 
   return (
     <ClockInButton
+      data-testid="clock-in-button"
       onClick={() => {
         setDisabled(true);
         onClick();
