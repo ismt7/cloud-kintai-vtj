@@ -64,6 +64,7 @@ export function RestTimeInput({
             aria-label="staff-search"
             disabled={changeRequests.length > 0}
             onClick={() => restRemove(index)}
+            data-testid={`rest-delete-button-${index}`}
           >
             <DeleteIcon />
           </IconButton>

@@ -197,6 +197,7 @@ export default function DesktopEditor() {
             >
               <Box sx={{ paddingBottom: 2 }}>
                 <RequestButton
+                  data-testid="attendance-submit-button"
                   onClick={handleSubmit(onSubmit)}
                   disabled={
                     !isDirty ||
