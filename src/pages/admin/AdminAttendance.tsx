@@ -1,9 +1,9 @@
-import { Box, Container, Stack, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Box, Container, Stack } from "@mui/material";
+
+import CommonBreadcrumbs from "@/components/common/CommonBreadcrumbs";
 
 import AttendanceDailyList from "../../components/AttendanceDailyList/AttendanceDailyList";
 import DownloadForm from "../../components/download_form/DownloadForm";
-import CommonBreadcrumbs from "@/components/common/CommonBreadcrumbs";
 
 export default function AdminAttendance() {
   return (
