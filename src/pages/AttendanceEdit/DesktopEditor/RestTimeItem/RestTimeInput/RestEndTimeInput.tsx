@@ -1,6 +1,5 @@
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import ClearIcon from "@mui/icons-material/Clear";
-import { Box, Chip, IconButton, Stack } from "@mui/material";
+import { Box, Chip, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useContext } from "react";
@@ -82,14 +81,6 @@ export default function RestEndTimeInput({
           <DefaultEndTimeChip index={index} rest={rest} />
         </Box>
       </Stack>
-      <Box>
-        <IconButton
-          onClick={() => restUpdate(index, { ...rest, endTime: null })}
-          disabled={changeRequests.length > 0}
-        >
-          <ClearIcon />
-        </IconButton>
-      </Box>
     </Stack>
   );
 }

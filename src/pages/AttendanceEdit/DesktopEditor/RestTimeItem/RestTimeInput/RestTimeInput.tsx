@@ -52,6 +52,13 @@ export function RestTimeInput({
   return (
     <Box>
       <Stack direction="row" spacing={1}>
+        <RestStartTimeInput rest={rest} index={index} testIdPrefix="desktop" />
+        <Box>
+          <Typography variant="body1" sx={{ my: 1 }}>
+            ～
+          </Typography>
+        </Box>
+        <RestEndTimeInput rest={rest} index={index} testIdPrefix="desktop" />
         <Box>
           <IconButton
             aria-label="staff-search"
@@ -61,13 +68,6 @@ export function RestTimeInput({
             <DeleteIcon />
           </IconButton>
         </Box>
-        <RestStartTimeInput rest={rest} index={index} testIdPrefix="desktop" />
-        <Box>
-          <Typography variant="body1" sx={{ my: 1 }}>
-            ～
-          </Typography>
-        </Box>
-        <RestEndTimeInput rest={rest} index={index} testIdPrefix="desktop" />
         <Box sx={{ flexGrow: 1 }} textAlign={"right"}>
           {`${totalRestTime.toFixed(1)} 時間`}
         </Box>
