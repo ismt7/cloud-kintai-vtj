@@ -13,11 +13,13 @@ import { AttendanceEditInputs } from "../../../common";
 type RestStartTimeInputProp = {
   rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
   index: number;
+  testIdPrefix?: string;
 };
 
 export default function RestStartTimeInput({
   rest,
   index,
+  testIdPrefix = "desktop",
 }: RestStartTimeInputProp) {
   const { workDate, changeRequests, control, restUpdate } = useContext(
     AttendanceEditContext
@@ -45,7 +47,9 @@ export default function RestStartTimeInput({
             slotProps={{
               textField: {
                 size: "small",
-                inputProps: { "data-testid": `rest-start-time-input-${index}` },
+                inputProps: {
+                  "data-testid": `rest-start-time-input-${testIdPrefix}-${index}`,
+                },
               },
             }}
             onChange={(newStartTime) => {

@@ -61,13 +61,13 @@ export function RestTimeInput({
             <DeleteIcon />
           </IconButton>
         </Box>
-        <RestStartTimeInput rest={rest} index={index} />
+        <RestStartTimeInput rest={rest} index={index} testIdPrefix="desktop" />
         <Box>
           <Typography variant="body1" sx={{ my: 1 }}>
             ～
           </Typography>
         </Box>
-        <RestEndTimeInput rest={rest} index={index} />
+        <RestEndTimeInput rest={rest} index={index} testIdPrefix="desktop" />
         <Box sx={{ flexGrow: 1 }} textAlign={"right"}>
           {`${totalRestTime.toFixed(1)} 時間`}
         </Box>

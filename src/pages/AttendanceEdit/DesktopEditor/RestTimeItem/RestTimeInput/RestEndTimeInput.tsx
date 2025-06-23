@@ -21,9 +21,11 @@ import { AttendanceEditInputs } from "../../../common";
 export default function RestEndTimeInput({
   rest,
   index,
+  testIdPrefix = "desktop",
 }: {
   rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
   index: number;
+  testIdPrefix?: string;
 }) {
   const { workDate, control, restUpdate, changeRequests } = useContext(
     AttendanceEditContext
@@ -49,7 +51,9 @@ export default function RestEndTimeInput({
               slotProps={{
                 textField: {
                   size: "small",
-                  inputProps: { "data-testid": `rest-end-time-input-${index}` },
+                  inputProps: {
+                    "data-testid": `rest-end-time-input-${testIdPrefix}-${index}`,
+                  },
                 },
               }}
               onChange={(newEndTime) => {
