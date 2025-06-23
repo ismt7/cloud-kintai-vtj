@@ -1,6 +1,5 @@
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import ClearIcon from "@mui/icons-material/Clear";
-import { Box, Chip, IconButton, Stack } from "@mui/material";
+import { Box, Chip, Stack } from "@mui/material";
 import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useContext } from "react";
@@ -21,9 +20,11 @@ import { AttendanceEditInputs } from "../../../common";
 export default function RestEndTimeInput({
   rest,
   index,
+  testIdPrefix = "desktop",
 }: {
   rest: FieldArrayWithId<AttendanceEditInputs, "rests", "id">;
   index: number;
+  testIdPrefix?: string;
 }) {
   const { workDate, control, restUpdate, changeRequests } = useContext(
     AttendanceEditContext
@@ -49,7 +50,9 @@ export default function RestEndTimeInput({
               slotProps={{
                 textField: {
                   size: "small",
-                  inputProps: { "data-testid": `rest-end-time-input-${index}` },
+                  inputProps: {
+                    "data-testid": `rest-end-time-input-${testIdPrefix}-${index}`,
+                  },
                 },
               }}
               onChange={(newEndTime) => {
@@ -78,14 +81,6 @@ export default function RestEndTimeInput({
           <DefaultEndTimeChip index={index} rest={rest} />
         </Box>
       </Stack>
-      <Box>
-        <IconButton
-          onClick={() => restUpdate(index, { ...rest, endTime: null })}
-          disabled={changeRequests.length > 0}
-        >
-          <ClearIcon />
-        </IconButton>
-      </Box>
     </Stack>
   );
 }

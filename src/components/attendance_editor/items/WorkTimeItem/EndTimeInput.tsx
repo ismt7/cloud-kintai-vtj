@@ -1,16 +1,9 @@
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import ClearIcon from "@mui/icons-material/Clear";
-import { Box, Button, Chip, IconButton, Stack } from "@mui/material";
-import { renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
-import { Controller } from "react-hook-form";
 
-import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
 import { AppConfigContext } from "@/context/AppConfigContext";
+import { AttendanceEditContext } from "@/pages/AttendanceEdit/AttendanceEditProvider";
+
 import TimeInputBase from "./TimeInputBase";
-import { AttendanceEditInputs } from "@/pages/AttendanceEdit/common";
 
 export default function EndTimeInput() {
   const { getQuickInputEndTimes } = useContext(AppConfigContext);

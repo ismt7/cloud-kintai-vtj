@@ -50,7 +50,6 @@ export function WorkTimeInput() {
       <Box sx={{ fontWeight: "bold", width: "150px" }}>勤務時間</Box>
       <Box sx={{ flexGrow: 1 }}>
         <Stack direction="row" spacing={2} alignItems={"center"}>
-          <Box sx={{ width: 33, height: 40 }} />
           <Box>
             <Stack direction="row" spacing={1}>
               <Box>

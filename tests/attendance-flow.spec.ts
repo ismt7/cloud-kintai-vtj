@@ -43,18 +43,21 @@ test.describe.serial("出勤・休憩・退勤(通常パターン)", () => {
     await page.waitForTimeout(10000);
 
     // 勤務時間の入力
-    await page.getByTestId("desktop-start-time-input").fill("");
+    await page.getByTestId("desktop-start-time-input").fill("09:00");
 
     // 終了時刻の入力
-    await page.getByTestId("desktop-end-time-input").fill("");
+    await page.getByTestId("desktop-end-time-input").fill("18:00");
 
     // // 休憩時間の追加
     // await page.getByTestId("add-rest-time").click();
 
     // 休憩開始時刻の入力
-    await page.getByTestId("rest-start-time-input-0").fill("");
+    await page.getByTestId("rest-start-time-input-desktop-0").fill("12:00");
 
     // 休憩終了時刻の入力
-    await page.getByTestId("rest-end-time-input-0").fill("");
+    await page.getByTestId("rest-end-time-input-desktop-0").fill("13:00");
+
+    // 勤怠の編集リクエストを送信
+    await page.getByTestId("attendance-submit-button").click();
   });
 });

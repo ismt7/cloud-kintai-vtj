@@ -48,6 +48,7 @@ type RestEndTimeInputProps = {
    * 休憩データの更新関数
    */
   restUpdate: UseFieldArrayUpdate<AttendanceEditInputs, "rests">;
+  testIdPrefix?: string;
 };
 
 /**
@@ -62,6 +63,7 @@ export default function RestEndTimeInput({
   index,
   control,
   restUpdate,
+  testIdPrefix = "mobile",
 }: RestEndTimeInputProps) {
   const { getLunchRestEndTime } = useContext(AppConfigContext);
 
@@ -82,7 +84,12 @@ export default function RestEndTimeInput({
                 minutes: renderTimeViewClock,
               }}
               slotProps={{
-                textField: { size: "small" },
+                textField: {
+                  size: "small",
+                  inputProps: {
+                    "data-testid": `rest-end-time-input-${testIdPrefix}-${index}`,
+                  },
+                },
               }}
               onChange={(newEndTime) => {
                 const formattedEndTime = newEndTime

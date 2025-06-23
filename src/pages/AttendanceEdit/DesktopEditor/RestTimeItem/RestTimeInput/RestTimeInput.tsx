@@ -52,22 +52,23 @@ export function RestTimeInput({
   return (
     <Box>
       <Stack direction="row" spacing={1}>
-        <Box>
-          <IconButton
-            aria-label="staff-search"
-            disabled={changeRequests.length > 0}
-            onClick={() => restRemove(index)}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </Box>
-        <RestStartTimeInput rest={rest} index={index} />
+        <RestStartTimeInput rest={rest} index={index} testIdPrefix="desktop" />
         <Box>
           <Typography variant="body1" sx={{ my: 1 }}>
             ～
           </Typography>
         </Box>
-        <RestEndTimeInput rest={rest} index={index} />
+        <RestEndTimeInput rest={rest} index={index} testIdPrefix="desktop" />
+        <Box>
+          <IconButton
+            aria-label="staff-search"
+            disabled={changeRequests.length > 0}
+            onClick={() => restRemove(index)}
+            data-testid={`rest-delete-button-${index}`}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Box>
         <Box sx={{ flexGrow: 1 }} textAlign={"right"}>
           {`${totalRestTime.toFixed(1)} 時間`}
         </Box>
